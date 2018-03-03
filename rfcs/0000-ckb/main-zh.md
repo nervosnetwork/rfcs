@@ -74,14 +74,14 @@ CKB的当前状态是其所保存的各种共同知识的集合。CKB以状态�
 
 表1从共同知识库的角度，将Bitcoin、Ethereum和Nervos CKB进行了比较。
 
-Common Knowledge Base | Bitcoin | Ethereum | Nervos CKB
---------------------- | ------- | -------- | ----------
-Knowledge Type | Ledger | Smart Contract | General
-Storage | UTXO | Account K-V Store | Cell
-Data Schema | N/A | N/A | Type
-Validation Rule | Limited (Script) | Any (Contract) | Any (Validator)
-State Write | Direct (User) | Indirect (EVM) | Direct (User)
-State Read* | No | Yes | Yes
+| Common Knowledge Base | Bitcoin          | Ethereum          | Nervos CKB      |
+| --------------------- | ---------------- | ----------------- | --------------- |
+| Knowledge Type        | Ledger           | Smart Contract    | General         |
+| Storage               | UTXO             | Account K-V Store | Cell            |
+| Data Schema           | N/A              | N/A               | Type            |
+| Validation Rule       | Limited (Script) | Any (Contract)    | Any (Validator) |
+| State Write           | Direct (User)    | Indirect (EVM)    | Direct (User)   |
+| State Read*           | No               | Yes               | Yes             |
 > Table 1. Comparison of Common Knowledge Bases
 (* State Read refers to on chain readability only, which means if the state can be read during on chain validation. Chain state is transparent to off chain reader.)
 
@@ -211,23 +211,23 @@ Cell, Validator和Generator组成了一个有状态的计算模型。Type是有�
 ![Figure 6. Layered Structure](fig6.png)
 > Figure 6. Layered Structure
 
-#### 客户端
+* 客户端
 
-在用户设备上直接运行Generator生成新状态。通过轻客户端提供的接口或是客户端程序库，生成算法可以用任何编程语言实现。
+  在用户设备上直接运行Generator生成新状态。通过轻客户端提供的接口或是客户端程序库，生成算法可以用任何编程语言实现。
 
-#### 状态服务
+* 状态服务
 
-用户使用中心化服务，由服务器执行生成算法，生成新状态。目前所有的互联网服务都可以通过状态服务的方式使用CKB，使服务状态数据获得更大的信任和流动性。例如，游戏公司可以使用状态服务架构，在中心化服务中执行游戏逻辑，生成道具信息；在CKB中定义道具类型和总量等规则，将生成的道具登记并确权。
+  用户使用中心化服务，由服务器执行生成算法，生成新状态。目前所有的互联网服务都可以通过状态服务的方式使用CKB，使服务状态数据获得更大的信任和流动性。例如，游戏公司可以使用状态服务架构，在中心化服务中执行游戏逻辑，生成道具信息；在CKB中定义道具类型和总量等规则，将生成的道具登记并确权。
 
-结合Nervos Identity Protocol，信息发布机构提供基于身份的可信Oracle，为Nervos网络中的其他服务提供必要的信息。
+  结合Nervos Identity Protocol，信息发布机构提供基于身份的可信Oracle，为Nervos网络中的其他服务提供必要的信息。
 
-#### 状态通道
+* 状态通道
 
-两名或多名用户使用点对点网络连接通信，共同生成新的状态。状态通道的参与者可以通过CKB登记和获取参与者信息，建立通道连接。参与者可以在CKB上提供保证金，使其它参与者相信通道能够顺利运行。状态通道参与者之间可以使用多重签名、传统分布式共识或是多方安全计算技术来生成新状态。
+  两名或多名用户使用点对点网络连接通信，共同生成新的状态。状态通道的参与者可以通过CKB登记和获取参与者信息，建立通道连接。参与者可以在CKB上提供保证金，使其它参与者相信通道能够顺利运行。状态通道参与者之间可以使用多重签名、传统分布式共识或是多方安全计算技术来生成新状态。
 
-#### 应用链
+* 应用链
 
-一个用于生成CKB新状态的区块链。应用链可以是公有链（例如任何使用EVM的区块链），也可以是许可链（例如CITA以及Hyperledger Fabric）。使用许可链可以将状态计算限定在一定参与范围内，保护计算隐私，同时获得很好的性能。在应用链中，参与者共同执行状态生成并相互验证计算过程，在状态需要更广泛共识时，将其提交到CKB中，使之成为接受度更高的共同知识。 
+  一个用于生成CKB新状态的区块链。应用链可以是公有链（例如任何使用EVM的区块链），也可以是许可链（例如CITA以及Hyperledger Fabric）。使用许可链可以将状态计算限定在一定参与范围内，保护计算隐私，同时获得很好的性能。在应用链中，参与者共同执行状态生成并相互验证计算过程，在状态需要更广泛共识时，将其提交到CKB中，使之成为接受度更高的共同知识。 
 
 ## Hybrid Consensus
 
