@@ -200,7 +200,13 @@ Generator = gen(context ctx, address to, uint amount, ...)
 
 ### Lambda Calculus
 
-Cell, Validator和Generator组成了一个有状态的计算模型。Type是有状态的，其状态是所有该类型Cells的集合。Validator和Generator是确定性的纯函数（Pure function），他们的计算完全依赖于输入，函数内部没有任何状态。基于账户模型的智能合约使用图灵机为计算模型（合约有内部状态），CKB使用Lambda Calculus[2]。
+Cell, Type和Generator组成了一个有状态的计算模型。Type是有状态的，其状态是所有该类型Cells的集合。Validator和Generator是确定性的纯函数（Pure function），他们的计算完全依赖于输入，函数内部没有任何状态。基于账户模型的智能合约使用图灵机为计算模型（合约有内部状态），CKB使用Lambda Calculus[2]。
+
+### Smart Contract
+
+Cell, Identity, Type和Generator的组合，构成了CKB中的智能合约。CKB中的智能合约的状态保存在Cells里面，合约的逻辑通过Generator以及Type定义的Validator实现。Cell lock和Identity为合约提供鉴权系统。
+
+CKB智能合约由此成为由底层元素形成的一个逻辑概念，合约内的各部分彻底解耦，无论是合约的编写还是处理都更加灵活。
 
 ### Layered Network
 
@@ -227,7 +233,7 @@ Cell, Validator和Generator组成了一个有状态的计算模型。Type是有�
 
 * 应用链
 
-  一个用于生成CKB新状态的区块链。应用链可以是公有链（例如任何使用EVM的区块链），也可以是许可链（例如CITA以及Hyperledger Fabric）。使用许可链可以将状态计算限定在一定参与范围内，保护计算隐私，同时获得很好的性能。在应用链中，参与者共同执行状态生成并相互验证计算过程，在状态需要更广泛共识时，将其提交到CKB中，使之成为接受度更高的共同知识。 
+  一个用于生成CKB新状态的区块链。应用链可以是公有链（例如任何使用EVM的区块链），也可以是许可链（例如CITA以及Hyperledger Fabric）。使用许可链可以将状态计算限定在一定参与范围内，保护计算隐私，同时获得很好的性能。在应用链中，参与者共同执行状态生成并相互验证计算过程，在状态需要更广泛共识时，将其提交到CKB中，使之成为接受度更高的共同知识。
 
 ## Hybrid Consensus
 
