@@ -34,13 +34,13 @@ Cell 存储的数据，通过 Module 定义的 Schema 可以解释数据的含�
 
 #### Recipient
 
-Recipient 是复合类型，由 `recipient_module` 和 `recipient_lock` 两部分组成。Recipient 用于跨模块通信，详见[交易规则][1]中相关说明和[模块相关 RFC][2] 的说明。
+Recipient 是复合类型，由 `recipient_module` 和 `recipient_lock` 两部分组成。Recipient 用于跨模块通信，详见[交易规则](#tx-rules)中相关说明和[模块相关 RFC](TODO) 的说明。
 
 ## Cell 链
 
 Cell 创建之后是不可变的，但是可以转换成新的 Cell，直到最终被销毁。通过创建 (create)，转换 (transform)，销毁 (destroy) 可以组成一个 Cell 链。每个 Cell 都唯一属于一个 Cell 链。
 
-![][image-1]
+![](rfc-cell-assets/cell-chain.jpg "Cell Chain")
 
 Cell 被创建时，其所在的 Cell 链也被同时创建，并把新创建的 Cell 作为链头 (Chain Head)。
 
@@ -50,7 +50,7 @@ Cell 被销毁，其所在的 Cell 链也被销毁。
 
 在某个时间点，所有未销毁 Cell 链的链头称为 Head Cell。所有 Head Cell 集合就是该时间点的 CKB 快照。
 
-![][image-2]
+![](rfc-cell-assets/head-cell.jpg "Head Cell")
 
 上图中，t0, t1, t2, t3 为 4 个时间点，相邻时间点之间会发生 Create, Transform 和 Destroy 操作，从上到下依次是 A, B, C, D 四个 Cell 链。
 
@@ -72,13 +72,13 @@ Cell 链中的第一个 Cell 称为 Root Cell，计其高度为 0，Transform �
 
 一个交易包含多个组，每个组可以包含多个操作。操作可以时创建 (create), 转换 (transform) 或者销毁 (destroy)。交易保证原子性，交易中的所有操作要么都被接受，要么都被拒绝。
 
-![][image-3]
+![](rfc-cell-assets/tx-struct.jpg "Transaction Struct")
 
 多个交易组成一个区块 (Block)。所以 Block 包含的是两个时间点间所有发生的 Cell 操作的集合。划分为交易是保证原子性，划分为组是方便以 Module 为单位进行交易验证。
 
 把 Block 结合到 Head Cell 图中可以得到
 
-![][image-4]
+![](rfc-cell-assets/blockchain.jpg "Blockchain")
 
 ## 交易规则 {#tx-rules}
 
@@ -104,9 +104,9 @@ Cell 链中的第一个 Cell 称为 Root Cell，计其高度为 0，Transform �
 
 或者
 
-\\[
-\sum_{c \in I[i,j]}{capacity(c)} \geq \sum_{c \in O[i,j]}{capacity(c)}
-\\]
+```
+sum(c.capacity for c in I[i, j]) >= sum(c.capacity for c in O[i, j])
+```
 
 对于扩容交易必须满足条件:
 
@@ -119,9 +119,9 @@ Cell 链中的第一个 Cell 称为 Root Cell，计其高度为 0，Transform �
 
 一个交易可收集手续费 F 等于集合 `I[i, j]` 和 `D[i, j]` 中所有 Cell Capacity 之和减去 `O[i, j]` 和 `C[i, j]` 中所有 Cell Capacity 之和，即
 
-\\[
-\sum_{c \in I[i,j] \bigcup D[i, j]}{capacity(c)} - \sum_{c \in O[i,j] \bigcup C[i, j]}{capacity(c)}
-\\]
+```
+sum(c.capacity for c in I[i, j]) - sum(c.capacity for c in O[i, j])
+```
 
 ### Cell 链不可分叉
 
@@ -137,9 +137,11 @@ Cell 链中的第一个 Cell 称为 Root Cell，计其高度为 0，Transform �
 
 也就是交易的输入必须是从上一个区块后的 Head Cell 集合，和所在区块的输出 Cell 集合里选取。允许输入是同一个区块中的输出，可以在一个区块中包含一个 Cell 链的多个串行操作。
 
+![](rfc-cell-assets/cell-chain-in-block.jpg "Cell Chain in Block")
+
 ### 模块不变性
 
-Transfrom 操作中，输入 Cell 和输出 Cell 必须有相同的模块。
+Transform 操作中，输入 Cell 和输出 Cell 必须有相同的模块。
 
 想在不同模块间转移空间，只需要构造一个交易包含在一个模块 M 里的 Destroy 操作，和另一个模块 N 里的 Create 操作，这样空间就从 M 转移到 N 了。
 
@@ -205,11 +207,3 @@ Lock 由 `secp256k1` 公钥 hash160 后得到。提供的证明包括两部分�
 - 对公钥 hash160 后必须等于 lock
 - 使用公钥对交易签名验证
 
-
-[1]:	#tx-rules
-[2]:	TODO
-
-[image-1]:	rfc-cell-assets/cell-chain.jpg "Cell Chain"
-[image-2]:	rfc-cell-assets/head-cell.jpg "Head Cell"
-[image-3]:	rfc-cell-assets/tx-struct.jpg "Transaction Struct"
-[image-4]:	rfc-cell-assets/blockchain.jpg "Blockchain"
