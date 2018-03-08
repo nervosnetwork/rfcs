@@ -25,7 +25,7 @@ A general purpose common knowledge base.
 
 现有区块链的追求完全的去中心化，要求网络中的节点完全对等，极大的限制了自身设计空间，难以应对越来越广泛的应用需求。随着区块链状态膨胀，运行全节点对硬件的要求越来越高，运行全节点的用户也越来越少。同时，用户使用互联网服务的模式已经完成了从桌面浏览器到移动应用的迁移，更加剧了完全对等设计的弊端。区块链节点类型分化已成为必然趋势。
 
-综合以上，我们重新思考并设计了Nervos CKB，一个可以支持更通用的计算和存储模型，性能可扩展，经济激励更平衡，对移动设备更友好的区块链，同时也是可以作为Nervos分布式应用网络基础层的通用共同知识库。
+综合以上，我们重新思考并设计了Nervos CKB，提出彻底解耦的分布式应用新范式，以支持更普遍的计算和存储需求，获得更好的性能，使经济激励更平衡，对移动设备更友好。我们希望Nervos CKB可以成为全球76亿人的共同知识库，承载各种分布式应用。
 
 ![Figure 1. Event-focused vs. State-focused Design](fig1.png)
 <div align="center">Figure 1. Event-focused vs. State-focused Design</div>
@@ -40,16 +40,19 @@ Nervos CKB（以下简称CKB）是一个以通用共同知识库（[Appendix: Co
 
 CKB节点通过点对点网络协议组成一个分布式网络，对区块和交易数据进行转发和广播。共识节点运行[混合共识](#hybrid-consensus)协议，以一定的时间间隔产生新的区块并形成共识，新区块会被所有节点承认并追加到区块链尾部，新区块中的交易会更新CKB的状态。
 
-CKB使用一种全新的分布式应用架构，该架构由以下四种元素组成：
+### A New DApp Paradigm
+
+CKB支持一种全新的分布式应用范式，该范式由以下五种元素组成：
 
 * [Cell](#cell)
 * [Type](#type)
 * [Validator](#validator)
 * [Generator](#generator)
+* [Identity](#identity)
 
-CKB中的分布式应用，将数据存储在支持任意结构化数据的Cell中，数据结构由Type进行定义；应用的业务逻辑由Generator实现，Generator生成新的应用状态，在通过Validator验证之后进入区块链，保存在CKB中。
+通过这五种元素，我们将分布式应用彻底解耦成计算、存储和身份三个方面。在此基础上，计算进一步分化为生成（Generator）和验证（Validator）两个步骤，存储（Cell）也进一步通用化，可以支持任意结构化（Type）的数据。CKB中的分布式应用，可以使用Type定义合适的数据结构，将应用数据存放在多个Cells中；应用的执行逻辑由Generator实现，状态验证逻辑由Validator实现；Generator在客户端运行，用户进行操作时生成新的应用状态，新状态被打包在交易中发送到全网；网络中的节点先验证交易发送者的身份，然后使用Validator对交易中新状态的有效性进行验证，验证通过后将新状态保存到CKB中。
 
-CKB以状态为核心设计数据流及经济激励。Generator由客户端运行，新的状态在客户端生成。用户通过交易([Transaction](#transaction)）把新的状态（而不是事件）发送到CKB网络，由全体节点对其进行验证，验证通过则保存到区块链中。CKB通过四种元素的组合实现了Lambda Calculus[1]计算模型，提供与图灵机相同的计算能力，更加灵活的计算实现方式，更加通用的状态存储模型。用户可以灵活定义和组合这四种元素，在CKB中实现各种分布式应用。
+CKB以状态为核心设计数据流及经济激励，交易中包含的是新的状态，而不是触发状态机的事件。因此，CKB区块链中直接保存了状态数据，状态随着区块一起同步，无需额外的状态同步协议，降低了系统复杂度，提高了系统可用性。分布式应用的状态被剥离到Cells中保存，Validator和Generator内部没有任何状态，计算结果完全依赖输入，因此都是确定性的纯函数（Pure function），容易组合形成更复杂的逻辑。CKB分布式应用使用的是一种近似Lambda Calculus的计算范式，能够实现与图灵机相同的计算能力。
 
 表1将Bitcoin、Ethereum和Nervos CKB进行了比较。
 
@@ -104,7 +107,15 @@ Cell的lock脚本由CKB支持的虚拟机执行，用户在更新Cell数据或�
 
 lock脚本表达了Cell的操作权限，可以代表单用户，也可以是门限签名或者更复杂的权限。Cell具有很好的隐私性，用户通过使用不同的lock脚本，可以很轻松地使用不同的假名（Pseudonomy）来管理自己的Cells。Cell的所有者和使用者可以是相同的用户，也可以是不同的用户，这也意味着CKB使用者不需要拥有Cell就可以使用CKB，使用门槛低。
 
-### Type
+### Life Cycle
+
+Cell生命周期有两个阶段，新创建的Cell处于第一个阶段P1。Cell是不可变数据对象，一旦被创建其内容不能被修改，Cell的更新通过Transaction实现：Transaction以需要被更新的P1 Cell作为输入，以Generator产生的包含新状态的P1 Cell作为输出。
+
+一个P1 Cell只能被使用一次，不能被用作两个不同Transaction的输入。P1 Cell被使用后进入第二个阶段P2，P2 Cell不能再用作Transaction输入。我们把所有的P1 Cells形成的集合称为P1 Cell Set（P1CS），P1CS中存储了CKB当前所有的共同知识；所有的P2 Cells形成的集合称为P2 Cell Set（P2CS），P2CS中存储了CKB所有的历史状态。
+
+CKB网络上的全节点只需要P1CS就可以验证Transaction，P2CS可以按照一定的策略清理。P2CS可以保存在存档节点（Archive Node）或者是分布式存储网络上。CKB轻节点只需要保存区块头，不需要存储P1CS和P2CS。
+
+## Type
 
 CKB为Cell提供了类型系统，用户可以创建自定义的Cell类型。通过类型系统，我们可以在CKB中定义不同类型的共同知识以及相应的生成验证规则。
 
@@ -120,14 +131,6 @@ Data Schema提供该类型的数据结构定义，使Validator可以理解和使
 ### Index
 
 用户在定义Data Schema时可以设置索引，添加了索引的数据字段能够获得额外的支持，包括能够在Validator或是owner_lock/data_lock中使用的条件查询指令以及聚合函数。例如，众筹发起方可以生成一个Identity Cell（[Identity](#identity)），在其data_lock中利用条件查询和聚合函数判断众筹总数是否已经达到目标，以此Identity作为众筹发起方，实现有上限的众筹。
-
-### Life Cycle
-
-Cell生命周期有两个阶段，新创建的Cell处于第一个阶段P1。Cell是不可变数据对象，一旦被创建其内容不能被修改，Cell的更新通过Transaction实现：Transaction以需要被更新的P1 Cell作为输入，以Generator产生的包含新状态的P1 Cell作为输出。
-
-一个P1 Cell只能被使用一次，不能被用作两个不同Transaction的输入。P1 Cell被使用后进入第二个阶段P2，P2 Cell不能再用作Transaction输入。我们把所有的P1 Cells形成的集合称为P1 Cell Set（P1CS），P1CS中存储了CKB当前所有的共同知识；所有的P2 Cells形成的集合称为P2 Cell Set（P2CS），P2CS中存储了CKB所有的历史状态。
-
-CKB网络上的全节点只需要P1CS就可以验证Transaction，P2CS可以按照一定的策略清理。P2CS可以保存在存档节点（Archive Node）或者是分布式存储网络上。CKB轻节点只需要保存区块头，不需要存储P1CS和P2CS。
 
 ## Identity
 
@@ -162,8 +165,6 @@ CKB Cell模型和Transaction的设计使CKB对轻节点更友好。由于所有�
 Generator是生成程序，用来生成符合类型定义的新的Cells。Generator在发起交易的客户端本地执行，以用户的输入以及现有的Cells作为输入，生成包含新状态的Cells作为输出。Generator用到的输入，Cell解锁脚本，以及产生的输出构成Transaction（图5）。
 
 Validator和Generator可以使用相同的算法，也可以使用不同的算法（[Overview](#overview)）。Generator可以接受一个或者多个类型的Cells作为输入，可以产生一个或者多个类型的Cells作为输出。
-
-Validator和Generator是确定性的纯函数（Pure function），他们的计算完全依赖于输入，函数内部没有任何状态。
 
 通过定义Data Schema, Validator和Generator，我们可以在CKB中实现任意共同知识的验证和存储。例如，我们可以定义一个`AlpacaCoin`的新类型：
 
@@ -213,12 +214,6 @@ Generator = gen(context ctx, address to, uint amount, ...)
 
 ![Figure 6. Layered Structure](fig6.png)
 <div align="center">Figure 6. Layered Structure</div>
-
-## Distributed Application
-
-通过Cell, Type, Validator，Generator和Identity的组合，CKB实现了一个不同于智能合约的新的分布式应用范式。通过定义Generator和Validator，我们实现分布式应用的内部逻辑；通过发送定义Type的交易，我们将应用所需要的数据结构和验证逻辑部署到CKB中；通过Generator生成后续的交易，对Cells进行符合其类型规则的操作，我们更新应用的状态。Cell lock和Identity则为合约提供了一个强大的权限系统。
-
-CKB分布式应用的各部分彻底解耦，用户可以更加灵活的设计和组合CKB提供的元素，更好的满足不同场景的需求。
 
 ## Hybrid Consensus
 
@@ -328,8 +323,6 @@ CKB支持轻客户端。CKB使用可证数据结构组织区块头，可以极�
 比特币账本是一种共同知识，比特币网络是第一个基于区块链技术的共同知识库。比特币账本记录了从创世块之后的所有被包括开发者、矿工和使用者在内的比特币社区认可的用户转账交易。
 
 以太坊上的智能合约是另外一个共同知识的例子：以太坊支持图灵完备并且拥有状态的智能合约，能够实现各种业务规则。智能合约的使用者知道智能合约的执行逻辑，并且知道合约的其他参与者也知道这一点。
-
-现有区块链经济模型也更关心共识/计算成本，而没有考虑共同知识的存储成本（[经济模型](#economics)）。共同知识形成之后，可以无需成本的永久存在于区块链网络中。从这几点出发，我们希望能够设计一个具有更好的通用性和分层性，经济模型匹配的共同知识库。
 
 ### General Purpose Common Knowledge Base
 
