@@ -36,7 +36,7 @@ Module 模块会有几种不同类型的 Cell 参与，类型系统会作为 dat
 
 Module 模块 Cell 的 data 的第一个字节会作为类型 tag。之后字节作为该类型数据的 payload，是按照类型连续排放的类型属性二进制编码。
 
-![][image-1]
+![](rfc-module-assets/type.jpg "Type")
 
 因为类型不多，所以会挑选 ASCII 字母来作为 tag，下表是使用到类型和对应的 tag。每种类型的用途以及 data 编码方式会依次说明。
 
@@ -52,15 +52,15 @@ Module 模块 Cell 的 data 的第一个字节会作为类型 tag。之后字节
 
 Root 的作用是通过其 lock 来授权创建和修改系统预留模块。
 
-![][image-2]
+![](rfc-module-assets/root-cell.jpg "Root Cell")
 
-- `next_id`  大端序编码的 32 位无符号整数，表示下一个可用的系统模块 ID。 
+- `next_id`  大端序编码的 32 位无符号整数，表示下一个可用的系统模块 ID。
 
 #### A = Allocator
 
 Allocator 用于 Module 32位无符号整数的分配。
 
-![][image-3]
+![](rfc-module-assets/allocator-cell.jpg "Allocator Cell")
 
 - `next_id`  大端序编码的 32 位无符号整数，表示下一个可用的非系统模块 ID。
 
@@ -68,13 +68,13 @@ Allocator 用于 Module 32位无符号整数的分配。
 
 每个模块都有对应的一个 Module 类型的 Cell。Module Cell 的主要作用是通过创建 Token 影响到模块内的操作，比如行使管理员的职责。
 
-![][image-4]
+![](rfc-module-assets/module-cell.jpg "Module Cell")
 
 #### T = Token
 
 Token 类型是 Volatile Cell，一般由 Module Cell 授权创建，通过 Consume 操作参与到模块的操作组中。
 
-![][image-5]
+![](rfc-module-assets/token-cell.jpg "Token Cell")
 
 - `payload` Token 的 payload 可以是任意长度的二进制数据。
 
@@ -82,7 +82,7 @@ Token 类型是 Volatile Cell，一般由 Module Cell 授权创建，通过 Cons
 
 Checker Cell 存储模块的 Checker 函数。
 
-![][image-6]
+![](rfc-module-assets/checker-cell.jpg "Checker Cell")
 
 - `module_id` Checker 函数所属的模块 ID
 - `code` 任意二进制
@@ -95,7 +95,7 @@ Module 模块的 Checker 以白名单的方式允许下列的操作组，拒绝�
 
 系统模块是 ID 0 \~ 127 （暂定）的模块。通过 Root Cell 获得下一个可用模块 ID，更新 Root Cell 并创建 Module Cell 和 Checker Cell。
 
-![][image-7]
+![](rfc-module-assets/register-system-module.jpg "Register System Module")
 
 额外条件：
 
@@ -107,7 +107,7 @@ Root Cell 单例在创世块中创建，初始 `next_id` 根据创世块中已�
 
 和系统模块一致，只是用 Allocator Cell 替代。
 
-![][image-8]
+![](rfc-module-assets/register-normal-module.jpg "Register Normal Module")
 
 额外条件：
 
@@ -119,13 +119,13 @@ Allocator 同样在创世块中创建，初始 `next_id` 等于 128
 
 Checker 更新只允许更新 code 部分。
 
-![][image-9]
+![](rfc-module-assets/update-checker.jpg "Update Checker")
 
 #### 创建 Token
 
 Token 的创建需要 Module Cell 授权
 
-![][image-10]
+![](rfc-module-assets/emit-token.jpg "Emit Token")
 
 额外条件：
 
@@ -135,7 +135,7 @@ Token 的创建需要 Module Cell 授权
 
 Token 可以被销毁
 
-![][image-11]
+![](rfc-module-assets/destroy-token.jpg "Destroy Token")
 
 ### Lua Checker Code
 
@@ -192,15 +192,3 @@ Recipient 结构体的属性如下：
 最基础的系统模块在创世块中创建，除了 0 Module 模块，还有 1 Space 模块。
 
 Space 模块的 Checker 允许任何的操作组，可以用在扩容交易 (Enlarge Transaction) 中。
-
-[image-1]:	rfc-module-assets/type.jpg "Type"
-[image-2]:	rfc-module-assets/root-cell.jpg "Root Cell"
-[image-3]:	rfc-module-assets/allocator-cell.jpg "Allocator Cell"
-[image-4]:	rfc-module-assets/module-cell.jpg "Module Cell"
-[image-5]:	rfc-module-assets/token-cell.jpg "Token Cell"
-[image-6]:	rfc-module-assets/checker-cell.jpg "Checker Cell"
-[image-7]:	rfc-module-assets/register-system-module.jpg "Register System Module"
-[image-8]:	rfc-module-assets/register-normal-module.jpg "Register Normal Module"
-[image-9]:	rfc-module-assets/update-checker.jpg "Update Checker"
-[image-10]:	rfc-module-assets/emit-token.jpg "Emit Token"
-[image-11]:	rfc-module-assets/destroy-token.jpg "Destroy Token"
