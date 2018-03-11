@@ -11,13 +11,13 @@ This document provides an overview to the Common Knowledge Base (CKB), the core 
 
 ## Background
 
-As we see more blockchain use cases emergging, the current generation blockchain technologies are finding it difficult to meet real world application's demand on performance, (???), and the robustness of the economic and trust models.
+As we see more blockchain use cases emerging, the current generation blockchain technologies are finding it difficult to meet real world application's demand on performance, (???), and robustness of the economic and trust models.
 
 Bitcoin is the first blockchain network in the world, designed as a peer to peer cash ledger. Bitcoin's ledger is the system state maintained by the Bitcoin network. The minimum storage unit on the ledger is UTXO. Users can use wallets to spend current UTXOs, generate new UTXOs, package them into transactions to send to the Bitcoin network for validation and consensus. The UTXOs records the cash amount and ownership expressed with lock scripts. Users have to provide proper unlocking data to spend UTXOs. Due to the data structure and Bitcoin script's limitations, it's difficult to use the Bitcoin ledger to record other types of assets and data. Solutions like Colored Coins, Meta Coins or Bitcoin hard forks are possible, but expensive and inflexible in implementation.
 
 Ethereum brought us a general purpose computation blockchain platform with the introduction of smart contracts. The Ethereum ledger is the system state maintained by the Ethereum network. Ethereum's ledger consists of the global states of all accounts. Smart contracts are the type of accounts that have code stored inside, together with a 256 bit K/V store. Users can start two types (???) of transactions on Ethereum: the first type is to create a contract and deploy on the blockchain the user programmed application logic; the second type is to send the input data provided by the user to a specific contract account. This executes the code stored on the contract and updates contract state. Ethereum's smart contracts provide more computation power and flexibility, and solve some of Bitcoin's problems. But it still has limitations:
 
-* Difficult to scale: Ethereum's design focuses on the events of the state machine (see figure 1). Ethereum allows a turing complete scripting language. Ethereum transactions store the inputs of state transitions, instead of the states themselves. For those two reasons, it's difficult for full nodes to tell dependencies between transactions, therefore difficult to process transactions in parallel. Also, because the transactions don't include states, this causes data availability issues in sharding solutions.
+* Difficult to scale: Ethereum's design focuses on the events of the state machine (see figure 1). Ethereum allows a Turing complete scripting language. Ethereum transactions store the inputs of state transitions, instead of the states themselves. For those two reasons, it's difficult for full nodes to tell dependencies between transactions, therefore difficult to process transactions in parallel. Also, because the transactions don't include states, this causes data availability issues in sharding solutions.
 
 * Uncertain states: in Ethereum, the states of the contracts are updated by the contract code, and contract code execution depends on execution context (such as the current block height). Therefore users won't know the exact execution result when they start the transactions.
 
@@ -40,7 +40,7 @@ Nervos CKB (CKB for short) is a general purpose common knowledge base built with
 
 This design not only makes CKB suitable for strictly defined and independently verifiable common knowledge (such as the result of value transfers in token systems), but also suitable for real business scenarios based on trust.
 
-The current state of CKB is the set of all common knowledge that it stores. The CKB design of data flow and economic incentives is based on states - states are generated on the client side, validated by the consensus algorithm, and stored on the distributed network, forming common knowledge. CKB uses Lambda Calculas as the computation model, and the generic Cell data model. It supports virtual machines. Users can define their own data types and their generation and validation algorithms.
+The current state of CKB is the set of all common knowledge that it stores. The CKB design of data flow and economic incentives is based on states - states are generated on the client side, validated by the consensus algorithm, and stored on the distributed network, forming common knowledge. CKB uses Lambda Calculus as the computation model, and the generic Cell data model. It supports virtual machines. Users can define their own data types and their generation and validation algorithms.
 
 Table 1 compares Bitcoin, Ethereum and Nervos CKB as common knowledge bases:
 
@@ -62,8 +62,8 @@ In the CKB, the state generation and validation are separate. They can use the s
 
 For general business scenarios, currently there are no generic ways to get simplified and efficient validation algorithms from the generation algorithm. In this case we can use the same algorithm state generation and validation: the client side uses the algorithm to generate new states, then nodes run the same algorithm using the transaction's inputs and compare the output states with the new states in the transaction. If the states match, then the validation passes. When the same algorithm is used, state generation and validation have the same computation complexity, but running in different environments. The advantages of separating generation and validation are:
 
-* Certainty of transactions: Certainty of transactions is one of the core pursuits of distributed systems. Certainty in transaction latency (see [Hybrid Consensus](#hybrid-consensus)) has seen a lot of attention, but certainty in transaction output hasn't see much discussions. If new states are generated on the nodes, the users that started the transaction won't be able to be certain about the exeucation context of the transaction, and the transaction could generate unexpected outputs. In CKB, the users generate new states on the client side. They can confirm with the new states before propagating it to the network. The users can be certain with the the outcome of the transaction: whether the transaction passes validations and gets accepted by the network, or the validation process fails and there won't be state changes. (see diagram 2)
-* Parallism: If new states are generated on the nodes, they won't know the state dependencies of transactions before they are processed. This makes it difficult for the nodes to know which transactions are independent and can be executed in parallel, and which transactions have dependency relationships and have to be executed serially. In CKB, transactions need to declare their dependent states in the inputs, so the nodes can see dependency relationships between transactions (see [Transaction](#transaction)). Independent transactions can be processed in parallel in many ways, such as on different CPUs or sent to different shards. Parallelism can help us improve scalability of blockchain systems.
+* Certainty of transactions: Certainty of transactions is one of the core pursuits of distributed systems. Certainty in transaction latency (see [Hybrid Consensus](#hybrid-consensus)) has seen a lot of attention, but certainty in transaction output hasn't see much discussions. If new states are generated on the nodes, the users that started the transaction won't be able to be certain about the execution context of the transaction, and the transaction could generate unexpected outputs. In CKB, the users generate new states on the client side. They can confirm with the new states before propagating it to the network. The users can be certain with the the outcome of the transaction: whether the transaction passes validations and gets accepted by the network, or the validation process fails and there won't be state changes. (see diagram 2)
+* Parallelism: If new states are generated on the nodes, they won't know the state dependencies of transactions before they are processed. This makes it difficult for the nodes to know which transactions are independent and can be executed in parallel, and which transactions have dependency relationships and have to be executed serially. In CKB, transactions need to declare their dependent states in the inputs, so the nodes can see dependency relationships between transactions (see [Transaction](#transaction)). Independent transactions can be processed in parallel in many ways, such as on different CPUs or sent to different shards. Parallelism can help us improve scalability of blockchain systems.
 * Distributed computation: the system's efficiency improves when we utilize computation resources on the clients and lower the the computation load on the nodes.
 * More flexible client side implementation and easier to integrate with client side platforms: even when the algorithms are the same, generation and validation can be implemented differently. The client side has the flexibility to choose the programming language for better performance, or integrate the generation logic into their own runtimes to give better user experience.
 
@@ -71,12 +71,12 @@ In many specific scenarios, we can find validation algorithms much more efficien
 
 The throughput of validating nodes can be greatly improved with asymmetric generation and validation algorithms. With the advancement of cryptography, we may find methods to design generic asymmetric algorithms, such as general purpose zkSNARKs. CKB's architecture will be able to provide proper support when it happens.
 
-Moving state transition details to the client side also helps with protection and privacy of the algorithms themsevles.
+Moving state transition details to the client side also helps with protection and privacy of the algorithms themselves.
 
 ![Figure 2. Non-deterministic vs. Deterministic State Generation](fig2.png)
 > Figure 2. Non-deterministic vs. Deterministic State Generation
 
-We're going to provide an overview of the Cell data model in CKB, with the goal to better explain the functionality of the CKB itself. In the actual implementation of the CKB, we need to consider other factors including incentives and executation efficiency, and the data structure will be more complicated. We'll describe more details in other documents.
+We're going to provide an overview of the Cell data model in CKB, with the goal to better explain the functionality of the CKB itself. In the actual implementation of the CKB, we need to consider other factors including incentives and execution efficiency, and the data structure will be more complicated. We'll describe more details in other documents.
 
 ## Cell
 
@@ -90,9 +90,9 @@ CKB uses the more abstract Cells to store common knowledge. Cells are the smalle
 * owner_lock: script to represent ownership of the cell. Owners of cells can transfer cells to others.
 * data_lock: script to represent the user with right to use the cell. Cell users can update the data in the cell.
 
-Cell's lock scripts are executed on CKB's VM. When updating data or transfering ownerships, users need to provide necessary proof as the inputs of the lock scripts. User authorization can be proved if the lock scripts return true, and the user is allowed to perform operations with the cell.
+Cell's lock scripts are executed on CKB's VM. When updating data or transferring ownerships, users need to provide necessary proof as the inputs of the lock scripts. User authorization can be proved if the lock scripts return true, and the user is allowed to perform operations with the cell.
 
-The lock scripts represent authorizations of the cells. The scripts can represent a single user, as well as a multisig or more complicated schemes. Cells have good privacy support. Users can manage their cells with pseudonomy using different lock scripts. Cell's owners and rightful users can be the same or different users, which means users don't have to own cells to interact with the CKB. This lowers the barrier of entry of the system and encourages adoption.
+The lock scripts represent authorizations of the cells. The scripts can represent a single user, as well as a multisig or more complicated schemes. Cells have good privacy support. Users can manage their cells with pseudonym using different lock scripts. Cell's owners and rightful users can be the same or different users, which means users don't have to own cells to interact with the CKB. This lowers the barrier of entry of the system and encourages adoption.
 
 ### Type
 
@@ -147,7 +147,7 @@ The design of CKB Cell model and transactions is friendly to light clients. Sinc
 
 ## Generator
 
-Generators are programs to create new Cells for given type definitions. Generators run on the client that starts a transaction. It uses user inputs and existing Cells as inputs, and create new Cells with new states. Transactions are comprised of the inputs and the ouputs of generators, and the Cell unlock scripts. (see Figure 5)
+Generators are programs to create new Cells for given type definitions. Generators run on the client that starts a transaction. It uses user inputs and existing Cells as inputs, and create new Cells with new states. Transactions are comprised of the inputs and the outputs of generators, and the Cell unlock scripts. (see Figure 5)
 
 Validator and Generator and use the same algorithms or different algorithms ([Overview](#overview)). Generator can take one of more types of Cells as inputs, and can generate one of more types of Cells as outputs.
 
@@ -214,7 +214,7 @@ The components of CKB distributed applications are decoupled and orthogonal. Use
 
 Consensus algorithms aim to optimize correctness and performance in an distributed environment with network delay and faults on nodes. Correctness includes consistency (identical copy of data on each node) and availability (how fast the system responds to user's requests). Performance includes transaction latency (the time between the client submits the request and receives confirmation of the execution result) and transaction throughput (number of transactions the system is capable of process per second).
 
-Public blockchains run in open, distributed networks where nodes can join and exit freely, and there's no certainty on when they're online. Those are difficult problems for tranditional BFT consensus algorithms to solve. Public blockchain consensus algorithms use economic incentives and probability to solve these problems, therefore needing openness and and fairness to guarantee correctness. Openness allows nodes to join and exit the network freely, and fairness ensures nodes get fair returns for their effort to keep the network safe. Public blockchain consensus algorithms also need to consider operational cost as part of their performance matrics.
+Public blockchains run in open, distributed networks where nodes can join and exit freely, and there's no certainty on when they're online. Those are difficult problems for traditional BFT consensus algorithms to solve. Public blockchain consensus algorithms use economic incentives and probability to solve these problems, therefore needing openness and and fairness to guarantee correctness. Openness allows nodes to join and exit the network freely, and fairness ensures nodes get fair returns for their effort to keep the network safe. Public blockchain consensus algorithms also need to consider operational cost as part of their performance metrics.
 
 The Nakamoto Consensus, with Bitcoin's Proof of Work as an example, has excellent openness and availability. Nodes in the Bitcoin network can join and exit freely, and the network performance remains constant with the number of nodes increasing. However the Nakamoto Consensus has low throughput. The Bitcoin network's 7 transactions / second throughput can't handle the demands of typical business scenarios. Even with side channel technologies (like the lightening network) where most of the transactions can happen off chain, the opening and closing of channels are still constraint by the throughput of the main chain. The safety of side channels can be compromised when the main chain is crowded. The Nakamoto Consensus votes with blocks, and it takes longer (up to 10 minutes to an hour) to confirm transactions, leading to bad user experience. When there's a network partition, the Bitcoin network can continue to function, but can't guarantee whether the transactions will be confirmed, therefore won't be suitable for business scenarios requiring high degree of finality. 
 
@@ -222,7 +222,7 @@ After 30 years of research, the Byzantine Fault Tolerance consensus algorithms c
 
 Through our own experience and research, we've come to realize that the traditional BFT algorithms functions well with simple logic in normal situations, but need complicated logic to deal with fault situations; Nakamoto Consensus algorithm functions with the same logic under either normal or fault situations, at the expense of happy path system performance. If we could combine the Nakamoto Consensus and traditional BFT consensus algorithms, the new hybrid Consensus algorithm can give the best balance in consistency, availability, fairness and operational cost [3][4].
 
-We will design and implement our own hybrid consensus algorithm to provide validation for transactions. By combining the Nakamoto Consensus and the traditional BFT consensus, we can retain the system's openness and availability, andtake advantage of the excellent of performance of traditional BFT consensus algorithms under normal conditions. This minimizes transaction latency and greatly improves throughput of the system.
+We will design and implement our own hybrid consensus algorithm to provide validation for transactions. By combining the Nakamoto Consensus and the traditional BFT consensus, we can retain the system's openness and availability, and take advantage of the excellent of performance of traditional BFT consensus algorithms under normal conditions. This minimizes transaction latency and greatly improves throughput of the system.
 
 The hybrid algorithm uses Cell Capacity as the token of participation. Nodes that wish to participate in the consensus process need to bond Cell Capacity as deposit. The system uses the bond Cell Capacity to calculate the weights of votes and block reward distribution. If byzantine behaviors are observed on consensus nodes, other nodes can submit proof to the blockchain, and the system will confiscate the deposit of the byzantine node. The deposit mechanism increases the cost of byzantine behaviors and increase the safety of the consensus algorithm.
 
@@ -236,7 +236,7 @@ CKB's economic model aims to motivate users, developers and node operators to wo
 
 The creation and storage of states on the CKB incur cost. The creation of state needs to be validated by full nodes, which takes computation resources; the storage of state needs full nodes to keep providing storage space. The current public blockchains only charge one time transaction fees, and allow the data from the transactions to be saved forever on the nodes, occupying storage space.
 
-In the CKB, Cells are the storage units for states. Unoccupied Cells are liquid and their ownerships can be transfered. Occupied Cells aren't liquid and their ownerships can't be changed. Therefore, Cell users pay for the cost of their state storage with Cell liquidity. The longer they use the Cells, the higher liquidity cost they pay. The advantage of paying with liquidity, instead of pre-payment, is that it avoids the problem that the system would have to recycle the Cells if their pre-payments were exhausted.
+In the CKB, Cells are the storage units for states. Unoccupied Cells are liquid and their ownerships can be transferred. Occupied Cells aren't liquid and their ownerships can't be changed. Therefore, Cell users pay for the cost of their state storage with Cell liquidity. The longer they use the Cells, the higher liquidity cost they pay. The advantage of paying with liquidity, instead of pre-payment, is that it avoids the problem that the system would have to recycle the Cells if their pre-payments were exhausted.
 
 The price of Cell Capacity is the direct measurement of the common knowledge stored in the CKB. Note that Cells could have different owners and users, and owners can pay the liquidity cost on behalf of users. Transaction fees are needed to update the data in Cells or transfer ownership of Cells. Nodes can set the transaction fee levels that they're willing to accept. Transaction fees are determined by the market. Owners can also pay for transition fees for the users.
 
@@ -258,7 +258,7 @@ Therefore, CKB has built-in mechanisms for liquid voting and hot deployment, mak
 
 The voting mechanism is important for the long term stability of the Nervos system. CKB's operation needs a set of system parameters. For example, CKB relies on a set of system parameters to function. While some of the parameters can be adjusted automatically, others may need voting. Fixing bugs or deploying new features may need voting.
 
-CKB support liquid voting [5] (See figure 7). Every Cell owner, weighted by their Cell Capacity, can be part of the decisions that determine CKB's development. In liquid voting, users can set their own delegates. Delegates can also set their own delegates. Taking into account technicality and incentives, proposals can have different acceptance criteria, such as partipation rates and support ratios.
+CKB support liquid voting [5] (See figure 7). Every Cell owner, weighted by their Cell Capacity, can be part of the decisions that determine CKB's development. In liquid voting, users can set their own delegates. Delegates can also set their own delegates. Taking into account technicality and incentives, proposals can have different acceptance criteria, such as participation rates and support ratios.
 
 Note that CKB's liquid voting is the tool to express community consensus, not to form consensus. Before the votes, the community should use various communication channels to study the proposals in detail and form rough consensus.
 
@@ -271,7 +271,7 @@ Please see the Nervos Governance Paper for the details of the liquid voting mech
 
 Benefiting from the Cell data model's abstraction power, we can implement and store CKB's function modules in Cells. We call this type of Cells the Neuron. The users of the Neuron Cells are the CKB itself.
 
-When system upgrade proposals are implemented as Neurons, the community vote on if they should be deployed with the liquid voting mechanism. After obtaining consensus from the community, new Neurons will be deployed to provide new features or fix bugs. Fine grained Neuron upgrads significantly lower the barrier of evolution for the CKB.
+When system upgrade proposals are implemented as Neurons, the community vote on if they should be deployed with the liquid voting mechanism. After obtaining consensus from the community, new Neurons will be deployed to provide new features or fix bugs. Fine grained Neuron upgrades significantly lower the barrier of evolution for the CKB.
 
 ## Light Client
 
@@ -279,11 +279,11 @@ The blockchain architecture where nodes are equal peers is currently facing seri
 
 Mobile devices are becoming the main way people access the Internet. Native applications are also becoming more popular. Mobile friendliness is one of the design principles of the CKB. Nervos applications should be able to run smoothly on mobile devices and integrate with mobile platforms.
 
-CKB supports light clients. CKB uses verifiable data structure for the block headers, which substantially accelerates the synchronization of light clients. Benefiting from CKB's state centric design, light clients can obtain latest states (P1CS) without having to repeat the computation. Light clients can also only subscribe to a small subset of P1 Cells that they care about, minimizing local storage and bandwith requirements. Nervos' light clients can provide excellent local user experience, allowing CKB queries, messaging and other functionality, allowing mobile applications benefiting from the blockchain technologies.
+CKB supports light clients. CKB uses verifiable data structure for the block headers, which substantially accelerates the synchronization of light clients. Benefiting from CKB's state centric design, light clients can obtain latest states (P1CS) without having to repeat the computation. Light clients can also only subscribe to a small subset of P1 Cells that they care about, minimizing local storage and bandwidth requirements. Nervos' light clients can provide excellent local user experience, allowing CKB queries, messaging and other functionality, allowing mobile applications benefiting from the blockchain technologies.
 
 ## Summary of Benefits
 
-We believe Nervos CKB provides an exciting alternative to the current general purpose computing platform blockchains. Wesummarize here its benefits over the current leading platforms in scalability, available and multi-paradigm support.
+We believe Nervos CKB provides an exciting alternative to the current general purpose computing platform blockchains. We summarize here its benefits over the current leading platforms in scalability, available and multi-paradigm support.
 
 ### Scalability
 
@@ -299,23 +299,23 @@ Nervos CKB's design provides significant advantages on scalability, compared to 
   - State generation can move to state channels or application chains and only settle on the main chain, providing a application semantics based scaling path.
 
 - Data:
-  - Nervos CKB's design to move P2CS to Achive nodes and leave only P1CS on full nodes, allowing storage needs to scale with the size of current states, instead of all historical states
+  - Nervos CKB's design to move P2CS to achive nodes and leave only P1CS on full nodes, allowing storage needs to scale with the size of current states, instead of all historical states
   - The economic model provides a marketplace solution to recycle low value Cells to make available for higher value applications.
   - Easier to use sharding as a solution to scale on-chain data with explicit dependency requirement.
 
 ### Latency and Availability
 
   - CKB's states are stored locally on the clients. This makes the data highly available to local applications with minimal latency.
-  - Low latency and highly available local data allows "offline first DApps". In this scenario, applications can compute new states, validate them and generate transactions all locally. Then as soon as the transaction is created, the application can move to the next task, without having to wait for the transaction to be included in a block, providing a much more pleasant user experience. The actual synchronization can happen later on the bakcground, or when there's stable network connection.
+  - Low latency and highly available local data allows "offline first DApps". In this scenario, applications can compute new states, validate them and generate transactions all locally. Then as soon as the transaction is created, the application can move to the next task, without having to wait for the transaction to be included in a block, providing a much more pleasant user experience. The actual synchronization can happen later on the background, or when there's stable network connection.
 
 ### Multi-paradigm
 
-CKB's Cells, Types and transactions together provide the foundation for a versatile decentrailzed state machine. The Generators and Validators can be used to express any businss rules. Identities can be used to bring in trust and bridge to real world applications. Together, they're a powerful combination of components that can be used to build different types of applications. For example:
+CKB's Cells, Types and transactions together provide the foundation for a versatile decentralized state machine. The Generators and Validators can be used to express any business rules. Identities can be used to bring in trust and bridge to real world applications. Together, they're a powerful combination of components that can be used to build different types of applications. For example:
 
 - Digit assets and ledgers: put account or UTXO data in Cells, and provide a strict Validator to govern value transfer rules.
 - Ethereum like smart contracts: define a "smart contract" Type, then create a transaction with contract code as validation code. On the client side, run symmetric generation function to generate new states.
 - Trust base transactions: Identities can define who they're willing to trust, then application can interpret that trust relationship to facilitate transactions.
-- Cross chain asset transfer: application chains generate digital assets backed by assets on other chains. The backed assets can then participate in transactions, or transfer to the main chain to gain more security. The assets can then be transfered to other chains or back to their original chain. Users who participate in the transaction need to express trust in the Identity of the operator of the bridge service.
+- Cross chain asset transfer: application chains generate digital assets backed by assets on other chains. The backed assets can then participate in transactions, or transfer to the main chain to gain more security. The assets can then be transferred to other chains or back to their original chain. Users who participate in the transaction need to express trust in the Identity of the operator of the bridge service.
 
 ## References
 
@@ -343,7 +343,7 @@ Declarative State Transition
 
 ?? The blockchain may be an answer. With the blockchain, algorithms and machines replace humans to automate the formation and dissipation of common knowledge. We believe blockchains can be seen as a new type of technology as the "Common Knowledge Base". The formation and dissipation of common knowledge is the core value of blockchains, and is also the reason there can be tokens and cryptoeconomics.
 
-Nervos CKB is conceived based on this recognition: a new blockchain design, a **general purpose common knowledge base**. We hope Nervos CKB can solve problems in performance, privacy and usability that we see in the current generation of blockchains, to become the common konwledge base of 7.6 billion people.
+Nervos CKB is conceived based on this recognition: a new blockchain design, a **general purpose common knowledge base**. We hope Nervos CKB can solve problems in performance, privacy and usability that we see in the current generation of blockchains, to become the common knowledge base of 7.6 billion people.
 
 ## Common Knowledge Base
 
@@ -353,9 +353,9 @@ Common Knowledge is knowledge that's accepted by everyone in a community. Partic
 
 The first type of common knowledge can be independently verified with abstract algorithms. For example, the assertion that "11897 is a prime number" can be independently verified with a primality test algorithm. In this context, the statement can become a piece of common knowledge, regardless whether the person who makes the assertion can be trusted.
 
-The second type of common knowledge relies on a delegated verification process, typically to a trusted authority. For example, science discoveries require impirical evidence, in the forms of peer review and result reproducibility, to be accepted as common knowledge of the science community.The general public doesn't have the ability on their own to verify the evidence, but delegates their trust to the science community.
+The second type of common knowledge relies on a delegated verification process, typically to a trusted authority. For example, science discoveries require empirical evidence, in the forms of peer review and result reproducibility, to be accepted as common knowledge of the science community.The general public doesn't have the ability on their own to verify the evidence, but delegates their trust to the science community.
 
-The third type of common knowledge requires a trusted party, and it's pervasive in business transactions. For a piece of data to become common knowledge to faciliate transactions, the participants of transactions have to all trust the party that backs the data. For example, in a centralized exchange, transactions imply trust on the exchange, thereby the accuracy of its data feed and the fairness of its match making algorithm. In the credit card point of sale context, the consumer and the business can complete a transaction based on their mutual trust on the financial intermediaries such as banks and credit card companies.
+The third type of common knowledge requires a trusted party, and it's pervasive in business transactions. For a piece of data to become common knowledge to facilitate transactions, the participants of transactions have to all trust the party that backs the data. For example, in a centralized exchange, transactions imply trust on the exchange, thereby the accuracy of its data feed and the fairness of its match making algorithm. In the credit card point of sale context, the consumer and the business can complete a transaction based on their mutual trust on the financial intermediaries such as banks and credit card companies.
 
 
 ### Blockchains are Common Knowledge Bases
@@ -372,5 +372,4 @@ A general purpose common knowledge base that's suitable for generation and stora
 * Data model that's generic enough, with enough abstraction power that users can use to express the business domain
 * The validation engine of common knowledge that's generic enough with enough abstraction power that users can use to express data validation rules.
 
-If distributed ledgers are the "settlement layer" of digital assets, general purpose common knowledge bases are the "settlement layer" of all types of common knowledge. The goal of Nervos CKB is to become the common state layer of the entire Nervos Network as a general purpose common knowledge base. It provides the state foundation of upper layer applications, to faciliate transactions.
-
+If distributed ledgers are the "settlement layer" of digital assets, general purpose common knowledge bases are the "settlement layer" of all types of common knowledge. The goal of Nervos CKB is to become the common state layer of the entire Nervos Network as a general purpose common knowledge base. It provides the state foundation of upper layer applications, to facilitate transactions.
