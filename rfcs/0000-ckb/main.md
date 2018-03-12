@@ -291,7 +291,7 @@ Mobile devices are becoming the main way people access the Internet. Native appl
 
 CKB supports light clients. CKB uses verifiable data structure for block headers that substantially accelerates light clients synchronization. Benefiting from CKB's state centric design, light clients can obtain the latest states (P1CS) without having to repeat the computation. Light clients can also only subscribe to a small subset of P1 cells that they care about, minimizing local storage and bandwidth requirements. Nervos' light clients can provide excellent local user experience, allowing CKB queries (??), messaging (??) and other functionality, allowing mobile applications to benefit from the blockchain technologies.
 
-## Summary of Benefits
+## Summary of Advantages
 
 We believe Nervos CKB provides an exciting alternative to the current general purpose computing platform blockchains. In particular, we'd like to summarize its advantages in scalability, availability and multi-paradigm support over the current leading platforms.
 
