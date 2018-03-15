@@ -172,19 +172,19 @@ Consume 操作的输出 Cell 的 lock, capacity 必须和输入 Cell 相同。�
 
 ### 组模块检查
 
-Module 本身也是一个 Module，它是系统在创世块引导时就创建的系统 Module。通过该 Module 中的 Cell 能够找到每个 Module 对应的 Checker 函数定义。
+Module 本身也是一个 Module，它是系统在创世块引导时就创建的系统 Module。通过该 Module 中的 Cell 能够找到每个 Module 对应的 Validator 函数定义。
 
-Checker 函数接收参数是 Cell 操作列表，可以访问所有操作的输入，输出，以及输入的一些原信息，比如：
+Validator 函数接收参数是 Cell 操作列表，可以访问所有操作的输入，输出，以及输入的一些原信息，比如：
 
 - 输入 Cell 所在区块的高度，时间等。
 
-Checker 的返回结果是布尔值。
+Validator 的返回结果是布尔值。
 
-交易中的所有组都必须使用组所在模块对应的 Checker 进行检查，输入就是组所包含的 Cell 操作，Checker 返回 true 说明组通过了模块检查。
+交易中的所有组都必须使用组所在模块对应的 Validator 进行检查，输入就是组所包含的 Cell 操作，Validator 返回 true 说明组通过了模块检查。
 
 因为 Consume 操作只允许清空 data，并且是通过其所在模块检查才创建出来的，所以可以参与到其它模块组中。
 
-先规定所有模块的 Checker 永远返回 true，会有专门 Module RFC 进行详细讨论。
+先规定所有模块的 Validator 永远返回 true，会有专门 Module RFC 进行详细讨论。
 
 创世块所有交易都跳过组模块检查，以完成系统引导。
 
