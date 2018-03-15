@@ -8,25 +8,25 @@ Start Date: 2018-03-07
 
 ## 简介
 
-在 RFC Cell 中每个 Cell 都属于一个模块，而在交易中操作被分成组，每个组也唯一属于某个模块，并且由模块的 Checker 函数来检查操作组是否是被允许的。
+在 RFC Cell 中每个 Cell 都属于一个模块，而在交易中操作被分成组，每个组也唯一属于某个模块，并且由模块的 Validator 函数来检查操作组是否是被允许的。
 
 模块本身的创建，修改都是在 Module 这个系统模块中进行的，也就是说模块自己也是一个模块。Module 模块是在创世块中初始化创建的。
 
-本 RFC 定义了如何通过 Cell 注册模块，定义和修改 Checker，以及一种 Checker 的实现方案。
+本 RFC 定义了如何通过 Cell 注册模块，定义和修改 Validator，以及一种 Validator 的实现方案。
 
-## Checker
+## Validator
 
-Checker 是一个函数，接收 Cell 操作列表，如果这个操作列表构成的组是允许的就返回 true，否则返回 false。
+Validator 是一个函数，接收 Cell 操作列表，如果这个操作列表构成的组是允许的就返回 true，否则返回 false。
 
-在生成 Block 时，所有交易中的所有组都必须通过 Checker 的验证。
+在生成 Block 时，所有交易中的所有组都必须通过 Validator 的验证。
 
-Checker 函数本身也是存放在某个 Cell 的 data 中的，为了能正确允许，节点必须对 Checker 的 data 格式有共识。
+Validator 函数本身也是存放在某个 Cell 的 data 中的，为了能正确允许，节点必须对 Validator 的 data 格式有共识。
 
 未来 Cell 的 data 如何解释需要有一套 data schema 系统，本 RFC 先制定一些简单的 data schema 用于 PoC 版本的 CKB。
 
 ## Module 模块
 
-本章会定义 Module 模块中会有什么样的 Cell，如何通过 Module 模块查询模块 Checker 函数，以及如何执行 Checker 函数。
+本章会定义 Module 模块中会有什么样的 Cell，如何通过 Module 模块查询模块 Validator 函数，以及如何执行 Validator 函数。
 
 Module 模块分配的模块 ID 为 0。
 
@@ -46,7 +46,7 @@ Module 模块 Cell 的 data 的第一个字节会作为类型 tag。之后字节
 | Allocator | A   |
 | Module    | M   |
 | Token | T |
-| Checker   | C   |
+| Validator   | V   |
 
 #### R = Root
 
@@ -78,22 +78,22 @@ Token 类型是 Volatile Cell，一般由 Module Cell 授权创建，通过 Cons
 
 - `payload` Token 的 payload 可以是任意长度的二进制数据。
 
-#### C = Checker
+#### V = Validator
 
-Checker Cell 存储模块的 Checker 函数。
+Validator Cell 存储模块的 Validator 函数。
 
-![](rfc-module-assets/checker-cell.jpg "Checker Cell")
+![](rfc-module-assets/Validator-cell.jpg "Validator Cell")
 
-- `module_id` Checker 函数所属的模块 ID
+- `module_id` Validator 函数所属的模块 ID
 - `code` 任意二进制
 
-### Module Checker
+### Module Validator
 
-Module 模块的 Checker 以白名单的方式允许下列的操作组，拒绝所有不在白名单中的操作组。
+Module 模块的 Validator 以白名单的方式允许下列的操作组，拒绝所有不在白名单中的操作组。
 
 #### 系统模块注册
 
-系统模块是 ID 0 \~ 127 （暂定）的模块。通过 Root Cell 获得下一个可用模块 ID，更新 Root Cell 并创建 Module Cell 和 Checker Cell。
+系统模块是 ID 0 \~ 127 （暂定）的模块。通过 Root Cell 获得下一个可用模块 ID，更新 Root Cell 并创建 Module Cell 和 Validator Cell。
 
 ![](rfc-module-assets/register-system-module.jpg "Register System Module")
 
@@ -115,11 +115,11 @@ Root Cell 单例在创世块中创建，初始 `next_id` 根据创世块中已�
 
 Allocator 同样在创世块中创建，初始 `next_id` 等于 128
 
-#### Checker 更新
+#### Validator 更新
 
-Checker 更新只允许更新 code 部分。
+Validator 更新只允许更新 code 部分。
 
-![](rfc-module-assets/update-checker.jpg "Update Checker")
+![](rfc-module-assets/update-Validator.jpg "Update Validator")
 
 #### 创建 Token
 
@@ -137,11 +137,11 @@ Token 可以被销毁
 
 ![](rfc-module-assets/destroy-token.jpg "Destroy Token")
 
-### Lua Checker Code
+### Lua Validator Code
 
-Checker 是函数，节点需要运行需要将数据解释成指令然后在允许。在本 RFC 中，使用 Lua VM 来执行函数，Checker Cell 中 code 存储的 UTF-8 编码的 Lua 代码。
+Validator 是函数，节点需要运行需要将数据解释成指令然后在允许。在本 RFC 中，使用 Lua VM 来执行函数，Validator Cell 中 code 存储的 UTF-8 编码的 Lua 代码。
 
-Code 存储的 Lua 代码需要返回一个 Lua 函数，该函数接受操作列表，并返回布尔值。比如下面的代码是允许任何操作组的 Checker code
+Code 存储的 Lua 代码需要返回一个 Lua 函数，该函数接受操作列表，并返回布尔值。比如下面的代码是允许任何操作组的 Validator code
 
 ``` lua
 return function()
@@ -191,4 +191,24 @@ Recipient 结构体的属性如下：
 
 最基础的系统模块在创世块中创建，除了 0 Module 模块，还有 1 Space 模块。
 
-Space 模块的 Checker 允许任何的操作组，可以用在扩容交易 (Enlarge Transaction) 中。
+Space 模块的 Validator 允许任何的操作组，可以用在扩容交易 (Enlarge Transaction) 中。
+
+## 示例模块
+
+下面是一些常见需求的模块实现示例。所有参与的 Cell 的 data schema 会用 Lua table 来描述，其中字符串是对应的键的数据类型，Table 可以嵌套。比如 Schema
+
+```lua
+
+```
+
+### Banking
+
+Banking 是中心化的代币发行。代币的增发需要中心授权，销毁需要用户和中心同时授权，用户之间可以自由转账。
+
+### Voting
+
+Voting 是用户使用 Capacity 进行投票，在结果出来之前，用户的 Capacity 被锁定，当投票结束，同时生成投票结果，被释放用户被锁定的空间。
+
+### Crowdfunding
+
+Crowdfunding 是众筹 Capacity 的应用，发起人可以设定目标，当达到目标，发起人可以获得所有 Cell，如果没有达到目标，众筹取消。
