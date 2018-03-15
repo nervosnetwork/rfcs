@@ -104,7 +104,7 @@ Cell是CKB中的最小数据单元，可以存放任意的数据。Cell包含以
 
 * type: Cell的数据类型。
 * capacity: Cell容量，可存放数据的最大字节数。
-* data: Cell实际存储的二进制数据，可以为空。data占用的字节数总是小于等于capacity。
+* data: Cell实际存储的二进制数据，可以为空。包含data在内，cell占用的字节数总是小于等于capacity。
 * owner_lock: 通过脚本表示的Cell所有者。Cell所有者可以转让Cell。
 * data_lock: 通过脚本表示的Cell使用者。Cell使用者可以更新data。
 
@@ -171,9 +171,9 @@ CKB Cell模型和Transaction的设计使CKB对轻节点更友好。由于所有�
 
 ## Generator
 
-Generator是生成程序，用来生成符合类型定义的新的Cells。Generator在发起交易的客户端本地执行，以用户的输入以及现有的Cells作为输入，生成包含新状态的Cells作为输出。Generator用到的输入，Cell解锁脚本，以及产生的输出构成Transaction（图5）。
+Generator是生成程序，用来生成符合类型定义的新的Cells。Generator在发起交易的客户端本地执行，以用户的输入以及现有的Cells作为输入，生成包含新状态的Cells作为输出。Generator用到的输入以及产生的输出共同构成一个Transaction（图5）。
 
-Validator和Generator可以使用相同的算法，也可以使用不同的算法（[Overview](#overview)）。Generator可以接受一个或者多个类型的Cells作为输入，可以产生一个或者多个类型的Cells作为输出。
+Validator和Generator可以使用相同的算法，也可以使用不同的算法（[Overview](#overview)）。Generator可以接受一个或者多个相同或者不同类型的Cell引用作为输入，可以产生一个或者多个相同或者不同类型的新Cells作为输出。
 
 通过定义Data Schema, Validator和Generator，我们可以在CKB中实现任意共同知识的验证和存储。例如，我们可以定义一个`AlpacaCoin`的新类型：
 

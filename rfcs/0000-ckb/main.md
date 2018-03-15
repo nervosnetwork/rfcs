@@ -105,7 +105,7 @@ Cells are the smallest storage units of CKB, users can put arbitrary data in it.
 
 * type: type of the cell (see [Type](#type))
 * capacity: capacity of the cell. The byte limit of data that can be stored in the cell.
-* data: the actual binary data stored in the cell. This could be empty. The bytes of data stored should always be less than or equal to the cell's capacity.
+* data: the actual binary data stored in the cell. This could be empty. Total bytes used by cell, including data, should always be less than or equal to the cell's capacity.
 * owner_lock: lock script to represent the ownership of the cell. Owners of cells can transfer cells to others.
 * data_lock: lock script to represent the user with right to write the cell. Cell users can update the data in the cell.
 
@@ -172,26 +172,26 @@ The design of CKB cell model and transactions is friendly to light clients. Sinc
 
 ## Generator
 
-Generators are programs to create new cells for given types. Generators run on the client, and use user inputs and existing cells as inputs. They produce new cells with new states as outputs. Generator's inputs, outputs, and the cell unlock scriptstogether form a transaction (see Figure 5)
+Generators are programs to create new cells for given types. Generators run locally on client side, use user inputs and existing P1 cells as program inputs, create new cells with new states as outputs. Generator used inputs and generated outputs together form a transaction (Figure 5).
 
-Validator and Generator can use the same algorithms or different algorithms ([Overview](#overview)). Generator can take one of many types of cells as inputs, and can generate one of many types of cells as outputs.
+Validator and Generator may use the same algorithms or different algorithms ([Overview](#overview)). Generator may take one or multiple references to cells with same or different types as inputs, and generate one or multiple new cells with same or different types as outputs.
 
-By defining Data Schemas, Validators and Generators, we can implement any common knowledge's validation and storage in the CKB. For example, we can define a new type for `AlpacaCoin`:
+By defining Data Schemas, Validators and Generators, we can implement any data type's validation and storage in the CKB. For example, we can define a new type for `AlpacaCoin`:
 
 ```javascript
 Data Schema = {amount: "uint"}
 
 // pseudo code of checker check():
-// 1. confirm all inputs have valid and unlocked data
-// 2. Compute the sum of all AlpacaCoin amounts in inputs - IN
-// 3. Compute the sum of all AlpacaCoin amounts in outputs - OUT
-// 4. Compare the equality of IN and OUT and return the result
+// 1. check all inputs have valid unlock scripts
+// 2. Calculate the sum of all AlpacaCoin amounts in inputs as IN
+// 3. Calculate the sum of all AlpacaCoin amounts in outputs as OUT
+// 4. Return the equality of IN and OUT
 Validator = validate(context ctx, inputs, outputs)
 
 // pseudo code of generator gen():
-// 1. Find all cells of the AlpacaCoin type that the user can spend 
-// 2. Based on the receiver address and amount in the input, generate new AlpacaCoin type cells that belong to the receiver and the change cells back to the sender. 
-// 3. Return a list of all used cells and created cells. Those cells are going to be used to create the transaction.
+// 1. Find all cells of the AlpacaCoin type that the user can spend
+// 2. Based on the receiver address and amount given by user, generate new AlpacaCoin type cells that belong to the receiver and the change cells belong to the sender.
+// 3. Return a list of all used cells and new created cells, which would be used to create a transaction.
 Generator = gen(context ctx, address to, uint amount, ...)
 ```
 
@@ -200,27 +200,29 @@ Generator = gen(context ctx, address to, uint amount, ...)
 
 ### Layered Network
 
-In the Nervos network, CKB and the Generators form a layered network. The CKB stores the common knowledge, and the Generators generate the common knowledge. CKB only cares about new states from the Generators, and doesn't care about how they are generated. Therefore generators can be implemented in many different ways. (See figure 6)
+In Nervos network, CKB and the generators form a layered architecture. CKB is the common knowledge layer providing a data store for distributed applications, while generators is the data generation layer implementing application logic. CKB only cares about new states provided by generators, and doesn't care about how they are generated. Therefore generators can be implemented in many different ways (Figure 6).
 
-The layered architecture separates data and computation, giving each layer flexibility, extensibility and the option to use different consensus algorithms. The CKB is the bottom layer with the most consensus. It's the foundation of the Nervos network. Applications have their own scope of consensus - forcing all applications to use CKB's consensus is not efficient. In the Nervos network, application participants can choose appropriate generators based on their scope of consensus. They only need to submit states to the CKB to gain global confirmation when they need to interact with other services outside of their local consensus.
+The layered architecture separates data and computation, giving each layer more flexibility, scalability and the option to use different consensus methods. CKB is the bottom layer with the broadest consensus. It's the foundation of the Nervos network. Different applications prefer different consensus, forcing all applications to use CKB's consensus is inefficient. In Nervos network, application participants can choose appropriate generators and consensus based on their real needs, and the only moment they need to submit states to CKB, to get wider agreement, is when they need to interact with other services outside of their local consensus.
 
-* Client side:
+Possible generator forms include (but not limit to) following:
 
-    The generators run directly on the client's devices. The generation algorithms can be implemented in any programming languages with the interfaces or libraries provided by the CKB client.
+* Local generator on client
 
-* State services:
+    Generators run directly on the client's devices. The generation algorithms can be implemented in any programming languages, using CKB light client API or CKB sdk.
 
-    Users can generate new states with centralized server side algorithms. All current Internet services can work with the CKB with state services, which gives more trust and liquity to the service's state data. For example, game companies can use centralized state services to run game logics to generate artifact data, and define in the CKB rules for its types and total amount for its registration and notorization.
+* State services
 
-    Combined with the Nervos Identity Protocol, information publishers can provide trusted (???) Oracles based on identities, to provide necessary information for other services in the Nervos network.
+    Users may use traditional web service to generate new states. All current web services may work with CKB in this way, which will gives more trust and liquity to the state of services. For example, game companies may define CKB types and rules for game props, implement its game as state services, which generate game props data and store it in CKB.
 
-* State channels:
+    Information sources may use identity and state services together to implement Oracles, to provide useful information for other distributed applications in Nervos network.
 
-    Two or more users can use peer to peer communication channels to generate new states. Participants of the state channels can register on the CKB and obtain other participants' information. One participant can provide security deposits on the CKB, to convince other participants on the security of the state channel. The state channel and participants can use threshold signatures, traditional distributed consensus, or secure multi-party computation technologies (???) to generate new states.
+* State channels
 
-* Application chains:
+    Two or more users may use peer to peer communication to generate new states. Participants of the state channels must register themselves on CKB, and obtain other participants' information. One participant may provide security deposits on CKB, to convince other participants on the security of the state channel. The participants may use consensus protocol or secure multi-party computation to generate new states.
 
-    An application chain is a blockchain to generate new states on the CKB. Application chains can be public chains (such as any blockchain that uses the EVM) or permissioned chains (such as CITA or Hyperledger Fabric). Permissioned chains can constrain the scope of participation on state computation, for better privacy and performance. In application chains, participants perform computation together and validate with each other, before they submit new states to the CKB to become more accepted common knowledge.
+* Generation chains
+
+    A generation chain is a blockchain used to generate new states on CKB. Generation chain may be permissionless blockchains (such as an EVM compatible blockchain) or permissioned blockchains (such as CITA or Hyperledger Fabric). On permissioned blockchains consensus is reached in a smaller scope, users get better privacy and performance. On generation chains, participants perform computation together and validate the result with each other, and commit blockchain states to CKB to get wider agreement when neccessary.
 
 ![Figure 6. Layered Structure](fig6.png)
 <div align="center">Figure 6. Layered Structure</div>
