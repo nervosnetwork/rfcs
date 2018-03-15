@@ -158,17 +158,18 @@ Cell 根据 data 和 recipient 是否为空，可以划分为三种状态: 空 (
 
 定义一种特殊操作 Consume: Consume 本身是 Transform 操作，它的输入 Cell 状态是 Volatile，输出 Cell 状态是 Empty。
 
-组必须满足以下规则：
+使用下面的规则来确定组所属模块：
 
-- 一个组中必须有一个非 Consume 操作
-- 所有非 Consume 操作的输入输出 Cell 都必须有相同的模块，又可称为组所在模块。
-- 组如果包含 Consume 操作，Consume 操作的输入 Cell 的 Recipient Module 必须和组所在模块相同。
+- 如果组中所有操作都是 Consume 操作：
+	- 所有 Consume 操作的 Cell 模块都相同，那这些 Cell 所属的模块就是组所属的模块
+	- Consume 操作属于不同的组，有歧义，无法确定组所属模块，认定交易不合法
+- 如果组中有非 Consume 操作：
+	- 所有非 Consume 操作的输入输出 Cell 都必须有相同的模块，即组所属模块。
+	- 组如果包含 Consume 操作，Consume 操作的输入 Cell 要么其所属模块和组模块相同，要么 Recipient Module 和组模块相同。
 
-Volatile Cell 充当了模块之间通信的角色，可以看作是装着消息的信封。
-
-### Consume 操作规则
-
-Consume 操作的输出 Cell 的 lock, capacity 必须和输入 Cell 相同。因为 Consume 操作是由 recipient lock 授权的，recipient lock 并没有 Cell 的所有权，所以不可以更改 lock 和 capacity。
+如果先确定一个组的模块是 M 的话，那么它能包含的操作包括：
+- 输入 Cell 或输出 Cell 的模块是 M 的所有操作
+	- 输入 Cell 的 Recipient Module 是 M 的所有 Consume 操作。
 
 ### 组模块检查
 
@@ -195,8 +196,8 @@ Validator 的返回结果是布尔值。
 
 会有两种情况：
 
-- 如果是非 Consume 操作，需要提供 Cell lock 对应的证明。
-- 如果是 Consume 操作，需要提供 Cell 的 recipient lock  对应的证明。
+- 如果是 Volatile Cell 的 Transform 操作，需要提供 Cell 的 recipient lock 对应的证明。
+- 其它情况都使用 Cell 的 lock  对应的证明。
 
 Lock 先采用简单的 Bitcoin P2PKH，后续会通过 RFC 提出更灵活和容易扩展的方案。
 
@@ -211,3 +212,23 @@ Lock 由 `secp256k1` 公钥 hash160 后得到。提供的证明包括两部分�
 - 使用公钥对交易签名验证
 
 特殊的，如果 Lock 为空，提供空的证明即可通过验证。
+
+### Volatile Transform
+
+Volatile Transform 是指输入 Cell 是 Volatile Cell 的 Transform 操作，因为它是唯一使用 recipient lock 授权的操作，所以会有以下限制：
+
+- Volatile Transform 操作的输出 Cell 的 lock, capacity 必须和输入 Cell 相同
+
+这是因为 recipient lock 并没有 Cell 的所有权，所以不可以更改 lock 和 capacity。
+
+Volatile Cell 可以看作是包含内容 data 的一条阅后即焚的消息，这里的“阅”是指通过 Recipient Lock 将 Cell 永远交易。所以 Volatile Cell 充当了消息的角色，消息的发送者由 Cell Lock 表达，接受者由 Recipient 表达，在消息生成后：
+
+- 要么 Cell Lock 将其销毁
+- 要么 Recipient 将其转化
+
+消息可以跨模块，以 A 模块向 B 模块发送消息为例：
+
+- A 生成 Volatile Cell m，m 的 recipient type 是 B。这个交易使用 A 的 Validator 检查
+- B 将 m 包含进某个组模块为 B 的交易中
+
+因为 A 已经先行检查了，它不在参与到第二步的交易检查中，所以必须得限制在第二步的交易中， m 上可以执行的操作：它必须是一个 Consume 操作。
