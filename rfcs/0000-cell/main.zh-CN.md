@@ -177,6 +177,7 @@ Module 本身也是一个 Module，它是系统在创世块引导时就创建的
 Validator 函数接收参数是 Cell 操作列表，可以访问所有操作的输入，输出，以及输入的一些原信息，比如：
 
 - 输入 Cell 所在区块的高度，时间等。
+- 输入 Cell 在其被输出的 Transaction 的 hash，和该 Cell 在 Transaction Outputs 中的位置。
 
 Validator 的返回结果是布尔值。
 
