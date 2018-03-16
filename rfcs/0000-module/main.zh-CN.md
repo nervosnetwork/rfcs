@@ -141,10 +141,10 @@ Token 可以被销毁
 
 Validator 是函数，节点需要运行需要将数据解释成指令然后在允许。在本 RFC 中，使用 Lua VM 来执行函数，Validator Cell 中 code 存储的 UTF-8 编码的 Lua 代码。
 
-Code 存储的 Lua 代码需要返回一个 Lua 函数，该函数接受操作列表，并返回布尔值。比如下面的代码是允许任何操作组的 Validator code
+Code 存储的 Lua 代码需要返回一个 Lua 函数，该函数接受所在模块的 ID 和要验证的操作列表，并返回布尔值。比如下面的代码是允许任何操作组的 Validator code
 
 ``` lua
-return function()
+return function(module_id, group)
   return true
 end
 ```
@@ -195,20 +195,120 @@ Space 模块的 Validator 允许任何的操作组，可以用在扩容交易 (E
 
 ## 示例模块
 
-下面是一些常见需求的模块实现示例。所有参与的 Cell 的 data schema 会用 Lua table 来描述，其中字符串是对应的键的数据类型，Table 可以嵌套。比如 Schema
+下面是一些常见需求的模块实现示例。所有参与的 Cell 的 data schema 会用 Lua table 来描述，其中字符串是对应的键的数据类型，Table 可以嵌套。比如用来下面的例子用来描述 Cell 结构体
 
 ```lua
+{
+  module_id = "number",
+  capacity = "number",
+  data = "string",
+  lock = "string",
+  recipient = {
+    module_id = "number",
+    lock = "string"
+  }
+}
+```
+
+如果某个字段时常量，会在类型后指定值，比如 `module_id = "number=0"` 表示 `module_id` 字段是常量数字 0.
+
+提供的示例代码认为 Cell 的 data 存放的是 UTF-8 编码的代码，执行后会返回满足其 schema 要求的 Lua table，比如对于 Schema `{ value = "number" }` 下面是有效的 Cell data
 
 ```
+return { value = 1 }
+```
+
+这些示例模块只关注如何实现最基本的功能，实践使用时还需要根据需求进行扩展。而且提出的方案也不是唯一可行的方案。
 
 ### Banking
 
 Banking 是中心化的代币发行。代币的增发需要中心授权，销毁需要用户和中心同时授权，用户之间可以自由转账。
 
-### Voting
+这里使用一个模块来管理一种代币，不同代币属于不同的模块。下面以 Banking 来代称某个代币的模块。
 
-Voting 是用户使用 Capacity 进行投票，在结果出来之前，用户的 Capacity 被锁定，当投票结束，同时生成投票结果，被释放用户被锁定的空间。
+Banking 模块需要对代币的发行和销毁有中心化的授权，这个可以使用 Module 模块中 Token Cell 来作为发行令牌 (MintToken) 和销毁使用的令牌 (BurnToken)。因为 Token 的生成需要 Module Cell 授权，保证了中心化的授权。
+
+持有 Token 可以用简单的数字来表示，在 Validator 需要检查所有的组中输入 Cell 的 Token 总额必须等于输出 Cell 的 Token 总额。
+
+Schema 定义如下：
+
+```
+{
+  MintToken = {
+    type = "string=MintToken",
+    value = "number"
+  },
+  BurnToken = {
+    type = "string=BurnToken",
+    value = "number"
+  },
+  Coin = {
+    type = "string=Coin"
+    value = "number"
+  }
+}
+```
+
+Validator 可以把发行，销毁和转账混合在一个操作组里:
+
+```
+return function(module_id, group)
+  -- 统计 Balance，输入 Cell value 为负，输出 Cell value 为正，统计完必须满足仍然为 0
+  local balance = 0
+  for _, op in ipairs(group) do
+    if op.input then
+      local input_cell = op.input.cell
+      local input_data = load(input_cell.data)()
+
+      if input_cell.module_id == module_id then
+        if input_data.type == "Coin" then
+          -- 输入 Cell value
+          balance = balance - input_data.value
+        else
+          -- unknown type
+          return false
+        end
+      else if input_cell.module_id == 0 then
+        if input_data.type == "MintToken" then
+          -- MintToken 相当额外的输入 Cell value，所以计为负数
+          balance = balance - input_data.value
+        else if input_data.type == "BurnToken" then
+          -- BurnToken 需要抵消部分输入 Cell 的 value，所以计为正数
+          balance = balance + input_data.value
+        else
+          -- unknown type
+          return false
+        end
+      else
+        -- unknown module
+        return false
+      end
+
+    end
+    if op.output then
+      local output_cell = op.output.cell
+
+      if output_cell.module_id == module_id then
+        local output_data = load(input_cell.data)()
+        if output_data.type == "Coin" then
+          -- 输出 Cell value
+          balance = balance + output_data.value
+        else
+          -- unknown type
+          return false
+        end
+      end
+    end
+
+    return balance == 0
+  end
+end
+```
 
 ### Crowdfunding
 
 Crowdfunding 是众筹 Capacity 的应用，发起人可以设定目标，当达到目标，发起人可以获得所有 Cell，如果没有达到目标，众筹取消。
+
+### Voting
+
+Voting 是用户使用 Capacity 进行投票，在结果出来之前，用户的 Capacity 被锁定，当投票结束，同时生成投票结果，被释放用户被锁定的空间。
