@@ -330,7 +330,7 @@ Nervos CKB为一个全新的分布式应用网络提供了共同知识层。Nerv
 
 共同知识有各种类型和存在形式，我们把能够自动化共同知识的形成，存储共同知识及相关证明的技术称为共同知识库。
 
-### Blockchain is Common Knowledge Base
+### Blockchains are Common Knowledge Bases
 
 过去，共同知识需要群体内的个体之间进行各种繁杂的交流和相互确认才能形成，之后分散记录在个体的大脑中。今天，基于密码学和分布式技术的区块链使得共同知识的产生和保存发生了质的变化。人们不再需要反复沟通以确保新知识在人群中达成一致，也不再需要将知识记录在空间有限的大脑中。区块链世界中的每一条数据，包括数字资产和智能合约都是共同知识，他们经过了全体节点的一致共识，以极低的成本在区块链中不断的形成和沉淀，却比一般的数据蕴含了更大的价值。
 
@@ -348,6 +348,6 @@ Nervos CKB为一个全新的分布式应用网络提供了共同知识层。Nerv
 * 数据模型足够抽象和通用，允许用户自定义业务数据模型。
 * 共同知识的验证引擎足够抽象和通用，允许用户自定义数据验证规则。
 
-如果说分布式账本是数字资产的“结算层”，通用共同知识库则可认为是各种类型共同知识的“结算层”。Nervos CKB的目标是成为一个通用共同知识库，作为整个Nervos网络的公共状态层，为上层应用提供基础，促进交易活动。
+如果说分布式账本是数字资产的“结算层”，通用共同知识库则可认为是各种类型共同知识的“结算层”。Nervos CKB的目标是成为一个通用共同知识库，作为整个Nervos网络的公共状态层，为上层应用提供状态与信任基础。
 
 “The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.” - “The Use of Knowledge in Society”, Friedrich A. Hayek, 1945
