@@ -329,7 +329,7 @@ Nervos CKB's design provides significant advantages on scalability, compared to 
 
 CKB's cells, types and transactions together provide the foundation for a versatile decentralized state machine. The generators and validators can be used to express any business rules. Identities can be used to bring in trust and bridge to real world applications. Together, they're a powerful combination of components that can be used to build many types of applications. For example:
 
-- Digit assets and ledgers: put account or UTXO data in cells, and provide a strict validator to govern value transfer rules.
+- Digital assets and ledgers: put account or UTXO data in cells, and provide a strict validator to govern value transfer rules.
 - Ethereum like smart contracts: define a "smart contract" type, then create a transaction with contract code as validation code. On the client side, run symmetric generation function to generate new states.
 - Trust based transactions: Identities can define who they're willing to trust, then application can interpret that trust relationship to facilitate transactions.
 - Cross chain asset notorization and transfer: application chains can generate digital assets backed by assets on other chains. The backed assets can then participate in transactions, or transfer to the main chain to gain more security. The assets can also be transferred to other chains or back to their original chain. Users who participate in those transactions need to express trust in the Identity of the operator of such bridge services.
