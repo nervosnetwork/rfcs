@@ -7,7 +7,7 @@ A general purpose common knowledge base.
 
 ## Abstract
 
-This document provides an overview to CKB, the core component of Nervos project. Nervos is a distributed application platform with layered architecture, and CKB is the foundational layer of Nervos, as a general purpose common knowledge base to provide data, asset and identity service for applications.
+This document provides an overview to CKB, the core component of Nervos project. Nervos is a distributed application network with layered architecture, and CKB is the foundational layer of Nervos, as a general purpose common knowledge base to provide data, asset and identity service for applications.
 
 ## Background
 
@@ -247,92 +247,60 @@ Please check CKB Consensus Paper for more details.
 
 ## Economics
 
-The economic model is the "soul" of a public blockchain. Bitcoin solved the open network's consensus challenge for the first time with the introduction of economic incentives. Every blockchain network is an autonomous community bound together with economic incentives. A well designed economic model can incentivize all participants to contribute to the success of the community and maximize the utility of the blockchain.
+The economic model is at the core of permissionless blockchains. Bitcoin solved the open network's consensus challenge for the first time with the introduction of economic incentives. Every blockchain network is an autonomous community bound together with economic incentives. A well designed economic model should incentivize all participants to contribute to the success of the community and maximize the utility of the blockchain.
 
-CKB's economic model aims to motivate users, developers and node operators to work towards the common goal of forming and storing common knowledge. CKB's economic model is designed to focus on states, using Cell Capacity and transaction fee rewards to provide incentives.
+CKB's economic design aims to motivate users, developers and node operators to work towards the common goal of forming and storing common knowledge. CKB's economic model is also designed to focus on states, using increased Cell capacity and transaction fee as rewards to provide incentives.
 
-The creation and storage of states on the CKB have incurred cost. The creation of states needs to be validated by full nodes, incurring computational cost; the storage of states needs full nodes to provide storage space on an ongoing basis. The current public blockchains only charge one time transaction fees, and allow data from the transactions to be saved on full nodes, occupying storage space forever.
+The creation and storage of states on the CKB have incurred cost. The creation of states needs to be validated by full nodes, incurring computational cost; the storage of states needs full nodes to provide storage space on an ongoing basis. Currently permissionless blockchains only charge one time transaction fees, and allow data from the transactions to be stored on all full nodes, occupying storage space forever.
 
-In the CKB, cells are the state storage units. Unoccupied cells are liquid and their ownerships can be transferred. Occupied cells lose liquidity and their ownerships can't be changed. Therefore, cell users (???) pay with cell liquidty for the storage cost. The larger the cells (??), the longer they use the cells, the higher liquidity cost they pay. The advantage of liquidity payment, compared to upfront payment, is that it avoids the problem that the upfront payment could be used up, and the system would have to recycle the cells.
+In CKB, cells are basic storage unit of state. Unoccupied cell capacity is transferable, which brings cell liquidity. Occupied cell capacity can not be transfered thus they lose liquidity. Therefore, cell owners pay with liquidity of cell capacity for the storage cost. The larger capacity and longer time they occupy, the higher liquidity cost they pay. The advantage of liquidity payment, compared to upfront payment, is that it avoids the problem that the upfront payment could be used up, and the system would have to recycle the cells.
 
-The price of cell capacity is direct measurement of the common knowledge stored in the CKB. Note that cells could have different owners and users, and owners can pay the liquidity cost on behalf of their users. Updating cell's data or transferring their ownerships incur transaction fees. Nodes can set the transaction fee levels that they're willing to accept. Transaction fees are determined by the market. Owners can also pay transition fees on behalf of their users.
+The price of cell capacity is direct measurement on the value of the common knowledge stored in CKB. Note that cells could have different owners and users, and owners can pay the liquidity cost on behalf of their users. Updating cell's data or transferring their ownerships incur transaction fees. Nodes can set the transaction fee levels that they're willing to accept. Transaction fees are determined by the market. Owners can also pay transition fees on behalf of their users.
 
-Another important reason why it's difficult for mainstream users to use blockchains is that transaction fees have to paid with native coins of the blockchain. This requires users to acquire the native coins before using the services, raising the barrier of adoption. On the other hand, users are used to the freemium business model and mandatory transaction fees hurts the technology's adoption. By allowing cell owners to pay on behalf of users, CKB solves both of the problems, and provides to the developers more business model choices.
+Another obstacle preventing blockchains mass adoption is that transaction fees have to paid with native tokens of the blockchain. This requires users to acquire the native tokens before using the services, raising the barrier of use. On the other hand, users are used to the freemium business model and mandatory transaction fees doesn't meet the habits of mainstream users. By allowing cell owners to pay on behalf of users, CKB solves both of the problems, and provides to the developers more business model choices.
 
-The majority of system transaction fees go to the block producing nodes. The rest of the fees go to an account managed by the Nervos Foundation for research, development and operations of the Nervos network. The percentage of this transaction fee distribution is determined with the liquid voting ([Liquid Voting](#liquid_voting)) process.
+The majority of system transaction fees go to the block generation nodes. The rest of the fees will be used to support research, development and operations of the Nervos project. The percentage of this transaction fee distribution is determined with the liquid voting ([Liquid Voting](#liquid_voting)) process.
 
-Other than paying for the cost of common knowledge's creation and storage, cell capacity can also be used for other purposes such as consensus security deposit and liquid voting. The security of the CKB is directly related to the security deposits of the full nodes. The higher the total consensus deposits, the higher cost malicious behaviors will incur, and the more secure the system as a whole will be. Ensuring adequate consensus deposit, therefore system security, is one of the goals of Nervos' monetary policy. Adjusting inflation rate changes the risk free rate of return for consensus participants, and it can be used to adjust consensus nodes participation.
+Other than paying for the cost of common knowledge's creation and storage, cell capacity can also be used for other purposes such as consensus security deposit and liquid voting. The security of CKB is directly related to the security deposits of the full nodes. The higher the total consensus deposits, the higher cost malicious behaviors will incur, and the more secure the system as a whole will be. Ensuring adequate consensus deposit, therefore system security, is one of the goals of Nervos' monetary policy. Adjusting inflation rate changes the risk free rate of return for consensus participants, and it can be used to adjust consensus nodes participation.
 
-Please see the Nervos CKB Economic Paper for details of the economic model.
+Please check Nervos CKB Economic Paper for details of the economic model.
 
 ## Governance
 
-As the core infrastructure of the Nervos network, CKB has to evolve with the communities on top of it. It has to keep functioning while adjusting runtime parameters or performing bigger system upgrades. We can see from the history that high community agreement cost for network upgrades stifles innovation and stagnates the ecosystem.
+As the core infrastructure of Nervos network, CKB has to evolve with the ecosystem on top of it. It has to keep functioning while adjusting runtime parameters or performing deeper system upgrades. We can see from the history that community consensus cost will stifle innovation and stagnate the ecosystem.
 
-Therefore, CKB has built-in mechanisms for liquid voting and hot deployment, making the system a self evolving distributed (??) network.
+Therefore, CKB has built-in mechanisms for liquid voting and hot deployment, making the system a self evolving network.
 
 ### Liquid Voting
 
-The voting mechanism is important for the long term stability of the Nervos system. For example, CKB relies on a set of system parameters to function. While some of the parameters can be adjusted automatically, others may need voting. Fixing bugs or deploying new features may also need voting.
+The voting mechanism is important for the long term stability of the Nervos system. For example, CKB relies on a set of system parameters to function. While some of the parameters can be adjusted automatically, others need opinions from community and voting. Fixing bugs or the proposal/deploy of new feature also need support from community.
 
-CKB support liquid voting [5] (See figure 7). Every cell owner, weighted by their cell capacity, can participate in the decision making process of CKB's development. In liquid voting, users can set their own delegates, and delegates can also set their own delegates. Taking into account a proposal's technicality and incentives, different proposals can have different acceptance criteria, such as participation rate and support ratio.
+CKB supports liquid voting [5] (See figure 7). Every cell owner, weighted by their cell capacity, can participate in the decision making process of CKB's development. In liquid voting, users can set their own delegates, and delegates can also set their own delegates. Taking into account a proposal's technicality and incentives, different proposals can have different acceptance criteria, such as participation rate and support ratio.
 
 Note that CKB's liquid voting is a tool to express community consensus, not one to form consensus. Before the votes, the community should use various communication channels to study the proposals in detail and form rough consensus.
 
-Please see the Nervos Governance Paper for details of the the liquid voting mechanism.
+Please check Nervos Governance Paper for details of the the liquid voting mechanism.
 
 ![Figure 7. Liquid Voting](fig7.png)
 <div align="center">Figure 7. Liquid Voting</div>
 
 ### Neuron
 
-Benefiting from the cell data model's abstraction power, we can implement and store CKB's function modules in cells. We call this type of cells Neurons. Neurons are of a special cell type, and the user of the neurons are the CKB itself.
+Benefiting from the generality of cell model, we may implement and store some CKB's function modules in cells. We call this type of cells Neurons. Neurons are of a special cell type, and the user of the neurons are the CKB itself.
 
 When system upgrade proposals are implemented as neurons, the community votes on its deployment with liquid voting. After community consensus is achieved, new neurons will be deployed to provide new features or fix bugs. Fine grained neuron upgrades significantly lower CKB's evolution friction.
 
 ## Light Client
 
-The equal node blockchain architecture is currently facing serious challenges. On public blockchains, the hardware performances of nodes vary. The equal node architecture not only puts high demand on user's hardware, but also fails to utilize the potential of high performant nodes. We see more users give up running full nodes and choose to run light clients or centralized clients. Full nodes validate all blocks and transaction data, requiring minimum external trust. But they are costly and inconvenient to run. Centralized clients give up validations and rely entirely on the central servers to provide data. Light clients put trust on the full nodes for cost reduction of validation and synchronization (??). They can provide better user experience.
+Strictly uniform architecture (every node has the same role, do the same thing) is currently facing serious challenges. On permissionless blockchains, the hardware capability of nodes vary a lot. Strictly uniform architecture not only puts high demand on user's hardware, but also fails to utilize the potential of high performant nodes. We see more and more users give up running full nodes and choose to run light clients or even clients rely on centralized service. Full nodes validate all blocks and transaction data, requiring minimum external trust. But they are costly and inconvenient to run. Clients rely on centralized service give up validations and trust the central service completely to provide data. Light clients trade a minimum trust for great cost reduction of validation, lead to much better user experience.
 
-Mobile devices are becoming the main way people access the Internet. Native applications are also becoming more popular. Mobile friendliness is one of the design principles of the CKB. Nervos applications should be able to run smoothly on mobile devices and integrate with mobile platforms.
+At the same time, mobile devices are becoming the main way people access the Internet. Native applications are also becoming more popular. Mobile friendliness is one of the design principles of CKB. Nervos dapps should be able to run smoothly on mobile devices and integrate with mobile platforms seamlessly.
 
-CKB supports light clients. CKB uses verifiable data structure for block headers that substantially accelerates light clients synchronization. Benefiting from CKB's state centric design, light clients can obtain the latest states (P1CS) without having to repeat the computation. Light clients can also only subscribe to a small subset of P1 cells that they care about, minimizing local storage and bandwidth requirements. Nervos' light clients can provide excellent local user experience, allowing CKB queries (??), messaging (??) and other functionality, allowing mobile applications to benefit from the blockchain technologies.
+CKB supports light clients. CKB aims to use authenticatable data structure to organize block headers, in order to substantially accelerates light clients synchronization. Benefiting from CKB's state focused design, light clients may obtain the latest states (P1CS) without having to repeat the computation. Light clients may also only subscribe to a small subset of P1 cells that they care about. With minimized local storage and bandwidth requirements, Nervos' light clients could provide better DApp experiences.
 
-## Summary of Advantages
+## Summary
 
-We believe Nervos CKB provides an exciting alternative to the current general purpose computing platform blockchains. In particular, we'd like to summarize its advantages in scalability, availability and multi-paradigm support over the current leading platforms.
-
-### Scalability
-
-Nervos CKB's design provides significant advantages on scalability, compared to a smart contract platform like Ethereum. We only concern ourselves with the scalability discussions on the full nodes here, since that's where the bottleneck would be for both systems.
-
-- Read Scalability:
-  - CKB's light clients have local state, therefore they don't need to query full nodes for states. We believe this is crucial in the future where most clients are light clients on mobile devices.
-
-- Transaction Scalability:
-  - CKB uses a consensus algorithm that has very high throughput under the happy path scenario
-  - Validations on nodes can be processed in parallel, providing a scale-up path when computation becomes the bottleneck.
-  - CKB's explicit dependency requirement makes it easier to use sharding as a computation scaling solution
-  - CKB's state generation can move to the state channels or application chains, and only have them settle on the main chain, providing a application semantics based scaling path.
-
-- Data Scalability:
-  - CKB's design to move P2CS to archive nodes and leave only P1CS on full nodes allows a storage scaling path that's indepedent of historical transactions.
-  - The economic model provides a marketplace solution to recycle low value application cells to make available to higher value applications.
-  - CKB's explicit dependency requirement makes it easier to use sharding as a data scaling solution
-
-### Latency and Availability
-
-  - CKB's states are stored locally on the clients. This makes the data highly available to local applications with minimal latency.
-  - Low latency and highly available local data allows "offline first DApps". In this scenario, applications can compute new states, validate them and generate transactions all locally. As soon as the transaction is created, the application can move to the next task, without having to wait for the transaction to be included in a block or confirmed, providing a much more pleasant user experience. Since the CKB provides transaction result certainty, the local user interface can optimistically show transaction results as "pending" or as appropriate in the specific application context. The actual synchronization can happen later on the background, or when there's stable network connection for mobile devices.
-
-### Multi-paradigm
-
-CKB's cells, types and transactions together provide the foundation for a versatile decentralized state machine. The generators and validators can be used to express any business rules. Identities can be used to bring in trust and bridge to real world applications. Together, they're a powerful combination of components that can be used to build many types of applications. For example:
-
-- Digit assets and ledgers: put account or UTXO data in cells, and provide a strict validator to govern value transfer rules.
-- Ethereum like smart contracts: define a "smart contract" type, then create a transaction with contract code as validation code. On the client side, run symmetric generation function to generate new states.
-- Trust based transactions: Identities can define who they're willing to trust, then application can interpret that trust relationship to facilitate transactions.
-- Cross chain asset notorization and transfer: application chains can generate digital assets backed by assets on other chains. The backed assets can then participate in transactions, or transfer to the main chain to gain more security. The assets can also be transferred to other chains or back to their original chain. Users who participate in those transactions need to express trust in the Identity of the operator of such bridge services.
+Nervos CKB provides a common knowledge layer for an exciting distributed application network. The design of Nervos CKB focuses on state, create a more general storage model, more balanced incentives, and a scalable paradigm for distributed applications.
 
 ## References
 
@@ -342,25 +310,7 @@ CKB's cells, types and transactions together provide the foundation for a versat
 4. Rafael Pass, Elaine Shi, “Thunderella: Blockchains with Optimistic Instant Confirmation”, 2017
 5. Bryan Ford, “Delegative Democracy”, 2002
 
------------
-Compared to the imperative, state transition procedure focused smart contracts, CKB separates new state computation and state mutation, allowing programmers to use composition of pure functions for the computation, and provide a set of built-in primitives for state transition.
-
-Declarative State Transition
-
---------
-
-
-## Motivation
-
-“The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.” - Friedrich A. Hayek
-
-??
-
-?? The blockchain may be an answer. With the blockchain, algorithms and machines replace humans to automate the formation and dissipation of common knowledge. We believe blockchains can be seen as a new type of technology as the "Common Knowledge Base". The formation and dissipation of common knowledge is the core value of blockchains, and is also the reason there can be tokens and cryptoeconomics.
-
-Nervos CKB is conceived based on this recognition: a new blockchain design, a **general purpose common knowledge base**. We hope Nervos CKB can solve problems in performance, privacy and usability that we see in the current generation of blockchains, to become the common knowledge base of 7.6 billion people.
-
-## Common Knowledge Base
+## Appendix. Common Knowledge Base
 
 ### Common Knowledge
 
@@ -371,7 +321,6 @@ The first type of common knowledge can be independently verified with abstract a
 The second type of common knowledge relies on a delegated verification process, typically to a trusted authority. For example, science discoveries require empirical evidence, in the forms of peer review and result reproducibility, to be accepted as common knowledge of the science community.The general public doesn't have the ability on their own to verify the evidence, but delegates their trust to the science community.
 
 The third type of common knowledge requires a trusted party, and it's pervasive in business transactions. For a piece of data to become common knowledge to facilitate transactions, the participants of transactions have to all trust the party that backs the data. For example, in a centralized exchange, transactions imply trust on the exchange, thereby the accuracy of its data feed and the fairness of its match making algorithm. In the credit card point of sale context, the consumer and the business can complete a transaction based on their mutual trust on the financial intermediaries such as banks and credit card companies.
-
 
 ### Blockchains are Common Knowledge Bases
 
