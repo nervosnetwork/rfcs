@@ -302,6 +302,38 @@ CKB supports light clients. CKB aims to use authenticatable data structure to or
 
 Nervos CKB provides a common knowledge layer for an exciting distributed application network. The design of Nervos CKB focuses on state, create a more general storage model, more balanced incentives, and a scalable paradigm for distributed applications.
 
+### Scalability
+
+Nervos CKB's design provides significant advantages on scalability, compared to a smart contract platform like Ethereum. We only concern ourselves with the scalability discussions on the full nodes here, since that's where the bottleneck would be for both systems.
+
+- Read Scalability:
+  - CKB's light clients have local state, therefore they don't need to query full nodes for states. We believe this is crucial in the future where most clients are light clients on mobile devices.
+
+- Transaction Scalability:
+  - CKB uses a consensus algorithm that has very high throughput under the happy path scenario
+  - Validations on nodes can be processed in parallel, providing a scale-up path when computation becomes the bottleneck.
+  - CKB's explicit dependency requirement makes it easier to use sharding as a computation scaling solution
+  - CKB's state generation can move to the state channels or application chains, and only have them settle on the main chain, providing a application semantics based scaling path.
+
+- Data Scalability:
+  - CKB's design to move P2CS to archive nodes and leave only P1CS on full nodes allows a storage scaling path that's indepedent of historical transactions.
+  - The economic model provides a marketplace solution to recycle low value application cells to make available to higher value applications.
+  - CKB's explicit dependency requirement makes it easier to use sharding as a data scaling solution
+
+### Latency and Availability
+
+  - CKB's states are stored locally on the clients. This makes the data highly available to local applications with minimal latency.
+  - Low latency and highly available local data allows "offline first DApps". In this scenario, applications can compute new states, validate them and generate transactions all locally. As soon as the transaction is created, the application can move to the next task, without having to wait for the transaction to be included in a block or confirmed, providing a much more pleasant user experience. Since the CKB provides transaction result certainty, the local user interface can optimistically show transaction results as "pending" or as appropriate in the specific application context. The actual synchronization can happen later on the background, or when there's stable network connection for mobile devices.
+
+### Multi-paradigm
+
+CKB's cells, types and transactions together provide the foundation for a versatile decentralized state machine. The generators and validators can be used to express any business rules. Identities can be used to bring in trust and bridge to real world applications. Together, they're a powerful combination of components that can be used to build many types of applications. For example:
+
+- Digital assets and ledgers: put account or UTXO data in cells, and provide a strict validator to govern value transfer rules.
+- Ethereum like smart contracts: define a "smart contract" type, then create a transaction with contract code as validation code. On the client side, run symmetric generation function to generate new states.
+- Trust based transactions: Identities can define who they're willing to trust, then application can interpret that trust relationship to facilitate transactions.
+- Cross chain asset notorization and transfer: application chains can generate digital assets backed by assets on other chains. The backed assets can then participate in transactions, or transfer to the main chain to gain more security. The assets can also be transferred to other chains or back to their original chain. Users who participate in those transactions need to express trust in the Identity of the operator of such bridge services.
+
 ## References
 
 1. Alonzo Church, Lambda calculus, 1930s
@@ -324,7 +356,7 @@ The third type of common knowledge requires a trusted party, and it's pervasive 
 
 ### Blockchains are Common Knowledge Bases
 
-??? In the past, the common knowledge is scattered in people's heads, and its formation requires repeated communications and confirmations. Today with the advancement of cryptography and distributed ledger technologies, algorithms and machine are replacing humans as the medium for the formation and storage of common knowledge. Every piece of data in the blockchain, including digital assets and smart contracts, is a piece of common knowledge. They've
+In the past, the common knowledge is scattered in people's heads, and its formation requires repeated communications and confirmations. Today with the advancement of cryptography and distributed ledger technologies, algorithms and machine are replacing humans as the medium for the formation and storage of common knowledge. Every piece of data in the blockchain, including digital assets and smart contracts, is a piece of common knowledge.
 
 **Blockchain systems** are common knowledge bases. Participating in a blockchain network implies accepting and helping validate the common knowledge in the network. Transactions are stored in the blockchain, together with their proofs. Users of the blockchain can trust the validity of the transactions, and know other users trust it too.
 
@@ -334,6 +366,8 @@ A general purpose common knowledge base that's suitable for generation and stora
 
 * State focused, not event focused
 * Data model that's generic enough, with enough abstraction power that users can use to express the business domain
-* The validation engine of common knowledge that's generic enough with enough abstraction power that users can use to express data validation rules.
+* A validation engine of common knowledge that's generic enough with sufficient abstraction power that users can use to express data validation rules.
 
 If distributed ledgers are the "settlement layer" of digital assets, general purpose common knowledge bases are the "settlement layer" of all types of common knowledge. The goal of Nervos CKB is to become the common state layer of the entire Nervos Network as a general purpose common knowledge base. It provides the state foundation of upper layer applications, to facilitate transactions.
+
+“The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.” - “The Use of Knowledge in Society”, Friedrich A. Hayek, 1945
