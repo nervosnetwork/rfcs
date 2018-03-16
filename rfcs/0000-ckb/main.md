@@ -342,25 +342,8 @@ CKB's cells, types and transactions together provide the foundation for a versat
 4. Rafael Pass, Elaine Shi, “Thunderella: Blockchains with Optimistic Instant Confirmation”, 2017
 5. Bryan Ford, “Delegative Democracy”, 2002
 
------------
-Compared to the imperative, state transition procedure focused smart contracts, CKB separates new state computation and state mutation, allowing programmers to use composition of pure functions for the computation, and provide a set of built-in primitives for state transition.
 
-Declarative State Transition
-
---------
-
-
-## Motivation
-
-“The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.” - Friedrich A. Hayek
-
-??
-
-?? The blockchain may be an answer. With the blockchain, algorithms and machines replace humans to automate the formation and dissipation of common knowledge. We believe blockchains can be seen as a new type of technology as the "Common Knowledge Base". The formation and dissipation of common knowledge is the core value of blockchains, and is also the reason there can be tokens and cryptoeconomics.
-
-Nervos CKB is conceived based on this recognition: a new blockchain design, a **general purpose common knowledge base**. We hope Nervos CKB can solve problems in performance, privacy and usability that we see in the current generation of blockchains, to become the common knowledge base of 7.6 billion people.
-
-## Common Knowledge Base
+## Appendix. Common Knowledge Base
 
 ### Common Knowledge
 
@@ -372,10 +355,9 @@ The second type of common knowledge relies on a delegated verification process, 
 
 The third type of common knowledge requires a trusted party, and it's pervasive in business transactions. For a piece of data to become common knowledge to facilitate transactions, the participants of transactions have to all trust the party that backs the data. For example, in a centralized exchange, transactions imply trust on the exchange, thereby the accuracy of its data feed and the fairness of its match making algorithm. In the credit card point of sale context, the consumer and the business can complete a transaction based on their mutual trust on the financial intermediaries such as banks and credit card companies.
 
-
 ### Blockchains are Common Knowledge Bases
 
-??? In the past, the common knowledge is scattered in people's heads, and its formation requires repeated communications and confirmations. Today with the advancement of cryptography and distributed ledger technologies, algorithms and machine are replacing humans as the medium for the formation and storage of common knowledge. Every piece of data in the blockchain, including digital assets and smart contracts, is a piece of common knowledge. They've
+In the past, the common knowledge is scattered in people's heads, and its formation requires repeated communications and confirmations. Today with the advancement of cryptography and distributed ledger technologies, algorithms and machine are replacing humans as the medium for the formation and storage of common knowledge. Every piece of data in the blockchain, including digital assets and smart contracts, is a piece of common knowledge.
 
 **Blockchain systems** are common knowledge bases. Participating in a blockchain network implies accepting and helping validate the common knowledge in the network. Transactions are stored in the blockchain, together with their proofs. Users of the blockchain can trust the validity of the transactions, and know other users trust it too.
 
@@ -385,6 +367,8 @@ A general purpose common knowledge base that's suitable for generation and stora
 
 * State focused, not event focused
 * Data model that's generic enough, with enough abstraction power that users can use to express the business domain
-* The validation engine of common knowledge that's generic enough with enough abstraction power that users can use to express data validation rules.
+* A validation engine of common knowledge that's generic enough with sufficient abstraction power that users can use to express data validation rules.
 
 If distributed ledgers are the "settlement layer" of digital assets, general purpose common knowledge bases are the "settlement layer" of all types of common knowledge. The goal of Nervos CKB is to become the common state layer of the entire Nervos Network as a general purpose common knowledge base. It provides the state foundation of upper layer applications, to facilitate transactions.
+
+“The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.” - “The Use of Knowledge in Society”, Friedrich A. Hayek, 1945
