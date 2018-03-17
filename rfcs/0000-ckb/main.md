@@ -119,11 +119,11 @@ The lock scripts are the authentication mechanism of the cells. The scripts can 
 
 ### Life Cycle
 
-There are two phases in the life cycle of Cells. Newly created cells are in the first phase P1. Cells are immutable data objects. Updates to cells are done through transactions. Transactions take P1 Cells to be updated as inputs, and new P1 Cells with new states produced by the Generator as outputs.
+There are two phases in the life cycle of Cells. Newly created cells are in the first phase P1. Cells are immutable data objects. Updates to cells are done through transactions. Transactions take the P1 Cells to be updated as inputs, and output new P1 Cells with new states produced by the Generator.
 
-Every P1 Cell can and only can be used once - they can't be used as the inputs of two different transactions; after use, P1 cells enter the second phase P2. P2 Cells can't be used as transaction inputs. We call the set of all P1 Cells as P1CS (P1 Cell Set). The P1CS has all the current state of the CKB. We call the set of all P2 cells as P2CS （P2 Cell Set). The P2CS has all the historical states of the CKB.
+Every P1 Cell can and only can be used once - they can't be used as inputs of two different transactions; after use, P1 cells enter the second phase P2. P2 Cells can't be used as transaction inputs. We call the set of all P1 Cells as P1CS (P1 Cell Set). The P1CS has all the current states of the CKB. We call the set of all P2 cells as P2CS (P2 Cell Set). The P2CS has all the historical states of the CKB.
 
-Full nodes on the CKB only needs P1CS to validate transactions, they can deploy certain strategy to clear P2CS. P2CS can be archived on Archive Nodes or distributed storage. CKB light clients only need to store block headers and specific Cells, and don't need to store the whole P1CS or P2CS.
+Full nodes on the CKB only needs P1CS to validate transactions. They can deploy certain strategies to clear P2CS. P2CS can be archived on Archive Nodes or distributed storage. CKB light clients only need to store block headers and specific cells, and don't need to store the entire P1CS or P2CS.
 
 ## Type
 
