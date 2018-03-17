@@ -11,7 +11,7 @@ This document provides an overview to CKB, the core component of the Nervos proj
 
 ## Background
 
-As the emergence of more and more applications, the current generation blockchain technology has shown its limitations in universality, scalability, incentive design and trust model, which makes it increasingly difficult to meet the demand of today's real world use cases.
+As more applications emerge, the current generation blockchain technology has shown its limitations in universality, scalability, incentive design and trust model, making it increasingly difficult to meet the demand of today's real world use cases.
 
 Bitcoin is the first blockchain network in the world, designed as a peer to peer cash ledger. The Bitcoin ledger is the application state maintained by the Bitcoin network, UTXO (Unspent Transaction Output) is the basic storage unit of the ledger. Users can use wallets to spend current UTXOs, generate new UTXOs, and package them into transactions to send to the Bitcoin network for validation and consensus. The UTXOs have both the cash amount and ownership information expressed with lock scripts, to spend UTXOs users have to provide proper unlocking data. Due to the limitation of UTXO data structure and lock script, it's difficult to record other types of assets and data in Bitcoin ledger. While solutions like Colored Coins, Meta Coins or hard forks are possible, they are unsafe, inflexibile, and expensive.
 
