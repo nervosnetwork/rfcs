@@ -1,7 +1,7 @@
 # Nervos CKB
 
 * Start Date: 2018-01-02
-* Version: c09e5d5c57a46e8878ae4d8569c78412a6ed2c31
+* Version: 6eb7c7e85e1ff4c9cb63a3f1b4b6ed3d995fab84
 * PR: #TBD
 
 A general purpose common knowledge base.

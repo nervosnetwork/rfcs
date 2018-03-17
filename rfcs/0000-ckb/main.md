@@ -1,7 +1,8 @@
 # Nervos CKB
 
 * Start Date: 2018-01-02
-* RFC PR: #link-to-github-pr
+* version: 6eb7c7e85e1ff4c9cb63a3f1b4b6ed3d995fab84
+* PR: #TBD
 
 A general purpose common knowledge base.
 
