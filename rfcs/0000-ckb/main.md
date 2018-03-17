@@ -91,7 +91,7 @@ The throughput of nodes can greatly improve with asymmetric generation and valid
 ![Figure 2. Non-deterministic vs. Deterministic State Generation](fig2.png)
 <div align="center">Figure 2. Non-deterministic vs. Deterministic State Generation</div>
 
-We're going to provide an overview of the Cell data model in CKB, withd the goal to better explain the functionality of the CKB itself. In the actual implementation of the CKB, we need to consider other factors including incentives and execution efficiency, and the data structure will be more complicated. Technical details of CKB can be found in its technical documents.
+We're going to provide an overview of the Cell data model in CKB, with the goal to better explain the functionality of the CKB itself. In the actual implementation of the CKB, we need to consider other factors including incentives and execution efficiency, and the data structure will be more complicated. Technical details of CKB can be found in its technical documents.
 
 ## Cell
 
