@@ -140,7 +140,7 @@ The data schema defines the data structure of cells in this type, so that the va
 
 ### Index
 
-Users can create indices when they define a data schema. The CKB provides extra support for indexed properties, such as conditional query and/or aggregate functions which can be used in validators or `owner_lock` / `data_lock` scripts. For example, to start a capped crowd sale, the starter of the sale can create an Identity Cell ([Identity](#identity)), and uses conditional query and aggregate functions to tell whether the sum of tokens belong to this specific identity is larger than or equal to crowd sale's goal.
+Users can create indices when they defin a data schema. The CKB provides extra support for indexed properties, such as conditional query and/or aggregate functions which can be used in validators or `owner_lock` / `data_lock` scripts. For example, to start a capped crowd sale, the starter of the sale can create an Identity Cell ([Identity](#identity)), and uses conditional query and aggregate functions to tell whether the sum of tokens belong to this specific identity is larger than or equal to crowd sale's goal.
 
 ## Identity
 
