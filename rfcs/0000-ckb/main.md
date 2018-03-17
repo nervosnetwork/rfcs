@@ -44,7 +44,7 @@ CKB nodes together form a peer to peer distributed network to relay and broadcas
 
 ### A New DApp Paradigm
 
-CKB proposes a new distributed application paradigm. The paradigm consists of the following five components:
+CKB proposes a new decentralized application paradigm. The paradigm consists of the following five components:
 
 * [Cell](#cell)
 * [Type](#type)
@@ -52,7 +52,7 @@ CKB proposes a new distributed application paradigm. The paradigm consists of th
 * [Generator](#generator)
 * [Identity](#identity)
 
-With those five components, we completely decouple distributed applications into 3 aspects: computation, storage and identity. On top of this, computation is further divided into state generation (Generator) and state validation (Validator); Storage (Cell) is made more generic to support any structured (Type) data. The DApps in the CKB use Types to define the appropriate data structure and store application data in Cells. The application logic is implemented with Generators, and the state validation logic is implemented with Validators. Generators run on the client side to generate new states, which get packaged to transactions and broadcast to the entire network. The nodes in CKB network first authenticate the submitter of the transaction, then validate the new states in the transaction with Validators. Once the validation passes, new states are stored into the CKB.
+With those five components, we completely decouple decentralized applications into 3 aspects: computation, storage and identity. On top of this, computation is further divided into state generation (Generator) and state validation (Validator); Storage (Cell) is made more generic to support any structured (Type) data. The DApps in the CKB use Types to define the appropriate data structure and store application data in Cells. The application logic is implemented with Generators, and the state validation logic is implemented with Validators. Generators run on the client side to generate new states, which get packaged into transactions and broadcast to the entire network. Consensus nodes in CKB network first authenticate the submitter of the transaction, then validate new states in the transaction with Validators. Once the validation passes, new states are stored into the CKB.
 
 The CKB's design of data flow and economic incentives is focused on states - transactions store new states, instead of the events that trigger the state machine. Therefore, the CKB blockchain stores state directly, and states are synchronized together with the blocks, with no need for extra state synchronization protocols. This reduces complexity of the system and increases system availability. A DApp's states are stored in Cells. The Generators and Validators are pure functions without internal states, relying entirely on the inputs to produce outputs, and can be easily combined to form more complicated logics. CKB's computation paradigm is very close to the Lambda Calculus, which can achieve the same computation capability as Turing machine.
 
