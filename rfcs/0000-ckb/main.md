@@ -7,7 +7,7 @@ A general purpose common knowledge base.
 
 ## Abstract
 
-This document provides an overview to CKB, the core component of Nervos project. Nervos is a distributed application network with layered architecture, and CKB is the foundational layer of Nervos, as a general purpose common knowledge base to provide data, asset and identity service for applications.
+This document provides an overview to CKB, the core component of the Nervos project. Nervos is a decentralized application platform with a layered architecture. CKB is the foundational layer of Nervos, as a general purpose common knowledge base to provide data, asset and identity services.
 
 ## Background
 
