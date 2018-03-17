@@ -127,7 +127,7 @@ Full nodes on the CKB only needs P1CS to validate transactions. They can deploy 
 
 ## Type
 
-CKB provides a type system for cells and users can define their own types. With the type system, we can define different structure of common knowledge and their corresponding validation rules.
+CKB provides a type system for cells and users can define their own types. With the type system, we can define different structures of common knowledge and their corresponding validation rules.
 
 To define a new cell type we must specify two essential components:
 
