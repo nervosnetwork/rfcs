@@ -37,8 +37,8 @@ Based on all above, we conceived and designed Nervos CKB with a completely decou
 Nervos CKB (CKB for short) is designed as a general purpose common knowledge base ([Appendix: Common Knowledge Base](#appendix-common-knowledge-base)). The CKB network consists of three types of nodes:
 
 * Archive Nodes: Full nodes on the CKB network. They validate new blocks and transactions, relay blocks and transactions, and keep all historical transactions on disk. Archive Nodes can increase the overall robustness of the system, and provide query services for historical data.
-* Consensus Nodes: Nodes participate in CKB consnesus protocol. Consensus Nodes listen to new transactions and package them to blocks, and achieve consensus on new blocks. Consensus Nodes don't have to store all the transaction history.
-* Light Clients: Users interact with the CKB network with Light Clients. They store only very limited data, and can run on desktop computers or mobile devices.
+* Consensus Nodes: Nodes that participate in the CKB consnesus protocol. Consensus Nodes listen to new transactions, package them to blocks, and achieve consensus on new blocks. Consensus Nodes don't have to store the entire transaction history.
+* Light Clients: Users interact with the CKB network with Light Clients. They store only very limited data, and run on desktop computers or mobile devices.
 
 CKB nodes together form a peer to peer distributed network to relay and broadcast blocks and transactions. Consensus Nodes run a hybrid consensus protocol ([hybrid consensus](#hybrid-consensus)), to reach consensus on newly created blocks at a certain time interval. The new block will be acknowledged by all nodes and added to the end of CKB blockchain. The transactions in the new block will update CKB's states.
 
