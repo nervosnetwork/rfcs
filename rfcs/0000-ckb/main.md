@@ -140,18 +140,18 @@ The data schema defines the data structure of cells in this type, so that the va
 
 ### Index
 
-Users can create indices when they defin a data schema. The CKB provides extra support for indexed properties, such as conditional query and/or aggregate functions which can be used in validators or `owner_lock` / `data_lock` scripts. For example, to start a capped crowd sale, the starter of the sale can create an Identity Cell ([Identity](#identity)), and uses conditional query and aggregate functions to tell whether the sum of tokens belong to this specific identity is larger than or equal to crowd sale's goal.
+Users can create indices when they defin a data schema. The CKB provides extra support for indexed fields, such as conditional query and/or aggregate functions which can be used in validators or `owner_lock` / `data_lock` scripts. For example, to start a capped crowd sale, the starter of the sale can create an Identity Cell ([Identity](#identity)), and use conditional query and aggregate functions to tell whether the sum of tokens belong to this specific identity is larger than or equal to crowd sale's goal.
 
 ## Identity
 
-Identity is a System Type. Users can create any number of identity cells to represent themselves, which can be used as other cell's `data_lock`/`owner_lock` scripts. If a cell use an identity cell as its `*_lock` script, its update or transfer requires unlock script corresponding to the identity cell's `data_lock` (Figure 3).
+Identity is a System Type. Users can create any number of identity cells to represent themselves, which can be used as other cell's `data_lock`/`owner_lock` scripts. If a cell uses an identity cell as its `*_lock` script, its update or transfer requires unlock script of the identity cell's `data_lock` (Figure 3).
 
-Identity in the CKB is generalized identity that could represent any characteristic of individuals or machines. Identity cell is the core component of NIP (see Nervos Identity Protocol Paper for details). With NIP, the Nervos network brings in the CA certificates system to be compatible with the current PKI system. Users can have identities in CKB, and decentralized applications can be built on top of those identities. User can store their public profile or digest of profile in identity cell, only provides details to decentralized applications while neccessary.
+Identity in the CKB is generalized identity that could represent any sides of individuals or machines. Identity cell is the core component of the NIP (see Nervos Identity Protocol Paper for details). With the NIP, the Nervos network brings in the CA certificates system to be compatible with the current PKI system. Users can have identities in CKB, and decentralized applications can be built on top of those identities. Users can store their public profiles or digests of profiles in identity cells, and only provide details to decentralized applications when neccessary.
 
 ![Figure 3. Identity Cell](fig3.png)
 <div align="center">Figure 3. Identity Cell</div>
 
-Cell is a more generic storage model compare to UTXO or account. Both UTXO and account model can express relationships between assets and their owners. UTXO model starts with asset to define ownership (lock script), while account model starts with owner to define assets (balance). UTXO model makes the ledger history more clear, but its lack of explicit accounts makes its already inexpressive scripts harder to use. There's also no way to store account metadata such as authorizations conveniently. Account model is easy to understand, supports authorizations and identities well, but not friendly to parallellism. Cell with types and identity takes the best of two worlds, creates a more generic data model.
+Cell is a more generic storage model compared to the UTXO or the account model. Both the UTXO and the account models can express relationships between assets and their owners. The UTXO model starts with assets to define ownerships (with the lock script), while the account model starts with owners to define assets (with the balance). The UTXO model makes the ledger history more clear, but its lack of explicit accounts makes its already inexpressive scripts harder to use. There's also no way to store account metadata such as authorizations conveniently. The account model is easy to understand, supports authorizations and identities well, but is not easy to process in parallel. The Cell model, with types and identity takes the best of both worlds, to create a more generic data model.
 
 ## Transaction
 
