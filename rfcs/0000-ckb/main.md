@@ -156,17 +156,17 @@ Cell is a more generic storage model compared to the UTXO or the account model. 
 
 ## Transaction
 
-Transactions express the transfer and/or update of cells. In a single transaction user can transfer cells to others, or update one or more cells data. A transaction includes the following:
+Transactions express updates and transfers of cells. In a single transaction, users can update data in one or more cells, or transfer cells to another user. A transaction includes the following:
 
-* deps: dependent cell set, provides read-only data needed by validation, must be references to P1 cells and/or user inputs.
-* inputs: input cell set, includes cells to be transfered and/or updated, must be references to P1 cells with corresponding unlock scripts.
+* deps: dependent cell set, provides read-only data that validation needs. They must be references to P1 cells or user inputs.
+* inputs: input cell set, includes cells to be transfered and/or updated. They must be references to P1 cells with corresponding unlock scripts.
 * outputs: output cell set, includes all newly created P1 cells.
 
-Because cells are immutable, we can't modify cells directly, instead we create new versions of cells. All of cell versions can be linked together, forming a "cell version chain": a cell capacity transfer created the cell's first version, and following updates became its historical versions. The head of the cell version chain is its current version. The CKB is the set of all cell version chains. The set of all cell heads is the current version of the CKB.
+Because cells are immutable, we can't modify cells directly. Instead, we create new versions of cells. All cell versions can be linked together, forming a "cell version chain": a cell capacity transfer creates the cell's first version, and following updates become its historical versions. The head of the cell version chain is its current version. The CKB is the set of all cell version chains. The set of all cell heads is the current version of the CKB.
 
-The `deps` and `inputs` in CKB transactions make it easier for transaction dependency determination and parallel transaction processing (Figure 4). Different types of cells can be mixed and included in a single Transaction to achieve atomic operation across types.
+The `deps` and `inputs` in CKB transactions make it easier for nodes to determine transaction dependencis and proform parallel transaction processing (Figure 4). Different types of cells can be mixed and included in a single transaction to achieve atomic operation across types.
 
-The design of CKB cell model and transactions is friendly to light clients. Since all the states are in blocks, block synchronization also accomplishes state synchronization. Light clients only need to synchronize blocks, and don't need to perform state transition computations. If we only stored events in blocks, we would've needed full nodes to also support state synchronization. This extra protocol can be difficult for large deployments, because the incentive to do so is not defined within blockchain protocol. We define state synchronization in the protocol itself, and this makes light nodes and full nodes more equal, leading to a more robust and distributed system. 
+The design of the CKB cell model and transactions is friendly to light clients. Since all the states are in blocks, block synchronization also accomplishes state synchronization. Light clients only need to synchronize blocks, and don't need to perform state transition computations. If we only stored events in blocks, we would've needed full nodes to also support state synchronization. This extra protocol can be difficult for large deployments, because the incentive to do so is not defined within the blockchain protocol. CKB defines state synchronization in the protocol itself, and this makes light nodes and full nodes more equal, leading to a more robust and decentralized system.
 
 ![Figure 4. Transaction Parallelism and Conflict Detection](fig4.png)
 <div align="center">Figure 4. Transaction Parallelism and Conflict Detection</div>
