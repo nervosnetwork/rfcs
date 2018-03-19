@@ -442,4 +442,291 @@ end
 
 ### Voting
 
-Voting 是用户使用 Capacity 进行投票，在结果出来之前，用户的 Capacity 被锁定，当投票结束，同时生成投票结果，被释放用户被锁定的空间。
+Voting 是参于者在一段时间类锁定 Cell Capacity 进行投票。
+
+一次投票涉及三种类型的 Cell
+
+- Poll: 发起投票，包含投票选项数量，投票截止日期都信息
+- Vote: 选票
+- Tally: 统票结果
+
+难点在于保证 Tally 包含所有满足条件的选票，这里使用的策略是任何人都可以通过举出一个反例，来销毁无效的统票结果，举报者可以获得 Tally 的 Cell 空间。
+
+Poll 包含属性
+
+- `choices_amount` 整数，选项数量，这里设计的是一个简单的单选投票，Vote 可以从 1 到 `choices_amount` 中进行选择。
+- `tally_start` 整数，Tally 不能在这个指定的区块高度之前创建
+- `tally_end` 整数，Tally 不能在这个指定的区块高度之后创建
+
+Vote 包含属性
+
+- `poll_outpoint` 指向 Poll，包含 `transaction_hash` 和 `cell_index` 两个子属性。
+- `in_tally` boolean，记录是否包含在 Tally 中，用于统票记录
+
+Tally 包含属性
+
+- `result` 统票结果。是个数组，长度等于 `choices_amount`，依次是各个选项的得票。有效票是在 Poll 创建之后，到 `tally_start` 之前创建的 Vote Cell，计票为 Vote 的 capacity 乘以有效锁定期，有效锁定期等于 `tally_end` - 创建高度。
+
+Schema 定义如下
+
+```
+{
+  Poll = {
+    type = "string=Poll",
+    choices_amount = "number",
+    tally_start = "number"
+  },
+  Vote = {
+    type = "string=Vote",
+    choice = "number",
+    poll_outpoint = {
+      transaction_hash = "string",
+      cell_index = "number"
+    },
+    in_tally = "boolean"
+  },
+  Tally = {
+    poll_start = "number",
+    tally_start = "number"
+    poll_outpoint = {
+      transaction_hash = "string",
+      cell_index = "number"
+    },
+    result = "number[]",
+  }
+}
+```
+
+合约允许下列操作组：
+
+- 创建 Poll
+- 销毁 Poll
+- 创建 Vote
+- 销毁 Vote
+- 统票: 销毁 Poll，创建 Tally，同时转换 Vote 修改 `in_tally` 为 true
+- 举报统票结果：提交一个反例 Vote，转换 Vote 并销毁 Tally
+- 取消统票结果：需要分两步，先 Transform 为 result 为空的 Tally，然后再销毁
+
+对 Lock 的要求：
+
+- Vote 需要设置 Recipient 并且 Recipient 为空，这样 Poll 所有者可以转换 Vote 来创建 Tally；任何人都可以举报统票结果
+- Tally 需要设置 Lock 为空，同时设置一个 Recipient Lock 用于两步销毁。
+
+示例 Validator 如下
+
+```
+-- 创建 Poll
+local function validate_creating_poll(module_id, group)
+  if
+    #group == 1 and
+    group[1].input == nil and
+    group[1].output ~= nil and
+    group[1].output.module_id == module_id
+  then
+    local output_data = load(group[1].output.data)()
+
+    if output_data.type == "Poll" then
+      return output_data.choices_amount > 0 and
+        output_data.tally_start > 0 and
+        output_data.tally_end > output_data.tally_start
+    end
+  end
+
+  return false
+end
+
+-- 销毁 Poll
+local function validate_destroying_poll(module_id, group)
+  if
+    #group == 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id
+  then
+    local input_data = load(group[1].input.data)()
+
+    return input_data.type == "Poll"
+  end
+
+  return false
+end
+
+-- 创建 Vote
+local function validate_creating_vote(module_id, group)
+  if
+    #group == 1 and
+    group[1].input == nil and
+    group[1].output ~= nil and
+    group[1].output.module_id == module_id
+  then
+    local output_data = load(group[1].output.data)()
+
+    if output_data.type == "Vote" then
+      return output_data.poll_outpoint ~= nil and
+        output_data.in_tally == false
+    end
+  end
+
+  return false
+end
+
+-- 销毁 Vote
+local function validate_destroying_vote(module_id, group)
+  if
+    #group == 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id
+  then
+    local input_data = load(group[1].input.data)()
+
+    return input_data.type == "Vote"
+  end
+
+  return false
+end
+
+-- 统票
+local function validate_creating_tally(module_id, group)
+  if
+    #group > 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id and
+    group[1].output ~= nil and
+    group[1].output.module_id == module_id
+  then
+    local poll = group[1].input
+    local tally = group[1].output
+    local poll_data = load(poll.data)()
+    local tally_data = load(tally.data)()
+
+    if poll_data.type ~= "Poll" or
+      tally_data.type ~= "Tally" or
+      tally_data.poll_start ~= poll.height or
+      tally_data.tally_start ~= poll_data.tally_start or
+      tally_data.poll_outpoint == nil or
+      tally_data.poll_outpoint.transaction_hash = poll.outpoint.transaction_hash or
+      tally_data.poll_outpoint.cell_index = poll.outpoint.cell_index or
+    then
+      return false
+    end
+
+    local reult = {}
+    for i = 1, poll.choices_amount do
+      result[i] = 0
+    end
+    for i = 2, #group do
+      if group[i].input == nil or
+        group[i].input.module_id ~= module_id or
+        group[i].output == nil or
+        group[i].output.module_id ~= module_id
+      then
+        return false
+      end
+      local vote_in = group[i].input
+      local vote_in_data = load(vote_in.data)()
+      local vote_out = group[i].output
+      local vote_out_data = load(vote_out.data)()
+
+      if vote_data.type == "Vote" and
+        vote_in_data.choice >= 1 and
+        vote_in_data.choice <= poll_data.choices_amount and
+        vote_in_data.in_tally == false and
+        vote_out_data.in_tally == true and
+        vote_in.height > tally_data.poll_start and
+        vote_in.height < tally_data.tally_start and
+        vote_in.poll_inpoint.transaction_hash == tally_data.poll_inpoint.transaction_hash and
+        vote_in.poll_inpoint.cell_index == tally_data.poll_inpoint.cell_index
+      then
+        result[vote_in_data.choice] = result[vote_in_data.choice] + vote_in.capacity * (poll_data.tally_end - vote_in.height)
+      end
+    end
+
+    if #tally_data.result ~= #result then
+      return false
+    end
+    for i = 1, #result do
+      if result[i] ~= tally_data.result[i] then
+        return false
+      end
+    end
+
+    return true
+  end
+
+  return false
+end
+
+-- 举报统票
+local function validate_slashing_tally(module_id, group)
+  if
+    #group == 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id and
+    group[1].output == nil and
+    group[2].input ~= nil and
+    group[2].input.module_id == module_id and
+    group[2].output ~= nil and
+    group[2].output.module_id == module_id
+  then
+    local tally = group[1].input
+    local vote_in = group[2].input
+    local vote_out = group[2].output
+
+    local tally_data = load(tally.data)()
+    local vote_in_data = load(vote_in.data)()
+    local vote_out_data = load(vote_out.data)()
+
+    if tally.type ~= "Tally" or
+      vote_in_data.type ~= "Vote" or
+      vote_out_data.type ~= "Vote"
+    then
+      return false
+    end
+
+    return vote_in_data.in_tally == false and
+      vote_in.height
+      vote_in.height > tally_data.poll_start and
+      vote_in.height < tally_data.tally_start and
+      tally_data.poll_outpoint ~= nil and
+      vote_in_data.poll_outpoint.transaction_hash == tally_data.poll_outpoint.transaction_hash and
+      vote_in_data.poll_outpoint.cell_index == tally_data.poll_outpoint.cell_index
+  end
+
+  return false
+end
+
+-- 取消统票
+local function validate_destroying_tally(module_id, group)
+  if
+    #group == 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id
+  then
+    local input_data = load(group[1].input.data)()
+
+    if input_data.type ~= "Tally" then
+      return false
+    end
+
+    -- Transform
+    if group[2].output ~= nil then
+      local output_data = load(group[1].output.data)()
+      return input_data.result ~= nil and output_data.result == nil
+    end
+
+    -- Destroy
+    return input_data.result == nil
+  end
+
+  return false
+end
+
+return function(module_id, group)
+  return validate_creating_poll(module_id, group) or
+    validate_destroying_poll(module_id, group) or
+    validate_creating_vote(module_id, group) or
+    validate_destroying_vote(module_id, group) or
+    validate_creating_tally(module_id, group) or
+    validate_slashing_tally(module_id, group) or
+    validate_destroying_tally(module_id, group)
+end
+```
