@@ -169,6 +169,12 @@ Input Cell 是 table 或者 `nil`，当为 table 时包含属性：
 - `cell` Lua table, Cell 结构体
 - `unlock` Lua string, Unlock 证明的二进制，类型是 Lua string
 - `height` Lua number, Input Cell 作为输出的 Create/Transform 操作所在区块的高度
+- `outpoint` Lua table, Input Cell 所在交易的 Hash 已经 Cell 在该交易中的位置
+
+Outpoint 包含属性：
+
+- `transaction_hash` 输出 Cell 的 Transaction Hash
+- `cell_index` 输出 Cell 在 Transaction 中的位置
 
 Output Cell 同样是 table 或者 `nil`，当为 table 时包含属性：
 
@@ -226,7 +232,7 @@ Banking 是中心化的代币发行。代币的增发需要中心授权，销毁
 
 这里使用一个模块来管理一种代币，不同代币属于不同的模块。下面以 Banking 来代称某个代币的模块。
 
-Banking 模块需要对代币的发行和销毁有中心化的授权，这个可以使用 Module 模块中 Token Cell 来作为发行令牌 (MintToken) 和销毁使用的令牌 (BurnToken)。因为 Token 的生成需要 Module Cell 授权，保证了中心化的授权。
+Banking 模块需要对代币的发行和销毁有中心化的授权，这个可以使用 Module 模块中 Token Cell 来作为发行令牌 (MintToken) 和销毁使用的令牌 (BurnToken)。因为 Token 的生成需要 Module Cell 授权，保证了中心化的授权。Token 通过 Recipient Lock 保证授权给了指定的用户。
 
 持有 Token 可以用简单的数字来表示，在 Validator 需要检查所有的组中输入 Cell 的 Token 总额必须等于输出 Cell 的 Token 总额。
 
@@ -243,7 +249,7 @@ Schema 定义如下：
     value = "number"
   },
   Coin = {
-    type = "string=Coin"
+    type = "string=Coin",
     value = "number"
   }
 }
@@ -307,7 +313,132 @@ end
 
 ### Crowdfunding
 
-Crowdfunding 是众筹 Capacity 的应用，发起人可以设定目标，当达到目标，发起人可以获得所有 Cell，如果没有达到目标，众筹取消。
+Crowdfunding 是众筹 Capacity 的应用，这里只考虑最简单的情况：发起人可以设定目标，当达到目标，发起人可以获得所有 Cell 的 Capacity，发起人可以取消众筹。
+
+模块会有两种类型的 Cell，Fund 是发起的众筹，Share 是投资人投入的份额。Fund 在 data 中保存目标，Share 在 data 中保存投资的目标 Fund 的地址，也就是 Outpoint。Schema 定义如下
+
+```
+{
+  Fund = {
+    type = "string=Fund",
+    target = "number"
+  },
+  Share = {
+    type = "string=Share",
+    fund_outpoint = {
+      transaction_hash = "string",
+      cell_index = "number"
+    }
+  }
+}
+```
+
+Fund 能收集 Share 必须能提供 Lock 的证明，所以 Share 的 Lock 必须是 Fund 和 Share 都知道如何提供证明，最简单的就是设置为空。而 Share 要支持撤回，不许限制 Share 要么是随 Fund 一起销毁，要么是被原来的所有者销毁，为了满足 Lock 的限制，可以这样构造 Share Cell:
+
+- Lock 为空，所以 Fund 的所有者可以在满足合约条件的情况下销毁 Share
+- Share 设置 Recipient Lock，允许 Transform 将 `fund_outpoint` 设置为空
+- 允许单独销毁 `fund_outpoint` 为空的 Share
+
+通过组合后两步可以实现撤回。根据 Volatile Cell 的规则，销毁需要提供 Lock 证明，转换需要提供 Recipient Lock，而合约限制了不能随意销毁 Share。
+
+合约允许以下形式的操作组
+
+- 发起众筹：创建 Fund Cell，设定目标
+- 取消众筹：销毁 Fund Cell
+- 完成众筹：同时销毁 Fund 和 Share Cell，要满足 Share 的 Capacity 之和达到目标，并且都指向 Fund。Fund 所有者可以在同一个 Transaction 的其它组中转移销毁所获得的 Cell 空间。
+- 申领份额：创建 Share Cell
+- 取消份额：转换 Share Cell，将 `fund_outpoint` 设置为空。注意设置输出 Cell 的 Lock 不然任何人都可以销毁取走 Cell 的空间。
+- 取回份额：销毁 `fund_outpoint` 为空的 Share Cell
+
+Validator 示例如下
+
+```
+return function(module_id, group)
+  if
+    #group == 1 and
+    group[1].input == nil and
+    group[1].output ~= nil and
+    group[1].output.module_id == module_id
+  then
+    local output_data = load(group[1].output.data)()
+
+    if output_data.type == "Fund" then
+      -- 发起众筹
+      return output_data.target and output_data.target > 0
+    else if output_data.type == "Share" then
+      -- 申领份额
+      return output_data.fund_outpoint != nil and
+        output_data.fund_outpoint.transaction_hash != nil and
+        output_data.fund_outpoint.cell_index != nil and
+    end
+  end
+
+  if
+    #group == 1 and
+    group[1].output == nil and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id
+  then
+    local input_data = load(group[1].input.data)()
+
+    if output_data.type == "Fund" then
+      -- 取消众筹
+      return true
+    else if output_data.type == "Share" then
+      -- 取回份额
+      return output_data.fund_outpoint = nil
+    end
+  end
+
+  -- 取消份额
+  if
+    #group == 1 and
+    group[1].input ~= nil and
+    group[2].input.module_id == module_id and
+    group[1].output ~= nil and
+    group[2].output.module_id == module_id
+  then
+    return input_data.type == "Share" and output_data.type == "Share"
+  end
+
+  -- 完成众筹
+  if #group > 1 and
+    group[1].input ~= nil and
+    group[1].input.module_id == module_id and
+    group[1].output == nil
+  then
+    local fund_cell = group[1]
+    local fund_data = load(fund_cell.data)()
+    if fund_data.type ~= "Fund" then
+      return false
+    end
+
+    local remaining_target = fund_data.target
+    for i = 2, #group do
+      local share_cell = group[i]
+      if share_cell.input == nil or
+        share_cell.output ~= nil or
+        share_cell.input.module_id ~= module_id
+      then
+        return false
+      end
+      local share_data = load(share_cell.data)()
+      if share_data.type ~= "Share" or
+        share_data.fund_outpoint == nil or 
+        share_data.fund_outpoint.transaction_hash ~= fund_cell.outpoint.transaction_hash or 
+        share_data.fund_outpoint.cell_index ~= fund_cell.outpoint.cell_index
+      then
+        return false
+      end
+      remaining_target = remaining_target - share_cell.capacity
+    end
+
+    return remaining_target <= 0
+  end
+
+  return false
+end
+```
 
 ### Voting
 
