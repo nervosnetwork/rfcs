@@ -303,7 +303,7 @@ CKB supports light clients. CKB aims to use authenticatable data structure to or
 
 ## Summary
 
-Nervos CKB provides a common knowledge layer for an exciting decentralized application platform. The design of Nervos CKB focuses on states, with a more general storage model, more balanced incentives, and a more scalable architecture for decentralized applications.
+Nervos CKB provides a common knowledge layer for a next generation decentralized application platform. The design of Nervos CKB focuses on states, with a more general storage model, more balanced incentives, and a more scalable architecture for decentralized applications.
 
 ## References
 
