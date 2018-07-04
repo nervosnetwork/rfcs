@@ -29,7 +29,7 @@ This document provides an overview of the Nervos Common Knowledge Base (CKB), th
     3.2 Nervos Nodes
         3.2.1 Light client
     3.3 Hybrid consensus
-### 4. Token
+### 4. CKB Token
     4.1 Economics
     4.2 Governance
     4.3 Liquid Voting 
@@ -280,7 +280,7 @@ Note that CKB’s liquid voting is a tool to express community consensus, not on
 Please check the Nervos Governance Paper for details of the the liquid voting mechanism.
 ![Figure 7. Liquid Voting](images/fig7.png)
 <div align="center">Figure 7. Liquid Voting</div>
-Neuron Benefiting from the generality of the cell model, we may implement and store some CKB’s function modules in cells. We call this type of cells Neurons. Neurons are of a special cell type, and the user of neurons is the CKB itself.
+Benefiting from the generality of the cell model, we may implement and store some CKB’s function modules in cells. We call this type of cells Neurons. Neurons are of a special cell type, and the user of neurons is the CKB itself.
 
 When system upgrade proposals are implemented as neurons, the community votes on its deployment with liquid voting. After community consensus is achieved, new neurons will be deployed to provide new features or fix bugs. Fine grained neuron upgrades significantly lower CKB’s evolution friction.
 
@@ -294,7 +294,7 @@ Nervos CKB provides a common knowledge layer for a next generation decentralized
 4. Rafael Pass, Elaine Shi, “Thunderella: Blockchains with Optimistic Instant Confirmation”, 2017
 5. Bryan Ford, “Delegative Democracy”, 2002
 
-### **7. Appendix** 7
+### **7. Appendix** 
 #### **7.1  Common Knowledge Base**
 Common Knowledge is knowledge that’s accepted by everyone in a community. Participants in the community not only accept the knowledge themselves, but know that others in the community also accept the knowledge. Generally, by the way they are formed, there can be three types of common knowledge:
 
