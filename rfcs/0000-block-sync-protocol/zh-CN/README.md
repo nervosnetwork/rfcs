@@ -2,7 +2,7 @@
 
 术语说明
 
-- Chain: 以创世块开头的，由连续的块组成的链表。
+- Chain: 创世块开头，由连续的块组成的链。
 - Best Chain: 节点之间要达成最终一致的，满足共识验证条件的，PoW 累积工作量最高的，以共识的创世块开始的 Chain。
 - Best Header Chain: 累积工作量最高，由状态是 Connected, Downloaded 或者 Accepted 的块组成的 Chain。见下面块状态的说明。
 - Tip: Chain 最后一个块。Tip 可以唯一确定 Chain。
@@ -48,7 +48,7 @@
 
 因为代价小，同步 Headers 可以和所有的节点同时进行，在本地能构建出可信度非常高的，当前网络中所有分叉的全局图。这样可以对块下载进行规划，避免浪费资源在工作量低的分支上。
 
-连接块头这一步的目标是，当节点 Alice 连接到节点 Bob 之后，Alice 让 Bob 发送所有在 Bob 的 Best Chain 上，但是不在 Alice 的 Best Header Chain 上的块头，进行验证并确定这些块的状态是 Connected 还是 Invalid。
+连接块头这一步的目标是，当节点 Alice 连接到节点 Bob 之后，Alice 让 Bob 发送所有在 Bob 的 Best Chain 上，但是不在 Alice 的 **Best Header Chain** 上的块头，进行验证并确定这些块的状态是 Connected 还是 Invalid。
 
 Alice 在连接块头时，需要保持 Best Header Chain Tip 的更新，这样能减少收到已有块头的数量。
 
@@ -80,9 +80,9 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 连接块头时可能会出现以下一些异常情况：
 
-- Alice 观察到的 Bob Best Chain Tip 很长一段时间没有更新，或者时间很老。这种情况 Bob 无法提供有价值的数据，当连接树达到限制时，可以优先断开该节点的连接。
+- Alice 观察到的 Bob Best Chain Tip 很长一段时间没有更新，或者时间很老。这种情况 Bob 无法提供有价值的数据，当连接数达到限制时，可以优先断开该节点的连接。
 - Alice 观察到的 Bob Best Chain Tip 状态是 Invalid。这个判断不需要等到一轮 Connect Head 结束，任何一个分页发现有 Invalid 的块就可以停止接受剩下的分页了。因为 Bob 在一个无效的分支上，Alice 可以停止和 Bob 的同步，并将 Bob 加入到黑名单中。
-- Alice 收到块头全部都在自己的 Best Header Chain 上，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Header Chain 上的比例，高于一定阈值可以将对方加入到黑明单中。
+- Alice 收到块头全部都在自己的 Best Header Chain 上，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Header Chain 上的比例，高于一定阈值可以将对方加入到黑名单中。
 
 在收到块头消息时可以先做以下格式验证。
 
@@ -142,13 +142,25 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 当收到新块通知时，会出现父块状态时 Unknown 的情况，即 Orphan Block，这个时候需要立即做一轮连接块头的同步。收到 Compact Block 且父块就是本地的 Best Chain Tip 的时候可以尝试用交易池直接恢复，如果恢复成功，直接可以将三阶段的工作合并进行，否则就当作收到的只是块头。
 
-## 同步配置
+## 同步状态
+
+### 配置
 
 - `GENESIS_HASH`: 创世块哈希
 - `MAX_HEADERS_RESULTS`: 一条消息里可以发送块头的最大数量
 - `MAX_BLOCKS_TO_ANNOUNCE`: 新块通知数量不可超过该阈值
 - `BLOCK_DOWNLOAD_WINDOW`: 下载滑动窗口大小
 
+### 存储
+
+- 块状态树
+- Best Chain Tip，决定是否要下载块和采用块。
+- Best Header Chain Tip，连接块头是用来构建每轮第一个请求的 locator
+
+每个连接节点需要单独存储的
+
+- 观测到的对方的 Best Chain Tip
+- 上一次发送过的工作量最高的块头哈希
 
 ## 消息定义
 
