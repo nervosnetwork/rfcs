@@ -4,18 +4,19 @@
 
 - Chain: 以创世块开头的，由连续的块组成的链表。
 - Best Chain: 节点之间要达成最终一致的，满足共识验证条件的，PoW 累积工作量最高的，以共识的创世块开始的 Chain。
+- Best Header Chain: 累积工作量最高，由状态是 Connected, Downloaded 或者 Accepted 的块组成的 Chain。见下面块状态的说明。
 - Tip: Chain 最后一个块。Tip 可以唯一确定 Chain。
 - Best Chain Tip: Best Chain 的最后一个块。
 
 ## 同步概览
 
-块同步分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。
+块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。
 
 1. 连接块头 (Connect Header): 获得并验证块头，格式正确且 PoW 有效
 2. 下载块 (Download Block): 获得并验证完整的块。这里的验证不包含需要链上下文的验证。
 3. 采用块 (Accept Block): 在链上下文中验证块。
 
-分阶段执行的主要目的是先用比较小的代价排除最大作恶的可能行。举例来说，第一步连接块头是在整个同步中的工作量可能只有 5%，但是完成后能有 95% 的可信度认为同步成功的块都是有效的。
+分阶段执行的主要目的是先用比较小的代价排除最大作恶的可能行。举例来说，第一步连接块头是在整个同步中的工作量可能只有 5%，但是完成后能有 95% 的可信度认为块头对应的块是有效的。
 
 按照已经执行的阶段，块可以处于以下 5 种状态：
 
@@ -33,9 +34,9 @@
 
 ![](../images/block-status.jpg "Block Status")
 
-因为创世块必须相同，所有的块必然是组成由创世块为根的一颗树，如果块无法最终连接到创世块都可以丢弃不做处理。
+参与同步的节点创世块**必须**相同，所有的块必然是组成由创世块为根的一颗树，如果块无法最终连接到创世块都可以丢弃不做处理。
 
-参与同步的所有节点都会在本地构造这颗状态树，其中全部由 Accepted 块组成的工作量最大的链就是 Best Chain。
+参与节点都会在本地构造这颗状态树，其中全部由 Accepted 块组成的累积工作量最大的链就是 Best Chain。而由状态可以是 Connected, Downloaded 或 Accepted 块组成的累积工作量最大的链就是 Best Header Chain.
 
 下图是节点 Alice 构建的状态树的示例，其中标记为 Alice 的块是该节点当前的 Best Chain Tip。
 
@@ -47,13 +48,15 @@
 
 因为代价小，同步 Headers 可以和所有的节点同时进行，在本地能构建出可信度非常高的，当前网络中所有分叉的全局图。这样可以对块下载进行规划，避免浪费资源在工作量低的分支上。
 
-连接块头这一步的目标是，当节点 Alice 连接到节点 Bob 之后，Alice 让 Bob 发送所有在 Bob 的 Best Chain 上，但是不在 Alice 的 Best Chain 上的块头，进行验证并确定这些块的状态是 Connected 还是 Invalid。
+连接块头这一步的目标是，当节点 Alice 连接到节点 Bob 之后，Alice 让 Bob 发送所有在 Bob 的 Best Chain 上，但是不在 Alice 的 Best Header Chain 上的块头，进行验证并确定这些块的状态是 Connected 还是 Invalid。
+
+Alice 在连接块头时，需要保持 Best Header Chain Tip 的更新，这样能减少收到已有块头的数量。
 
 ![](../images/seq-connect-headers.jpg)
 
-上图是一轮连接块头的流程。节点应该定时和连接节点进行一轮同步。如果收到对方节点的新块通知，块在本地状态是 Unknown，应该立即开始一轮同步。
+上图是一轮连接块头的流程。完成了一轮连接块头后，节点之间应该通过新块通知保持之后的同步。
 
-以上图 Alice 从 Bob 同步为例，首先 Alice 将自己 Best Chain 中的块进行采样，将选中块的哈希作为消息内容发给 Bob。采样的基本原则是最近的块采样越密，越早的块越稀疏。比如可以取最后的 10 个块，然后从倒数第十个块开始按 2, 4, 8, … 等以 2 的指数增长的步长进行取样。下图中淡色处理的是没有被采样的块，一般创世块都会放到 Locator 当中。
+以上图 Alice 从 Bob 同步为例，首先 Alice 将自己 Best Header Chain 中的块进行采样，将选中块的哈希作为消息内容发给 Bob。采样的基本原则是最近的块采样越密，越早的块越稀疏。比如可以取最后的 10 个块，然后从倒数第十个块开始按 2, 4, 8, … 等以 2 的指数增长的步长进行取样。下图中淡色处理的是没有被采样的块，一般创世块都会放到 Locator 当中。
 
 ![](../images/locator.jpg)
 
@@ -63,18 +66,23 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 上图中未淡出的块是 Bob 要发送给 Alice 的块头，金色高亮边框的是最后共同块。其中列举了同步会碰到的三种情况：
 
-1. Bob 的 Best Chain Tip 在 Alice 的 Best Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
-2. Alice 的 Best Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Chain Tip。
-3. Alice 和 Bob 出现了分叉，最后共同块是发生发叉前的块。
+1. Bob 的 Best Chain Tip 在 Alice 的 Best Header Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
+2. Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
+3. Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
 
-如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是限制每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。
+如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是限制每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。如果某页最后一个块是 Best Header Chain Tip 或者 Best Chain Tip 的祖先，可以优化成用对应的 Tip 生成 locator 发送请求，减少收到已有块头的数量。
 
-在同步的同时，Alice 可以观察到 Bob 当前的 Best Chain Tip，即在每轮同步是最后收到的块。在连接块头时可能会出现以下一些异常情况：
+在同步的同时，Alice 可以观察到 Bob 当前的 Best Chain Tip，即在每轮同步时最后收到的块。如果 Alice 的 Best Header Chain Tip 就是 Bob 的 Best Chain Tip 时，Bob 因为没有块头可发，就无法观测到 Bob 目前的 Best Chain。所以在每轮连接块头同步的第一个请求时，**应该**从 Best Header Chain Tip 的父块开始构建，而不包含 Tip。
 
-- Alice 观察到的 Bob Best Chain Tip 很长一段时间没有更新。因为只有 Bob 能提供 Alice 没有的块头才会发送，说明 Bob 很长一段时间都无法提供有同步价值的块，Alice 可以停止和 Bob 的同步。
-- Alice 观察到的 Bob Best Chain Tip 很老，比如在 1 天前。这种情况一般是 Alice 和 Bob 出现了分叉。因为 Bob 并没有最新的块，Alice 可以停止和 Bob 的同步。
+在下面的情况下**必须**做新一轮的连接块头同步。
+
+- 收到对方的新块通知，但是新块的父块状态时 Unknown
+
+连接块头时可能会出现以下一些异常情况：
+
+- Alice 观察到的 Bob Best Chain Tip 很长一段时间没有更新，或者时间很老。这种情况 Bob 无法提供有价值的数据，当连接树达到限制时，可以优先断开该节点的连接。
 - Alice 观察到的 Bob Best Chain Tip 状态是 Invalid。这个判断不需要等到一轮 Connect Head 结束，任何一个分页发现有 Invalid 的块就可以停止接受剩下的分页了。因为 Bob 在一个无效的分支上，Alice 可以停止和 Bob 的同步，并将 Bob 加入到黑名单中。
-- Alice 收到块头全部都在自己的 Best Chain 上，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Chain 上的比例，高于一定阈值可以将对方加入到黑明单中。
+- Alice 收到块头全部都在自己的 Best Header Chain 上，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Header Chain 上的比例，高于一定阈值可以将对方加入到黑明单中。
 
 在收到块头消息时可以先做以下格式验证。
 
@@ -150,7 +158,7 @@ Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Com
 
 ### getheaders
 
-用于连接块头时向邻居节点请求块头。请求第一页，和收到后续页使用相同的 getheaders 消息，区别是第一页是给本地的 Best Chain Tip 生成 locator，而后续页是使用上一页的最后一个块生成 locator。
+用于连接块头时向邻居节点请求块头。请求第一页，和收到后续页使用相同的 getheaders 消息，区别是第一页是给本地的 Best Header Chain Tip 的父块生成 locator，而后续页是使用上一页的最后一个块生成 locator。
 
 - `locator`: 对 Chain 上块采用，得到的哈希列表
 
