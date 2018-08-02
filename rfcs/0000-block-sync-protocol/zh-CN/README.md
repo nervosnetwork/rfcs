@@ -169,7 +169,9 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 具体消息定义见参考实现，这里只列出同步涉及到的消息和必要的一些字段和描述。
 
-Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Compact Block 相关文档中说明。
+消息的发送是完全异步的，比如发送 `getheaders` 并不需要等待对方回复 `headers` 再发送其它请求，也不需要保证请求和回复的顺序关系，比如节点 A 发送了 `getheaders` 和 `getdata` 给 B，B 可以先发送 `block`，然后再发送 `headers` 给 A。
+
+Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Compact Block 相关文档中说明。
 
 ### getheaders
 
