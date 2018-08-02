@@ -140,7 +140,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 当节点的 Best Chain Tip 发生变化时，应该通过 push 的方式主动去通知邻居节点。为了避免通知重复的块，和尽量一次性发送邻居节点没有的块，可以在每次发送新块通知，已经在同步时每次回复块头信息时记录下最后一个发送给对方的块是什么。当 Best Chain Tip 发生变化时，只用通知上次发送的块和 Best Chain Tip 的最后共同块开始 (不含) 到 Best Chain Tip (含) 的块。根据要同通知块的数量的不同，使用不同的通知机制：
 
-- 数量为 1 且对方偏好使用 Compact Block，则使用 Compact Block
+- 数量为 1 且对方偏好使用 Compact Block [^1]，则使用 Compact Block
 - 其它情况直接发送块头列表，但要限制发送块的数量不超过某个阈值，比如 8，如果有 8 个或更多的块要通知，只通知最新的 7 个块。
 
 当收到新块通知时，会出现父块状态时 Unknown 的情况，即 Orphan Block，这个时候需要立即做一轮连接块头的同步。收到 Compact Block 且父块就是本地的 Best Chain Tip 的时候可以尝试用交易池直接恢复，如果恢复成功，直接可以将三阶段的工作合并进行，否则就当作收到的只是块头。
@@ -198,3 +198,5 @@ Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Com
 - `header` 块头
 - `transactions` 交易列表
 
+
+[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 BIP。
