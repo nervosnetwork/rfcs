@@ -10,11 +10,12 @@
 
 ## 同步概览
 
-块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。
+块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。每一阶段获得一部分块的信息，或者基于已有的块信息进行验证，或者两者同时进行。
 
-1. 连接块头 (Connect Header): 获得并验证块头，格式正确且 PoW 有效
-2. 下载块 (Download Block): 获得并验证完整的块。这里的验证不包含需要链上下文的验证。
-3. 采用块 (Accept Block): 在链上下文中验证块。
+
+1. 连接块头 (Connect Header): 获得块头，验证块头格式正确且 PoW 工作量有效
+2. 下载块 (Download Block): 获得块内容，验证完整的块，但是不依赖祖先块中的交易信息。
+3. 采用块 (Accept Block): 在链上下文中验证块，会使用到祖先块中的交易信息。
 
 分阶段执行的主要目的是先用比较小的代价排除最大作恶的可能行。举例来说，第一步连接块头是在整个同步中的工作量可能只有 5%，但是完成后能有 95% 的可信度认为块头对应的块是有效的。
 
@@ -90,7 +91,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 - 所有块和第一个块的父块在本地状态树中的状态不是 Invalid
 - 第一个块的父块在本地状态树中的状态不是 Unknown，即同步时不处理 Orphan Block。
 
-然后验证块头满足共识规则，PoW 是有效的。因为不处理 Orphan Block，难度调整也可以在这里进行验证。
+这一步的验证包括检查块头满足共识规则，PoW 有效。因为不处理 Orphan Block，难度调整也可以在这里进行验证。
 
 ![](../images/connect-header-status.jpg)
 
@@ -100,7 +101,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 ## 下载块
 
-完成连接块头后，一些观测到的邻居节点的 Best Chain Tip 在状态树上的分支是以一个或者多个 Connected 块结尾的，即 Connected Chain，这时可以进入下载块流程，向邻居节点请求完整的块，进行除链上下文无关的验证。
+完成连接块头后，一些观测到的邻居节点的 Best Chain Tip 在状态树上的分支是以一个或者多个 Connected 块结尾的，即 Connected Chain，这时可以进入下载块流程，向邻居节点请求完整的块，并进行必要的验证。
 
 因为有了状态树，可以对同步进行规划，避免做无用工作。一个有效的优化就是只有当观测到的邻居节点的 Best Chain 的累积工作量大于本地的 Best Chain 的累积工作量才进行下载块。而且可以按照 Connected Chain 累积工作量为优先级排序，优先下载累积工作量更高的分支，只有被验证为 Invalid 或者因为下载超时无法进行时才去下载优先级较低的分支。
 
@@ -116,7 +117,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 下载块如果出现交易对不上 Merkle Hash Root，或者能对上但是有重复的交易 txid 的情况，并不能说明块是无效，只是没有下载到正确的块内容。可以将对方加入黑名单，但是不能标记块的状态为 Invalid，否则恶意节点可以通过发送错误的块内容来污染节点的状态树。
 
-在这一阶段可以进行除了链上下文无关的其它所有验证。链上下文相关的验证就是需要使用到祖先块中的信息才能进行的验证，包括任何需要交易 input 具体内容的验证，比如交易手续费，双花等。不进行链上下文相关验证保证了下载的并发性。
+这一阶段需要验证交易列表和块头匹配，但是不需要做任何依赖祖先块中交易内容的验证，这些验证回放在下一阶段进行。
 
 可以进行的验证比如 Merkel Hash 验证，交易 txid 不能重复，交易列表不能为空，所有交易不能 inputs outputs 同时为空，只有第一个交易可以是 generation transaction 等等。
 
@@ -125,6 +126,8 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 ## 采用块
 
 在上一阶段中会产生一些以一个或多个 Downloaded 状态的块结尾的链，以下简称为 Downloaded Chain。如果这些链的累积工作量大于 Best Chain Tip 就可以进行该阶段完整的验证链的合法性。如果有多个这样的链，选取累积工作量最高的。
+
+这一阶段需要完成所有剩余的验证，包括所有依赖于历史交易内容的规则。
 
 因为涉及到 UTXO (未消耗掉的交易 outputs) 的索引，这一步的验证开销是非常大的。为了简化系统，可以只保留一套 UTXO 索引，尝试将本地的 Best Chain Tip 进行必要回退然后将 Downloaded Chain 上的块一次验证然后添加到 Best Chain 上。如果中间有块验证失败则 Downloaded Chain 上剩余的块也就都是 Invalid 状态不需要再继续。这时 Best Chain Tip 甚至会低于之前的 Tip，可以采取以下的方案处理：
 
@@ -194,5 +197,4 @@ Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Com
 
 - `header` 块头
 - `transactions` 交易列表
-
 
