@@ -137,7 +137,24 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 ## 新块通知
 
-当节点的 Best Chain Tip 发生变化时，应该通过 push 的方式主动去通知邻居节点。为了避免通知重复的块，和尽量一次性发送邻居节点没有的块，可以在每次发送新块通知，已经在同步时每次回复块头信息时记录下最后一个发送给对方的块是什么。当 Best Chain Tip 发生变化时，只用通知上次发送的块和 Best Chain Tip 的最后共同块开始 (不含) 到 Best Chain Tip (含) 的块。根据要同通知块的数量的不同，使用不同的通知机制：
+当节点的 Best Chain Tip 发生变化时，应该通过推送的方式主动去通知邻居节点。为了避免通知重复的块，和尽量一次性发送邻居节点没有的块，可以记录给对方发送过的累积工作量最高的块头 (Best Sent Header)。发送过不但指新块通知发送过，也包括在连接块头时回复给对方的块头。
+
+因为可以认为对方节点已经知道 Best Sent Header，及其祖先节点，所以发送新块通知时可以排除掉这些块。
+
+![](../images/best-sent-header.jpg "Best Sent Header")
+
+上面的例子中标记为 Alice 的块是节点 Alice 的 Best Chain Tip。标记为 Best Sent
+to Bob 是记录的发送给 Bob 工作量最高的块头。其中未淡化的块是 Alice 需要通知给
+Bob 的新块。数字对应的每一步说明如下
+
+1. 开始时 Alice 只有 Best Chain Tip 需要发送
+2. Alice 还没有来得及发送，就又多了一个新块，这时需要发送 Best Chain 最后两个
+   块头。
+3. Alice 将最后两个块头发送给了 Bob 并同时更新了 Best Sent to Bob。
+4. Alice 的 Best Chain 发生了分支切换，只需要发送和 Best Sent to Bob 最后共同
+   块之后的块。
+
+基于连接的协商参数和要通知的新块数量：
 
 - 数量为 1 且对方偏好使用 Compact Block [^1]，则使用 Compact Block
 - 其它情况直接发送块头列表，但要限制发送块的数量不超过某个阈值，比如 8，如果有 8 个或更多的块要通知，只通知最新的 7 个块。
@@ -162,7 +179,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 每个连接节点需要单独存储的
 
 - 观测到的对方的 Best Chain Tip
-- 上一次发送过的工作量最高的块头哈希
+- 上一次发送过的工作量最高的块头哈希 Best Sent Header
 
 ## 消息定义
 
@@ -201,3 +218,4 @@ Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会�
 
 
 [^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 BIP。
+
