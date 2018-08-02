@@ -12,20 +12,19 @@
 
 块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。每一阶段获得一部分块的信息，或者基于已有的块信息进行验证，或者两者同时进行。
 
-
-1. 连接块头 (Connect Header): 获得块头，验证块头格式正确且 PoW 工作量有效
-2. 下载块 (Download Block): 获得块内容，验证完整的块，但是不依赖祖先块中的交易信息。
-3. 采用块 (Accept Block): 在链上下文中验证块，会使用到祖先块中的交易信息。
+1.  连接块头 (Connect Header): 获得块头，验证块头格式正确且 PoW 工作量有效
+2.  下载块 (Download Block): 获得块内容，验证完整的块，但是不依赖祖先块中的交易信息。
+3.  采用块 (Accept Block): 在链上下文中验证块，会使用到祖先块中的交易信息。
 
 分阶段执行的主要目的是先用比较小的代价排除最大作恶的可能行。举例来说，第一步连接块头是在整个同步中的工作量可能只有 5%，但是完成后能有 95% 的可信度认为块头对应的块是有效的。
 
 按照已经执行的阶段，块可以处于以下 5 种状态：
 
-1. Unknown: 在连接块头执行之前，块的状态是未知的。
-2. Invalid：任意一步中失败。当一个块标记为 Invalid，它的所有子孙节点也都标记为 Invalid。
-3. Connected: 连接块头成功，且该块到创世块的所有祖先块都必须是 Connected, Downloaded 或 Accepted 的状态。
-4. Downloaded: 下载块成功，且该块到创世块的所有祖先块都必须是 Downloaded 或者 Accepted 的状态。
-6. Accepted:  采用块成功，且该块到创世块的所有祖先块都必须是 Accepted 的状态。
+1.  Unknown: 在连接块头执行之前，块的状态是未知的。
+2.  Invalid：任意一步中失败。当一个块标记为 Invalid，它的所有子孙节点也都标记为 Invalid。
+3.  Connected: 连接块头成功，且该块到创世块的所有祖先块都必须是 Connected, Downloaded 或 Accepted 的状态。
+4.  Downloaded: 下载块成功，且该块到创世块的所有祖先块都必须是 Downloaded 或者 Accepted 的状态。
+5.  Accepted: 采用块成功，且该块到创世块的所有祖先块都必须是 Accepted 的状态。
 
 块的状态是会沿着依赖传递的。按照上面的编号，子块的状态编号一定不会大于父块的状态编号。首先某个快是无效的，那依赖它的子孙快自然也是无效的。另外同步的每一步代价都远远高于前一步，且每一步都可能失败。如果子节点先于父节点进入下一阶段，而父节点被验证为无效，那子节点上的工作量就浪费了。而且子快验证是要依赖父块的信息的。
 
@@ -67,9 +66,9 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 上图中未淡出的块是 Bob 要发送给 Alice 的块头，金色高亮边框的是最后共同块。其中列举了同步会碰到的三种情况：
 
-1. Bob 的 Best Chain Tip 在 Alice 的 Best Header Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
-2. Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
-3. Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
+1.  Bob 的 Best Chain Tip 在 Alice 的 Best Header Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
+2.  Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
+3.  Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
 
 如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是限制每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。如果某页最后一个块是 Best Header Chain Tip 或者 Best Chain Tip 的祖先，可以优化成用对应的 Tip 生成 locator 发送请求，减少收到已有块头的数量。
 
