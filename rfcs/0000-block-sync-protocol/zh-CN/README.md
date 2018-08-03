@@ -10,21 +10,21 @@
 
 ## 同步概览
 
-块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。
+块同步**必须**分阶段进行，采用 [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) 的方式。每一阶段获得一部分块的信息，或者基于已有的块信息进行验证，或者两者同时进行。
 
-1. 连接块头 (Connect Header): 获得并验证块头，格式正确且 PoW 有效
-2. 下载块 (Download Block): 获得并验证完整的块。这里的验证不包含需要链上下文的验证。
-3. 采用块 (Accept Block): 在链上下文中验证块。
+1.  连接块头 (Connect Header): 获得块头，验证块头格式正确且 PoW 工作量有效
+2.  下载块 (Download Block): 获得块内容，验证完整的块，但是不依赖祖先块中的交易信息。
+3.  采用块 (Accept Block): 在链上下文中验证块，会使用到祖先块中的交易信息。
 
 分阶段执行的主要目的是先用比较小的代价排除最大作恶的可能行。举例来说，第一步连接块头是在整个同步中的工作量可能只有 5%，但是完成后能有 95% 的可信度认为块头对应的块是有效的。
 
 按照已经执行的阶段，块可以处于以下 5 种状态：
 
-1. Unknown: 在连接块头执行之前，块的状态是未知的。
-  2. Invalid：任意一步中失败。当一个块标记为 Invalid，它的所有子孙节点也都标记为 Invalid。
-3. Connected: 连接块头成功，且该块到创世块的所有祖先块都必须是 Connected, Downloaded 或 Accepted 的状态。
-4. Downloaded: 下载块成功，且该块到创世块的所有祖先块都必须是 Downloaded 或者 Accepted 的状态。
- 6. Accepted:  采用块成功，且该块到创世块的所有祖先块都必须是 Accepted 的状态。
+1.  Unknown: 在连接块头执行之前，块的状态是未知的。
+2.  Invalid：任意一步中失败。当一个块标记为 Invalid，它的所有子孙节点也都标记为 Invalid。
+3.  Connected: 连接块头成功，且该块到创世块的所有祖先块都必须是 Connected, Downloaded 或 Accepted 的状态。
+4.  Downloaded: 下载块成功，且该块到创世块的所有祖先块都必须是 Downloaded 或者 Accepted 的状态。
+5.  Accepted: 采用块成功，且该块到创世块的所有祖先块都必须是 Accepted 的状态。
 
 块的状态是会沿着依赖传递的。按照上面的编号，子块的状态编号一定不会大于父块的状态编号。首先某个快是无效的，那依赖它的子孙快自然也是无效的。另外同步的每一步代价都远远高于前一步，且每一步都可能失败。如果子节点先于父节点进入下一阶段，而父节点被验证为无效，那子节点上的工作量就浪费了。而且子快验证是要依赖父块的信息的。
 
@@ -66,9 +66,9 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 上图中未淡出的块是 Bob 要发送给 Alice 的块头，金色高亮边框的是最后共同块。其中列举了同步会碰到的三种情况：
 
-1. Bob 的 Best Chain Tip 在 Alice 的 Best Header Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
-2. Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
-3. Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
+1.  Bob 的 Best Chain Tip 在 Alice 的 Best Header Chain 中，最后共同块就是 Bob 的 Best Chain Tip，Bob 没有块头可以发送。
+2.  Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
+3.  Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
 
 如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是限制每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。如果某页最后一个块是 Best Header Chain Tip 或者 Best Chain Tip 的祖先，可以优化成用对应的 Tip 生成 locator 发送请求，减少收到已有块头的数量。
 
@@ -90,7 +90,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 - 所有块和第一个块的父块在本地状态树中的状态不是 Invalid
 - 第一个块的父块在本地状态树中的状态不是 Unknown，即同步时不处理 Orphan Block。
 
-然后验证块头满足共识规则，PoW 是有效的。因为不处理 Orphan Block，难度调整也可以在这里进行验证。
+这一步的验证包括检查块头满足共识规则，PoW 有效。因为不处理 Orphan Block，难度调整也可以在这里进行验证。
 
 ![](../images/connect-header-status.jpg)
 
@@ -100,7 +100,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 ## 下载块
 
-完成连接块头后，一些观测到的邻居节点的 Best Chain Tip 在状态树上的分支是以一个或者多个 Connected 块结尾的，即 Connected Chain，这时可以进入下载块流程，向邻居节点请求完整的块，进行除链上下文无关的验证。
+完成连接块头后，一些观测到的邻居节点的 Best Chain Tip 在状态树上的分支是以一个或者多个 Connected 块结尾的，即 Connected Chain，这时可以进入下载块流程，向邻居节点请求完整的块，并进行必要的验证。
 
 因为有了状态树，可以对同步进行规划，避免做无用工作。一个有效的优化就是只有当观测到的邻居节点的 Best Chain 的累积工作量大于本地的 Best Chain 的累积工作量才进行下载块。而且可以按照 Connected Chain 累积工作量为优先级排序，优先下载累积工作量更高的分支，只有被验证为 Invalid 或者因为下载超时无法进行时才去下载优先级较低的分支。
 
@@ -114,9 +114,9 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 因为通过连接块头已经观测到了邻居节点的 Best Chain，如果在对方 Best Chain 中且对方是一个全节点，可以认为对方是能够提供块的下载的。在下载的时候可以把滑动窗口中的块分成小块的任务加到任务队列中，在能提供下载的节点之间进行任务调度。
 
-下载块可能会出现交易对不上 Merkle Hash Root 的情况，或者能对上但是有重复的交易 txid。这些情况并不能说明块是无效，只是没有下载到正确的块内容。可以将对方加入黑名单，但是不能标记块的状态为 Invalid。
+下载块如果出现交易对不上 Merkle Hash Root，或者能对上但是有重复的交易 txid 的情况，并不能说明块是无效，只是没有下载到正确的块内容。可以将对方加入黑名单，但是不能标记块的状态为 Invalid，否则恶意节点可以通过发送错误的块内容来污染节点的状态树。
 
-在这一阶段可以进行除了链上下文无关的其它所有验证。链上下文相关的验证就是需要使用到祖先块中的信息才能进行的验证，包括任何需要交易 input 具体内容的验证，比如交易手续费，双花等。不进行链上下文相关验证保证了下载的兵法性。
+这一阶段需要验证交易列表和块头匹配，但是不需要做任何依赖祖先块中交易内容的验证，这些验证回放在下一阶段进行。
 
 可以进行的验证比如 Merkel Hash 验证，交易 txid 不能重复，交易列表不能为空，所有交易不能 inputs outputs 同时为空，只有第一个交易可以是 generation transaction 等等。
 
@@ -125,6 +125,8 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 ## 采用块
 
 在上一阶段中会产生一些以一个或多个 Downloaded 状态的块结尾的链，以下简称为 Downloaded Chain。如果这些链的累积工作量大于 Best Chain Tip 就可以进行该阶段完整的验证链的合法性。如果有多个这样的链，选取累积工作量最高的。
+
+这一阶段需要完成所有剩余的验证，包括所有依赖于历史交易内容的规则。
 
 因为涉及到 UTXO (未消耗掉的交易 outputs) 的索引，这一步的验证开销是非常大的。为了简化系统，可以只保留一套 UTXO 索引，尝试将本地的 Best Chain Tip 进行必要回退然后将 Downloaded Chain 上的块一次验证然后添加到 Best Chain 上。如果中间有块验证失败则 Downloaded Chain 上剩余的块也就都是 Invalid 状态不需要再继续。这时 Best Chain Tip 甚至会低于之前的 Tip，可以采取以下的方案处理：
 
@@ -135,9 +137,26 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 ## 新块通知
 
-当节点的 Best Chain Tip 发生变化时，应该通过 push 的方式主动去通知邻居节点。为了避免通知重复的块，和尽量一次性发送邻居节点没有的块，可以在每次发送新块通知，已经在同步时每次回复块头信息时记录下最后一个发送给对方的块是什么。当 Best Chain Tip 发生变化时，只用通知上次发送的块和 Best Chain Tip 的最后共同块开始 (不含) 到 Best Chain Tip (含) 的块。根据要同通知块的数量的不同，使用不同的通知机制：
+当节点的 Best Chain Tip 发生变化时，应该通过推送的方式主动去通知邻居节点。为了避免通知重复的块，和尽量一次性发送邻居节点没有的块，可以记录给对方发送过的累积工作量最高的块头 (Best Sent Header)。发送过不但指新块通知发送过，也包括在连接块头时回复给对方的块头。
 
-- 数量为 1 且对方偏好使用 Compact Block，则使用 Compact Block
+因为可以认为对方节点已经知道 Best Sent Header，及其祖先节点，所以发送新块通知时可以排除掉这些块。
+
+![](../images/best-sent-header.jpg "Best Sent Header")
+
+上面的例子中标记为 Alice 的块是节点 Alice 的 Best Chain Tip。标记为 Best Sent
+to Bob 是记录的发送给 Bob 工作量最高的块头。其中未淡化的块是 Alice 需要通知给
+Bob 的新块。数字对应的每一步说明如下
+
+1. 开始时 Alice 只有 Best Chain Tip 需要发送
+2. Alice 还没有来得及发送，就又多了一个新块，这时需要发送 Best Chain 最后两个
+   块头。
+3. Alice 将最后两个块头发送给了 Bob 并同时更新了 Best Sent to Bob。
+4. Alice 的 Best Chain 发生了分支切换，只需要发送和 Best Sent to Bob 最后共同
+   块之后的块。
+
+基于连接的协商参数和要通知的新块数量：
+
+- 数量为 1 且对方偏好使用 Compact Block [^1]，则使用 Compact Block
 - 其它情况直接发送块头列表，但要限制发送块的数量不超过某个阈值，比如 8，如果有 8 个或更多的块要通知，只通知最新的 7 个块。
 
 当收到新块通知时，会出现父块状态时 Unknown 的情况，即 Orphan Block，这个时候需要立即做一轮连接块头的同步。收到 Compact Block 且父块就是本地的 Best Chain Tip 的时候可以尝试用交易池直接恢复，如果恢复成功，直接可以将三阶段的工作合并进行，否则就当作收到的只是块头。
@@ -160,13 +179,15 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 每个连接节点需要单独存储的
 
 - 观测到的对方的 Best Chain Tip
-- 上一次发送过的工作量最高的块头哈希
+- 上一次发送过的工作量最高的块头哈希 Best Sent Header
 
 ## 消息定义
 
 具体消息定义见参考实现，这里只列出同步涉及到的消息和必要的一些字段和描述。
 
-Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Compact Block 相关文档中说明。
+消息的发送是完全异步的，比如发送 `getheaders` 并不需要等待对方回复 `headers` 再发送其它请求，也不需要保证请求和回复的顺序关系，比如节点 A 发送了 `getheaders` 和 `getdata` 给 B，B 可以先发送 `block`，然后再发送 `headers` 给 A。
+
+Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Compact Block 相关文档中说明。
 
 ### getheaders
 
@@ -195,4 +216,6 @@ Compact Block 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Com
 - `header` 块头
 - `transactions` 交易列表
 
+
+[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 BIP。
 
