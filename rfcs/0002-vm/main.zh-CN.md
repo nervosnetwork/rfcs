@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  if (ckb_check_signature(argv[0] != 0)) {
+  if (ckb_check_signature(argv[0]) != 0) {
     return -2;
   }
 
@@ -294,7 +294,7 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  if (ckb_check_signature(argv[0] != 0)) {
+  if (ckb_check_signature(argv[0]) != 0) {
     return -2;
   }
 
@@ -405,7 +405,7 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
-  if (ckb_check_signature(argv[0] != 0)) {
+  if (ckb_check_signature(argv[0]) != 0) {
     return -2;
   }
 
