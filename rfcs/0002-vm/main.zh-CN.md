@@ -174,59 +174,59 @@ int main(int argc, char* argv[]) {
 
 上述合约代码在未链接 libc 的情况下，编译后为 1112 字节，gzip 后为 714 字节。
 
-### 众筹
+### 项目跟踪
 
 在上述银行模型中，验证 Cell 的脚本保存在了 input script 之中，这里考虑一个把 Cell 验证代码放入 Cell type 的例子。
 
-考虑一个最简单的众筹应用：发起人可以设定目标，当达到目标，发起人可以获得所有 Cell 的 Capacity，投资人可以取消众筹。
+考虑一个项目跟踪的例子：一个项目有一个总成本，项目中可以有需要一定开销的任务，总成本花完后，认为项目已经完成。某些任务可以取消。
 
 首先定义如下的数据结构:
 
 ```c
 typedef enum {
-  UNFULFILLED,
-  FULFILLED
+  UNFINISHED,
+  FINISHED
 } Status;
 
 typedef struct {
-  char account_id[256];
+  char name[256];
   char digest[1024];
-  int64_t amount;
-} Investment;
+  int64_t cost;
+} Task;
 
 typedef struct {
-  char account_id[256];
+  char name[256];
   char digest[1024];
   Status status;
-  int64_t total_fund;
-  int investment_number;
-  Investment *investments;
-} Crowdfunding;
+  int64_t total_cost;
+  int task_number;
+  Task *tasks;
+} Project;
 ```
 
-于是众筹当前的 Cell 自身可以有如下的验证函数：
+于是项目当前的 Cell 自身可以有如下的验证函数：
 
 ```c
-int validate_crowdfunding(const Crowdfunding* crowdfunding) {
-  if (crowdfunding->investment_number > 10000) {
+int validate_project(const Project* project) {
+  if (project->task_number > 10000) {
     return -10;
   }
-  int64_t current_fund = 0;
-  for (int i = 0; i < crowdfunding->investment_number; i++) {
-    if (crowdfunding->investments[i].amount < 0) {
+  int64_t current_cost = 0;
+  for (int i = 0; i < project->task_number; i++) {
+    if (project->tasks[i].cost < 0) {
       return -11;
     }
-    int t = current_fund + crowdfunding->investments[i].amount;
-    if (t < current_fund) {
+    int c = current_cost + project->tasks[i].cost;
+    if (c < current_cost) {
       return -12;
     }
-    current_fund = t;
+    current_cost = c;
   }
-  Status target_status = UNFULFILLED;
-  if (current_fund > crowdfunding->total_fund) {
-    target_status = FULFILLED;
+  Status target_status = UNFINISHED;
+  if (current_cost >= project->total_cost) {
+    target_status = FINISHED;
   }
-  if (crowdfunding->status != target_status) {
+  if (project->status != target_status) {
     return -13;
   }
   return 0;
@@ -236,7 +236,7 @@ int validate_crowdfunding(const Crowdfunding* crowdfunding) {
 编译后，在得到的 .o 文件中包含如下的二进制代码：
 
 ```c
-00000000 <validate_crowdfunding>:                                                                                                                                        [84/1782]
+00000000 <validate_project>:
    0:   7139                    addi    sp,sp,-64
    2:   de22                    sw      s0,60(sp)
    4:   0080                    addi    s0,sp,64
@@ -265,7 +265,7 @@ int validate_crowdfunding(const Crowdfunding* crowdfunding) {
 <omitted ...>
 ```
 
-在众筹 Cell 中，可以约定每个 Cell 的前 1K 数据包含用于验证的代码。CKB 可以在工具链中提供从 `.o` 文件中抓取必要的二进制部分，并执行相应检查的工具（比如保证代码中只有相对跳转，没有绝对跳转）。然后在构造 Cell 的数据的时候，保证前 1K 部分只包含这里的验证代码。
+在项目 Cell 中，可以约定每个 Cell 的前 1K 数据包含用于验证的代码。CKB 可以在工具链中提供从 `.o` 文件中抓取必要的二进制部分，并执行相应检查的工具（比如保证代码中只有相对跳转，没有绝对跳转）。然后在构造 Cell 的数据的时候，保证前 1K 部分只包含这里的验证代码。
 
 于是可以有如下的 input script：
 
@@ -275,18 +275,18 @@ extern int ckb_check_signature(const char* sig);
 
 typedef enum {
   CREATE;
-  FUND;
-  UNFUND;
+  ADD_TASK;
+  CANCEL_TASK;
 } CommandType;
 
 typedef struct {
   CommandType command_type;
-  char account_id[256];
+  char name[256];
   char digest[1024];
-  int64_t amount;
+  int64_t cost;
 } Command;
 
-typedef int (*ValidateFunction)(const Crowdfunding*);
+typedef int (*ValidateFunction)(const Project*);
 
 int main(int argc, char* argv[]) {
   if (argc != 6) {
@@ -300,7 +300,7 @@ int main(int argc, char* argv[]) {
   if (((int) argv[3]) < 1) {
     return -1;
   }
-  Crowdfunding *output = (Bank *) ckb_mmap_cell((int) argv[4][0], 0x400, -1, 0);
+  Project *output = (Bank *) ckb_mmap_cell((int) argv[4][0], 0x400, -1, 0);
 
   Command *command = (Command *) argv[5];
 
@@ -314,17 +314,17 @@ int main(int argc, char* argv[]) {
         }
       }
       break;
-    case FUND:
+    case ADD_TASK:
       {
-        Crowdfunding *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
-        if (output->investment_number != input->investment_number + 1) {
+        Project *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
+        if (output->task_number != input->task_number + 1) {
           return -1;
         }
-        if (memcmp(output->investments[output->investment_number - 1].account_id,
-                   command->account_id) != 0) {
+        if (memcmp(output->tasks[output->task_number - 1].name,
+                   command->name) != 0) {
           return -1;
         }
-        if (memcmp(output->investments[output->investment_number - 1].digest,
+        if (memcmp(output->tasks[output->task_number - 1].digest,
                    command->digest) != 0) {
           return -1;
         }
@@ -333,15 +333,15 @@ int main(int argc, char* argv[]) {
         }
       }
       break;
-    case UNFUND:
+    case CANCEL_TASK:
       {
-        Crowdfunding *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
-        if (output->investment_number != input->investment_number - 1) {
+        Project *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
+        if (output->task_number != input->task_number - 1) {
           return -1;
         }
         int found = 0;
-        for (int i = 0; i < input->investment_number; i++) {
-          if (memcmp(input->investments[i].account_id, command->account_id) == 0) {
+        for (int i = 0; i < input->task_number; i++) {
+          if (memcmp(input->tasks[i].name, command->name) == 0) {
             found = 1;
             break;
           }
@@ -350,8 +350,8 @@ int main(int argc, char* argv[]) {
           return -1;
         }
         found = 0;
-        for (int i = 0; i < output->investment_number; i++) {
-          if (memcmp(output->investments[i].account_id, command->account_id) == 0) {
+        for (int i = 0; i < output->task_number; i++) {
+          if (memcmp(output->tasks[i].name, command->name) == 0) {
             found = 1;
             break;
           }
