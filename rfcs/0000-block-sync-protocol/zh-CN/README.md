@@ -170,7 +170,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 - 块状态树
 - Best Chain Tip，决定是否要下载块和采用块。
-- Best Header Chain Tip，连接块头是用来构建每轮第一个请求的 Locator
+- Best Header Chain Tip，连接块头时用来构建每轮第一个请求的 Locator
 
 每个连接节点需要单独存储的
 
