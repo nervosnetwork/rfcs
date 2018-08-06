@@ -56,7 +56,7 @@ Alice 在连接块头时，需要保持 Best Header Chain Tip 的更新，这样
 
 上图是一轮连接块头的流程。完成了一轮连接块头后，节点之间应该通过新块通知保持之后的同步。
 
-以上图 Alice 从 Bob 同步为例，首先 Alice 将自己 Best Header Chain 中的块进行采样，将选中块的哈希作为消息内容发给 Bob。采样的基本原则是最近的块采样越密，越早的块越稀疏。比如可以取最后的 10 个块，然后从倒数第十个块开始按 2, 4, 8, … 等以 2 的指数增长的步长进行取样。这样采样的块哈希列表被称为 Locator。下图中淡色处理的是没有被采样的块，创世块应该始终包含在 Locator 当中。
+以上图 Alice 从 Bob 同步为例，首先 Alice 将自己 Best Header Chain 中的块进行采样，将选中块的哈希作为消息内容发给 Bob。采样的基本原则是最近的块采样越密，越早的块越稀疏。比如可以取最后的 10 个块，然后从倒数第十个块开始按 2, 4, 8, … 等以 2 的指数增长的步长进行取样。采样得到的块的哈希列表被称为 Locator。下图中淡色处理的是没有被采样的块，创世块应该始终包含在 Locator 当中。
 
 ![](../images/locator.jpg)
 
@@ -70,7 +70,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 2.  Alice 的 Best Header Chain Tip 在 Bob 的 Best Chain 中并且不等于 Tip，最后共同块就是 Alice 的 Best Header Chain Tip。
 3.  Alice 的 Best Header Chain 和 Bob 的 Best Chain 出现了分叉，最后共同块是发生发叉前的块。
 
-如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是设定每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。如果某页最后一个块是 Best Header Chain Tip 或者 Best Chain Tip 的祖先，可以优化成用对应的 Tip 生成 Locator 发送请求，减少收到已有块头的数量。
+如果要发送的块很多，需要做分页处理。Bob 先发送第一页，Alice 通过返回结果发现还有更多的块头就继续向 Bob 请求接下来的页。一个简单的分页方案是限制每次返回块头的最大数量，比如 2000。如果返回块头数量等于 2000，说明可能还有块可以返回，就接着请求之后的块头。如果某页最后一个块是 Best Header Chain Tip 或者 Best Chain Tip 的祖先，可以优化成用对应的 Tip 生成 Locator 发送请求，减少收到已有块头的数量。
 
 在同步的同时，Alice 可以观察到 Bob 当前的 Best Chain Tip，即在每轮同步时最后收到的块。如果 Alice 的 Best Header Chain Tip 就是 Bob 的 Best Chain Tip ，因为 Bob 没有块头可发，Alice 就无法观测到 Bob 目前的 Best Chain。所以在每轮连接块头同步的第一个请求时，**应该**从 Best Header Chain Tip 的父块开始构建，而不包含 Tip。
 
@@ -189,7 +189,7 @@ Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会�
 
 用于连接块头时向邻居节点请求块头。请求第一页，和收到后续页使用相同的 getheaders 消息，区别是第一页是给本地的 Best Header Chain Tip 的父块生成 Locator，而后续页是使用上一页的最后一个块生成 Locator。
 
-- `locator`: 对 Chain 上块采样后得到的哈希列表
+- `locator`: 对 Chain 上块采样，得到的哈希列表
 
 ### headers
 

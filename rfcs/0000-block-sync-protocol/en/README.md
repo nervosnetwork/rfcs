@@ -56,7 +56,7 @@ When Alice connects header, keeping Best Header Chain Tip updated could help to 
 
 The graph above instructs the process of connecting headers. After a round of connecting headers, nodes are supposed to keep up-to-date using new block notification.
 
-Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backwards with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The sample block hash list is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator. 
+Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backwards with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The list of hashes of the sampled blocks is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator. 
 
 ![](../images/locator.jpg)
 
@@ -168,7 +168,7 @@ When receiving a new block announcement, there may be a situation the parent blo
 ### Storage
 - Block Status Tree
 - Best Chain Tip, decide whether to download blocks and accept blocks
-- Best Header Chain Tip, used in Connecting Header to construct the locator of the first request in each round.
+- Best Header Chain Tip, used in Connecting Header to construct the Locator of the first request in each round.
 
 Each connection peer should store:
 - Observed Best Chain Tip
@@ -184,7 +184,7 @@ Compact Block [^1] messages `cmpctblock` and `getblocktxn` will be described in 
 
 ### getheaders
 
-It is used to request a block header from a peer in stage Connecting Header. The first page request, and subsequent pages request can share the same getheaders message format. The difference between them is that the first page requests generates a locator from the parent block of the local Best Header Chain Tip, and the subsequent page request generates the locator using the last block in the last received page.
+It is used to request a block header from a peer in stage Connecting Header. The first page request, and subsequent pages request can share the same getheaders message format. The difference between them is that the first page requests generates a Locator from the parent block of the local Best Header Chain Tip, and the subsequent page request generates the Locator using the last block in the last received page.
 
 - `locator`: Sampled hashes of the already known blocks
 
