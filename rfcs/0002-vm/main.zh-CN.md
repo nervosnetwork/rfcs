@@ -80,346 +80,291 @@ CKB 会选取合适的 RISC-V 开源实现作为运行模型。在执行合约�
 
 ## 示例
 
-### 银行模型
+以下通过一个 ERC20 代币的发行过程来介绍 CKB 中虚拟机的执行过程。需要注意的是，为了简化说明，这里描述的 ERC20 实现经过了一定程度的简化：
 
-这里以一个最简单的银行模型为例，Cell 中保存所有人的账户信息，Cell 之间维护的不变量为账户总余额不变。为简化模型，目前先不考虑发行与销毁代币数。
+* 使用 64 位整数，而不是 256 位整数来保存代币数目
+* 使用简化的线性数组与顺序查询的方式代替哈希数据结构存储代币发行情况。同时对代币最多能发给的账户数直接做上限限制
+* 使用 C 的 struct layout 来直接保存数据，省去序列化的步骤
 
-假设账户信息保存在如下的 struct 内：
+注意，在生产环境 CKB 不会有以上的假设。
+
+### 数据结构
+
+代币信息保存在如下数据结构内：
 
 ```c
-typedef struct {
-  char account_id[256];
-  int64_t amount;
-} Account;
+#define ADDRESS_LENGTH 32
+#define MAX_BALANCES 100
+#define MAX_ALLOWED 100
 
-typedef struct Bank {
-  int account_number;
-  Account *accounts;
-} Bank;
+typedef struct {
+  char address[ADDRESS_LENGTH];
+  int64_t tokens;
+} balance_t;
+
+typedef struct {
+  char address[ADDRESS_LENGTH];
+  char spender[ADDRESS_LENGTH];
+  int64_t tokens;
+} allowed_t;
+
+typedef struct {
+  balance_t balances[MAX_BALANCES];
+  int used_balance;
+  allowed_t allowed[MAX_ALLOWED];
+  int used_allowed;
+
+  char owner[ADDRESS_LENGTH];
+  char newOwner[ADDRESS_LENGTH];
+  int64_t total_supply;
+} data_t;
 ```
 
-可以实现如下的验证脚本：
+对于数据结构有如下的 API 来提供各种操作：
 
 ```c
-// Should be loaded from provided function
-extern int ckb_check_signature(const char* sig);
-extern void* ckb_mmap_cell(int cell_id, size_t offset, size_t length, uint32_t flags);
+int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int erc20_total_supply(const data_t *data);
+int64_t erc20_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int erc20_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int erc20_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+```
 
-int64_t check_and_sum_amount(Bank *bank) {
-  int64_t total_amount = 0;
-  if (bank->account_number > 1024) {
-    // Too many accounts!!
-    return -3;
-  }
-  for (int i = 0; i < bank->account_number; i++) {
-    if (bank->accounts[i].amount < 0) {
-      // Invalid account amount
-      return -4;
-    }
-    int64_t t = total_amount + bank->accounts[i].amount;
-    if (t < total_amount) {
-      // Overflow issue
-      return -5;
-    }
-    total_amount = t;
-  }
-  return total_amount;
+这些方法的实现既可以直接编译到合约中，也可以保存在 Cell 中，通过动态链接的方式来提供。以下会分别介绍两种使用方式。
+
+### 代币发行
+
+假设 CKB 提供如下的方法用来读取 Cell 中的内容：
+
+```c
+int ckb_read_cell(int cell_id, void** buffer, size_t* size);
+```
+
+即给定 Cell ID，CKB 的虚拟机读取 Cell 中的内容，并映射到当前虚拟机的地址空间中，返回相应的指针，与 Cell 的大小。
+
+这样就可以通过如下的合约来发行代币：
+
+```c
+int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply)
+{
+  memset(&data, 0, sizeof(data_t));
+  memcpy(data->owner, owner, ADDRESS_LENGTH);
+  memcpy(data->balances[0].address, owner, ADDRESS_LENGTH);
+
+  data->balances[0].tokens = total_supply;
+  data->used_balance = 1;
+  data->used_allowed = 0;
+  data->total_supply = total_supply;
+
+  return 0;
 }
 
 int main(int argc, char* argv[]) {
-  if (argc != 5) {
+  int ret = ckb_check_signature(argc, argv)
+  if (ret != 0) {
+    return ret;
+  }
+
+  int output_cell_id = atoi(argv[2]);
+  const char *owner = argv[3];
+  int64_t total_supply = atoll(argv[4]);
+
+  data_t data;
+  ret = erc20_initialize(&data, owner, total_supply);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (memcmp(&data, output_data, sizeof(data_t)) != 0) {
     return -1;
-  }
-
-  if (ckb_check_signature(argv[0]) != 0) {
-    return -2;
-  }
-
-  if (((int) argv[1]) != 1) {
-    return -1;
-  }
-  Bank *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0, -1, 0);
-  if (((int) argv[3]) != 1) {
-    return -1;
-  }
-  Bank *output = (Bank *) ckb_mmap_cell((int) argv[4][0], 0, -1, 0);
-
-  int64_t input_total_amount = check_and_sum_amount(input);
-  if (input_total_amount < 0) {
-    return input_total_amount;
-  }
-
-  int64_t output_total_amount = check_and_sum_amount(output);
-  if (output_total_amount < 0) {
-    return output_total_amount;
-  }
-
-  if (input_total_amount != output_total_amount) {
-    return -6;
   }
   return 0;
 }
 ```
 
-这里依次验证了如下数据：
+通过验证 Output Cell 中的数据与自行初始化后的 ERC20 代币数据是否一致，这里可以确保当前合约及生成数据均是正确的。
 
-* 签名检查，这里使用动态链接的外部库来实现
-* Transaction 中只有 1 个 input cell，以及 1 个 output cell
-* Cell 中保存的账户总数不能超过 1024 个
-* 每一个账户中的余额不能为负
-* 账户余额的总和不能超过 64 位有符号整数的最大值
-* 输入 cell 与输出 cell 中的余额相等
+### 转账
 
-另外需要指出的一点是，这里为了简化说明，直接利用了 C struct 的 memory layout 格式来保存输入输出数据。在实际环境中，根据需求的不同，也可以使用其他的序列化工具来保存数据。
+上述发行代币模型中，验证 Cell 的脚本直接保存在了 input script 中。这里其实也可以通过引用外部 Cell 的方式，调用外部代码来实现验证 Cell 的方法。
 
-上述合约代码在未链接 libc 的情况下，编译后为 1112 字节，gzip 后为 714 字节。
-
-### 项目跟踪
-
-在上述银行模型中，验证 Cell 的脚本保存在了 input script 之中，这里考虑一个把 Cell 验证代码放入 Cell type 的例子。
-
-考虑一个项目跟踪的例子：一个项目有一个总成本，项目中可以有需要一定开销的任务，总成本花完后，认为项目已经完成。某些任务可以取消。
-
-首先定义如下的数据结构:
+考虑 ERC20 代币的转账模型，首先有如下基于 C 的实现：
 
 ```c
-typedef enum {
-  UNFINISHED,
-  FINISHED
-} Status;
-
-typedef struct {
-  char name[256];
-  char digest[1024];
-  int64_t cost;
-} Task;
-
-typedef struct {
-  char name[256];
-  char digest[1024];
-  Status status;
-  int64_t total_cost;
-  int task_number;
-  Task *tasks;
-} Project;
-```
-
-于是项目当前的 Cell 自身可以有如下的验证函数：
-
-```c
-int validate_project(const Project* project) {
-  if (project->task_number > 10000) {
-    return -10;
+int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
+{
+  balance_t *from_balance = NULL, *to_balance = NULL;
+  int ret = _erc20_find_balance(data, from, 1, &from_balance);
+  if (ret != 0) {
+    return ret;
   }
-  int64_t current_cost = 0;
-  for (int i = 0; i < project->task_number; i++) {
-    if (project->tasks[i].cost < 0) {
-      return -11;
-    }
-    int c = current_cost + project->tasks[i].cost;
-    if (c < current_cost) {
-      return -12;
-    }
-    current_cost = c;
+  ret = _erc20_find_balance(data, to, 1, &to_balance);
+  if (ret != 0) {
+    return ret;
   }
-  Status target_status = UNFINISHED;
-  if (current_cost >= project->total_cost) {
-    target_status = FINISHED;
+  if (from_balance->tokens < tokens) {
+    return ERROR_NOT_SUFFICENT_BALANCE;
   }
-  if (project->status != target_status) {
-    return -13;
+  int target = to_balance->tokens + tokens;
+  if (target < to_balance->tokens) {
+    return ERROR_OVERFLOW;
   }
+  from_balance->tokens -= tokens;
+  to_balance->tokens = target;
   return 0;
 }
 ```
 
-编译后，在得到的 .o 文件中包含如下的二进制代码：
+其中 `_erc20_find_balance` 的作用是给定地址，从当前代币数据结构中找到该地址对应的 `balance_t` 数据结构。如果该地址不存在的话，则在数据结构中创建该地址的条目。在这里我们略去实现，完整的例子可以参考 CKB 代码库。
+
+可以将该函数编译，得到对应的二进制代码：
 
 ```c
-00000000 <validate_project>:
-   0:   7139                    addi    sp,sp,-64
-   2:   de22                    sw      s0,60(sp)
-   4:   0080                    addi    s0,sp,64
-   6:   fca42623                sw      a0,-52(s0)
-   a:   fcc42703                lw      a4,-52(s0)
-   e:   4b14                    lw      a3,16(a4)
-  10:   6709                    lui     a4,0x2
-  12:   71070713                addi    a4,a4,1808 # 2710 <.L3+0x2600>
-  16:   00d75463                ble     a3,a4,1e <.L2>
-  1a:   57d9                    li      a5,-10
-  1c:   a8d5                    j       110 <.L3>
+00000000 <_erc20_find_balance>:
+   0:   7179                    addi    sp,sp,-48
+   2:   d606                    sw      ra,44(sp)
+   4:   d422                    sw      s0,40(sp)
+   6:   1800                    addi    s0,sp,48
+   8:   fca42e23                sw      a0,-36(s0)
+   c:   fcb42c23                sw      a1,-40(s0)
+  10:   fcc42a23                sw      a2,-44(s0)
+  14:   fcd42823                sw      a3,-48(s0)
+  18:   fe042623                sw      zero,-20(s0)
+  1c:   57fd                    li      a5,-1
+  1e:   fef42423                sw      a5,-24(s0)
+  22:   a835                    j       5e <.L2>
 
-0000001e <.L2>:
-  1e:   4681                    li      a3,0
-  20:   4701                    li      a4,0
-  22:   fed42423                sw      a3,-24(s0)
-  26:   fee42623                sw      a4,-20(s0)
-  2a:   fe042223                sw      zero,-28(s0)
-  2e:   a841                    j       be <.L4>
-
-00000030 <.L9>:
-  30:   fcc42703                lw      a4,-52(s0)
-  34:   4b54                    lw      a3,20(a4)
-  36:   fe442603                lw      a2,-28(s0)
+00000024 <.L5>:
+  24:   fec42703                lw      a4,-20(s0)
+  28:   87ba                    mv      a5,a4
+  2a:   078a                    slli    a5,a5,0x2
+  2c:   97ba                    add     a5,a5,a4
+  2e:   078e                    slli    a5,a5,0x3
+  30:   fdc42703                lw      a4,-36(s0)
+  34:   97ba                    add     a5,a5,a4
+  36:   02000613                li      a2,32
 
 <omitted ...>
 ```
 
-在项目 Cell 中，可以约定每个 Cell 的前 1K 数据包含用于验证的代码。CKB 可以在工具链中提供从 `.o` 文件中抓取必要的二进制部分，并执行相应检查的工具（比如保证代码中只有相对跳转，没有绝对跳转）。然后在构造 Cell 的数据的时候，保证前 1K 部分只包含这里的验证代码。
-
-于是可以有如下的 input script：
+CKB 会提供工具链，可以将这里的二进制代码直接作为数据生成 Cell，于是可以有如下的 input script:
 
 ```c
-// Should be loaded from provided function
-extern int ckb_check_signature(const char* sig);
-
-typedef enum {
-  CREATE;
-  ADD_TASK;
-  CANCEL_TASK;
-} CommandType;
-
-typedef struct {
-  CommandType command_type;
-  char name[256];
-  char digest[1024];
-  int64_t cost;
-} Command;
-
-typedef int (*ValidateFunction)(const Project*);
+typedef int *transfer(data_t *, const char*, const char*, int64_t);
 
 int main(int argc, char* argv[]) {
-  if (argc != 6) {
+  int ret = ckb_check_signature(argc, argv)
+  if (ret != 0) {
+    return ret;
+  }
+
+  int function_cell_id = atoi(argv[2]);
+  int input_cell_id = atoi(argv[3]);
+  int output_cell_id = atoi(argv[4]);
+  const char *from = argv[5];
+  const char *to = argv[6];
+  int64_t tokens = atoll(argv[7]);
+
+  data_t *input_data = NULL;
+  ret = ckb_read_cell(input_cell_id, (void **) &input_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  transfer *f = (transfer *) ckb_mmap_cell(function_cell_id, 0, -1, PROT_EXEC);
+  ret = f(input_data, from, to, tokens);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (memcmp(input_data, output_data, sizeof(data_t)) != 0) {
     return -1;
   }
-
-  if (ckb_check_signature(argv[0]) != 0) {
-    return -2;
-  }
-
-  if (((int) argv[3]) < 1) {
-    return -1;
-  }
-  Project *output = (Bank *) ckb_mmap_cell((int) argv[4][0], 0x400, -1, 0);
-
-  Command *command = (Command *) argv[5];
-
-  ValidateFunction *f = (ValidateFunction *) ckb_mmap_cell((int) argv[4][0], 0, 0x400, PROT_EXEC);
-
-  switch (command->command_type) {
-    case CREATE:
-      {
-        if(f(output) != 0) {
-          return -1;
-        }
-      }
-      break;
-    case ADD_TASK:
-      {
-        Project *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
-        if (output->task_number != input->task_number + 1) {
-          return -1;
-        }
-        if (memcmp(output->tasks[output->task_number - 1].name,
-                   command->name) != 0) {
-          return -1;
-        }
-        if (memcmp(output->tasks[output->task_number - 1].digest,
-                   command->digest) != 0) {
-          return -1;
-        }
-        if(f(output) != 0) {
-          return -1;
-        }
-      }
-      break;
-    case CANCEL_TASK:
-      {
-        Project *input = (Bank *) ckb_mmap_cell((int) argv[2][0], 0x400, -1, 0);
-        if (output->task_number != input->task_number - 1) {
-          return -1;
-        }
-        int found = 0;
-        for (int i = 0; i < input->task_number; i++) {
-          if (memcmp(input->tasks[i].name, command->name) == 0) {
-            found = 1;
-            break;
-          }
-        }
-        if (!found) {
-          return -1;
-        }
-        found = 0;
-        for (int i = 0; i < output->task_number; i++) {
-          if (memcmp(output->tasks[i].name, command->name) == 0) {
-            found = 1;
-            break;
-          }
-        }
-        if (found) {
-          return -1;
-        }
-        if(f(output) != 0) {
-          return -1;
-        }
-      }
-      break;
-  }
-
-  return 0;
-}
-
-```
-
-### 投票
-
-上面的众筹示例中，虽然将众筹数据的验证方法放在了 Cell 中，但是这里的验证方法仍然有一个问题：由于方法是直接 mmap 到内存中，在编译期并不知道 mmap 之后方法所处的内存地址，所以只能使用局部跳转，无法使用全局跳转。同时在一段内存空间内也只能放入一个验证方法，没有办法支持有多个方法的调用库。
-
-接下来这里通过投票的例子来展示 CKB 中如何使用外部调用库。注意这里的例子同样适用 CKB 虚拟机中加载 libc，以及其他 Cell 提供的辅助库，如密码学相关函数等。
-
-首先假设这里使用了一个外部 Cell 提供的 hashmap 数据结构来存储投票信息：
-
-```c
-typedef void* hashmap_t;
-hashmap_t *hashmap_open(char* buf);
-hashmap_t *hashmap_insert(hashmap_t *h, char* key, int value);
-int hashmap_get(const hashmap_t *h, char* key);
-char* hashmap_dump(const hashmap_t *h);
-```
-
-input script 如下：
-
-```c
-// Should be loaded from provided function
-extern int ckb_check_signature(const char *sig);
-extern void* ckb_dlopen(int cell_id);
-extern void* ckb_dlsym(void* handle, const char *name);
-
-typedef void* (*OpenFunction)(char*);
-typedef void* (*InsertFunction)(void*, char*, int);
-typedef char* (*DumpFunction)(const void*);
-
-int main(int argc, char* argv[]) {
-  if (argc != 6) {
-    return -1;
-  }
-
-  if (ckb_check_signature(argv[0]) != 0) {
-    return -2;
-  }
-
-  void* hash_library_handle = ckb_dlopen(argv[1]);
-  OpenFunction *open = ckb_dlsym(hash_library_handle, "hashmap_open");
-  InsertFunction *insert = ckb_dlsym(hash_library_handle, "hashmap_insert");
-  DumpFunction *dump = ckb_dlsym(hash_library_handle, "hashmap_dump");
-
-  void* hashmap = open(argv[2]);
-  insert(hashmap, argv[3], (int), argv[4]);
-
-  if (memcmp(dump(hashmap), argv[5]) != 0) {
-    return -1;
-  }
-
   return 0;
 }
 ```
+
+这里通过 mmap 的方式将一个 Cell 中的内容映射为可以调用的方法，然后调用这个方法来完成转账的目的。这样可以保证方法得到重用，同时也可以减小合约的大小。
+
+### 多方法支持
+
+上面的示例中，虽然转账方法放在了 Cell 中，但是这里的验证方法仍然有一个问题：由于方法是直接 mmap 到内存中，在编译期并不知道 mmap 之后方法所处的内存地址，所以方法的内部实现只能使用局部跳转，无法使用全局跳转。同时在一段内存空间内也只能放入一个验证方法，没有办法支持有多个方法的调用库。
+
+这里我们也可以通过动态链接的方式来使用外部 Cell 提供的辅助库。假设在某一个 Cell 中已经提供了 ERC20 代币的所有实现:
+
+```c
+int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int erc20_total_supply(const data_t *data);
+int64_t erc20_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int erc20_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int erc20_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+```
+
+于是可以在编译期时直接指定链接方式为动态链接，这样便可以有如下的 input script:
+
+```c
+int main(int argc, char* argv[])
+{
+  int ret = ckb_check_signature(argc, argv)
+  if (ret != 0) {
+    return ret;
+  }
+
+  int input_cell_id = atoi(argv[2]);
+  int output_cell_id = atoi(argv[3]);
+
+  data_t *input_data = NULL;
+  ret = ckb_read_cell(input_cell_id, (void **) &input_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (strcmp(argv[4], "initialize") == 0) {
+    // processing initialize arguments
+    ret = erc20_initialize(...);
+    if (ret != 0) {
+      return ret;
+    }
+  } else if (strcmp(argv[4], "transfer") == 0) {
+    // processing transfer arguments
+    ret = erc20_initialize(input_data, ...);
+    if (ret != 0) {
+      return ret;
+    }
+  } else if (strcmp(argv[4], "approve") == 0) {
+    // processing approve arguments
+    ret = erc20_approve(input_data, ...);
+    if (ret != 0) {
+      return ret;
+    }
+  }
+  // more commands here
+
+  if (memcmp(input_data, output_data, sizeof(data_t)) != 0) {
+    return -1;
+  }
+  return 0;
+}
+```
+
+这里所有的 ERC20 函数均通过动态链接的方式引用其他 Cell 里的内容，不占用当前 Cell 的空间。
