@@ -10,13 +10,13 @@ Start Date: 2018-08-01
 
 CKB 的 VM 层用于在给定 transction 的 inputs 与 outputs 的情况下，执行一系列验证条件，以判断 transaction 是否合法并返回结果。
 
-CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv32imc 指令集架构：基于 [RV32I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算以及原子性内存操作，如有需要将在未来版本中考虑引入。
+CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv32imac 指令集架构：基于 [RV32I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，原子性内存操作，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算，如有需要将在未来版本中考虑引入。
 
 CKB 通过动态链接库的方式，依赖 syscall 来实现链上运算所需的其他功能，比如读取 Cell 的内容，或是其他与 block 相关的普通运算及加密运算。任何支持 RV32I 的编译器 (如 [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm), [Rust](https://github.com/riscv-rust/rust)) 生成的可执行文件均可以作为 CKB VM 中的 script 来运行。
 
 ## RISC-V 运行模型
 
-CKB 中使用 32 位的 RISC-V 虚拟机作为 VM 来执行合约。VM 运行在 32 位地址空间下，提供了 RV32I 核心的 38 条指令，以及 RV32M 扩展中的 4 条整型乘除法的扩展。为减小生成的合约大小，CKB 还支持 RVC 指令压缩功能，尽可能减小指令的存储开销。合约会直接使用 Linux 的 ELF 可执行文件格式，以方便对接开源社区的工具及离线调试。
+CKB 中使用 32 位的 RISC-V 虚拟机作为 VM 来执行合约。VM 运行在 32 位地址空间下，提供了 RV32I 核心的 38 条指令，RV32M 扩展中的 4 条整型乘除法的扩展指令，以及 RV32A 中的原子性内存操作指令。为减小生成的合约大小，CKB 还支持 RVC 指令压缩功能，尽可能减小指令的存储开销。合约会直接使用 Linux 的 ELF 可执行文件格式，以方便对接开源社区的工具及离线调试。
 
 每个合约在 gzip 后最大提供 1MB 的存储空间，解压后的原始合约最大限制为 10 MB。合约运行时，CKB 虚拟机会为合约提供 128 MB 的运行空间，其中包含合约可执行文件映射到虚拟机上的代码页，合约运行时需要的栈空间，堆空间以及外部的 Cell 通过 mmap 映射后的地址页。
 
