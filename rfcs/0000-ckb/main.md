@@ -58,7 +58,7 @@ Ethereum brought us a general purpose distributed computation platform with the 
 
 - Scalability problems: Ethereum’s design focuses on the state machine’s events (Figure 1). With a Turing-complete language and transactions containing state transition inputs (instead of new states themselves), it is difficult for full nodes to determine dependencies between transactions. This makes it difficult for nodes to process transactions in parallel. Because states are not stored on-chain, potential sharding solutions also need to mitigate data availability issues.
 
-- Ndeterministic state transition: in Ethereum, contract state is updated by the contract code, which depends on the execution context (such as the internal state of the callee contract). Users cannot determine the exact execution result when they send the transactions.
+- Nondeterministic state transition: in Ethereum, contract state is updated by the contract code, which depends on the execution context (such as the internal state of the callee contract). Users cannot determine the exact execution result when they send the transactions.
 
 - Mono-Contract: Ethereum smart contracts tightly couple computation and storage. Users have to use the paradigm of accounts, EVM bytecode and the 256 bit K/V database to implement all business scenarios. This is not efficient nor flexible.
 
