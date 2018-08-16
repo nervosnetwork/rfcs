@@ -44,9 +44,9 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-合约运行从合约 ELF 文件中的 main 函数开始执行，通过 argc 与 argv 提供输入参数进行合约的执行，当 main 函数返回值为 0 时，认为合约执行成功，否则合约执行失败。注意这里的 argc 与 argv 并不保存完整的 inputs 以及 outputs 数据，而是只保留相应的 metadata，对 inputs 与 outputs 的读取则通过单独定义的 IO syscall 与 mmap syscall 来实现，以便减少不必要的开销。同时 CKB VM 仅为单线程模型，合约文件可以自行提供 coroutine 实现，但是在 VM 层不提供 threading。
+合约运行从合约 ELF 文件中的 main 函数开始执行，通过 argc 与 argv 提供输入参数进行合约的执行，当 main 函数返回值为 0 时，认为合约执行成功，否则合约执行失败。注意这里的 argc 与 argv 并不保存完整的 inputs 以及 outputs 数据，而是只保留相应的 metadata，对 inputs 与 outputs 的读取则通过单独定义的库与 syscalls 来实现，以便减少不必要的开销。同时 CKB VM 仅为单线程模型，合约文件可以自行提供 coroutine 实现，但是在 VM 层不提供 threading。
 
-目前基于简化实现的考虑，CKB 并不提供浮点数运算。同时由于 CKB 为单线程模型，并不需要 RISC-V 的原子性内存操作。在将来版本如有需要，可能会考虑引入浮点数运算以及 V 向量扩展方便加密库的高性能实现。
+目前基于简化实现的考虑，CKB 并不提供浮点数运算。同时虽然 CKB 仅为单线程模型，但是考虑到 rv32imac 的广泛使用(Rust 默认即使用 rv32imac 模型)，仍旧提供 RV32A 扩展中的原子性操作。
 
 ## 辅助库与 Bootloader
 
