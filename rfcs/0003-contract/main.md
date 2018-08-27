@@ -84,12 +84,13 @@ Schema is also quite flexible: CKB doesn't have a set of rules for defining spec
 
 #### Validator
 
-While schema provides a way to access formatted data in an existing cell, validator ensures the data of the cell follows this pre-defined format. At the very top level, validator is just a RISC-V executable contract. CKB will run this validator contract in its own VM with the following arguments:
+While schema provides a way to access formatted data in an existing cell, validator ensures the data of the cell follows this pre-defined format. At the very top level, validator is just a RISC-V executable contract like unlock script. CKB will run this validator contract in its own VM with the following arguments:
 
 ```bash
 $ ./validator <number of deps> <dep 1 cell ID> <dep 2 cell ID> ... \
     <number of inputs> <input 1 cell ID> <input 2 cell ID> ... \
-    <number of outputs> <output 1 cell ID> <output 2 cell ID> ...
+    <number of outputs> <output 1 cell ID> <output 2 cell ID> ... \
+    <current output cell ID>
 ```
 
 While running, contract can leverage CKB APIs and syscalls to load cell schema library, read cell data, communicate with other contract(this will be discussed in more details later). Upon completion, the returned code of the RISC-V executable denotes if the validator succeeds.
@@ -114,6 +115,7 @@ With newly introduced concepts above, now contract execution flow looks like thi
    - All deps cells in the transaction are included as deps;
    - All input cells from current IO group are included as inputs;
    - All output cells from current IO group are included as outputs.
+   - Current output cell ID is also provided for convenience.
 4. All VMs from the same IO group here can be treated as running concurrently, VMs in the same IO group can communicate in the following way:
    - They can communicate via reading each other's cell;
    - CKB will also provide a special syscall in VM that can be used to create a channel between VMs in the same IO group, 2 VMs can leverage this channel to send and receive data.
