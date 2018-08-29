@@ -10,14 +10,14 @@ Start Date: 2018-08-27
 
 This RFC proposes several changes on current contract execution model to achieve following goals:
 
-* Cell type schema and validator execution flows are finalized
+* Cell validator execution flow is finalized
 * Communication solution between different contracts within a transaction is defined
 
 Note that all sample code and examples in this RFC will be written in Ruby due to the following reasons:
 
 * It is already been proved that CKB VM can run Ruby by running a Ruby VM directly
 * The main goal here is to explain how CKB contract works here, not achieving absolutely minimal resource usage
-* Most(if not all) of the team members already know Ruby, plus Ruby is easy to read.
+* Ruby code looks like natural languages, it will be easy to understand even for developers who have less experience with Ruby
 
 ## Recap
 
@@ -25,9 +25,9 @@ Right now, transaction execution flow is as follows:
 
 ![](assets/current-flow.png "Current Flow")
 
-1. Existing UTXOs, also known as `Cells` in CKB, has a data field as well as data/owner locks. For space consideration, each lock here only consists of a single lock script hash.
-2. In a transaction, an input would reference a UTXO with the actual unlock script(whose hash should match the lock script hash in UTXO) and unlock script data. When we execute the script together with the data on CKB VM, it should return success.
-3. The output of the transaction is also a UTXO(if there is one), which will also contain data field and data/owner locks. Existing or new unlock script hash could be used here in each lock.
+1. Existing Cells have data field as well as data/owner locks. For space consideration, each lock here only consists of a single lock script hash.
+2. In a transaction, an input would reference a Cell with unlock witness data, which includes the actual unlock script(whose hash should match the lock script hash in Cell), and unlock script data. When we execute the script together with the data on CKB VM, it should return success.
+3. The output of the transaction is also a Cell(if there is one), which will also contain data field and data/owner locks. Existing or new unlock script hash could be used here in each lock.
 
 ## Concepts
 
@@ -47,44 +47,9 @@ A transaction is either all accepted, or all rejected, it's not possible to acce
 
 With the exception of coinbase transactions, all transactions should satisfy the property that the sum of capacities of all output cells must not exceed the sum of input capacities of all input cells.
 
-### Cell Type
+### Validator
 
-![](assets/cell.png "Cell")
-
-In the whitepaper CKB defines `cell type`, which consists of schema and validator. But the format of them are never settled. This RFC will define what schema and validator will look like.
-
-#### Schema
-
-Schema provides a handy way to access binary data stored in the designated cell. In CKB, schema is implemented as a dynamic linked library for CKB VM. Once loaded, it can provide one or more utility functions to parse and read cell data. For example, a weather oracle cell can provide the following schema to read current weather:
-
-```c
-int temperature(int city_index, int year, int month, int day);
-int wind(int city_index, int year, int month, int day);
-```
-
-Note that it's just an example that we use C interface here. The only rules a schema needs to follow, is that it must be in ELF shared object format for RISC-V architecture, which is what CKB VM uses. That means it's totally okay to create a schema that can only be loaded into a mruby VM on top of CKB VM with Ruby-only contracts:
-
-```ruby
-module Weather
-  def self.temperature(city_index, year, month, day)
-    # calling actual library
-  end
-
-  def self.wind(city_index, year, month, day)
-    # calling actual library
-  end
-end
-```
-
-In this case, an initialization function is needed to load the new Ruby modules into mruby VM, but the point is a C interface is totally optional depending on Cell creator.
-
-Schema is entirely optional: for cell with simple data formats, it's definitely possible to read cell data directly instead of loading a library to access the data. But for more complex data structures, schema would be more helpful here.
-
-Schema is also quite flexible: CKB doesn't have a set of rules for defining specific items in the cell, such as integers or strings. Instead, it just let Cell creator provide a series of functions to work on top of the binary data. It's totally up to the cell creator to decide what format he/she shall use for each individual component in the cell.
-
-#### Validator
-
-While schema provides a way to access formatted data in an existing cell, validator ensures the data of the cell follows this pre-defined format. At the very top level, validator is just a RISC-V executable contract like unlock script. CKB will run this validator contract in its own VM with the following arguments:
+A validator is added to each Cell. Validator is a RISC-V architecture ELF executable, which is similar to unlock script. When validating a transaction, CKB would run the validator contract in its own VM with the following arguments:
 
 ```bash
 $ ./validator <number of deps> <dep 1 cell ID> <dep 2 cell ID> ... \
@@ -93,13 +58,11 @@ $ ./validator <number of deps> <dep 1 cell ID> <dep 2 cell ID> ... \
     <current output cell ID>
 ```
 
-While running, contract can leverage CKB APIs and syscalls to load cell schema library, read cell data, communicate with other contract(this will be discussed in more details later). Upon completion, the returned code of the RISC-V executable denotes if the validator succeeds.
+While deps arguments contain all deps Cell in current transaction, inputs and outputs arguments only contains the input and output cells in current IO group. As a result, Cells that are related can be grouped together; while unrelated cells are separated from each other via IO groups, so their validator won't be affected.
 
-#### Cell Type Properties
+At runtime, validator contract can leverage APIs and syscalls provided by CKB to load utility libraries provided by external cells, read external cells directly, or interact with other validator contracts(discussed in more details later). When validator finishes execution, the returned code will indicate if validator is succeeded.
 
-Cell type part, including schema and validator, can either be inlined within current cell, or referenece external cell. It's possible to create a designated meta cell containing only cell type data(schema and validator), then create many other cells referencing this single meta cell as cell type.
-
-Cell type is also immutable: once a cell is given a type, there's no way one can change the type of this cell via transform action. The only thing one can do here, is to use a destroy action to destroy the original cell, and then use a create action to create a new cell with new cell type.
+Validator is also immutable: once a cell is given a validator, there's no way one can change this validator via transform action. The only thing one can do here, is to use a destroy action to destroy the original cell, and then use a create action to create a new cell with new validator.
 
 ## Current Contract Execution Flow
 
@@ -107,11 +70,11 @@ With newly introduced concepts above, now contract execution flow looks like thi
 
 ![](assets/new-flow.png "New Flow")
 
-1. For each input in all IO groups in current transaction, CKB would locate the referenced UTXOs first. The exact lock script hash to use is based on action type:
+1. For each input in all IO groups in current transaction, CKB would locate the referenced Cells first. The exact lock script hash to use is based on action type:
    - If input is used in transform action, data lock hash will be used;
    - If input is used in destroy action, owner lock hash will be used.
 2. CKB will launch a separate VM for each input unlock script with specificed script data. If any VM fails, the whole transaction is marked with failure. Notice all VMs here could run concurrently.
-3. Once all inputs are verified via unlock script, CKB will then test all cell type validators: for each validator (if there exists one) in each output cells(this include all transform actions and create actions), a separate VM will be started with validator script. The validator script will be provided with following arguments:
+3. Once all inputs are verified via unlock script, CKB will then test all cells' validators: for each validator (if there exists one) in each output cell(this include all transform actions and create actions), a separate VM will be started with validator script. The validator script will be provided with following arguments:
    - All deps cells in the transaction are included as deps;
    - All input cells from current IO group are included as inputs;
    - All output cells from current IO group are included as outputs.
@@ -143,11 +106,13 @@ module Currency
 end
 ```
 
+Notice that it's just one of many ways to leverage Oracle cell for currency information, one can also encode currency information in unlock witness to achieve the same purpose.
+
 As mentioned above, this oracle cell will be provided in deps cell, each currency validator will load the schema part via shared library loading. The Ruby code will then be loaded into Ruby VM.
 
 For each currency cell, it contains a JSON object of the following format:
 
-```json
+```javascript
 {
   "amount": 12300,
   "type": "USD"
@@ -210,7 +175,7 @@ Next, a simpler Plasma example is introduced. Since CKB is a layer 1 implementat
 
 The basic data structure looks like following:
 
-```json
+```javascript
 {
   "headers": {
     "10032": {
