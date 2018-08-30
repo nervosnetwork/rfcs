@@ -74,19 +74,45 @@ With newly introduced concepts above, now contract execution flow looks like thi
    - If input is used in transform action, data lock hash will be used;
    - If input is used in destroy action, owner lock hash will be used.
 2. CKB will launch a separate VM for each input unlock script with specificed script data. If any VM fails, the whole transaction is marked with failure. Notice all VMs here could run concurrently.
-3. Once all inputs are verified via unlock script, CKB will then test all cells' validators: for each validator (if there exists one) in each output cell(this include all transform actions and create actions), a separate VM will be started with validator script. The validator script will be provided with following arguments:
+3. Once all inputs are verified via unlock script, CKB will then test all cells' validators: for each validator (if there exists one) in each output cell(this include all transform actions and create actions), a separate VM will be started with validator script. Validators within an IO group can be treated as running concurrently, validator script will be provided with following arguments:
    - All deps cells in the transaction are included as deps;
    - All input cells from current IO group are included as inputs;
    - All output cells from current IO group are included as outputs.
    - Current output cell ID is also provided for convenience.
-4. All VMs from the same IO group here can be treated as running concurrently, VMs in the same IO group can communicate in the following way:
-   - They can communicate via reading each other's cell;
-   - CKB will also provide a special syscall in VM that can be used to create a channel between VMs in the same IO group, 2 VMs can leverage this channel to send and receive data.
-5. One all VMs launched here return a success result, current transaction can be marked as success.
+4. One all VMs launched here return a success result, current transaction can be marked as success.
 
 It's easy to see here that IO groups are used to isolate different cells: with IO groups, one can group related cells together for processing. Atomicity, on the other hand, is provided at transaction level.
 
 Notice those steps only contain execution flow relating to contracts and VMs, CKB will still perform other sanity checks before and maybe after performing this execution flow, such as capacity checking.
+
+### Contract Communication
+
+Validator contracts can communicate in the following 2 ways with other contracts within the same IO group:
+
+First, each validator contract will have all the input/outputs cells in its own IO group. As a result, validator contract can communicate by reading data from input/output cells of another contract in the same IO group.
+
+Second, CKB will provide API to create channel between validator VMs in the same IO group:
+
+```c
+int ckb_create_channel(int cell_id);
+```
+
+Here channels are like pipes in Linux, each end of the channel supports read/write operations. Unformatted binary data are transmitted within the channel, it depends on the actual validator contract to determine the data format.
+
+The above C API can also be wrapped into Ruby API like following:
+
+```c
+module Channel
+  def self.create(cell_id)
+    // create a channel
+  end
+
+  def send(data)
+    // send data through current channel
+  end
+```
+
+This way contracts within an IO group can communicate with each other when necessary to achieve more useful features.
 
 ## Examples
 
