@@ -79,7 +79,7 @@
 |Knowledge Type|Ledger|Smart Contract|General|
 |Storage|UTXO|Account K-V Store|Cell|
 |Data Schema|N/A|N/A|Type|
-|Validation Rule|Limited(Script)|Any(Contract)|Any(Validator)|
+|Verification Rule|Limited(Script)|Any(Contract)|Any(Verifier)|
 |State Write|Direct(User)|Indirect(EVM)|Direct(User)|
 |State Read*|No|Yes|Yes|
 <div align="center">表1：比特币、以太坊 (Ethereum)和Nervos CKB的比较 (*State Read仅指链上的可读性，即在链上验证过程中状态是否可读。链的状态在链外是不受影响的。)</div>
@@ -90,13 +90,13 @@ CKB提出一种全新的分布式应用范式，该范式由以下五种元素�
 
 - Cell
 - Type
-- Validator
+- Verifier
 - Generator
 - Identity
 
-通过这五种元素，我们将分布式应用彻底解耦成计算、存储和身份三个方面。在此基础上，计算进一步分化为生成（Generator）和验证（Validator）两个步骤，存储（Cell）也进一步通用化，可以支持任意结构化（Type）的数据。CKB中的分布式应用，可以使用Type定义合适的数据结构，将应用数据存放在多个Cells中；应用的执行逻辑由Generator实现，状态验证逻辑由Validator实现；Generator在客户端运行，用户进行操作时生成新的应用状态，新状态被打包在交易中发送到全网；网络中的节点先验证交易发送者的身份，然后使用Validator对交易中新状态的有效性进行验证，验证通过后将新状态保存到CKB中。
+通过这五种元素，我们将分布式应用彻底解耦成计算、存储和身份三个方面。在此基础上，计算进一步分化为生成（Generator）和验证（Verifier）两个步骤，存储（Cell）也进一步通用化，可以支持任意结构化（Type）的数据。CKB中的分布式应用，可以使用Type定义合适的数据结构，将应用数据存放在多个Cells中；应用的执行逻辑由Generator实现，状态验证逻辑由Verifier实现；Generator在客户端运行，用户进行操作时生成新的应用状态，新状态被打包在交易中发送到全网；网络中的节点先验证交易发送者的身份，然后使用Verifier对交易中新状态的有效性进行验证，验证通过后将新状态保存到CKB中。
 
-CKB以状态为核心设计数据流及经济激励，交易中包含的是新的状态，而不是触发状态机的事件。因此，CKB区块链中直接保存了状态数据，状态随着区块一起同步，无需额外的状态同步协议，降低了系统复杂度，提高了系统可用性。分布式应用的状态被剥离到Cells中保存，Validator和Generator内部没有任何状态，计算结果完全依赖输入，因此都是确定性的纯函数（Pure function），容易组合形成更复杂的逻辑。
+CKB以状态为核心设计数据流及经济激励，交易中包含的是新的状态，而不是触发状态机的事件。因此，CKB区块链中直接保存了状态数据，状态随着区块一起同步，无需额外的状态同步协议，降低了系统复杂度，提高了系统可用性。分布式应用的状态被剥离到Cells中保存，Verifier和Generator内部没有任何状态，计算结果完全依赖输入，因此都是确定性的纯函数（Pure function），容易组合形成更复杂的逻辑。
 
 ![Figure 1. Event-focused vs. State-focused Design](images/fig1.png)
 <div align="center">Figure 1. Event-focused vs. State-focused Design</div>
@@ -160,14 +160,14 @@ CKB网络上的全节点只需要P1CS就可以验证Transaction，P2CS可以按�
 
 CKB为Cell提供了类型系统，用户可以创建自定义的Cell类型。通过类型系统，我们可以在CKB中定义不同结构的共同知识以及相应的生成验证规则。
 
-创建新的Cell类型需要定义Data Schema和Validator两个要素：
+创建新的Cell类型需要定义Data Schema和Verifier两个要素：
 
 - Data Schema: 定义新类型的数据结构。
-- Validator: 定义新类型的验证程序。
+- Verifier: 定义新类型的验证程序。
 
-Data Schema和Validator的定义也是一种共同知识，存放在Cell中。每一个Cell都有一个且仅仅一个类型，多个Cell可以属于同一个类型，也可以属于不同的类型。
+Data Schema和Verifier的定义也是一种共同知识，存放在Cell中。每一个Cell都有一个且仅仅一个类型，多个Cell可以属于同一个类型，也可以属于不同的类型。
 
-Data Schema提供该类型的数据结构定义，使Validator可以理解和使用Cell中保存的数据。Validator为验证程序，由每一个节点使用CKB支持的虚拟机执行，以交易的Deps, Inputs和Outputs作为程序输入（[Transaction](#transaction)），能够通过验证就返回True，不能则返回False。Cell的创建、更新和销毁可以使用不同的验证规则。
+Data Schema提供该类型的数据结构定义，使Verifier可以理解和使用Cell中保存的数据。Verifier为验证程序，由每一个节点使用CKB支持的虚拟机执行，以交易的Deps, Inputs和Outputs作为程序输入（[Transaction](#transaction)），能够通过验证就返回True，不能则返回False。Cell的创建、更新和销毁可以使用不同的验证规则。
 
 #### 2.2.3  身份
 
@@ -201,7 +201,7 @@ CKB Transaction中包含的`deps`和`inputs`使节点可以方便地判断交易
 
 Generator是生成程序，用来生成符合类型定义的新的Cells。Generator在发起交易的客户端本地执行，以用户的输入以及现有的Cells作为输入，生成包含新状态的Cells作为输出。Generator用到的输入以及产生的输出共同构成一个Transaction（图5）。
 
-通过定义Data Schema, Validator和Generator，我们可以在CKB中实现任意共同知识的验证和存储。例如，我们可以定义一个`AlpacaCoin`的新类型：
+通过定义Data Schema, Verifier和Generator，我们可以在CKB中实现任意共同知识的验证和存储。例如，我们可以定义一个`AlpacaCoin`的新类型：
 
 ```javascript
 Data Schema = {amount “uint”}
@@ -211,7 +211,7 @@ Data Schema = {amount “uint”}
  2. 计算inputs列表中AlpacaCoin的amount之和IN
  3. 计算outputs列表中的AlpacaCoin的amount之和OUT
  4. 比较IN和OUT是否相等，并返回结果
-Validator = validate(context ctx, inputs, outputs)
+Verifier = verify(context ctx, inputs, outputs)
 
  pseudo code of generator gen()
  1. 查找用户能够花费的，属于AlpacaCoin类型的Cells
@@ -220,8 +220,8 @@ Validator = validate(context ctx, inputs, outputs)
 Generator = gen(context ctx, address to, uint amount, ...)
 ```
 
-![Figure 5. Transactions, Generations, and Validations](images/fig5.png)
-<div align="center">Figure 5. Transactions, Generations, and Validations</div>
+![Figure 5. Transactions, Generations, and Verifications](images/fig5.png)
+<div align="center">Figure 5. Transactions, Generations, and Verifications</div>
 
 ## 3.  架构
 
