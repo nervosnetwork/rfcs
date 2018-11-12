@@ -39,20 +39,20 @@ An Information RFC is considered final once it's merged and published in this re
 
 ### 4. (Standards Track) Propose Your Standard
 
-A Standards Track RFC can be in 1 of 3 states:
+A Standards Track RFC can be in 1 of 3 statuses:
 
 1. Proposal (Default)
 2. Standard
 3. Obsolete
 
-A Standards Track RFC will be in **Proposal** state intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a **Standard**.
+A Standards Track RFC will be in **Proposal** status intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a **Standard**.
 
 The maintainers of RFCs will review the proposal, ask if there's any objections, and discuss about the PR. The PR will be accepted or closed based on **rough consensus** in this early stage.
 
 ## RFCs
 
-| Number | Title | Author | Category | State |
-|--------|-------|--------|----------|-------|
+| Number | Title | Author | Category | Status |
+|--------|-------|--------|----------|--------|
 | [2](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Blockchains and Applications](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Final |
 | [3](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0003-ckb-vm) | [CKB-VM](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0003-ckb-vm/0003-ckb-vm.md) | Xuejie Xiao | | |
 | [4](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0004-ckb-block-sync) | [CKB Block Synchronization Protocol](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md) | Ian Yang | | |
