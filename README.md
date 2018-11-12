@@ -1,5 +1,7 @@
 # Nervos Network RFCs
 
+[![Telegram Group](https://cdn.rawgit.com/Patrolavia/telegram-badge/8fe3382b/chat.svg)](https://t.me/nervos_rfcs)
+
 This repository contains proposals, standards and documentations related to Nervos Network.
 
 The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction Nervos network is evolving in.
@@ -19,7 +21,7 @@ The RFC process attempts to be as simple as possible at beginning and evolves wi
 
 ### 1. Discuss Your Idea with Community
 
-Before submiting a RFC pull request, you should proposal the idea or document to [Nervos Network RFCs Group] or [Nervos Network RFCs Mailing List].
+Before submiting a RFC pull request, you should proposal the idea or document to [Nervos Network RFCs Chatroom](https://t.me/nervos_rfcs) or [Nervos Network RFCs Mailing List](#).
 
 ### 2. Propose Your RFC
 
