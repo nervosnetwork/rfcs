@@ -8,7 +8,7 @@ RFCs publication here does not make it formally accepted standard until its stat
 
 ## Categories
 
-Not all RFCs are standards, there are 2 RFC categories:
+Not all RFCs are standards, there are 2 categories:
 
 * Standards Track - RFC that is intended to be standard followed by protocols, clients and applications in Nervos network.
 * Informational - Anything related to Nervos network.
@@ -26,6 +26,8 @@ Before submiting a RFC pull request, you should proposal the idea or document to
 After discussion, please create a pull request to propose your RFC:
 
 > Copy `0000-template` as `rfcs/0000-feature-name`, where `feature-name` is the descriptive name of the RFC. Don't assign an number yet.
+
+Nervos RFCs should be written in English, but translated versions can be provided to help understanding. English version is the canonical version, check english version when there's ambiguity.
 
 Nervos RFCs should follow the keyword conventions defined in [RFC 2119](https://tools.ietf.org/html/rfc2119), [RFC 6919](https://tools.ietf.org/html/rfc6919).
 
@@ -46,6 +48,12 @@ A Standards Track RFC can be in 1 of 3 states:
 A Standards Track RFC will be in **Proposal** state intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a **Standard**.
 
 The maintainers of RFCs will review the proposal, ask if there's any objections, and discuss about the PR. The PR will be accepted or closed based on **rough consensus** in this early stage.
+
+## RFCs
+
+| Number | Title | Author | Category | State |
+|--------|-------|--------|----------|-------|
+| [2] |
 
 ## License
 

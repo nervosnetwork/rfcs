@@ -32,7 +32,7 @@
 
 之后会使用以下图示表示不同状态的块：
 
-![](../images/block-status.jpg "Block Status")
+![](images/block-status.jpg "Block Status")
 
 参与同步的节点创世块**必须**相同，所有的块必然是组成由创世块为根的一颗树。如果块无法最终连接到创世块，这些块都可以丢弃不做处理。
 
@@ -40,7 +40,7 @@
 
 下图是节点 Alice 构造的状态树的示例，其中标记为 Alice 的块是该节点当前的 Best Chain Tip。
 
-![](../images/status-tree.jpg "Status Tree by Alice")
+![](images/status-tree.jpg "Status Tree by Alice")
 
 ## 连接块头
 
@@ -52,17 +52,17 @@
 
 Alice 在连接块头时，需要保持 Best Header Chain Tip 的更新，这样能减少收到已有块头的数量。
 
-![](../images/seq-connect-headers.jpg)
+![](images/seq-connect-headers.jpg)
 
 上图是一轮连接块头的流程。完成了一轮连接块头后，节点之间应该通过新块通知保持之后的同步。
 
 以上图 Alice 从 Bob 同步为例，首先 Alice 将自己 Best Header Chain 中的块进行采样，将选中块的哈希作为消息内容发给 Bob。采样的基本原则是最近的块采样越密，越早的块越稀疏。比如可以取最后的 10 个块，然后从倒数第十个块开始按 2, 4, 8, … 等以 2 的指数增长的步长进行取样。采样得到的块的哈希列表被称为 Locator。下图中淡色处理的是没有被采样的块，创世块应该始终包含在 Locator 当中。
 
-![](../images/locator.jpg)
+![](images/locator.jpg)
 
 Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个共同块。因为创世块相同，所以一定存在这样一个块。Bob 把共同块之后一个开始到 Best Chain Tip 为止的所有块头发给 Alice。
 
-![](../images/connect-header-conditions.jpg)
+![](images/connect-header-conditions.jpg)
 
 上图中未淡出的块是 Bob 要发送给 Alice 的块头，金色高亮边框的是最后共同块。下面列举了同步会碰到的三种情况：
 
@@ -92,7 +92,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 这一步的验证包括检查块头是否满足共识规则，PoW 是否有效。因为不处理 Orphan Block，难度调整也可以在这里进行验证。
 
-![](../images/connect-header-status.jpg)
+![](images/connect-header-status.jpg)
 
 上图是 Alice 和 Bob, Charlie, Davis, Elsa 等节点同步后的状态树情况和观测到的其它节点的 Best Chain Tip。
 
@@ -108,7 +108,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 假设分支第一个要下载的 Connected 状态块号是 M，滑动窗口长度是 N，那么只去下载 M 到 M + N - 1 这 N 个块。在块 M 下载并验证后，窗口往右移动到下一个 Connected 状态的块。如果块 M 验证失败，则分支剩余的块也就都是 Invalid 状态，不需要继续下载。如果窗口长时间没有向右移动，则可以判定为下载超时，可以在尝试其它分支之后再进行尝试，或者该分支上有新增的 Connected 块时再尝试。
 
-![](../images/sliding-window.jpg)
+![](images/sliding-window.jpg)
 
 上图是一个长度为 8 的滑动窗口的例子。开始时可下载的块是从 3 到 10。块 3 下载后，因为 4 已经先下载好了，所以窗口直接滑动到从 5 开始。
 
@@ -141,7 +141,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 因为可以认为对方节点已经知道 Best Sent Header，及其祖先节点，所以发送新块通知时可以排除掉这些块。
 
-![](../images/best-sent-header.jpg "Best Sent Header")
+![](images/best-sent-header.jpg "Best Sent Header")
 
 上面的例子中标记为 Alice 的块是节点 Alice 的 Best Chain Tip。标记为 Best Sent to Bob 是记录的发送给 Bob 工作量最高的块头。其中未淡化的块是 Alice 需要通知给 Bob 的新块。数字对应的每一步说明如下：
 

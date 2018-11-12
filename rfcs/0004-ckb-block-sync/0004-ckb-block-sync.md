@@ -32,7 +32,7 @@ Initially, Genesis block is in status Accepted and the rest is in status Unknown
 
 Below figures are used to indicate blocks in different status later on. 
 
-![](../images/block-status.jpg "Block Status")
+![](images/block-status.jpg "Block Status")
 
 Genesis block of the nodes synchronizing **must be** the same, and all blocks can be constructed as a tree with the genesis block being the root. Blocks will be removed if they cannot connect to the root eventually. 
 
@@ -40,7 +40,7 @@ Every participating node forms its local status tree where the chain consisting 
 
 The graph below is an example of Status Tree formed by Alice and blocks signed with name Alice is this node's current Best Chain Tip. 
 
-![](../images/status-tree.jpg "Status Tree by Alice")
+![](images/status-tree.jpg "Status Tree by Alice")
  
 ## Connecting Header
 
@@ -52,17 +52,17 @@ The goal of connecting header is demonstrated using the following example. When 
 
 When Alice connects header, keeping Best Header Chain Tip updated could help to decrease numbers of receiving headers already existed.
 
-![](../images/seq-connect-headers.jpg)
+![](images/seq-connect-headers.jpg)
 
 The graph above instructs the process of connecting headers. After a round of connecting headers, nodes are supposed to keep up-to-date using new block notification.
 
 Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backward with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The list of hashes of the sampled blocks is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator. 
 
-![](../images/locator.jpg)
+![](images/locator.jpg)
 
 Bob can get the latest common block between these two chains according to Locator and his own Best Chain. Because the genesis block is identical, there must be such kind of block. Bob will send all block headers from the common block to his Best Chain Tip to Alice. 
 
-![](../images/connect-header-conditions.jpg)
+![](images/connect-header-conditions.jpg)
 
 In the figure above, blocks with undimmed color should be sent from Bob to Alice, and golden bordered one is the latest common block. There are three possible cases in the process:
 
@@ -92,7 +92,7 @@ Upon receiving the block header message, the format should be verified first.
 
 In this stage, verification includes checking if block header satisfies the consensus rules and if Pow is valid or not. Since Orphan Blocks are not processed, difficulty adjustment can be verified as well. 
 
-![](../images/connect-header-status.jpg)
+![](images/connect-header-status.jpg)
 
 The figure above is the Status Tree of Alice after synchronized with Bob, Charlie, Davis, Elsa. The observed Best Chain Tip of each peer is also annotated in the figure.
 
@@ -108,7 +108,7 @@ When downloading a branch, earlier blocks should be downloaded firstly due to th
 
 Assume that the number of the first Connected status block to be downloaded is M and the length of the sliding window is N, then only the blocks numbered M to M+N-1 can be downloaded. After the block M is downloaded and verified, the sliding window moves to the next Connected block. If verification of block M fails, then the remaining blocks of this branch are all Invalid, and there is no need to continue downloading. If the window does not move towards the right for a long time, it is considered as time out. The node should try again later, or waits until the branch has new connected blocks.
 
-![](../images/sliding-window.jpg)
+![](images/sliding-window.jpg)
 
 The figure above is an example of an 8 length sliding window. In the beginning, the downloadable block range from 3 to 10. After block 3 is downloaded,  the window will move to block 5 because block 4 has already been downloaded in advance (as the figure above illustrated).
 
@@ -141,7 +141,7 @@ When the local Best Chain Tip changes, the node should push an announcement to p
 
 It is assumed that the peers already know the Best Sent Header and its ancestors, so these blocks can be excluded when sending new block announcements.
 
-![](../images/best-sent-header.jpg "Best Sent Header")
+![](images/best-sent-header.jpg "Best Sent Header")
 
 From the above example, Alice's Best Chain Tip is annotated with her name. The best header sent to Bot is annotated as "Best Sent To Bob". The undimmed blocks are the ones Alice should send to Bob as new blocks announcement. Following is the detailed description for each step:
 
