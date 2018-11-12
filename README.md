@@ -59,4 +59,4 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 
 ## License
 
-This repository is being licensed under terms of [MIT license](http://opensource.org/licenses/MIT).
+This repository is being licensed under terms of [MIT license](LICENSE).
