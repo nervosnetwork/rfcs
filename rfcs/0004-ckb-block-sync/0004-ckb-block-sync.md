@@ -1,4 +1,13 @@
-# Chain Synchronization Protocol
+---
+Number: 0004
+Category: TBD
+Status: TBD
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2018-07-25
+---
+
+# CKB Block Synchronization Protocol
 
 Glossary of Terms
 

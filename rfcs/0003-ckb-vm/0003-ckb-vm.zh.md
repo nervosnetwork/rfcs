@@ -1,10 +1,13 @@
-# VM
+---
+Number: 0003
+Category: TBD
+Status: TBD
+Author: Xuejie Xiao
+Organization: Nervos Foundation
+Created: 2018-08-01
+---
 
-```
-Author: Xuejie Xiao <x@nervos.org>
-Category: CKB
-Start Date: 2018-08-01
-```
+# CKB-VM
 
 ## 概述
 

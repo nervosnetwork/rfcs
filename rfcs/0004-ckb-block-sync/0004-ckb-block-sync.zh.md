@@ -1,3 +1,12 @@
+---
+Number: 0004
+Category: TBD
+Status: TBD
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2018-07-25
+---
+
 # 链同步协议
 
 术语说明
