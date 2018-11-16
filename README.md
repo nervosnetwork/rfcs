@@ -37,7 +37,7 @@ Nervos RFCs should follow the keyword conventions defined in [RFC 2119](https://
 
 The maintainers of RFCs and the community will review the PR, and you can update the RFC according to comments left in PR. When the RFC is ready and has enough supports, it will be accepted and merged into this repository.
 
-An Informational RFC is considered final once it's merged and published in this repository.
+An Informational RFC will be in Draft status once merged and published. It can be made Final by author at any time, or by RFC maintainers if there's no updates to the draft in 12 months.
 
 ### 4. (Standards Track) Propose Your Standard
 
@@ -55,7 +55,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 
 | Number | Title | Author | Category | Status |
 |--------|-------|--------|----------|--------|
-| [2](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Blockchains and Applications](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Final |
+| [2](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Blockchains and Applications](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Draft |
 | [3](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0003-ckb-vm) | [CKB-VM](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0003-ckb-vm/0003-ckb-vm.md) | Xuejie Xiao | | |
 | [4](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0004-ckb-block-sync) | [CKB Block Synchronization Protocol](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md) | Ian Yang | Standards Track | Proposal |
 
