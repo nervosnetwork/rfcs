@@ -6,7 +6,7 @@ This repository contains proposals, standards and documentations related to Nerv
 
 The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction Nervos network is evolving in.
 
-RFCs publication here does not make it formally accepted standard until its status becomes Final or Active.
+RFCs publication here does not make it formally accepted standard until its status becomes Standard.
 
 ## Categories
 
@@ -37,7 +37,7 @@ Nervos RFCs should follow the keyword conventions defined in [RFC 2119](https://
 
 The maintainers of RFCs and the community will review the PR, and you can update the RFC according to comments left in PR. When the RFC is ready and has enough supports, it will be accepted and merged into this repository.
 
-An Information RFC is considered final once it's merged and published in this repository.
+An Informational RFC is considered final once it's merged and published in this repository.
 
 ### 4. (Standards Track) Propose Your Standard
 
