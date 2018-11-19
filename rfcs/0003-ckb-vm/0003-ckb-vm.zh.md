@@ -1,7 +1,7 @@
 ---
 Number: 0003
-Category: TBD
-Status: TBD
+Category: VM
+Status: Final
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2018-08-01
