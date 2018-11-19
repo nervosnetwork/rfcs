@@ -1,6 +1,6 @@
 ---
 Number: 0003
-Category: VM
+Category: Standards Track
 Status: Final
 Author: Xuejie Xiao
 Organization: Nervos Foundation
