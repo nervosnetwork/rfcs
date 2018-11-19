@@ -1,7 +1,7 @@
 ---
 Number: 0003
-Category: TBD
-Status: TBD
+Category: Informational
+Status: Draft
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2018-08-01
@@ -13,13 +13,13 @@ Created: 2018-08-01
 
 CKB 的 VM 层用于在给定 transction 的 inputs 与 outputs 的情况下，执行一系列验证条件，以判断 transaction 是否合法并返回结果。
 
-CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv32imac 指令集架构：基于 [RV32I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，原子性内存操作，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算，如有需要将在未来版本中考虑引入。
+CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv64imac 指令集架构：基于 [RV64I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，原子性内存操作，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算，如有需要将在未来版本中考虑引入。
 
-CKB 通过动态链接库的方式，依赖 syscall 来实现链上运算所需的其他功能，比如读取 Cell 的内容，或是其他与 block 相关的普通运算及加密运算。任何支持 RV32I 的编译器 (如 [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm), [Rust](https://github.com/riscv-rust/rust)) 生成的可执行文件均可以作为 CKB VM 中的 script 来运行。
+CKB 通过动态链接库的方式，依赖 syscall 来实现链上运算所需的其他功能，比如读取 Cell 的内容，或是其他与 block 相关的普通运算及加密运算。任何支持 RV64I 的编译器 (如 [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm), [Rust](https://github.com/riscv-rust/rust)) 生成的可执行文件均可以作为 CKB VM 中的 script 来运行。
 
 ## RISC-V 运行模型
 
-CKB 中使用 32 位的 RISC-V 虚拟机作为 VM 来执行合约。VM 运行在 32 位地址空间下，提供了 RV32I 核心的 38 条指令，RV32M 扩展中的 4 条整型乘除法的扩展指令，以及 RV32A 中的原子性内存操作指令。为减小生成的合约大小，CKB 还支持 RVC 指令压缩功能，尽可能减小指令的存储开销。合约会直接使用 Linux 的 ELF 可执行文件格式，以方便对接开源社区的工具及离线调试。
+CKB 中使用 64 位的 RISC-V 虚拟机作为 VM 来执行合约。VM 运行在 64 位地址空间下，提供了 RV32I 定义的核心指令集，RV64M 扩展中的整型乘除法的扩展指令，以及 RV64A 中的原子性内存操作指令。为减小生成的合约大小，CKB 还支持 RVC 指令压缩功能，尽可能减小指令的存储开销。合约会直接使用 Linux 的 ELF 可执行文件格式，以方便对接开源社区的工具及离线调试。
 
 每个合约在 gzip 后最大提供 1MB 的存储空间，解压后的原始合约最大限制为 10 MB。合约运行时，CKB 虚拟机会为合约提供 128 MB 的运行空间，其中包含合约可执行文件映射到虚拟机上的代码页，合约运行时需要的栈空间，堆空间以及外部的 Cell 通过 mmap 映射后的地址页。
 
@@ -36,10 +36,8 @@ int main(int argc, char* argv[]) {
   const char *input_signature = (const char *) argv[0];
   int input_cell_number = (int) argv[1];
   int *input_cell_lengths = (int *) argv[2];
-  void **input_cells = (void **) argv[3];
-  int output_cell_number = (int) argv[4];
-  int *output_cell_lengths = (int *) argv[5];
-  void **output_cells = (void **) argv[6];
+  int output_cell_number = (int) argv[3];
+  int *output_cell_lengths = (int *) argv[4];
 
   // processing and validating data
 
@@ -49,7 +47,7 @@ int main(int argc, char* argv[]) {
 
 合约运行从合约 ELF 文件中的 main 函数开始执行，通过 argc 与 argv 提供输入参数进行合约的执行，当 main 函数返回值为 0 时，认为合约执行成功，否则合约执行失败。注意这里的 argc 与 argv 并不保存完整的 inputs 以及 outputs 数据，而是只保留相应的 metadata，对 inputs 与 outputs 的读取则通过单独定义的库与 syscalls 来实现，以便减少不必要的开销。同时 CKB VM 仅为单线程模型，合约文件可以自行提供 coroutine 实现，但是在 VM 层不提供 threading。
 
-目前基于简化实现的考虑，CKB 并不提供浮点数运算。同时虽然 CKB 仅为单线程模型，但是考虑到 rv32imac 的广泛使用(Rust 默认即使用 rv32imac 模型)，仍旧提供 RV32A 扩展中的原子性操作。
+目前基于简化实现的考虑，CKB 并不提供浮点数运算。同时虽然 CKB 仅为单线程模型，但是考虑到 rv64imac 的广泛使用，仍旧提供 RV64A 扩展中的原子性操作。
 
 ## 辅助库与 Bootloader
 
@@ -83,7 +81,7 @@ CKB 会选取合适的 RISC-V 开源实现作为运行模型。在执行合约�
 
 ## 示例
 
-以下通过一个 ERC20 代币的发行过程来介绍 CKB 中虚拟机的执行过程。需要注意的是，为了简化说明，这里描述的 ERC20 实现经过了一定程度的简化：
+以下通过一个用户自定义代币(user defined token, or UDT)的发行过程来介绍 CKB 中虚拟机的执行过程。需要注意的是，为了简化说明，这里描述的 UDT 实现经过了一定程度的简化：
 
 * 使用 64 位整数，而不是 256 位整数来保存代币数目
 * 使用简化的线性数组与顺序查询的方式代替哈希数据结构存储代币发行情况。同时对代币最多能发给的账户数直接做上限限制
@@ -127,12 +125,12 @@ typedef struct {
 对于数据结构有如下的 API 来提供各种操作：
 
 ```c
-int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
-int erc20_total_supply(const data_t *data);
-int64_t erc20_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
-int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
-int erc20_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
-int erc20_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int udt_total_supply(const data_t *data);
+int64_t udt_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
 ```
 
 这些方法的实现既可以直接编译到合约中，也可以保存在 Cell 中，通过动态链接的方式来提供。以下会分别介绍两种使用方式。
@@ -150,7 +148,7 @@ int ckb_read_cell(int cell_id, void** buffer, size_t* size);
 这样就可以通过如下的合约来发行代币：
 
 ```c
-int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply)
+int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply)
 {
   memset(&data, 0, sizeof(data_t));
   memcpy(data->owner, owner, ADDRESS_LENGTH);
@@ -175,7 +173,7 @@ int main(int argc, char* argv[]) {
   int64_t total_supply = atoll(argv[4]);
 
   data_t data;
-  ret = erc20_initialize(&data, owner, total_supply);
+  ret = udt_initialize(&data, owner, total_supply);
   if (ret != 0) {
     return ret;
   }
@@ -193,23 +191,23 @@ int main(int argc, char* argv[]) {
 }
 ```
 
-通过验证 Output Cell 中的数据与自行初始化后的 ERC20 代币数据是否一致，这里可以确保当前合约及生成数据均是正确的。
+通过验证 Output Cell 中的数据与自行初始化后的 UDT 代币数据是否一致，这里可以确保当前合约及生成数据均是正确的。
 
 ### 转账
 
 上述发行代币模型中，验证 Cell 的脚本直接保存在了 input script 中。这里其实也可以通过引用外部 Cell 的方式，调用外部代码来实现验证 Cell 的方法。
 
-考虑 ERC20 代币的转账模型，首先有如下基于 C 的实现：
+考虑 UDT 代币的转账模型，首先有如下基于 C 的实现：
 
 ```c
-int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
 {
   balance_t *from_balance = NULL, *to_balance = NULL;
-  int ret = _erc20_find_balance(data, from, 1, &from_balance);
+  int ret = _udt_find_balance(data, from, 1, &from_balance);
   if (ret != 0) {
     return ret;
   }
-  ret = _erc20_find_balance(data, to, 1, &to_balance);
+  ret = _udt_find_balance(data, to, 1, &to_balance);
   if (ret != 0) {
     return ret;
   }
@@ -226,12 +224,12 @@ int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[
 }
 ```
 
-其中 `_erc20_find_balance` 的作用是给定地址，从当前代币数据结构中找到该地址对应的 `balance_t` 数据结构。如果该地址不存在的话，则在数据结构中创建该地址的条目。在这里我们略去实现，完整的例子可以参考 CKB 代码库。
+其中 `_udt_find_balance` 的作用是给定地址，从当前代币数据结构中找到该地址对应的 `balance_t` 数据结构。如果该地址不存在的话，则在数据结构中创建该地址的条目。在这里我们略去实现，完整的例子可以参考 CKB 代码库。
 
 可以将该函数编译，得到对应的二进制代码：
 
 ```c
-00000000 <_erc20_find_balance>:
+00000000 <_udt_find_balance>:
    0:   7179                    addi    sp,sp,-48
    2:   d606                    sw      ra,44(sp)
    4:   d422                    sw      s0,40(sp)
@@ -307,15 +305,15 @@ int main(int argc, char* argv[]) {
 
 上面的示例中，虽然转账方法放在了 Cell 中，但是这里的验证方法仍然有一个问题：由于方法是直接 mmap 到内存中，在编译期并不知道 mmap 之后方法所处的内存地址，所以方法的内部实现只能使用局部跳转，无法使用全局跳转。同时在一段内存空间内也只能放入一个验证方法，没有办法支持有多个方法的调用库。
 
-这里我们也可以通过动态链接的方式来使用外部 Cell 提供的辅助库。假设在某一个 Cell 中已经提供了 ERC20 代币的所有实现:
+这里我们也可以通过动态链接的方式来使用外部 Cell 提供的辅助库。假设在某一个 Cell 中已经提供了 UDT 代币的所有实现:
 
 ```c
-int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
-int erc20_total_supply(const data_t *data);
-int64_t erc20_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
-int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
-int erc20_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
-int erc20_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int udt_total_supply(const data_t *data);
+int64_t udt_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
 ```
 
 于是可以在编译期时直接指定链接方式为动态链接，这样便可以有如下的 input script:
@@ -345,19 +343,19 @@ int main(int argc, char* argv[])
 
   if (strcmp(argv[4], "initialize") == 0) {
     // processing initialize arguments
-    ret = erc20_initialize(...);
+    ret = udt_initialize(...);
     if (ret != 0) {
       return ret;
     }
   } else if (strcmp(argv[4], "transfer") == 0) {
     // processing transfer arguments
-    ret = erc20_initialize(input_data, ...);
+    ret = udt_initialize(input_data, ...);
     if (ret != 0) {
       return ret;
     }
   } else if (strcmp(argv[4], "approve") == 0) {
     // processing approve arguments
-    ret = erc20_approve(input_data, ...);
+    ret = udt_approve(input_data, ...);
     if (ret != 0) {
       return ret;
     }
@@ -371,4 +369,4 @@ int main(int argc, char* argv[])
 }
 ```
 
-这里所有的 ERC20 函数均通过动态链接的方式引用其他 Cell 里的内容，不占用当前 Cell 的空间。
+这里所有的 UDT 函数均通过动态链接的方式引用其他 Cell 里的内容，不占用当前 Cell 的空间。
