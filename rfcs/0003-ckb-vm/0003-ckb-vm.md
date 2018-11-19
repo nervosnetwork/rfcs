@@ -1,6 +1,6 @@
 ---
 Number: 0003
-Category: Standards Track
+Category: Informational
 Status: Final
 Author: Xuejie Xiao
 Organization: Nervos Foundation
@@ -13,13 +13,13 @@ Created: 2018-08-01
 
 VM layer in CKB is used to perform a series of validation rules to determine if transaction is valid given transaction's inputs and outputs.
 
-CKB uses [RISC-V](https://riscv.org/) ISA to implement VM layer. To be more precise, CKB uses rv32imac archivecture: it is based on core [RV32I](https://riscv.org/specifications/) ISA with M standard extension for integer multiplication and division, A extension for atomic operations, and C standard extension for RCV(RISC-V Compressed Instructions). Note that for now, CKB doesn't support floating point instructions, this might be added in future versions if needed.
+CKB uses [RISC-V](https://riscv.org/) ISA to implement VM layer. To be more precise, CKB uses rv64imac archivecture: it is based on core [RV64I](https://riscv.org/specifications/) ISA with M standard extension for integer multiplication and division, A extension for atomic operations, and C standard extension for RCV(RISC-V Compressed Instructions). Note that for now, CKB doesn't support floating point instructions, this might be added in future versions if needed.
 
-CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV32I support, such as [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm) or [Rust](https://github.com/riscv-rust/rust) can be used to generate CKB compatible scripts.
+CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV64I support, such as [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm) or [Rust](https://github.com/riscv-rust/rust) can be used to generate CKB compatible scripts.
 
 ## RISC-V Runtime Model
 
-CKB leverages 32-bit RISC-V virtual machine to run contracts. We provide the core 38 instructions in 32-bit address space, with additional 4 integer multiplication/division extension instructions. Additional atomic extension operations are also provided for compatibility with Rust. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
+CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. Additional atomic extension operations are also provided for compatibility with Rust. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
 
 Each contract has a maximum size of 10MB in uncompressed size, and 1MB in gzip size. CKB virtual machine has a maximum of 128 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
 
@@ -34,10 +34,8 @@ int main(int argc, char* argv[]) {
   const char *input_signature = (const char *) argv[0];
   int input_cell_number = (int) argv[1];
   int *input_cell_lengths = (int *) argv[2];
-  void **input_cells = (void **) argv[3];
-  int output_cell_number = (int) argv[4];
-  int *output_cell_lengths = (int *) argv[5];
-  void **output_cells = (void **) argv[6];
+  int output_cell_number = (int) argv[3];
+  int *output_cell_lengths = (int *) argv[4];
 
   // processing and validating data
 
@@ -47,7 +45,7 @@ int main(int argc, char* argv[]) {
 
 Contract starts from main function in the ELF formatted contract file, arguments are passed in via standard argc and argv. When main returns 0, the contract is treated as success. Note that due to space consideration, we might not store full inputs and outputs data in argv. Instead, we might just provide metadata in argv, and leverages additional libraries and syscalls to support input/output loading. This way the runtime cost can be minimized. CKB VM is a strict single-threaded model, contract can ship with coroutines of their own.
 
-For simplicity, CKB doesn't support floating point numbers for now. Even though CKB only supports single thread, A standard extension for atomic operations is still provided due to the widespread use of rv32imac(for example, Rust uses rv32imac by default)
+For simplicity, CKB doesn't support floating point numbers for now. Even though CKB only supports single thread, A standard extension for atomic operations is still provided due to the widespread use of rv64imac.
 
 ## Libraries and bootloader
 
@@ -83,7 +81,7 @@ In addition, we will also record running costs of reading/writing additional cel
 
 ## Example
 
-Here an ERC20 token issuing process will be used as an example. Note that the ERC20 implementation used here is simplified here:
+Here a user defined token(UDT) issuing process will be used as an example. Note that the UDT implementation used here is simplified here:
 
 * 64-bit integer is used to store token number instead of 256-bit integer
 * Simple linear array is used instead of hashtable as account data structure. A strict upper bound is also used for simplicity
@@ -199,17 +197,17 @@ It ensures generated data is legit by validating that contents in output cell ma
 
 In the above example, function implementation for validating cell is directly compiled into input contract script. It's also possible to reference and call code from external cell for validation.
 
-First, the following implementation can be provided for transfering ERC20 tokens:
+First, the following implementation can be provided for transfering UDT tokens:
 
 ```c
-int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
 {
   balance_t *from_balance = NULL, *to_balance = NULL;
-  int ret = _erc20_find_balance(data, from, 1, &from_balance);
+  int ret = _udt_find_balance(data, from, 1, &from_balance);
   if (ret != 0) {
     return ret;
   }
-  ret = _erc20_find_balance(data, to, 1, &to_balance);
+  ret = _udt_find_balance(data, to, 1, &to_balance);
   if (ret != 0) {
     return ret;
   }
@@ -226,12 +224,12 @@ int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[
 }
 ```
 
-`_erc20_find_balance` here is used to locate `balance_t` data structure given an address, and also create an entry if the address doesn't already exist. Here we omit the full implementation for this function, please refer to CKB codebase for full example.
+`_udt_find_balance` here is used to locate `balance_t` data structure given an address, and also create an entry if the address doesn't already exist. Here we omit the full implementation for this function, please refer to CKB codebase for full example.
 
 Following binary code is compiled result of this function:
 
 ```c
-00000000 <_erc20_find_balance>:
+00000000 <_udt_find_balance>:
    0:   7179                    addi    sp,sp,-48
    2:   d606                    sw      ra,44(sp)
    4:   d422                    sw      s0,40(sp)
@@ -307,15 +305,15 @@ With mmap, we load a cell directly as a callable function, this function is then
 
 Even though transfer method is stored as an external cell in the above example, one disadvantage here is that the memory address of the mmapped function is unknown at compile time. As a result, internal implementation within that method can only leverage local jumps. In addition, only one function is supported this way, there's no way to store multiple function in a single cell.
 
-Dynamic linking is provide to solve this problem: assuming we have all ERC20 functions compiled as a shared library in one cell:
+Dynamic linking is provide to solve this problem: assuming we have all UDT functions compiled as a shared library in one cell:
 
 ```c
-int erc20_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
-int erc20_total_supply(const data_t *data);
-int64_t erc20_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
-int erc20_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
-int erc20_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
-int erc20_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int udt_total_supply(const data_t *data);
+int64_t udt_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
 ```
 
 With dynamic linking, following input script can be used:
@@ -345,19 +343,19 @@ int main(int argc, char* argv[])
 
   if (strcmp(argv[4], "initialize") == 0) {
     // processing initialize arguments
-    ret = erc20_initialize(...);
+    ret = udt_initialize(...);
     if (ret != 0) {
       return ret;
     }
   } else if (strcmp(argv[4], "transfer") == 0) {
     // processing transfer arguments
-    ret = erc20_initialize(input_data, ...);
+    ret = udt_initialize(input_data, ...);
     if (ret != 0) {
       return ret;
     }
   } else if (strcmp(argv[4], "approve") == 0) {
     // processing approve arguments
-    ret = erc20_approve(input_data, ...);
+    ret = udt_approve(input_data, ...);
     if (ret != 0) {
       return ret;
     }
@@ -371,4 +369,4 @@ int main(int argc, char* argv[])
 }
 ```
 
-Here all ECR20 functions are linked dynamically from external cells, current contract can be minimized in terms of size.
+Here all UDT functions are linked dynamically from external cells, current contract can be minimized in terms of size.
