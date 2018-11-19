@@ -1,7 +1,7 @@
 ---
 Number: 0003
 Category: Informational
-Status: Final
+Status: Draft
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2018-08-01
