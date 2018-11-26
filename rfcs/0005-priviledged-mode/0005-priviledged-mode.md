@@ -43,7 +43,7 @@ To help with MMU, a TLB structure will also be included in CKB VM. For simplicit
 
 * The TLB entry will have 64 entries, each entry is 4KB(exactly 1 memory page).
 * The TLB implemented will be one-way associative, meaning if 2 memory pages have the same value for the last 6 bits, they will evict each other.
-* Whenever we are switching between different privildged levels, the TLB will be fully flushed.
+* Whenever we are switching between different privileged levels, the TLB will be fully flushed.
 
 Notice TLB will only be instantiated when CKB VM is generating the first page fault trap, that means if a contract keeps running in machine mode, the contract might never interact with the TLB.
 
