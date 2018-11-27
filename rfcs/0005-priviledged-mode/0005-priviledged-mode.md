@@ -39,7 +39,7 @@ Note that when CKB VM first loads, it will be in machine privileged mode, hence 
 
 ## TLB
 
-To help with MMU, a TLB structure will also be included in CKB VM. For simplicity, we will implement a TLB now with the following characteristics:
+To help with MMU, a [Transaction lookaside buffer](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) (TLB) structure will also be included in CKB VM. For simplicity, we will implement a TLB now with the following characteristics:
 
 * The TLB entry will have 64 entries, each entry is 4KB(exactly 1 memory page).
 * The TLB implemented will be one-way associative, meaning if 2 memory pages have the same value for the last 6 bits, they will evict each other.
