@@ -39,7 +39,7 @@ Created: 2018-11-26
 
 ## TLB
 
-CKB VM 会添加 TLB 结构辅助 MMU 实现。出于简化实现的考虑，我们会实现具有如下特性的 TLB：
+CKB VM 会添加 [Transaction lookaside buffer](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) (TLB) 结构辅助 MMU 实现。出于简化实现的考虑，我们会实现具有如下特性的 TLB：
 
 * TLB 中有 64 个条目，每个条目为 4KB (即正好一个内存页)
 * TLB 为单路组相联，即两个末尾 6 个 bit 相同的内存页会相互竞争一个条目位置
@@ -47,4 +47,4 @@ CKB VM 会添加 TLB 结构辅助 MMU 实现。出于简化实现的考虑，我
 
 注意 TLB 只会在 CKB VM 第一次生成 page fault trap 操作时才被初始化。这意味着如果一个合约一直在 machine 特权模式下运行的话，该合约可能永远也不会与 TLB 交互。
 
-TLB 成功初始化之后，在 CKB VM 运行期间即无法再被关闭。
+TLB 成功初始化之后，在当前 CKB VM 运行期间会持续存在，无法在初始化之后关闭 TLB。
