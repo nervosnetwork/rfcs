@@ -91,7 +91,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 - Alice 观察到的 Bob Best Chain Tip 很长一段时间没有更新，或者时间很老。这种情况 Bob 无法提供有价值的数据，当连接数达到限制时，可以优先断开该节点的连接。
 - Alice 观察到的 Bob Best Chain Tip 状态是 Invalid。这个判断不需要等到一轮 Connect Head 结束，任何一个分页发现有 Invalid 的块就可以停止接受剩下的分页了。因为 Bob 在一个无效的分支上，Alice 可以停止和 Bob 的同步，并将 Bob 加入到黑名单中。
-- Alice 收到块头全部都在自己的 Best Header Chain 上，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Header Chain 上的比例，高于一定阈值可以将对方加入到黑名单中。
+- Alice 收到块头全部都在自己的 Best Header Chain 里，这有两种可能，一是 Bob 故意发送，二是 Alice 在 Connect Head 时 Best Chain 发生了变化，由于无法区分只能忽略，但是可以统计发送的块已经在本地 Best Header Chain 上的比例，高于一定阈值可以将对方加入到黑名单中。
 
 在收到块头消息时可以先做以下格式验证：
 
