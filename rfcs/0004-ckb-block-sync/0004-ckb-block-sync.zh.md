@@ -1,7 +1,7 @@
 ---
 Number: 0004
-Category: TBD
-Status: TBD
+Category: Standards Track
+Status: Proposal
 Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2018-07-25
