@@ -58,7 +58,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [2](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Blockchains and Applications](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Draft |
 | [3](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0003-ckb-vm) | [CKB-VM](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0003-ckb-vm/0003-ckb-vm.md) | Xuejie Xiao | Informational | Draft |
 | [4](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0004-ckb-block-sync) | [CKB Block Synchronization Protocol](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md) | Ian Yang | Standards Track | Proposal |
-| [5](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0005-priviledged-mode) | [Optional privileged architecture support for CKB VM](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0005-priviledged-mode/0005-priviledged-mode.md) | Xuejie Xiao | Informational | Draft |
+| [5](https://github.com/nervosnetwork/rfcs/tree/master/rfcs/0005-priviledged-mode) | [Privileged architecture support for CKB VM](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0005-priviledged-mode/0005-priviledged-mode.md) | Xuejie Xiao | Informational | Draft |
 
 ## License
 

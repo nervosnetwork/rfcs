@@ -7,11 +7,11 @@ Organization: Nervos Foundation
 Created: 2018-11-26
 ---
 
-# CKB VM 中的可选特权架构支持
+# CKB VM 中的特权架构支持
 
 ## 概要
 
-本 RFC 的目标是为 CKB VM 添加可选的特权架构支持。虽然由于 CKB VM 每次只运行一个合约，特权模式在 CKB VM 本身的运行中并不需要，但特权模式对添加 MMU 的支持是很有帮助的，MMU 的存在有利于以下几个场景：
+本 RFC 的目标是为 CKB VM 添加特权架构支持。虽然由于 CKB VM 每次只运行一个合约，特权模式在 CKB VM 本身的运行中并不需要，但特权模式对添加 MMU 的支持是很有帮助的，MMU 的存在有利于以下几个场景：
 
 * 实现需要动态内存分配的复杂合约时，MMU 可以帮助避免内存越界错误，增加安全性
 * MMU 可以帮助初学者在消耗一定 cycle 的情况下增加安全性
@@ -19,7 +19,9 @@ Created: 2018-11-26
 具体来说，我们提议为 CKB VM 增加如下部分：
 
 * 为支持特权模式切换功能，以及指定 page fault 函数功能添加刚刚好足够的 CSR(控制与状态寄存器，control and status register) 指令以及 VM 修改
-* 可选的 [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) 结构
+* [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) 结构
+
+注意这里实现的特权架构是一个默认关闭，可选开启的功能：虽然这个功能在 CKB VM 中一直存在，但是合约设计者可以自由决定是否使用这一功能。为最小 cycle 使用数优化的合约可以完全忽略这一功能。
 
 ## 基于 CSR 指令的特权模式支持
 

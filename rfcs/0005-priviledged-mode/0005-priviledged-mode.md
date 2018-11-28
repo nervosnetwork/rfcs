@@ -7,11 +7,11 @@ Organization: Nervos Foundation
 Created: 2018-11-26
 ---
 
-# Optional privileged architecture support for CKB VM
+# Privileged architecture support for CKB VM
 
 ## Abstract
 
-This RFC aims to introduce optional privileged architecture support for CKB VM. While CKB VM doesn't require a privileged model since it only runs one contract at a time, privileged model can help bring MMU support, which can be quite useful in the following cases:
+This RFC aims to introduce privileged architecture support for CKB VM. While CKB VM doesn't require a privileged model since it only runs one contract at a time, privileged model can help bring MMU support, which can be quite useful in the following cases:
 
 * Implementing sophisticated contracts that require dynamic memory allocation, MMU can be used here to prevent invalid memory access for better security.
 * Beginners can leverage MMU to trade some cycles for better security.
@@ -19,7 +19,9 @@ This RFC aims to introduce optional privileged architecture support for CKB VM. 
 Specifically, we plan to add the following features to CKB VM:
 
 * Just enough CSR(control and status register) instructions and VM changes to support a) privilege mode switching and b) page fault function installation.
-* An optional [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) structure
+* A [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) structure
+
+Notice privileged architecture here is an opt-in feature that is closed by default: while CKB VM will always have this feature, it's up to contract writers to decide if they need it. Contracts optimized purely for minimum cycles should have no problem completely ignoring privileged mode.
 
 ## Privileged mode support via CSR instructions
 
