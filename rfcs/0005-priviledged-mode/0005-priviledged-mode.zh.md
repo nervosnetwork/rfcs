@@ -16,7 +16,7 @@ Created: 2018-11-26
 * 实现需要动态内存分配的复杂合约时，MMU 可以帮助避免内存越界错误，增加安全性
 * MMU 可以帮助初学者在消耗一定 cycle 的情况下增加安全性
 
-具体来说，我们计划为 CKB VM 增加如下部分：
+具体来说，我们提议为 CKB VM 增加如下部分：
 
 * 为支持特权模式切换功能，以及指定 page fault 函数功能添加刚刚好足够的 CSR(控制与状态寄存器，control and status register) 指令以及 VM 修改
 * 可选的 [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) 结构
