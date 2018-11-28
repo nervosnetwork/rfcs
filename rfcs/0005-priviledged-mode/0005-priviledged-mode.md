@@ -21,7 +21,7 @@ Specifically, we plan to add the following features to CKB VM:
 * Just enough CSR(control and status register) instructions and VM changes to support a) privilege mode switching and b) page fault function installation.
 * A [TLB](https://en.wikipedia.org/wiki/Translation_lookaside_buffer) structure
 
-Notice privileged architecture here is an opt-in feature that is closed by default: while CKB VM will always have this feature, it's up to contract writers to decide if they need this feature. Contracts optimized purely for minimum cycles should have no problem completely ignoring this feature.
+Notice privileged architecture here is an opt-in feature that is closed by default: while CKB VM will always have this feature, it's up to contract writers to decide if they need it. Contracts optimized purely for minimum cycles should have no problem completely ignoring privileged mode.
 
 ## Privileged mode support via CSR instructions
 
