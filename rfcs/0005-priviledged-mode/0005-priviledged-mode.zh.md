@@ -26,7 +26,7 @@ Created: 2018-11-26
 为尽最大可能确保兼容性，我们会用 [RISC-V 标准](https://riscv.org/specifications/privileged-isa/) 中定义的指令以及流程来实现特权指令支持：
 
 * 首先，我们会实现 RISC-V 标准中定义的 CSR 指令，用于读写控制与状态寄存器 (CSR)。
-* 出于简化实现的考虑，我们不会实现 RISC-V 中定义的每一个控制与状态寄存器。目前为止，我们只计划实现 `Supervisor Trap Vector Base Address Register(stvec)` 以及其他在 trap 阶段会被用到的寄存器。在 CKB VM 中读写其他寄存器会立即终止 VM 的运行，并返回错误信息。
+* 出于简化实现的考虑，我们不会实现 RISC-V 中定义的每一个控制与状态寄存器。目前为止，我们只计划实现 `Supervisor Trap Vector Base Address Register(stvec)` 以及其他在 trap 阶段会被用到的寄存器。在 CKB VM 中读写其他寄存器会参照 spec 中的定义，抛出违法指令的异常，合约开发者可以自行决定如何处理异常。
 * 目前 CKB VM 只用到了两个特权模式级别：`machine` 特权模式以及 `user` 特权模式，在 machine 特权模式中，合约可以自由做任何操作，相应的在 user 特权模式中，合约只可以进行允许的操作。
 
 `stvec` 中指定的 trap 方法 其实就是一个普通的 RISC-V 函数，他与其他普通函数的唯一区别在于它运行在 machine 特权模式上。相对应的，我们也会在 user 特权模式中禁止某些操作，这包括但不限于：

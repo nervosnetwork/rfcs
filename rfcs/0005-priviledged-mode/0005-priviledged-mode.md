@@ -26,7 +26,7 @@ Specifically, we plan to add the following features to CKB VM:
 To ensure maximum compatibility, we will use the exact instructions and workflows defined in the [RISC-V spec](https://riscv.org/specifications/privileged-isa/) to implement privilege mode support here:
 
 * First, CSR instructions as defined in RISC-V will be implemented in CKB VM to implement read/write on control and status registers(CSR).
-* For simplicity reasons, we might not implement every control and status register as defined in RISC-V spec. For now, we are planning to implement `Supervisor Trap Vector Base Address Register(stvec)` and any other register that might be used in the trap phase. Reading/writing other registers will result in immediate termination with VM errors as return result.
+* For simplicity reasons, we might not implement every control and status register as defined in RISC-V spec. For now, we are planning to implement `Supervisor Trap Vector Base Address Register(stvec)` and any other register that might be used in the trap phase. As documented in the spec, reading/writing other registers will result in illegal instruction exception, it's up to contract writer how they want to handle this.
 * For now, CKB VM will only use 2 privileged modes: `machine` privileged mode and `user` privileged mode. In machine mode, the contract is free to do anything, in user mode, on the other hand, the operations will be limited.
 
 The trap function installed in `stvec` is nothing but a normal RISC-V function except that it runs with machine privileged mode. As a result, we will also add proper permission checkings to prevent certain operations in user mode, which might include but are not limited to:
