@@ -4,7 +4,7 @@
 
 This repository contains proposals, standards and documentations related to Nervos Network.
 
-The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction Nervos network is evolving in.
+The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction of Nervos network is evolving in.
 
 RFCs publication here does not make it formally accepted standard until its status becomes Standard.
 
