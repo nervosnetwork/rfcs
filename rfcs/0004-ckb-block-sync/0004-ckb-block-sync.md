@@ -152,7 +152,7 @@ It is assumed that the peers already know the Best Sent Header and its ancestors
 
 ![](images/best-sent-header.jpg "Best Sent Header")
 
-From the above example, Alice's Best Chain Tip is annotated with her name. The best header sent to Bot is annotated as "Best Sent To Bob". The undimmed blocks are the ones Alice should send to Bob as new blocks announcement. Following is the detailed description for each step:
+From the above example, Alice's Best Chain Tip is annotated with her name. The best header sent to Bob is annotated as "Best Sent To Bob". The undimmed blocks are the ones Alice should send to Bob as new blocks announcement. Following is the detailed description for each step:
 
 1. In the beginning, Alice only has Best Chain Tip to send
 2. Another new block is added to the best chain before Alice has a chance to send the headers. In this case, the last two blocks of Best Chain need to be sent.
@@ -218,4 +218,4 @@ It is used to reply block downloading request of `getdata`
 - `header` block header
 - `transactions` transaction list
 
-[^1]: Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to Compact Block RFC (TODO: link to RFC) and related Bitcoin BIP for details.
+[^1]: Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to Compact Block RFC (TODO: link to RFC) and related Bitcoin [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki) for details.
