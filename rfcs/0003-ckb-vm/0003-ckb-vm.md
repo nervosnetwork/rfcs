@@ -15,7 +15,7 @@ VM layer in CKB is used to perform a series of validation rules to determine if 
 
 CKB uses [RISC-V](https://riscv.org/) ISA to implement VM layer. To be more precise, CKB uses rv64imac archivecture: it is based on core [RV64I](https://riscv.org/specifications/) ISA with M standard extension for integer multiplication and division, A extension for atomic operations, and C standard extension for RCV(RISC-V Compressed Instructions). Note that for now, CKB doesn't support floating point instructions, this might be added in future versions if needed.
 
-CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV64I support, such as [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm) or [Rust](https://github.com/riscv-rust/rust) can be used to generate CKB compatible scripts.
+CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV64I support, such as [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm) or [Rust](https://github.com/rust-embedded/wg/issues/218) can be used to generate CKB compatible scripts.
 
 ## RISC-V Runtime Model
 

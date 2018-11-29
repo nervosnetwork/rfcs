@@ -15,7 +15,7 @@ CKB 的 VM 层用于在给定 transction 的 inputs 与 outputs 的情况下，�
 
 CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv64imac 指令集架构：基于 [RV64I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，原子性内存操作，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算，如有需要将在未来版本中考虑引入。
 
-CKB 通过动态链接库的方式，依赖 syscall 来实现链上运算所需的其他功能，比如读取 Cell 的内容，或是其他与 block 相关的普通运算及加密运算。任何支持 RV64I 的编译器 (如 [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm), [Rust](https://github.com/riscv-rust/rust)) 生成的可执行文件均可以作为 CKB VM 中的 script 来运行。
+CKB 通过动态链接库的方式，依赖 syscall 来实现链上运算所需的其他功能，比如读取 Cell 的内容，或是其他与 block 相关的普通运算及加密运算。任何支持 RV64I 的编译器 (如 [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm), [Rust](https://github.com/rust-embedded/wg/issues/218)) 生成的可执行文件均可以作为 CKB VM 中的 script 来运行。
 
 ## RISC-V 运行模型
 
