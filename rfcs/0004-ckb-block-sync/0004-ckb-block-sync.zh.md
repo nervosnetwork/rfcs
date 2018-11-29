@@ -222,5 +222,5 @@ Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会�
 - `transactions` 交易列表
 
 
-[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 BIP。
+[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki)。
 
