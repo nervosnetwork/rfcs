@@ -49,7 +49,7 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。不同点如下:
 客户端会每隔 24 小时将自己的地址通过 `NodeInfos` 消息广播给当前连接的所有节点。
 
 ## 流程图
-![flow diagram](Discovery.png)
+![](images/node-discovery.png)
 
 ## 相关数据结构
 我们使用 [FlatBuffers][2] 作为数据序列化格式，以下为相关数据结构的 schema:
