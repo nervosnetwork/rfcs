@@ -212,7 +212,7 @@ int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[AD
     return ret;
   }
   if (from_balance->tokens < tokens) {
-    return ERROR_NOT_SUFFICENT_BALANCE;
+    return ERROR_NOT_SUFFICIENT_BALANCE;
   }
   int target = to_balance->tokens + tokens;
   if (target < to_balance->tokens) {
