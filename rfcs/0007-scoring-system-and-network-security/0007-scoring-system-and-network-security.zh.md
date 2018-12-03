@@ -107,7 +107,7 @@ Peer 的评分是 CKB P2P 网络安全的重要部分，Peer 的行为可以分�
 `BEHAVIOURS`、 `SCORING_SCHEMA` 等参数不属于共识协议的一部分，CKB 实现应该根据网络实际的情况对参数调整。
 
 
-### 网络 Bootstrap 策略
+### Bootstrap / Outbound Peers 的选择策略
 
 论文中[1] 提到了比特币节点重启时的安全问题：
 
@@ -116,16 +116,26 @@ Peer 的评分是 CKB P2P 网络安全的重要部分，Peer 的行为可以分�
 3. 受害节点重启时如果所有对外的连接都连接到了恶意 Peers 则攻击成功
 
 
-在 CKB 节点启动时，节点利用 PeerStore 中存储的 Peer 分数和最后连接时间来避免该问题。
+CKB 在初始化节点的网络时应该按照以下顺序选择 Outbound Peers
 
-在初始化节点的网络时应该按照以下顺序尝试连接 Peers
+参数说明: 
+* `RECENT_PEERS` - 提供了选择 Peers 的范围，值应略大于 `outgoing_max` 如 `30`
+* `R` - 提供了 Peers 选择的随机性，应是个较小值如 `2`。
 
-1. 从 PeerStore 中挑选最后连接过的 `N` 个 Outbound Peer
-2. 从中挑选分数最高的 `M` 个节点作为 Peers
-3. 如果 Peers 数量小于 `outgoing_max`, 从 PeerStore 中随机挑选 `outgoing_max - M` 个 Inbound Peer 连接
-4. 如果 Peers 数量小于 `outgoing_max`, 从 `boot_nodes` 配置列表中选择节点连接
+1. 从 PeerStore 的所有 Outbound Peer 中挑选最后连接过的 `RECENT_PEERS` 个 Peers，再从中挑选分数最高的 `outgoing_max - (peers.len() + R)` 个节点作为 Outbound Peers
+2. 从 PeerStore 的所有 Outbound Peer 中随机选择 `R` 个节点作为 Outbound Peers
+3. 如果 Peers 数量小于 `outgoing_max`, 从 PeerStore 中随机挑选 `outgoing_max - peers.len()` 作为 Outbound Peers
+4. 如果 Peers 数量小于 `outgoing_max`, 从 `boot_nodes` 配置列表中选择节点作为 Outbound Peers
+5. 当节点 Outbound Peers 数量小于 `outgoing_max` 时，定期重复执行这个过程
 
-按照该策略，最理想时可以从 PeerStore 的 Outbound PeerInfo 中找到足够的 Peers 用来主动连接，这种情况最为安全。而 Inbound Peer 有可能是恶意攻击者发起的伪装节点，所以只作为 fallback 使用。
+按照该策略，最理想时节点从最近连接过的 Outbound Peers 中找到高分 Peers，且大概率选择的是重启前连接的 Peer(参考论文[1]的 Anchor Connection 策略)。
+而 Inbound Peer 很有可能是恶意攻击者发起的伪装节点，所以只作为 fallback 使用。
+
+攻击者需要做到以下条件才可以成功实施日蚀攻击
+
+1. 保证至少 `outgoing_max` 个伪装节点在近期内成为受害者节点的 OutBound peer
+2. 受害者节点的 `outgoing_max - R` 个最高分的 OutBound Peer 全部是攻击者的伪装节点
+2. 受害者节点的随机挑选的 `R` 个 Peers 全部是伪装节点
 
 ### 逐出机制
 
@@ -163,7 +173,7 @@ Feel Connection 选择 Peer 时应该从分数大于或略低于 `PEER_INIT_SCOR
 
 设置一些参数：
 `PEER_STORE_LIMIT` - PeerStore 最多可以存储的 PeerInfo 数量
-`PEER_NOT_SEEN_TIMEOUT` - 用于判断 PeerInfo 是否该被清晰，如该值设为 7 天，则表示最近 7 天内连接过的 Peer 不会被清理
+`PEER_NOT_SEEN_TIMEOUT` - 用于判断 PeerInfo 是否该被清理，如该值设为 7 天，则表示最近 7 天内连接过的 Peer 不会被清理
 
 PeerStore 中存储的 PeerInfo 数量达到 `PEER_STORE_LIMIT` 时需要清理，过程如下：
 
@@ -177,4 +187,10 @@ PeerStore 中存储的 PeerInfo 数量达到 `PEER_STORE_LIMIT` 时需要清理�
 
 1. Bitcoin source code
 2. Eclipse Attacks on Bitcoin’s Peer-to-Peer Network
+
+
+### TODO
+
+* 参考比特币对 Outbound 连接的逐出
+* PeerStore 清理时引入 test
 
