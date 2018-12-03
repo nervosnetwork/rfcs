@@ -77,6 +77,7 @@ PeerInfo {
 * `PEER_INIT_SCORE` - Peers 的初始分数
 * `BEHAVIOURS` - 节点的行为, 如 `UNEXPECTED_DISCONNECT`, `TIMEOUT`, `CONNECTED` 等
 * `SCORING_SCHEMA` - 描述不同行为对应的分数, 如 `{"TIMEOUT": -10, "CONNECTED": 10}`
+* `BAN_SCORE` - Peer 评分低于此值时会被加入黑名单
 
 网络层应该提供评分接口，允许 `sync`, `relay` 等上层子协议报告 Peer 行为，
 并根据 Peer 行为和 `SCORING_SCHEMA` 调整 Peer 的评分。
@@ -93,16 +94,17 @@ Peer 的评分是 CKB P2P 网络安全的重要部分，Peer 的行为可以分�
 2. 可能由于网络异常导致的行为:
    如: Peer 异常断开、连接 Peer 失败、ping Timeout。
 对这些行为我们采用宽容性的惩罚，下调对 Peer 的评分，但不会一次性下调太多。
+
 3. 明显违反协议的行为:
    如: Peer 发送无法解码的内容、Peer 发送 Invalid Block, Peer 发送 Invalid Transaction。
-当我们可以确定 Peer 存在明显的恶意行为时，对 Peer 打低分。
+当我们可以确定 Peer 存在明显的恶意行为时，对 Peer 打低分，如果 Peer 评分低于 `BAN_SCORE` ，将 Peer 加入黑名单并禁止连接。
 
 例子:
 * Peer 1 连接成功，节点报告 Peer1 `CONNECTED` 行为，Peer 1 加 10 分
 * Peer 2 连接超时，节点报告 Peer2 `TIMEOUT` 行为，Peer 2 减 10 分
 * Peer 1 通过 `sync` 协议发送重复的请求，节点报告 Peer1 `DUPLICATED_REQUEST_BLOCK` 行为，Peer 1 减 50 分
 
-`BEHAVIOURS` 和 `SCORING_SCHEMA` 不属于共识协议的一部分，CKB 实现应该根据网络实际的情况对这两个参数调整。
+`BEHAVIOURS`、 `SCORING_SCHEMA` 等参数不属于共识协议的一部分，CKB 实现应该根据网络实际的情况对参数调整。
 
 
 ### 网络 Bootstrap 策略
