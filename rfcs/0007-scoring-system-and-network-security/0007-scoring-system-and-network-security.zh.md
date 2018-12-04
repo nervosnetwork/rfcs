@@ -16,14 +16,14 @@ Created: 2018-10-02
 
 ## 目标
 
-比特币网络[1]和以太坊网络[2]中曾有「日蚀攻击」的问题,
+比特币网络和以太坊网络中曾有「日蚀攻击」的问题,
 日蚀攻击的原理是攻击者通过操纵恶意节点占领受害者节点所有的 Peers 连接，以此控制受害者节点可见的网络。
 
 攻击者可以用极少成本实施攻击，攻击成功后可以操纵受害节点的算力, 或欺骗受害节点进行双花交易等恶意行为。
 
-参考论文 -- Eclipse Attacks on Bitcoin’s Peer-to-Peer Network
+参考论文 -- [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2]
 
-论文中同时提出了几种防范手段, 其中部分已经在比特币/以太坊主网应用，
+论文中同时提出了几种防范手段, 其中部分已经在比特币主网应用，
 本 RFC 参考比特币网络的实现，描述如何在 CKB 网络中正确应用这些措施。
 
 RFC 同时描述了 CKB P2P 网络的评分机制，
@@ -44,15 +44,15 @@ RFC 描述了客户端应该实现的几种策略。
 
 ### 术语
 
-`Node` - 节点
-`Peer` - 网络上的其他节点
-`PeerStore` - 用于存储 Peer 信息的组件
-`PeerInfo` - 保存在 Peer Store 中的信息
-`Outbound Peer` - 连接由节点发起
-`Inbound Peer` - 连接由 Peer 发起
-`max_outgoing` - 节点主动连接的 Peers 上限
-`max_incoming` - 节点被动接受的 Peers 上限
-`NetworkGroup` - 驱逐节点时用到的概念，对 Peer 连接时的 IP 计算，IPv4 取前 16 位，Ipv6 取前 32 位
+* `Node` - 节点
+* `Peer` - 网络上的其他节点
+* `PeerInfo` - 描述 Peer 信息的数据结构
+* `PeerStore` - 用于存储 PeerInfo 的组件
+* `Outbound Peer` - 连接由节点发起
+* `Inbound Peer` - 连接由 Peer 发起
+* `max_outgoing` - 节点主动连接的 Peers 上限
+* `max_incoming` - 节点被动接受的 Peers 上限
+* `NetworkGroup` - 驱逐节点时用到的概念，对 Peer 连接时的 IP 计算，IPv4 取前 16 位，Ipv6 取前 32 位
 
 
 ### PeerStore 和 PeerInfo
@@ -115,7 +115,7 @@ Peer 的评分是 CKB P2P 网络安全的重要部分，Peer 的行为可以分�
 
 ### 节点 Outbound Peers 的选择策略
 
-论文中[1] 提到了比特币节点重启时的安全问题：
+[论文][2]中提到了比特币节点重启时的安全问题：
 
 1. 攻击者事先利用比特币的节点发现规则填充受害节点的地址列表
 2. 攻击者等待或诱发受害者节点重启
@@ -178,7 +178,7 @@ end
 
 `try_new_outbound_peer` 的作用是在一定时间内无法发现有效消息时，允许节点连接更多的 outbound peers，这个机制在后文介绍。
 
-该策略在节点没有 Peers 时会强制从最近连接过的 Outbound Peers 中选择，这个行为参考了论文[1]的 Anchor Connection 策略。
+该策略在节点没有 Peers 时会强制从最近连接过的 Outbound Peers 中选择，这个行为参考了[论文][2]的 Anchor Connection 策略。
 
 攻击者需要做到以下条件才可以成功实施日蚀攻击
 
@@ -250,7 +250,7 @@ end
 
 ### Inbound Peers 接受机制
 
-比特币中当节点的被动 Peers 连满同时又有新 Peer 尝试连接时，节点会对已有 peers 进行驱逐测试(详细请参考 bitcoin 源码[1])。
+比特币中当节点的被动 Peers 连满同时又有新 Peer 尝试连接时，节点会对已有 peers 进行驱逐测试(详细请参考 [bitcoin 源码][1])。
 
 驱逐测试的目的在于节点保留高质量 Peer 的同时，驱逐低质量的 Peer。
 
@@ -296,6 +296,8 @@ PeerStore 中存储的 PeerInfo 数量达到 `PEER_STORE_LIMIT` 时需要清理�
 
 ## 参考
 
-1. Bitcoin source code
-2. Eclipse Attacks on Bitcoin’s Peer-to-Peer Network
+1. [Bitcoin source code][1]
+2. [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2]
 
+[1]: https://github.com/bitcoin/bitcoin
+[2]: https://eprint.iacr.org/2015/263.pdf
