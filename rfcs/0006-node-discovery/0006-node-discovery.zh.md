@@ -9,8 +9,9 @@ Created: 2018-11-28
 
 # CKB 节点发现协议
 
-CKB 节点发现协议主要参考了[比特币的协议][0]。不同点如下:
+CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点如下:
 * 节点版本号包含在 `GetNodes` 消息中
+* 通过 `Nodes` 消息来定时广播当前连接的所有节点
 * 我们使用 `multiaddr` 作为节点地址的格式 (没有 `/p2p/` 段，如果违反会被打低分)
 
 
@@ -26,43 +27,44 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。不同点如下:
 ### 协议消息
 
 #### `GetNodes` 消息
-当满足以下条件时，客户端会发送一个 `GetNodes` 请求：
+当满足所有以下条件时，节点会发送一个 `GetNodes` 请求：
 
-  1. 这个连接是对方主动发起的 (防御[指纹攻击][3])
+  1. 这个连接是自己主动发起的 (防御[指纹攻击][3])
   2. 对方的版本号大于一个预设的值
   3. 当前存储的地址数量小于 1000 个
 
 #### `Nodes` 消息
 
-当客户端收到一个 `GetNodes` 请求时，满足一定条件下会返回一个 `Nodes` 消息。`Nodes` 消息也有可能被节点主动发出。`Nodes` 消息中的每个 `Node` 中的 `addresses` 的数量不能超过 `3` 个。
+当客户端收到一个 `GetNodes` 请求时，如果是第一次收到 `GetNodes` 消息而且这个连接是对方主动发起的就会返回一个 `Nodes` 消息，该 `Nodes` 消息的 `announce` 字段为 `false`。每隔一定时间当前节点会将当前连接的节点信息以及本节点信息以 `Nodes` 消息广播给当前连接的所有节点，`announce` 字段为 `true`。当前收到 `announce` 字段的 `true` 的 `Nodes` 消息时会对地址[可路由][1]的那些节点地址进行转发。
 
-#### Nodes 转发
-当客户端收到 `Nodes` 消息时，会将满足以下条件的地址转发给其他节点：
+所有 `Nodes` 消息中的每个 `Node` 中的 `addresses` 的数量不能超过 `3` 个。
 
-  1. 这个地址是最近 10 分钟内*被处理*的
-  2. `Nodes` 包含的节点数(即 `Node`)不能超过 10 个
-  3. 这个 `Nodes` 是之前 `GetNodes` 请求的返回值
-  4. 这个地址是[可路由][1]的
+## 对主要攻击方式的处理
+### 日食攻击 (Eclipse attack)
+每个 2 分钟从 PeerStore 中挑选出随机的一个地址发起一个连接并关闭。目的是为了增加已尝试过连接的地址列表。
 
-上述所指的*地址*为之前 `Nodes` 消息中的地址。一个地址*被处理*, 是指一个地址被加入到已知地址列表中。
-
-#### 广播自己的地址
-客户端会每隔 24 小时将自己的地址通过 `Nodes` 消息广播给当前连接的所有节点。
+### 指纹攻击 (fingerprinting attack)
+只有主动发起连接的一方才能发送 `GetNodes` 消息。
 
 ## 流程图
-![](images/node-discovery.png)
+### 节点 Bootstrap
+![](images/bootstrap.png)
+### 发送 `GetNodes` 消息中
+![](images/get-nodes.png)
+### 广播当前连接的节点信息
+![](images/announce-nodes.png)
 
 ## 相关数据结构
 我们使用 [FlatBuffers][2] 作为数据序列化格式，以下为相关数据结构的 schema:
 
 ```
 table DiscoveryMessage {
-    Payload: DiscoveryPayload;
+    payload: DiscoveryPayload;
 }
 
 union DiscoveryPayload {
     GetNodes,
-    Nodes
+    Nodes,
 }
 
 table GetNodes {
@@ -71,7 +73,8 @@ table GetNodes {
 }
 
 table Nodes {
-    infos: [Node];
+    announce: bool;
+    items: [Node];
 }
 
 table Node {
