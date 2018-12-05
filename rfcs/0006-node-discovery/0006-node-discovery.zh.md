@@ -44,12 +44,14 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 每个 2 分钟从 PeerStore 中挑选出随机的一个地址发起一个连接并关闭。目的是为了增加已尝试过连接的地址列表。
 
 ### 指纹攻击 (fingerprinting attack)
+[相关论文][3]
+
 只有主动发起连接的一方才能发送 `GetNodes` 消息。
 
 ## 流程图
 ### 节点 Bootstrap
 ![](images/bootstrap.png)
-### 发送 `GetNodes` 消息中
+### 发送 `GetNodes` 消息
 ![](images/get-nodes.png)
 ### 广播当前连接的节点信息
 ![](images/announce-nodes.png)
