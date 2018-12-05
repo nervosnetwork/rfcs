@@ -9,39 +9,39 @@ Created: 2018-11-28
 
 # CKB Node Discovery Protocol
 
-CKB node discovery protocol is mainly the same as [Satoshi Client Node Discovery][0]. The difference are:
+CKB node discovery protocol is mainly the same as [Satoshi Client Node Discovery][0]. The differences are:
 * Node version is included in `GetNodes` message
-* We use `multiaddr` as node address format (no `/p2p/` field, if has this field will treat as *misbehavior*)
+* We use `multiaddr` as node address format (no `/p2p/` field, it is considered as *misbehavior* to break this rule)
 
 ## Discovery Methods
 ### DNS Addresses
 When first time startup, if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded. DNS server addresses can be replaced by command line arguments.
 
 ### Hard Coded "Seed" Addresses
-The client contains hard coded IP addresses that represent ckb nodes. Those addresses only be used when DNS requests all failed. Once the local node has enough addresses (presumably learned from the seed nodes), client will close seed node connections to avoid overloading those nodes. "Seed" addresses can be replaced by command line arguments.
+The client contains hard coded IP addresses that represent ckb nodes. Those addresses only are used when DNS requests all failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes. "Seed" addresses can be replaced by command line arguments.
 
 ### Protocol Message
 #### `GetNodes` Message
-When the following conditions are met, local node will send a `GetNodes` message:
+When the following conditions are met, the local node will send a `GetNodes` message:
 
-  1. It's a outgoing connection (resist [fingerprinting attack][3])
+  1. It's an outgoing connection (resist [fingerprinting attack][3])
   2. The other node's version must bigger than a preset value
-  3. Local node have less than 1000 `Node` information 
+  3. Local node has less than 1000 `Node` information 
 
 
 #### `Nodes` Message
-When client received a `GetNodes` message, if this is the first time received `GetNodes` message and from a inbound connection, local node will response with a `Nodes` message, the `announce` field is `false`. When a timeout triggered local node will send all connected `Node` information in `Nodes` message to all connected nodes, the `announce` is `true`. When local node received a `Nodes` message and it's `announce` is `true`, local node will relay those [routable][1] addresses.
+When client received a `GetNodes` message, if this is the first time received `GetNodes` message and from an inbound connection, local node will respond with a `Nodes` message, the `announce` field is `false`. When a timeout triggered local node will send all connected `Node` information in `Nodes` message to all connected nodes, the `announce` is `true`. When local node received a `Nodes` message and it's `announce` is `true`, local node will relay those [routable][1] addresses.
 
-The length of `addreses` field in every `Node` in `Nodes` message must less than `3`.
+The length of `addresses` field in every `Node` in `Nodes` message must less than `3`.
 
 ## Resist Typical Attacks
 ### Eclipse attack
-Every 2 minutes random choose a address from PeerStore to connect. The goal is increasing the tired address list.
+Every 2 minutes random choose an address from PeerStore to connect. The goal is increasing the tired address list.
 
 ### fingerprinting attack
 [Related paper][3]
 
-`GetNodes` can only send to outgoing connection.
+`GetNodes` can only send to an outgoing connection.
 
 ## Flow Diagram
 ### Node Bootstrap
