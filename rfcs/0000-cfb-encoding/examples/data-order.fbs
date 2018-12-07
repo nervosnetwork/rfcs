@@ -1,0 +1,16 @@
+table Monster {
+  name: string;
+  stat: Stat;
+  loots: [Item];
+}
+
+table Stat {
+  hp: uint32;
+  mp: uint32;
+}
+
+table Item {
+  name: string;
+}
+
+root_type Monster;

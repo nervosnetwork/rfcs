@@ -1,0 +1,26 @@
+table Ok {
+  value: uint32;
+}
+table Err {
+  reason: string;
+}
+union Result { Ok, Err }
+
+enum Color : byte { Red, Green, Blue }
+
+struct Complex {
+  a: uint64;
+  b: uint64;
+}
+
+table T {
+  a_ubyte: ubyte;
+  complex: Complex;
+  a_uint32: uint32;
+  result: Result;
+  a_uint64: uint64;
+  uint16_array: [uint16];
+  color: Color;
+}
+
+root_type T;
