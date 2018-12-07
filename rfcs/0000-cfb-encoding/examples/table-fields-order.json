@@ -1,0 +1,18 @@
+{
+  "a_ubyte": 5,
+  "complex": {
+    "a": 1,
+    "b": 2
+  },
+  "a_uint32": 4,
+  "result_type": "Ok",
+  "result": {
+    "value": 6
+  },
+  "a_uint64": 3,
+  "uint16_array": [
+    7,
+    8
+  ],
+  "color": "Blue"
+}

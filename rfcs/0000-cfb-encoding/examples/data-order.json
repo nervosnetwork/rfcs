@@ -1,0 +1,15 @@
+{
+  "name": "Slime",
+  "stat": {
+    "hp": 100,
+    "mp": 0
+  },
+  "loots": [
+    {
+      "name": "potion"
+    },
+    {
+      "name": "gold"
+    }
+  ]
+}
