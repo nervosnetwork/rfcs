@@ -11,6 +11,7 @@ Created: 2018-11-28
 
 CKB node discovery protocol is mainly the same as [Satoshi Client Node Discovery][0]. The differences are:
 * Node version is included in `GetNodes` message
+* Send connected node informations with `Nodes` message
 * We use `multiaddr` as node address format (no `/p2p/` field, it is considered as *misbehavior* to break this rule)
 
 ## Discovery Methods
@@ -24,7 +25,7 @@ The client contains hard coded IP addresses that represent ckb nodes. Those addr
 #### `GetNodes` Message
 When the following conditions are met, the local node will send a `GetNodes` message:
 
-  1. It's an outgoing connection (resist [fingerprinting attack][3])
+  1. It's an outbound connection (resist [fingerprinting attack][3])
   2. The other node's version must bigger than a preset value
   3. Local node has less than 1000 `Node` information 
 
@@ -41,7 +42,7 @@ Every 2 minutes random choose an address from PeerStore to connect. The goal is 
 ### fingerprinting attack
 [Related paper][3]
 
-`GetNodes` can only send to an outgoing connection.
+`GetNodes` can only send to an outbound connection.
 
 ## Flow Diagram
 ### Node Bootstrap
