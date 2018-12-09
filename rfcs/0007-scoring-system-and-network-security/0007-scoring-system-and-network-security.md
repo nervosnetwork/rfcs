@@ -84,8 +84,11 @@ peer.score += BEHAVIOURS[i] * SCOREING_SCHEMA[BEHAVIORS[i]]
 Peer's behaviors can be distinguished into three categories:
 
 1. Correct behaviors which follow the specification:
+    * For example, node downloads a new block from a peer; node success connects to a peer. Consider a bad peer may pretend like a good one before launch an attack, we should give the peer little positive score instead give a vast score at once to encourage peer to accumulate his credit by doing good behavior in a long time
 2. Incorrect behaviors which may be caused by network exception:
+    * For example, peer unexpected disconnect; node failed to connect to a peer; ping timeout. Since we can't distinguish these behaviors is intended bad behavior or caused by the network,  we should give the peer a little negative score to keep tolerant.
 3. Incorrect behaviors which violent the specification:
+    * For example, peer sent an illegal encoded content; peer sent an invalid block; peer sent an invalid transaction. We should give peer a vast negative score when we sure peer's behavior is violent the specification, and when peer's score is lower than `BAN_SCORE`, the peer should be banned
 
 Example:
 
@@ -122,8 +125,8 @@ The process of choosing an outbound peer:
 
 1. Execute step 2 if currently connected outbound peers less than `ANCHOR_PEERS`, otherwise execute step 3.
 2. Choice an "anchor peer":
-  1. Choice recent connected outbound peers from peer store(can select by `LastConnectedAt` field of peer info).
-  2. Execute step 4 if `recent_peers` is empty; otherwise, we find the highest peer from `recent_peers` and return it as the new outbound peer.
+    1. Choice recent connected outbound peers from peer store(can select by `LastConnectedAt` field of peer info).
+    2. Execute step 3 if `recent_peers` is empty; otherwise, we find the highest peer from `recent_peers` and return it as the new outbound peer.
 3. Randomly pick peer info from peer store which must have a higher score than `TRY_SCORE` and have different `network group` with all currently connected outbound peers, return it as the new outbound peer if we can find one.
 4. Randomly pick peer info from boot nodes.
 
@@ -284,8 +287,8 @@ Required parameters:
 
 When the number of peer info reach `PEER_STORE_LIMIT`:
 
-1. group connected inbound peers by `network group` field
-2. find the group which contains most peers
+1. group all peer infos in peer store by `network group` field
+2. find the group which contains most peer infos
 3. find peers we have not seen recently from this group: `peer.last_connected_at < Time.now - PEER_NOT_SEEN_TIMEOUT`
 4. find lowest scored peer info as `candidate_peer_info`
 5. if `candidate_peer_info.score < new_peer_info.score` than we delete `candidate_peer_info` and add `new_peer_info`, otherwise we do not accept `new_peer_info`
