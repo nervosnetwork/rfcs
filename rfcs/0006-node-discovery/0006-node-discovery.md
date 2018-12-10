@@ -14,9 +14,11 @@ CKB node discovery protocol is mainly the same as [Satoshi Client Node Discovery
 * Send connected node informations with `Nodes` message
 * We use `multiaddr` as node address format (no `/p2p/` field, it is considered as *misbehavior* to break this rule)
 
+Every time client startup, if PeerStore's address list is empty, it will try to issue DNS requests to initialize address list, if DNS requests failed it will fallback to hard coded address list.
+
 ## Discovery Methods
 ### DNS Addresses
-When first time startup, if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded. DNS server addresses can be replaced by command line arguments.
+When first time startup (bootstrap stage), if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded. DNS server addresses can be replaced by command line arguments.
 
 ### Hard Coded "Seed" Addresses
 The client contains hard coded IP addresses that represent ckb nodes. Those addresses only are used when DNS requests all failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes. "Seed" addresses can be replaced by command line arguments.
@@ -32,6 +34,11 @@ When the following conditions are met, the local node will send a `GetNodes` mes
 
 #### `Nodes` Message
 When client received a `GetNodes` message, if this is the first time received `GetNodes` message and from an inbound connection, local node will respond with a `Nodes` message, the `announce` field is `false`. When a timeout triggered local node will send all connected `Node` information in `Nodes` message to all connected nodes, the `announce` is `true`. When local node received a `Nodes` message and it's `announce` is `true`, local node will relay those [routable][1] addresses.
+
+Here `announce` field is for distinguish a `Nodes` as an response of `GetNodes` or broadcast message, so it's convient to apply different rules for punishing misbehaviors. The main rules:
+
+* A node can only send one `Nodes` message (announce=true) as an response of `GetNodes` message.
+* A node's broadcast messages only the first `Nodes` message can include more than 10 node informations.
 
 The length of `addresses` field in every `Node` in `Nodes` message must less than `3`.
 
