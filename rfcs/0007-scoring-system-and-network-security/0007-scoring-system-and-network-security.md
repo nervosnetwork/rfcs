@@ -30,7 +30,7 @@ In addition, this document also describes the scoring system of CKB P2P Networki
 Based on the scoring system, we can follow several rules below to handle malicious peers:
 
 1. Nodes should store peers information as much as possible.
-2. Node need scoring peers based on their good behavior or bad behavior
+2. Nodes need to score Peers' good and bad behavior continuously.
 3. Node should keep good peers(high score) and evict bad peers(low score).
 
 CKB client should implement the scoring system and following security strategies.
