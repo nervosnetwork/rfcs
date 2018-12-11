@@ -19,7 +19,7 @@ This document describes the scoring system of CKB P2P Networking layer and sever
 There were "Eclipse Attack" security issues in both Bitcoin network and Ethereum network，
 The principle of Eclipse Attack is that the attacker would occupy all Peers connection slots of the victim node by manipulating malicious nodes, then filter the victim's view of the blockchain network.
 
-Via "Eclipse Attack" the attacker can take down victim node with small costs, after the attack, the attacker can control victim's mining power for its nefarious purposes, or launch a double spent attack on victim node.
+Via "Eclipse Attack" the attacker can take down a victim node with low cost. After that, the attacker could control the victim's mining power for its nefarious purposes, or cheat this victim node to launch a double spent attack.
 
 which described in the paper -- [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2] 
 
