@@ -258,7 +258,7 @@ This eviction behavior is intended to keep high-quality peers and evict low-qual
 
 CKB refers to Bitcoin's eviction test and steps are as follows:
 
-1. group connected inbound peers by `network group` field
+1. Group inbound peers that are connecting according to `network group` field
 2. find the group which contains most peers
 3. find the lowest score in the group, evict the lowest scored peer if new inbound peer's score is higher than this; otherwise, we disconnect the new peer
 
