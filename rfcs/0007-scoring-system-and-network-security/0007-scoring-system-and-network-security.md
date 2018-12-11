@@ -282,7 +282,7 @@ Feeler peers would be assumed to disconnect soon.
 
 Required parameters:
 
-* `PEER_STORE_LIMIT` - max number of peer info in peer store
+* `PEER_STORE_LIMIT` - max number of PeerInfo in PeerStore
 * `PEER_NOT_SEEN_TIMEOUT` - used to protect peers which we recently connected, we only delete peer info which `last_connected_to` is older than this value. 
 
 When the number of peer info reach `PEER_STORE_LIMIT`:
