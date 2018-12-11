@@ -90,7 +90,7 @@ Peer's behaviors can be distinguished into three categories:
 3. Incorrect behaviors which violate the protocol:
     * For example, a peer sends an illegal encoded content; a peer sends an invalid block; a peer sends an invalid transaction. We should give a peer a negative score when we can be pretty sure its behavior is malicious, and when a peer's score is lower than `BAN_SCORE`, this peer should be banned.
 
-Example:
+Examples:
 
 * Peer 1 connected successful, node report `CONNECTED` behavior and peer 1 get 10 score reward.
 * Peer 2 connected timeout, node report `TIMEOUT` behavior and peer 2 get -10 score punishment.
