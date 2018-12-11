@@ -273,7 +273,7 @@ Node will start a feeler connection every few minutes after outbound peers reach
 
 1. Randomly choice peer info from peer store which score should higher than `TRY_SCORE`
 2. Connect to peer
-3. Run node discovery protocol with the peer
+3. Run Node Discovery Protocol with the peer
 4. Disconnect
 
 Feeler peers should be assumed to be disconnected soon.
