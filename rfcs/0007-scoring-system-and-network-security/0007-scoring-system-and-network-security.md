@@ -278,7 +278,7 @@ Node will start a feeler connection every few minutes after outbound peers reach
 
 Feeler peers should be assumed to be disconnected soon.
 
-### delete peer info from peer store
+### Delete peer info from PeerStore
 
 Required parameters:
 
