@@ -114,7 +114,7 @@ CKB should avoid this problem when initialize the network.
 
 Required parameters:
 
-* `TRY_SCORE` - We only try to connect a peer when it's score is higher than this value.
+* `TRY_SCORE` - We only try to connect a peer when its score is higher than this value.
 * `ANCHOR_PEERS` - the number of anchor peers, this value should less than `max_outbound`, such as `2`
 
 Required variables:
