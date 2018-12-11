@@ -73,7 +73,7 @@ Parameters below are required in Scoring System:
 * `PEER_INIT_SCORE` - the initial score of peers
 * `BEHAVIOURS` - a set of peer's possible behaviors, such as: `UNEXPECTED_DISCONNECT`, `TIMEOUT`, `CONNECTED`
 * `SCORING_SCHEMA` - describe different scores corresponding to different behaviors, such as: `{"TIMEOUT": -10, "CONNECTED": 10}`
-* `BAN_SCORE` - peer will be ban when peer's score is lower than this value.
+* `BAN_SCORE` - a peer will be banned when its score is lower than this value.
 
 Network layer should provide the scoring interface, allow upper sub-protocols (such as: `sync`, `relay`) to report behaviors of a peer, and update peer's score based on `SCORING_SCHEMA`.
 
