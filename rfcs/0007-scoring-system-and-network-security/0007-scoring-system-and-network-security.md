@@ -287,7 +287,7 @@ Required parameters:
 
 When the number of peer info reach `PEER_STORE_LIMIT`:
 
-1. group all peer infos in peer store by `network group` field
+1. Group all PeerInfos in PeerStore according to `network group` field
 2. find the group which contains most peer infos
 3. find peers we have not seen recently from this group: `peer.last_connected_at < Time.now - PEER_NOT_SEEN_TIMEOUT`
 4. find lowest scored peer info as `candidate_peer_info`
