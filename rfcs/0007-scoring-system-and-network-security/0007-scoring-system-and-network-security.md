@@ -256,7 +256,7 @@ In Bitcoin, a node will try to evict connected inbound peers if the number of co
 
 This eviction behavior is intended to keep high-quality peers and evict low-quality peers.
 
-CKB should implement the eviction as the following steps:
+CKB refers to Bitcoin's eviction test and steps are as follows:
 
 1. group connected inbound peers by `network group` field
 2. find the group which contains most peers
