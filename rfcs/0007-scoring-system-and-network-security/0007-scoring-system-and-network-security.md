@@ -21,7 +21,7 @@ The principle of Eclipse Attack is that the attacker would occupy all Peers conn
 
 Via "Eclipse Attack" the attacker can take down a victim node with low cost. After that, the attacker could control the victim's mining power for its nefarious purposes, or cheat this victim node to launch a double spent attack.
 
-which described in the paper -- [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2] 
+Reference paper -- [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2] 
 
 There are several strategies introduced in the paper to prevent "Eclipse attack", part of them are implemented in the Bitcoin network, this document describes how to deploy these strategies to CKB network.
 
