@@ -254,7 +254,7 @@ end
 
 In Bitcoin, a node will try to evict connected inbound peers if the number of connected inbound peers reaches `max_inbound` and another new inbound connection tries to connect. (check [Bitcoin source code][1] for details)
 
-This eviction behavior is intended to keep high-quality peer and evict low-quality peer.
+This eviction behavior is intended to keep high-quality peers and evict low-quality peers.
 
 CKB should implement the eviction as the following steps:
 
