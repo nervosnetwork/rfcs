@@ -42,7 +42,7 @@ CKB client should implement the scoring system and following security strategies
 
 * `Node`
 * `Peer` - Other nodes connected through the network
-* `PeerInfo` - A data struct to describe information of `Peer`
+* `PeerInfo` - A data struct used for describing information of `Peer`
 * `PeerStore` - A component used to store `PeerInfo`
 * `outbound peer` - describe a peer which we initiate a connection.
 * `inbound peer` - describe a peer which the peer initiates a connection.
