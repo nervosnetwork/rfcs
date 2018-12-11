@@ -252,7 +252,7 @@ end
 
 ### The process of accepting inbound peers
 
-In Bitcoin, a node will try to evict connected inbound peers if the number of connected inbound peers reach `max_inbound` and another new inbound connection detected. (check [Bitcoin source code][1] for detail)
+In Bitcoin, a node will try to evict connected inbound peers if the number of connected inbound peers reaches `max_inbound` and another new inbound connection tries to connect. (check [Bitcoin source code][1] for details)
 
 This eviction behavior is intended to keep high-quality peer and evict low-quality peer.
 
