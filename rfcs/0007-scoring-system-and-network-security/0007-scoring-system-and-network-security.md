@@ -106,7 +106,7 @@ The "Eclipse Attack" paper describes a critical security issue during Bitcoin no
 1. The attacker tries to fit the victim node's addrman(Bitcoin's peer store) with attacker's bad nodes' addresses.
 2. The attacker waits the victim node to restart (or use several methods to force it).
 3. After the restart, the victim node will select some address from addrman to connect.
-4. The attack success if all outbound connection of the victim node's is connected to the attacker's bad nodes.
+4. The attack successes if all outbound connections of the victim node are connected to the attacker's bad nodes.
 
 CKB node should avoid this when initialized network peers.
 
