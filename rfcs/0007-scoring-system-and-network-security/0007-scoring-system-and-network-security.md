@@ -61,7 +61,7 @@ PeerInfo {
   NodeId,
   ConnectedIP,
   Direction,  // Inbound or Outbound
-  LastConnectedAt, // Last time we success connected with this peer
+  LastConnectedAt, // The time of the last connection 
   Score
 }
 ```
