@@ -1,7 +1,7 @@
 ---
 Number: 0006
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Ke Wang
 Organization: Nervos Foundation
 Created: 2018-12-01
