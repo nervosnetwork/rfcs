@@ -250,7 +250,7 @@ def evict_extra_outbound_peers
 end
 ```
 
-### The process of accept inbound peers
+### The process of accepting inbound peers
 
 In Bitcoin, a node will try to evict connected inbound peers if the number of connected inbound peers reach `max_inbound` and another new inbound connection detected. (check [Bitcoin source code][1] for detail)
 
