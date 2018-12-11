@@ -169,7 +169,7 @@ def random_boot_node
 end
 ```
 
-Node should repeat this process until connected outbound peers reach `max_outbound` and `try_new_outbound_peer` is `false`.
+The node should repeat this process until the number of connected outbound peers is equal to or greater than  `max_outbound` and `try_new_outbound_peer` is `false`.
 
 ``` ruby
 check_outbound_peers_interval = 15
