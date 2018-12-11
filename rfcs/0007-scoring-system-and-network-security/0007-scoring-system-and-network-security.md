@@ -11,7 +11,7 @@ Created: 2018-10-02
 
 ## Abstract
 
-This document describes the scoring system of CKB P2P Networking layer, and introduce several networking security strategies based on it.
+This document describes the scoring system of CKB P2P Networking layer and several networking security strategies based on it.
 
 
 ## Motivation
