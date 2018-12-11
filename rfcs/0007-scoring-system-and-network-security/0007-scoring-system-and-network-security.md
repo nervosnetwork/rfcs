@@ -276,7 +276,7 @@ Node will start a feeler connection every few minutes after outbound peers reach
 3. Run Node Discovery Protocol with the peer
 4. Disconnect
 
-Feeler peers should be assumed to be disconnected soon.
+Feeler peers would be assumed to disconnect soon.
 
 ### Delete peer info from PeerStore
 
