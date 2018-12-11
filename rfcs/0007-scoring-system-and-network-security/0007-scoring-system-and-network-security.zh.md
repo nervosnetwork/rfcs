@@ -272,17 +272,14 @@ CKB 参考了比特币的驱逐测试，步骤如下:
 
 ### Feeler Connection
 
-Feeler Connection 机制的目的在于：
-
-* 测试 Peer 是否可以连接
-* 发现更多的地址来填充 PeerStore
+Feeler Connection 机制的目的在于测试 Peer 是否可以连接。
 
 当节点的 outbound peers 数量达到 `max_outbound` 限制时，
 节点会每隔一段时间(一般是几分钟)主动发起 feeler connection：
 
-1. 从 PeerStore 中随机选出一个分数大于 `TRY_SCORE` 且未连接的 peer info
+1. 从 PeerStore 中随机选出一个未连接过的 peer info
 2. 连接该 peer
-3. 执行节点发现协议
+3. 执行握手协议
 4. 断开连接
 
 Feeler peer 会被假设为很快断开连接
