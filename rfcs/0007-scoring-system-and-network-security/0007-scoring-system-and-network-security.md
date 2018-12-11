@@ -185,7 +185,7 @@ loop do
 end
 ```
 
-`try_new_outbound_peer` variable is used for some situation when a node can't get any usage messages in a duration time, we set `try_new_outbound_peer` to `true` and allow the node to connect to more extra outbound peers, we'll introduce this strategy later.
+`try_new_outbound_peer` variable is used for some situation where a node can't get any useful messages in a duration time. Then we will set `try_new_outbound_peer` to `true` and allow the node to connect to more extra outbound peers. This strategy would be introduced later.
 
 Under this strategy, the attacker must achieve the following conditions to apply an eclipse attack:
 
