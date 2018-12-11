@@ -1,7 +1,7 @@
 ---
 Number: 0007
-Category: Informational
-Status: Draft
+Category: Standards Track
+Status: Proposal
 Author: Jinyang Jiang
 Organization: Nervos Foundation
 Created: 2018-10-02
