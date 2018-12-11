@@ -267,7 +267,7 @@ CKB refers to Bitcoin's eviction test and steps are as follows:
 Feeler Connection is intended to：
 
 * Test a peer is connectable or not
-* Discovery more address to fill the peer store
+* Discover more addresses to fill the peer store
 
 Node will start a feeler connection every few minutes after outbound peers reach `max_outbound` limit.
 
