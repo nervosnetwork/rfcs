@@ -31,7 +31,7 @@ Based on the scoring system, we can follow several rules below to handle malicio
 
 1. Nodes should store peers information as much as possible.
 2. Nodes need to score Peers' good and bad behavior continuously.
-3. Node should keep good peers(high score) and evict bad peers(low score).
+3. Nodes should retain good (high-score) peers and evict bad (low-score) peers out.
 
 CKB client should implement the scoring system and following security strategies.
 
