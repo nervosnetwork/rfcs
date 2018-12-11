@@ -130,7 +130,7 @@ The process of choosing an outbound peer:
 3. Choose peer info randomly which must have a higher score than `TRY_SCORE` and have different `network group` from all currently connected outbound peers from PeerStore, return it as the new outbound peer and if we can't find anyone, then execute step 5.
 4. Choose peer info randomly from boot nodes.
 
-In step 1 we choice an anchor peer if the node has zero or only a few connected outbound peers, this behavior refer to "Anchor Connection" strategy which the [Eclipse Attack][2] paper described.
+In step 1, we choose an anchor peer if the node has zero or only a few connected outbound peers. This behavior refers to "Anchor Connection" strategy which described in the [Eclipse Attack][2] paper.
 
 Pseudocode:
 
