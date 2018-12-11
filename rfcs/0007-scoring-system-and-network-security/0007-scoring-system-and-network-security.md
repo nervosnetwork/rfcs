@@ -48,7 +48,7 @@ CKB client should implement the scoring system and following security strategies
 * `inbound peer` - describe a peer which the peer initiates a connection.
 * `max_outbound` - Max number of outbound peers.
 * `max_inbound` - Max number of inbound peers.
-* `network group` - A concept we used to evict peers, calculate from the peer's IP address(prefix 16 bits of IPv4, prefix 32 bits of IPv6).
+* `network group` - A concept which used when to evict out peers, calculating from the peer's IP address(prefix 16 bits of IPv4 and prefix 32 bits of IPv6).
 
 ### Peer Store and Peer Info
 
