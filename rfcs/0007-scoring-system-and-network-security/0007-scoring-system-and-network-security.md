@@ -291,7 +291,7 @@ When the number of peer info reach `PEER_STORE_LIMIT`:
 2. Find out the group which contains the most peer infos
 3. Search peers have not been connected recently from this group: `peer.last_connected_at < Time.now - PEER_NOT_SEEN_TIMEOUT`
 4. Find out the lowest scored peer info as `candidate_peer_info`
-5. if `candidate_peer_info.score < new_peer_info.score` than we delete `candidate_peer_info` and add `new_peer_info`, otherwise we do not accept `new_peer_info`
+5. if `candidate_peer_info.score < new_peer_info.score` then we delete `candidate_peer_info` and add `new_peer_info`, otherwise we do not accept `new_peer_info`
 
 ## References
 
