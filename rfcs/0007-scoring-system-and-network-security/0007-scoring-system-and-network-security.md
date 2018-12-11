@@ -68,7 +68,7 @@ PeerInfo {
 
 ### Scoring System
 
-Scoring System required parameters:
+Parameters below are required in Scoring System:
 
 * `PEER_INIT_SCORE` - the initial score of peers
 * `BEHAVIOURS` - a set of peer's possible behaviors, such as: `UNEXPECTED_DISCONNECT`, `TIMEOUT`, `CONNECTED`
