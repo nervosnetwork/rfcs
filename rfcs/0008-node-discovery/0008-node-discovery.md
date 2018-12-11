@@ -1,6 +1,6 @@
 ---
 Number: 8
-Category: Informational
+Category: Standards Track
 Status: Draft
 Author: Linfeng Qian / JinYang Jiang
 Organization: Nervos Foundation
