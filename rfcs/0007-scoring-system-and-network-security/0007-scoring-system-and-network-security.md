@@ -260,7 +260,7 @@ CKB refers to Bitcoin's eviction test and steps are as follows:
 
 1. Group inbound peers that are connecting according to `network group` field
 2. Find out the group which contains the most peers
-3. find the lowest score in the group, evict the lowest scored peer if new inbound peer's score is higher than this; otherwise, we disconnect the new peer
+3. Compare the lowest score in this group with the new peer's score and evict the lowest scored peer if the new inbound peer's score is higher; otherwise, the new peer would be refused to connect.
 
 ### Feeler Connection
 
