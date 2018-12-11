@@ -93,7 +93,7 @@ Peer's behaviors can be distinguished into three categories:
 Examples:
 
 * Peer 1 connected successfully. A node reported this peer's `CONNECTED` behavior and peer 1 got a 10 score rewarded.
-* Peer 2 connected timeout, node report `TIMEOUT` behavior and peer 2 get -10 score punishment.
+* Peer 2 gets a connection timeout. A node reports `TIMEOUT` behavior and peer 2 get a -10 score as punishment.
 * Peer 1 send duplicate `GET_BLOCK` messages, node report `DUPLICATED_REQUEST_BLOCK` behavior and peer 1 get -50 score punishment.
 * Peer 1's score is lower than `BAN_SCORE`, node disconnect with peer 1 then ban the peer.
 
