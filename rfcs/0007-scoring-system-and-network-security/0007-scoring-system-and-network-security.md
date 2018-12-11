@@ -189,7 +189,7 @@ end
 
 Under this strategy, the attacker must achieve the following conditions to apply an eclipse attack:
 
-1. Attacker have `n` bad peers (`n == ANCHOR_PEERS`) become victim node's outbound peers and these peers must have the highest scores.
+1. The attacker needs to have `n` malicious peers (`n == ANCHOR_PEERS`) to be the victim node's outbound peers and these peers must have the highest scores.
 2. Attacker need have at least `max_outbound - ANCHOR_PEERS` bad peer infos in peer store, and at least `max_outbound - ANCHOR_PEERS` of them be randomly selected as outbound peers.
 
 
