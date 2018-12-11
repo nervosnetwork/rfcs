@@ -25,7 +25,7 @@ Reference paper -- [Eclipse Attacks on Bitcoin’s Peer-to-Peer Network][2]
 
 There are several strategies to prevent "Eclipse attack" introduced in this paper and parts of them have already been implemented in the Bitcoin network. That is to say, this document will describe how to deploy these strategies to CKB network.
 
-This document also describes the scoring system of CKB P2P Networking layer. We can take the sophisticated security strategies from the Bitcoin network and combine it with the scoring system to handling more generalized network security cases.
+In addition, this document also describes the scoring system of CKB P2P Networking layer and we want to handle more generalized network security cases by combining it with more sophisticated security strategies from the Bitcoin network.
 
 Based on the scoring system, we can follow several rules for handling bad peers:
 
