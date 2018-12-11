@@ -285,7 +285,7 @@ Required parameters:
 * `PEER_STORE_LIMIT` - max number of PeerInfo in PeerStore
 * `PEER_NOT_SEEN_TIMEOUT` - used for protecting peers which recently connected. Only peer info over `last_connected_to` would be deleted. 
 
-When the number of peer info reach `PEER_STORE_LIMIT`:
+When the number of peer info reaches `PEER_STORE_LIMIT`:
 
 1. Group all PeerInfos in PeerStore according to `network group` field
 2. Find out the group which contains the most peer infos
