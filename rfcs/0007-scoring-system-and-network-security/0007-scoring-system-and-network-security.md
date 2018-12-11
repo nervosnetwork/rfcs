@@ -226,7 +226,7 @@ loop do
 end
 ```
 
-CKB network will to continually try to connect to extra outbound peers when `try_new_outbound_peer` is `true`, and check outbound peers number every few minutes and trying to evict useless extra peers to prevent we have too many connections.
+CKB network will try to connect to extra outbound peers continually when `try_new_outbound_peer` is `true`, and try to evict useless extra peers every few minutes to prevent too many connections.
 
 ``` ruby
 # eviction logic
