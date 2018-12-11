@@ -97,7 +97,7 @@ Examples:
 * Peer 1 sent repetitive `GET_BLOCK` messages. A node reported `DUPLICATED_REQUEST_BLOCK` behavior and peer 1 got a -50 score as punishment.
 * Peer 1's score is lower than `BAN_SCORE`, node disconnect with peer 1 then ban the peer.
 
-Parameters like `BEHAVIOURS`, `SCORING_SCHEMA` is not a part of consensus protocol, CKB client should tune these parameters depend on the actual situation of the network.
+Parameters like `BEHAVIOURS`, `SCORING_SCHEMA` are not a part of consensus protocol, so CKB client should tune these parameters according to the actual situation of the network.
 
 ### Outbound peers selection
 
