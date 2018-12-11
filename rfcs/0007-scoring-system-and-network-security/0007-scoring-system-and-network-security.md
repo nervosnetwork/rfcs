@@ -54,7 +54,7 @@ CKB client should implement the scoring system and following security strategies
 
 PeerStore should be persistent storage and store PeerInfos as more as possible.
 
-PeerInfo should at least includes below fields:
+PeerInfo should include fields below at least:
 
 ```
 PeerInfo { 
