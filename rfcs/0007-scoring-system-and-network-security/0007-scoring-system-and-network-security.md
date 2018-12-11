@@ -206,7 +206,7 @@ def sync_maybe_stale
 end
 ```
 
-The network component should set `try_new_outbound_peer` to `true` when detect `sync` protocol stale and set back to `false` when detect protocol is recovery.
+The network component should set `try_new_outbound_peer` to `true` when `sync` protocol doesn't work and set back to `false` when `sync` protocol puts back.
 
 ``` ruby
 check_sync_stale_at = Time.now
