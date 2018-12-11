@@ -108,7 +108,7 @@ The "Eclipse Attack" paper describes a critical security issue during Bitcoin no
 3. After the restart, the victim node will select some address from addrman to connect.
 4. The attack successes if all outbound connections of the victim node are connected to the attacker's bad nodes.
 
-CKB node should avoid this when initialized network peers.
+CKB should avoid this problem when initialize the network.
 
 #### The process of initializing outbound peers
 
