@@ -86,7 +86,7 @@ Peer's behaviors can be distinguished into three categories:
 1. Correct behaviors which follow the specification:
     * For example, a node downloads a new block from a peer; a node connects to a peer successfully. Considering a bad peer may pretend like a good one before launching an attack, we should give the peer a relatively low positive score instead of giving a high score at once to encourage the peer to accumulate his credit by performing good behaviors for a long time.
 2. Incorrect behaviors which may be caused by network exception:
-    * For example, peer unexpected disconnect; node failed to connect to a peer; ping timeout. Since we can't distinguish these behaviors is intended bad behavior or caused by the network,  we should give the peer a little negative score to keep tolerant.
+    * For example, a peer disconnect unexpectedly; a node failed to connect to a peer; ping timeout. Since we can't tell whether these behaviors are intentional bad behavior or caused by the network,  we should give the peer a little negative score to keep tolerant.
 3. Incorrect behaviors which violent the specification:
     * For example, peer sent an illegal encoded content; peer sent an invalid block; peer sent an invalid transaction. We should give peer a vast negative score when we sure peer's behavior is violent the specification, and when peer's score is lower than `BAN_SCORE`, the peer should be banned
 
