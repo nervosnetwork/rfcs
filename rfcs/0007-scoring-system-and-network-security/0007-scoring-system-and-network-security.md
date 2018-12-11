@@ -27,7 +27,7 @@ There are several strategies to prevent "Eclipse attack" introduced in this pape
 
 In addition, this document also describes the scoring system of CKB P2P Networking layer and we want to handle more generalized network security cases by combining it with more sophisticated security strategies from the Bitcoin network.
 
-Based on the scoring system, we can follow several rules for handling bad peers:
+Based on the scoring system, we can follow several rules below to handle malicious peers:
 
 1. Nodes should store peers information as much as possible.
 2. Node need scoring peers based on their good behavior or bad behavior
