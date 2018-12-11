@@ -124,7 +124,7 @@ Required variables:
 The process of choosing an outbound peer:
 
 1. Execute step 2 if currently connected outbound peers less than `ANCHOR_PEERS`, otherwise execute step 3.
-2. Choice an "anchor peer":
+2. Choose an "anchor peer":
     1. Choice recent connected outbound peers from peer store(can select by `LastConnectedAt` field of peer info).
     2. Execute step 3 if `recent_peers` is empty; otherwise, we find the highest peer from `recent_peers` and return it as the new outbound peer.
 3. Randomly pick peer info from peer store which must have a higher score than `TRY_SCORE` and have different `network group` with all currently connected outbound peers, return it as the new outbound peer if we can find one.
