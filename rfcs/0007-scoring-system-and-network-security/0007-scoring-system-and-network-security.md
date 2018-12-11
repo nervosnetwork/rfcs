@@ -272,7 +272,7 @@ Feeler Connection is intended to：
 Node will start a feeler connection every few minutes after outbound peers reach `max_outbound` limit.
 
 1. Pick out peer info from PeerStore randomly which score should be higher than `TRY_SCORE` 
-2. Connect to peer
+2. Connect to this peer
 3. Run Node Discovery Protocol with the peer
 4. Disconnect
 
