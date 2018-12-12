@@ -11,11 +11,11 @@ Created: 2018-12-01
 
 ## Complete Binary Merkle Tree
 
-CKB uses Complete Binary Merkle Tree(CBMT) to generate `Merkle Root` and `Merkle Proof` for a static list of items. Currently, CBMT is used to calculate `Transactions Root`. Basically, CBMT is a ***complete binary tree***, in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible. And it is also a ***full binary tree***, in which every node other than the leaves has two children. Compare with other Merkle trees, the hash computation of CBMT is minimal, as well as the proof size.
+CKB uses Complete Binary Merkle Tree(CBMT) to generate *Merkle Root*  and *Merkle Proof* for a static list of items. Currently, CBMT is used to calculate *Transactions Root*. Basically, CBMT is a ***complete binary tree***, in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible. And it is also a ***full binary tree***, in which every node other than the leaves has two children. Compare with other Merkle trees, the hash computation of CBMT is minimal, as well as the proof size.
 
-## Node Orginazation
+## Nodes Organization
 
-For the sake of illustration, we order the tree nodes from ***top to bottom*** and ***left to right*** starting at zero. In CBMT with `n` items, root is the `first` node, and the first item's hash is `node 0`, second is `node n+1`, etc. We choose this nodes orginazation because it is easy to caculate the node order for an item.
+For the sake of illustration, we order the tree nodes from ***top to bottom*** and ***left to right*** starting at zero. In CBMT with *n* items, root is the *first* node, and the first item's hash is *node 0*, second is *node n+1*, etc. We choose this nodes organization because it is easy to calculate the node order for an item.
 
 For example, CBMT with 6 items(suppose the hashes are `[T0, T1, T2, T3, T4, T5]`) and CBMT with 7 items(suppose the hashes are `[T0, T1, T2, T3, T4, T5, T6]`) is shown below:
 
@@ -34,7 +34,7 @@ For example, CBMT with 6 items(suppose the hashes are `[T0, T1, T2, T3, T4, T5]`
   B3(3)   B4(4)  TO(5)    T1(6)      B3(3)   B4(4)   B5(5)   T0(6)
  /  \    /  \                       /  \    /  \    /  \
 T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
-(7) (8) (9) (10)                   (7) (8) (9)(10)(11) (12) 
+(7) (8) (9) (10)                   (7) (8) (9)(10)(11) (12)
 ```
 
 Specially, the tree with 0 item is empty(0 node) and its root is `H256::zero`.
@@ -46,14 +46,14 @@ CBMT can be represented in a very space-efficient way, using an array alone. Nod
 For example, the two trees above can be represented as:
 
 ```
-// an array with 11 elements, the first element is `node 0`(`BO`), second is `node 1`, etc.
+// an array with 11 elements, the first element is node 0(BO), second is node 1, etc.
 [B0, B1, B2, B3, B4, T0, T1, T2, T3, T4, T5]
 
-// an array with 13 elements, the first element is `node 0`(`BO`), second is `node 1`, etc.
+// an array with 13 elements, the first element is node 0(BO), second is node 1, etc.
 [B0, B1, B2, B3, B4, B5, T0, T1, T2, T3, T4, T5, T6]
 ```
 
-Suppose a CBMT with `n` items, the size of the array would be `2n-1`, the index of item i(start at 0) is `i+n-1`. For node at `i`, the index of its parent is `(i-1)/2`, the index of its sibling is `(i+1)^1-1`(`^` is xor) and the indexes of its children are `[2i+1, 2i+2]`.
+Suppose a CBMT with *n* items, the size of the array would be *2n-1*, the index of item i(start at 0) is *i+n-1*. For node at *i*, the index of its parent is *(i-1)/2*, the index of its sibling is `(i+1)^1-1`(*^* is xor) and the indexes of its children are `[2i+1, 2i+2]`.
 
 ## Merkle Proof
 
