@@ -30,7 +30,7 @@ When all the following conditions are met, the local node will send a `GetNodes`
 
   1. It's an outbound connection (for resisting [fingerprinting attack][3]).
   2. The other node's version must bigger than a preset value.
-  3. The number of addresses currently stored is less than 1000. 
+  3. The number of addresses currently stored is less than `ADDRESSES_THRESHOLD` (default 1000). 
 
 
 #### `Nodes` Message
@@ -38,16 +38,12 @@ When the client receives a `GetNodes` request, it will return a `Nodes` message 
 
 Here `announce` field is for distinguish a `Nodes` as an response of `GetNodes` or broadcast message, so it's convient to apply different rules for punishing misbehaviors. The main rules:
 
-* A node can only send one `Nodes` message (announce=true) as an response of `GetNodes` message.
-* A node's broadcast messages only the first `Nodes` message can include more than 10 node informations.
+* A node can only send one `Nodes` message (announce=false) as an response of `GetNodes` message.
+* A node's broadcast messages only the first `Nodes` message (announce=true) can include more than `ANNOUNCE_THRESHOLD` (default 10) node informations.
 
-The number of `addresses` field of each `Node` in all `Nodes` messages cannot exceed `3`.
+The number of `addresses` field of each `Node` in all `Nodes` messages cannot exceed `MAX_NODE_ADDRESSES` (default 3) .
 
 ## Resist Typical Attacks
-### Eclipse Attack
-Choose an address randomly from PeerStore to connect then close every 2 minutes. The goal is to increase the list of addresses that have been tried.
-Every 2 minutes random choose an address from PeerStore to connect. The goal is increasing the tired address list.
-
 ### Fingerprinting Attack
 [Related paper][3]
 

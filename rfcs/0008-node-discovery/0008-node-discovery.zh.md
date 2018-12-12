@@ -32,7 +32,7 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 
   1. 这个连接是自己主动发起的 (防御[指纹攻击][3])
   2. 对方的版本号大于一个预设的值
-  3. 当前存储的地址数量小于 1000 个
+  3. 当前存储的地址数量小于 `ADDRESSES_THRESHOLD` (默认 1000) 个
 
 #### `Nodes` 消息
 
@@ -40,15 +40,12 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 
 这里 `announce` 字段的目的是为了区分 `Nodes` 消息是作为 `GetNodes` 消息的返回值还是广播消息，可以方便应用不同的规则来对节点的恶意行为做相应的处罚。涉及到的规则主要有:
 
-* 一个节点只能有一个 `Nodes` 消息 (announce=true) 作为 `GetNodes` 消息的返回值。
-* 一个节点的广播消息中只能第一个 `Nodes` 消息 (announce=false) 包含的节点信息数量超过 10 个。
+* 一个节点只能有一个 `Nodes` 消息 (announce=false) 作为 `GetNodes` 消息的返回值。
+* 一个节点的广播消息中只能第一个 `Nodes` 消息 (announce=true) 包含的节点信息数量超过 `ANNOUNCE_THRESHOLD` (默认 10) 个。
 
-所有 `Nodes` 消息中的每个 `Node` 中的 `addresses` 的数量不能超过 `3` 个。
+所有 `Nodes` 消息中的每个 `Node` 中的 `addresses` 的数量不能超过 `MAX_NODE_ADDRESSES` (默认 3) 个。
 
 ## 对主要攻击方式的处理
-### 日食攻击 (Eclipse attack)
-每个 2 分钟从 PeerStore 中挑选出随机的一个地址发起一个连接并关闭。目的是为了增加已尝试过连接的地址列表。
-
 ### 指纹攻击 (fingerprinting attack)
 [相关论文][3]
 
