@@ -2,7 +2,7 @@
 Number: 8
 Category: Standards Track
 Status: Draft
-Author: Linfeng Qian / JinYang Jiang
+Author: Linfeng Qian, JinYang Jiang
 Organization: Nervos Foundation
 Created: 2018-11-28
 ---
@@ -13,16 +13,16 @@ CKB node discovery protocol mainly refers to [Satoshi Client Node Discovery][0].
 
 * The node version number is included in the `GetNodes` message.
 * The `Nodes` message is used to periodically broadcast all nodes currently connected.
-* We use `multiaddr` as the format of node addresses  (There is no `/p2p/` field here and if it's considered as *misbehavior*, a low score will be given.)
+* We use `multiaddr` as the format of node addresses (It MUST NOT include `/p2p/` segment otherwise it's considered as *misbehavior* and a low score will be given.)
 
-Every time client startup, if PeerStore's address list is empty, it will try to issue DNS requests to initialize address list, if DNS requests failed it will fallback to hard-coded address list.
+Every time client startup, if PeerStore's address list is empty, it will try to issue DNS requests to initialize address list, if DNS requests failed it will fallback to the hard-coded address list.
 
 ## Discovery Methods
 ### DNS Addresses
-When first time startup (bootstrap stage), if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded. DNS server addresses can be replaced by command line arguments.
+When first time startup (bootstrap stage), if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded.
 
 ### Hard-Coded "Seed" Addresses
-The client contains hard-coded IP addresses that represent CKB nodes. Those addresses only are used only if all DNS requests failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes. "Seed" addresses can be specified manually with command-line arguments.
+The client contains hard-coded IP addresses that represent CKB nodes. Those addresses are used only if all DNS requests failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes.
 
 ### Protocol Message
 #### `GetNodes` Message
