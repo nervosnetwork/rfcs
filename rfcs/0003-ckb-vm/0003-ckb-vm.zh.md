@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
     }
   } else if (strcmp(argv[4], "transfer") == 0) {
     // processing transfer arguments
-    ret = udt_initialize(input_data, ...);
+    ret = udt_transfer(input_data, ...);
     if (ret != 0) {
       return ret;
     }
