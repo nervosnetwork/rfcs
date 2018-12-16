@@ -11,7 +11,7 @@ Created: 2018-08-01
 
 ## 概述
 
-CKB 的 VM 层用于在给定 transction 的 inputs 与 outputs 的情况下，执行一系列验证条件，以判断 transaction 是否合法并返回结果。
+CKB 的 VM 层用于在给定 transaction 的 inputs 与 outputs 的情况下，执行一系列验证条件，以判断 transaction 是否合法并返回结果。
 
 CKB 使用 [RISC-V](https://riscv.org/) 指令集来实现虚拟机层。更精确的说，CKB 使用 rv64imac 指令集架构：基于 [RV64I](https://riscv.org/specifications/) 核心指令集，并添加 RV32M 整型乘除法扩展，原子性内存操作，以及 RVC 指令压缩功能。注意目前 CKB 并不支持浮点数运算，如有需要将在未来版本中考虑引入。
 
