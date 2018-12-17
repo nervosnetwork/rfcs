@@ -11,13 +11,13 @@ Created: 2018-12-11
 
 ## Abstract
 
-Transaction filter protocol allows peers to reduce the amount of transaction data they are sent. Peer that wants to retrieve transactions of interest, has the option of setting filters on each connection. A filter is defined as a [Bloom filter](http://en.wikipedia.org/wiki/Bloom_filter) on data derived from transactions.
+Transaction filter protocol allows peers to reduce the amount of transaction data they send. Peer which wants to retrieve transactions of interest, has the option of setting filters on each connection. A filter is defined as a [Bloom filter](http://en.wikipedia.org/wiki/Bloom_filter) on data derived from transactions.
 
 ## Motivation
 
 The purpose of transaction filter protocol is to allow low-capacity peers (smartphones, browser extensions, embedded devices, etc) to maintain a high-security assurance about the up to date state of some particular transactions of the chain or verify the execution of transactions.
 
-These peers do not attempt to fully verify the block chain, instead just checking that [block headers connect](../0004-ckb-block-sync/0004-ckb-block-sync.md#connecting-header) together correctly and trusting that the transactions in the block of high difficulty are in fact valid.
+These peers do not attempt to fully verify the block chain, instead just checking that [block headers connect](../0004-ckb-block-sync/0004-ckb-block-sync.md#connecting-header) together correctly and trusting that the transactions in the block of highest difficulty are in fact valid.
 
 Without this protocol, peers have to download the entire blocks and accept all broadcast transactions, then throw away majority of the transactions. This slows down the synchronization process, wastes users bandwidth and increases memory usage.
 
@@ -25,7 +25,7 @@ Without this protocol, peers have to download the entire blocks and accept all b
 
 ### SetFilter
 
-Upon receiving a `SetFilter` message, the remote peer will immediately restrict the broadcast transactions it announces to transactions matching the filter, where the [matching algorithm](#filter-matching-algorithm) is specified below.
+Upon receiving a `SetFilter` message, the remote peer will immediately restrict the transactions that it broadcasts to the ones matching the filter, where the [matching algorithm](#filter-matching-algorithm) is specified as below.
 
 ```
 table SetFilter {
@@ -43,7 +43,7 @@ table SetFilter {
 
 ### AddFilter
 
-Upon receiving a `AddFilter` message, the given bit data will be added to the exsiting filter via bitwise OR operator. A filter must have been previously provided using `SetFilter`. This messsage is useful if a new filter is added to a peer whilst it has connections to the network open, it avoids the need to re-calculate and send an entirely new filter to every peer.
+Upon receiving a `AddFilter` message, the given bit data will be added to the exsiting filter via bitwise OR operator. A filter must have been previously provided using `SetFilter`. This messsage is useful if a new filter is added to a peer whilst it has connections to the network open, alsp avoids the need to re-calculate and send an entirely new filter to every peer.
 
 ```
 table AddFilter {
@@ -81,7 +81,7 @@ table FilteredBlock {
 
 `transactions`: Standard transaction struct plus transaction index.
 
-`hashes`: Partial Merkle branch proof.
+`hashes`: Partial [Merkle](../0006-merkle-tree/0006-merkle-tree/0006-merkle-tree.md#merkle-proof) branch proof.
 
 ## Filter matching algorithm
 
