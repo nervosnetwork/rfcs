@@ -81,7 +81,7 @@ table FilteredBlock {
 
 `transactions`: Standard transaction struct plus transaction index.
 
-`hashes`: Partial [Merkle](../0006-merkle-tree/0006-merkle-tree/0006-merkle-tree.md#merkle-proof) branch proof.
+`hashes`: Partial [Merkle](../0006-merkle-tree/0006-merkle-tree.md#merkle-proof) branch proof.
 
 ## Filter matching algorithm
 
