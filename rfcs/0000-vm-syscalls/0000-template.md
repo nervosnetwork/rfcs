@@ -67,7 +67,7 @@ Now we can trigger the same exit syscall more easily in C code:
 syscall(93, 10, 0, 0, 0, 0, 0);
 ```
 
-Note that even though exit syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function used as signature to demonstrate each syscall's accepted arguments. Also for clarify reason, all the code shown in this RFC is assumed to be written in pure C.
+Note that even though exit syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.
 
 ### Exit
 
