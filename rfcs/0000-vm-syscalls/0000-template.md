@@ -181,7 +181,7 @@ This syscall would locate a single cell in current transaction just like `Load C
 * `capacity`: capacity is serialized into 8 little endian bytes, this is also how flatbuffer handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
-* `contract`: contract script is serialized into flatbuffer format
+* `contract`: contract script is serialized into the FlatBuffers format
 * `contract hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
 With the binary result converted from different rules, CKB VM then applies the same steps as documented in `Load Transaction` syscall to feed data into CKB VM.
