@@ -140,7 +140,7 @@ The arguments used here are:
     + 1: output cells.
     + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
 
-This syscall would locate a single cell in current transaction based on `source` and `index` value, serialize the whole cell into flatbuffer format, then use the same step as documented in `Load Transaction` syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the FlatBuffers format, then use the same step as documented in `Load Transaction` syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
 
