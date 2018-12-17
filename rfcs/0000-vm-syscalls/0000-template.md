@@ -218,7 +218,7 @@ The arguments used here are:
 
 This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM. Note that we can already use *Load Cell By Field* to load lock hash from input cell, hence this syscall only supports reading original `unlock` data to preserve orthogonality.
 
-Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *contract* field, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *contract* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Debug
 
