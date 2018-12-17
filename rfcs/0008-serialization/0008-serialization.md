@@ -2,7 +2,7 @@
 Number: 0008
 Category: Standards Track
 Status: Draft
-Author: Nervos Dev
+Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2018-12-17
 ---
