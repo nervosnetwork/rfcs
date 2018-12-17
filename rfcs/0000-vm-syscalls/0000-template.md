@@ -19,7 +19,7 @@ CKB VM syscalls are used to implement communications between the RISC-V based CK
 
 ## Specification
 
-In CKB we use RISC-V's standard syscall solution: each syscall accepts 6 arguments stored in register `A0` through `A5`. Each argument here is of register word size so it can store either regular integers or pointers. The syscall number is stored in `A7`. After all the arguments and syscall number are set, `ecall` instruction is used to trigger syscall execution, CKB VM then transfers controls from the VM to the actual syscall implementation beneath. For example, the following RISC-V assembly would trigger `exit` syscall with a return code of 10:
+In CKB we use RISC-V's standard syscall solution: each syscall accepts 6 arguments stored in register `A0` through `A5`. Each argument here is of register word size so it can store either regular integers or pointers. The syscall number is stored in `A7`. After all the arguments and syscall number are set, `ecall` instruction is used to trigger syscall execution, CKB VM then transfers controls from the VM to the actual syscall implementation beneath. For example, the following RISC-V assembly would trigger *Exit* syscall with a return code of 10:
 
 ```
 li a0, 10
@@ -61,17 +61,17 @@ __internal_syscall(long n, long _a0, long _a1, long _a2, long _a3, long _a4, lon
 
 (NOTE: this is adapted from [riscv-newlib](https://github.com/riscv/riscv-newlib/blob/77e11e1800f57cac7f5468b2bd064100a44755d4/libgloss/riscv/internal_syscall.h#L25))
 
-Now we can trigger the same exit syscall more easily in C code:
+Now we can trigger the same *Exit* syscall more easily in C code:
 
 ```c
 syscall(93, 10, 0, 0, 0, 0, 0);
 ```
 
-Note that even though exit syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.
+Note that even though *Exit* syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.
 
 ### Exit
 
-As shown above, exit syscall has a signature like following:
+As shown above, *Exit* syscall has a signature like following:
 
 ```c
 void exit(int8_t code)
@@ -80,11 +80,11 @@ void exit(int8_t code)
 }
 ```
 
-Exit syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a contract in CKB VM.
+*Exit* syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a contract in CKB VM.
 
 ### Load Transaction
 
-Load Transaction syscall has a signature like following:
+*Load Transaction* syscall has a signature like following:
 
 ```c
 int ckb_load_tx(void* addr, uint64_t* len, size_t offset)
@@ -120,7 +120,7 @@ One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer 
 
 ### Load Cell
 
-Load Cell syscall has a signature like following:
+*Load Cell* syscall has a signature like following:
 
 ```c
 int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
@@ -131,24 +131,25 @@ int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in `Load Transaction` syscall.
-* `len`: the exact same `len` pointer as used in `Load Transaction` syscall.
-* `offset`: the exact same `offset` value as used in `Load Transaction` syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 0: input cells.
     + 1: output cells.
     + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the FlatBuffers format, then use the same step as documented in `Load Transaction` syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the FlatBuffers format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
 
-Note this syscall is only provided for advanced usage that requires hashing the whole cell in a future proof way. In practice this is a very expensive syscall since it requires serializing the whole cell, in the case of a large cell with huge data, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using `Load Cell By Field` syscall below.
+Note this syscall is only provided for advanced usage that requires hashing the whole cell in a future proof way. In practice this is a very expensive syscall since it requires serializing the whole cell, in the case of a large cell with huge data, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Cell By Field* syscall below.
 
 ### Load Cell By Field
 
-Load Cell By Field syscall has a signature like following:
+*Load Cell By Field* syscall has a signature like following:
 
 ```c
 int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
@@ -160,15 +161,15 @@ int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in `Load Transaction` syscall.
-* `len`: the exact same `len` pointer as used in `Load Transaction` syscall.
-* `offset`: the exact same `offset` value as used in `Load Transaction` syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 0: input cells.
     + 1: output cells.
     + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
-* `
+    + 3: dep cells.
 * `field`: a flag denoting the field of the cell to read, possible values include:
     + 0: capacity.
     + 1: data.
@@ -176,7 +177,7 @@ The arguments used here are:
     + 3: contract.
     + 4: contract hash.
 
-This syscall would locate a single cell in current transaction just like `Load Cell` syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
+This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
 * `capacity`: capacity is serialized into 8 little endian bytes, this is also how FlatBuffers handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
@@ -184,13 +185,13 @@ This syscall would locate a single cell in current transaction just like `Load C
 * `contract`: contract script is serialized into the FlatBuffers format
 * `contract hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
-With the binary result converted from different rules, CKB VM then applies the same steps as documented in `Load Transaction` syscall to feed data into CKB VM.
+With the binary result converted from different rules, CKB VM then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Load Input By Field
 
-Load Input By Field syscall has a signature like following:
+*Load Input By Field* syscall has a signature like following:
 
 ```c
 int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
@@ -202,26 +203,26 @@ int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in `Load Transaction` syscall.
-* `len`: the exact same `len` pointer as used in `Load Transaction` syscall.
-* `offset`: the exact same `offset` value as used in `Load Transaction` syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
     + 0: inputs.
-    + 1: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in `Load Input By Field` syscall, the syscall would always return `2` since output doesn't have any input fields.
+    + 1: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
     + 2: current input, in this case `index` value would be ignored since there's only one current input.
-* `
+    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
 * `field`: a flag denoting the field of the input to read, possible values include:
     + 0: unlock.
     + 1: out_point.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in `Load Transaction` syscall to feed data into VM. Note that we can already use `Load Cell By Field` to load lock hash from input cell, hence this syscall only supports reading original `unlock` data to preserve orthogonality.
+This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM. Note that we can already use *Load Cell By Field* to load lock hash from input cell, hence this syscall only supports reading original `unlock` data to preserve orthogonality.
 
-Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a contract field would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *contract* field, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Debug
 
-Debug syscall has a signature like following:
+*Debug* syscall has a signature like following:
 
 ```c
 void ckb_debug(const char* s)
