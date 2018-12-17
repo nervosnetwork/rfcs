@@ -178,7 +178,7 @@ The arguments used here are:
 
 This syscall would locate a single cell in current transaction just like `Load Cell` syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
-* `capacity`: capacity is serialized into 8 little endian bytes, this is also how flatbuffer handles 64-bit unsigned integers.
+* `capacity`: capacity is serialized into 8 little endian bytes, this is also how FlatBuffers handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
 * `contract`: contract script is serialized into the FlatBuffers format
