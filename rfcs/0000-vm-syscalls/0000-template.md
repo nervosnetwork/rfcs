@@ -105,7 +105,7 @@ When calling, this syscall would take the current transaction, and remove:
 * `data` part in all outputs
 * `contract` scripts in all outputs
 
-It then take the modified transaction and serialize it into flatbuffer format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
+It then takes the modified transaction and serializes it into the FlatBuffers format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
 
 1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
 2. `full_size` is calculated as `data_length - offset`.
