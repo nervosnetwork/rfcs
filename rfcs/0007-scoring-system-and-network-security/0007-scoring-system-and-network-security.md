@@ -260,9 +260,17 @@ This eviction behavior is intended to keep high-quality peers and evict low-qual
 
 CKB refers to Bitcoin's eviction test and steps are as follows:
 
-1. Group inbound peers that are connecting according to `network group` field
-2. Find out the group which contains the most peers
-3. Compare the lowest score in this group with the new peer's score and evict the lowest scored peer if the new inbound peer's score is higher; otherwise, the new peer would be refused to connect.
+1. Consider currently connected inbound peers as `candidate_peers`.
+2. Protect peers(`N` represent the number of peers to protect in each step):
+    1. Delete `N` peers from `candidate_peers` which has the highest score.
+    2. Delete `N` peers from `candidate_peers` which has the lowest ping.
+    3. Delete `N` peers from `candidate_peers` which most recently sent us messages.
+    4. Delete `candidate_peers.size / 2` peers from `candidate_peers` which have the longest connection time.
+3. Group `candidate_peers` according to `network group` field.
+4. Find out the group which contains the most peers.
+5. Evict the lowest scored peer from the group found in step 4 if it is not empty. Otherwise, reject the connection from the new peer.
+
+We protect some peers from eviction based on characteristics that an attacker is hard to simulate or manipulate, to enhence the security of the network.
 
 ### Feeler Connection
 
