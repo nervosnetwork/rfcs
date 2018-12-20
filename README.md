@@ -62,6 +62,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [6](rfcs/0006-merkle-tree) | [Merkle Tree for Static Data](rfcs/0006-merkle-tree/0006-merkle-tree.md) | Ke Wang | Standards Track | Proposal |
 | [7](rfcs/0007-scoring-system-and-network-security) | [P2P Scoring System And Network Security](rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.md) | Jinyang Jiang | Standards Track | Proposal |
 | [8](rfcs/0008-serialization) | [Serialization](rfcs/0008-serialization/0008-serialization.md) | Ian Yang | Standards Track | Draft |
+| [10](rfcs/0010-cellbase-maturity-period) | [Cellbase Maturity Period](rfcs/0010-cellbase-maturity-period/0010-cellbase-maturity-period.md) | Yaning Zhang | Standards Track | Propoal |
 
 ## License
 
