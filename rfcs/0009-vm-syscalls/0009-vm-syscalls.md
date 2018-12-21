@@ -15,7 +15,7 @@ This document describes all the RISC-V VM syscalls implemented in CKB so far.
 
 ## Introduction
 
-CKB VM syscalls are used to implement communications between the RISC-V based CKB VM, and the main CKB process, allowing contracts running in the VM to read current transaction information as well as general blockchain information from CKB. Leveraging syscalls instead of custom instructions allow us to maintain a standard compliant RISC-V implementation which can embrace the broadest industrial support.
+CKB VM syscalls are used to implement communications between the RISC-V based CKB VM, and the main CKB process, allowing scripts running in the VM to read current transaction information as well as general blockchain information from CKB. Leveraging syscalls instead of custom instructions allow us to maintain a standard compliant RISC-V implementation which can embrace the broadest industrial support.
 
 ## Specification
 
@@ -80,7 +80,7 @@ void exit(int8_t code)
 }
 ```
 
-*Exit* syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a contract in CKB VM.
+*Exit* syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a script in CKB VM.
 
 ### Load Transaction
 
@@ -103,9 +103,9 @@ When calling, this syscall would take the current transaction, and remove:
 
 * `unlock` scripts in all inputs
 * `data` part in all outputs
-* `contract` scripts in all outputs
+* `type` scripts in all outputs
 
-It then takes the modified transaction and serializes it into the FlatBuffers format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
+It then takes the modified transaction and serializes it into the CKB Encoding [1] format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
 
 1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
 2. `full_size` is calculated as `data_length - offset`.
@@ -141,7 +141,7 @@ The arguments used here are:
     + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
     + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the FlatBuffers format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CKB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
 
@@ -174,16 +174,16 @@ The arguments used here are:
     + 0: capacity.
     + 1: data.
     + 2: lock hash.
-    + 3: contract.
-    + 4: contract hash.
+    + 3: type.
+    + 4: type hash.
 
 This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
-* `capacity`: capacity is serialized into 8 little endian bytes, this is also how FlatBuffers handles 64-bit unsigned integers.
+* `capacity`: capacity is serialized into 8 little endian bytes, this is also how CKB Encoding [1] handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
-* `contract`: contract script is serialized into the FlatBuffers format
-* `contract hash`: 32 raw bytes are extracted from `H256` structure and used directly
+* `type`: type script is serialized into the CKB Encoding [1] format
+* `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
 With the binary result converted from different rules, CKB VM then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
 
@@ -218,7 +218,7 @@ The arguments used here are:
 
 This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM. Note that we can already use *Load Cell By Field* to load lock hash from input cell, hence this syscall only supports reading original `unlock` data to preserve orthogonality.
 
-Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *contract* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Debug
 
@@ -232,3 +232,7 @@ void ckb_debug(const char* s)
 ```
 
 This syscall accepts a null terminated string and prints it out as debug log in CKB. It can be used as a handy way to debug scripts in CKB. This syscall has no return value.
+
+# Reference
+
+* [1]: CFB Encoding, *citation link pending*
