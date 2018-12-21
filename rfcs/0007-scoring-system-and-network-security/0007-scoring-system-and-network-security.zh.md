@@ -264,11 +264,17 @@ end
 
 CKB 参考了比特币的驱逐测试，步骤如下:
 
-1. 按照 `network group` 给正在连接的 inbound peers 分组
-2. 找出包含最多 peers 的组
-2. 找到组中的最低分数，和新 peer 的分数对比，如果新 peer 分数较高，则驱逐组中分数最低的 peer (如果有多个最低分 peer，则随机选择一个驱逐)，否则拒绝新 peer 连接
+1. 找出当前连接的所有 inbound peers 作为 `candidate_peers`
+2. 保护 peers (`N` 代表每一步中我们想要保护的 peers 数量):
+    1. 从 `candidate_peers` 找出 `N` 个分数最高的 peers 删除
+    2. 从 `candidate_peers` 找出 `N` 个 ping 最小的 peers 删除
+    3. 从 `candidate_peers` 找出 `N` 个最近发送消息给我们的 peers 删除
+    4. 从 `candidate_peers` 找出 `candidate_peers.size / 2` 个连接时间最久的 peers 删除
+3. 按照 `network group` 对剩余的 `candidate_peers` 分组
+4. 找出包含最多 peers 的组
+5. 驱逐组中分数最低的 peer，找不到 peer 驱逐时则拒绝新 peer 的连接
 
-节点的 inbound peers 驱逐测试使得恶意 peer 必须伪装出比其他正常 peer 更好的行为才会被接受。
+我们基于攻击者难以模拟或操纵的特征来保护一些 peers 免受驱逐，以增强网络的安全性。
 
 ### Feeler Connection
 
