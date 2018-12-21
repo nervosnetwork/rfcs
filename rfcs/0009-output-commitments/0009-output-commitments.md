@@ -19,11 +19,11 @@ Merkle Mountain Range(MMR) is first introduced by [Peter Todd][1], it is "a type
 
 ## TXO Commitments using MMR
 
-TXO Commitments using MMR is posed by [Perter Todd][2], this rfc is mostly same with Perter's design. But there are still some difference in detail.
+TXO Commitments using MMR is posed by [Perter Todd][2], this RFC is mostly same with Perter's design. But there are still some difference in detail.
 
 ### Structure
 
-The key of output consist of a transaction hash and an index, so we can't organize the output into a MMR directly. The outputs inner a transaction are built into a CBMT(rfc#0006) and this subtrees are organized into a MMR. The leaf of MMR is the hash of CBMT's root, transaction hash and CBMT size.
+The key of output consist of a transaction hash and an index, so we can't organize the output into a MMR directly. So the outputs inner a transaction are built together into a CBMT(RFC#0006), then these CBMTs are organized into a MMR. So every leaf of MMR will have a corresponding CBMT, and a leaf is hash of CBMT's root, transaction's hash and CBMT's size.
 
 Suppose we have 2 transactions, the first transaction have 4 outputs and second have 3 outputs, the MMR would be:
 
@@ -41,11 +41,11 @@ Then add a transaction with 0 outputs, the MMR would be:
 
 ![](images/04.jpg "MMR with 5 transactions")
 
-Specially, if MMR is empty, the root of MMR is `H256::zero`.
+Specially, the root of an empty MMR is `H256::zero`.
 
 ### Spending
 
-If we want spend an output, we just mark the corresponding node as `H256::zero` and recalculate the peaks.
+If we want spend an output, we just mark the corresponding CBMT node as `H256::zero` and update the CMBT and MMR.
 
 ### Pruning
 
@@ -75,7 +75,7 @@ table MMRProof {
 }
 ```
 
-`CBMTProof` is defined in RFC#0006, it is used for proving that certain outputs inner a transaction is still unspent. The proof in `output_proofs` is in **descending breadth order** by the node it proved for. The `nodes` is a list of siblings of the nodes along the path that form leaves to peaks, excluding the nodes already in the path, they are also in **descending breadth order**. The `left_peaks` is a list of peaks that can't be calculated directly. The right most peaks should be combined. Also, the peaks are in **descending breadth order**.
+`CBMTProof` is defined in RFC#0006, it is used for proving that certain outputs inner a transaction is still unspent. The proofs in `output_proofs` are in **descending breadth order** by the node it proved for. The `nodes` is a list of siblings of the nodes along the path that form leaves to peaks, excluding the nodes already in the path, they are also in **descending breadth order**. The `left_peaks` is a list of peaks that can't be calculated directly. The right most peaks should be combined. Also, the peaks are in **descending breadth order**.
 
 If we want to prove the gray nodes in below figure are unspent, the `nodes` in MMRProof would be `[Node4, Node1]` and the `left_peaks` would be `[Node8]`.
 
