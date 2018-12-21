@@ -136,9 +136,9 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
-    + 0: input cells.
-    + 1: output cells.
-    + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 0: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 1: input cells.
+    + 2: output cells.
     + 3: dep cells.
 
 This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CKB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
@@ -166,21 +166,23 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
-    + 0: input cells.
-    + 1: output cells.
-    + 2: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 0: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 1: input cells.
+    + 2: output cells.
     + 3: dep cells.
 * `field`: a flag denoting the field of the cell to read, possible values include:
     + 0: capacity.
     + 1: data.
-    + 2: lock hash.
-    + 3: type.
-    + 4: type hash.
+    + 2: data hash.
+    + 3: lock hash.
+    + 4: type.
+    + 5: type hash.
 
 This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
 * `capacity`: capacity is serialized into 8 little endian bytes, this is also how CKB Encoding [1] handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
+* `data hash`: 32 raw bytes are extracted from `H256` structure by serializing data field
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
 * `type`: type script is serialized into the CKB Encoding [1] format
 * `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
@@ -208,9 +210,9 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
-    + 0: inputs.
-    + 1: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
-    + 2: current input, in this case `index` value would be ignored since there's only one current input.
+    + 0: current input, in this case `index` value would be ignored since there's only one current input.
+    + 1: inputs.
+    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
     + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
 * `field`: a flag denoting the field of the input to read, possible values include:
     + 0: unlock.
