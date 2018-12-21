@@ -105,7 +105,7 @@ When calling, this syscall would take the current transaction, and remove:
 * `data` part in all outputs
 * `type` scripts in all outputs
 
-It then takes the modified transaction and serializes it into the CKB Encoding [1] format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
+It then takes the modified transaction and serializes it into the CFB Encoding [1] format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
 
 1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
 2. `full_size` is calculated as `data_length - offset`.
@@ -141,7 +141,7 @@ The arguments used here are:
     + 2: output cells.
     + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CKB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
 
@@ -180,11 +180,11 @@ The arguments used here are:
 
 This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
-* `capacity`: capacity is serialized into 8 little endian bytes, this is also how CKB Encoding [1] handles 64-bit unsigned integers.
+* `capacity`: capacity is serialized into 8 little endian bytes, this is also how CFB Encoding [1] handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `data hash`: 32 raw bytes are extracted from `H256` structure by serializing data field
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
-* `type`: type script is serialized into the CKB Encoding [1] format
+* `type`: type script is serialized into the CFB Encoding [1] format
 * `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
 With the binary result converted from different rules, CKB VM then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
