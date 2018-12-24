@@ -51,14 +51,6 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 
 `GetNodes` 消息只能通过 outbound 连接发送出去。
 
-## 流程图
-### 节点 Bootstrap
-![](images/bootstrap.png)
-### 发送 `GetNodes` 消息
-![](images/get-nodes.png)
-### 广播当前连接的节点信息
-![](images/announce-nodes.png)
-
 ## 相关数据结构
 我们使用 [FlatBuffers][2] 作为数据序列化格式，以下为相关数据结构的 schema:
 
@@ -87,6 +79,14 @@ table Node {
     addresses: [Bytes];
 }
 ```
+
+## 流程图
+### 节点 Bootstrap
+![](images/bootstrap.png)
+### 发送 `GetNodes` 消息
+![](images/get-nodes.png)
+### 广播当前连接的节点信息
+![](images/announce-nodes.png)
 
 [0]: https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery
 [1]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml

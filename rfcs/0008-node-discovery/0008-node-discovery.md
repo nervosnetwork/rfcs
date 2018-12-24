@@ -49,14 +49,6 @@ The number of `addresses` field of each `Node` in all `Nodes` messages cannot ex
 
 `GetNodes` can only send to an outbound connection.
 
-## Flow Diagram
-### Node Bootstrap
-![](images/bootstrap.png)
-### Send `GetNodes` Message
-![](images/get-nodes.png)
-### Announce Connected Nodes
-![](images/announce-nodes.png)
-
 ## Data Structures
 We use [FlatBuffers][2] as serialize/deserialize format, the *schema*:
 
@@ -85,6 +77,14 @@ table Node {
     addresses: [Bytes];
 }
 ```
+
+## Flow Diagram
+### Node Bootstrap
+![](images/bootstrap.png)
+### Send `GetNodes` Message
+![](images/get-nodes.png)
+### Announce Connected Nodes
+![](images/announce-nodes.png)
 
 [0]: https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery
 [1]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
