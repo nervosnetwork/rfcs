@@ -1,5 +1,5 @@
 ---
-Number: 0000
+Number: 0011
 Category: Standards Track
 Status: Draft
 Author: Quake Wang
@@ -22,6 +22,8 @@ These peers do not attempt to fully verify the block chain, instead just checkin
 Without this protocol, peers have to download the entire blocks and accept all broadcast transactions, then throw away majority of the transactions. This slows down the synchronization process, wastes users bandwidth and increases memory usage.
 
 ## Messages
+
+*Message serialization format is [CFB](../0008-serialization/0008-serialization.md)*
 
 ### SetFilter
 
@@ -72,8 +74,13 @@ After a filter has been set, peers don't merely stop announcing non-matching tra
 ```
 table FilteredBlock {
     header: Header;
-    transactions: [[Transaction, uint32]];
+    transactions: [IndexTransaction];
     hashes: [H256];
+}
+
+table IndexTransaction {
+    index:                      uint32;
+    transaction:                Transaction;
 }
 ```
 

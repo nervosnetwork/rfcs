@@ -64,6 +64,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [8](rfcs/0008-serialization) | [Serialization](rfcs/0008-serialization/0008-serialization.md) | Ian Yang | Standards Track | Draft |
 | [9](rfcs/0009-vm-syscalls) | [VM Syscalls](rfcs/0009-vm-syscalls/0009-vm-syscalls.md) | Xuejie Xiao | Standards Track | Proposal |
 | [10](rfcs/0010-cellbase-maturity-period) | [Cellbase Maturity Period](rfcs/0010-cellbase-maturity-period/0010-cellbase-maturity-period.md) | Yaning Zhang | Standards Track | Propoal |
+| [11](rfcs/0011-serialization) | [Transaction Filter](rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.md) | Quake Wang | Standards Track | Draft |
 
 ## License
 
