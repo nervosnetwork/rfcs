@@ -24,6 +24,8 @@ At the first time startup (bootstrap stage), if the discovery service is needed,
 ### Hard-Coded "Seed" Addresses
 The client contains some hard-coded "seed" IP addresses that represent CKB nodes. Those addresses are used only if all DNS requests fail. Once the local node has enough addresses (presumably learned from the seed nodes), the client SHOULD close seed node connections to avoid overloading those nodes.
 
+"Seed" nodes are nodes that generally have a high uptime and have had many connections to many other nodes.
+
 ### Protocol Message
 #### `GetNodes` Message
 When all the following conditions are met, the local node will send a `GetNodes` message:
