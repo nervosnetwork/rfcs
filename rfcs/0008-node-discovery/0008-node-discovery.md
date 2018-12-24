@@ -13,16 +13,16 @@ CKB node discovery protocol mainly refers to [Satoshi Client Node Discovery][0].
 
 * The node version number is included in the `GetNodes` message.
 * The `Nodes` message is used to periodically broadcast all nodes currently connected.
-* We use `multiaddr` as the format of node addresses (It MUST NOT include `/p2p/` segment otherwise it's considered as *misbehavior* and a low score will be given.)
+* We use `multiaddr` as the format of node addresses (It MUST NOT include `/p2p/` segment otherwise it's considered as *misbehavior* and a low score SHOULD be given.)
 
-Every time client startup, if PeerStore's address list is empty, it will try to issue DNS requests to initialize address list, if DNS requests failed it will fallback to the hard-coded address list.
+Every time client startup, if PeerStore's address list is empty, it SHOULD try to issue DNS requests to initialize address list, if DNS requests failed it SHOULD fallback to the hard-coded address list.
 
 ## Discovery Methods
 ### DNS Addresses
-At the first time startup (bootstrap stage), if the discovery service is needed, the local node will issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of seed hostnames for DNS services.
+At the first time startup (bootstrap stage), if the discovery service is needed, the local node SHOULD issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of seed hostnames for DNS services.
 
 ### Hard-Coded "Seed" Addresses
-The client contains hard-coded IP addresses that represent CKB nodes. Those addresses are used only if all DNS requests failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes.
+The client contains hard-coded IP addresses that represent CKB nodes. Those addresses are used only if all DNS requests failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client SHOULD close seed node connections to avoid overloading those nodes.
 
 ### Protocol Message
 #### `GetNodes` Message
@@ -34,12 +34,12 @@ When all the following conditions are met, the local node will send a `GetNodes`
 
 
 #### `Nodes` Message
-When the client receives a `GetNodes` request, it will return a `Nodes` message if this kind of reception is the first time and the connection is an inbound connection, the `announce` field is set to `false`. At regular intervals, local node will broadcast all connected `Node` information in `Nodes` message to all connected nodes, the `announce` field is set to `true`. When local node received a `Nodes` message and it's `announce` field is `true`, local node will relay those node addresses that are [routable][1].
+When the client receives a `GetNodes` request, it SHOULD return a `Nodes` message if this kind of reception is the first time and the connection is an inbound connection, the `announce` field is set to `false`. At regular intervals, local node SHOULD broadcast all connected `Node` information in `Nodes` message to all connected nodes, the `announce` field is set to `true`. When local node received a `Nodes` message and it's `announce` field is `true`, local node SHOULD relay those node addresses that are [routable][1].
 
 Here `announce` field is to distinguish a `Nodes` as a response of `GetNodes` or broadcast message, so it's convenient to apply different rules for punishing misbehaviors. The main rules:
 
 * A node can only send one `Nodes` message (announce=false) as a response of `GetNodes` message.
-* A node's broadcast messages only the first `Nodes` message (announce=true) can include more than `ANNOUNCE_THRESHOLD` (default 10) node information, in case other peer send reduplicative `Node` message.
+* Among a node's broadcast messages only the first `Nodes` message (announce=true) can include more than `ANNOUNCE_THRESHOLD` (default 10) node information, in case other peer send reduplicative node information.
 
 The number of `addresses` field of each `Node` in all `Nodes` messages cannot exceed `MAX_NODE_ADDRESSES` (default 3).
 
