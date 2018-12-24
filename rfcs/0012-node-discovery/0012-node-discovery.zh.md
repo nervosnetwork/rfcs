@@ -1,7 +1,7 @@
 ---
 Number: 12
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Linfeng Qian, JinYang Jiang
 Organization: Nervos Foundation
 Created: 2018-11-28
