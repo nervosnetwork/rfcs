@@ -19,7 +19,7 @@ Every time client startup, if PeerStore's address list is empty, it will try to 
 
 ## Discovery Methods
 ### DNS Addresses
-When first time startup (bootstrap stage), if discovery service is needed, local node then issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of host names for DNS services that are seeded.
+At the first time startup (bootstrap stage), if the discovery service is needed, the local node will issues DNS requests to learn about the addresses of other peer nodes. The client includes a list of seed hostnames for DNS services.
 
 ### Hard-Coded "Seed" Addresses
 The client contains hard-coded IP addresses that represent CKB nodes. Those addresses are used only if all DNS requests failed. Once the local node has enough addresses (presumably learned from the seed nodes), the client will close seed node connections to avoid overloading those nodes.
