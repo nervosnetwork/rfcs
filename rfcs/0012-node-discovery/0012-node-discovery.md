@@ -52,7 +52,7 @@ The number of `addresses` field of each `Node` in all `Nodes` messages cannot ex
 `GetNodes` can only send to an outbound connection.
 
 ## Data Structures
-We use [FlatBuffers][2] as serialize/deserialize format, the *schema*:
+We use [CFB][2] as serialize/deserialize format, the *schema*:
 
 ```
 table DiscoveryMessage {
@@ -90,5 +90,5 @@ table Node {
 
 [0]: https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery
 [1]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
-[2]: https://google.github.io/flatbuffers/
+[2]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md
 [3]: https://arxiv.org/pdf/1410.6079.pdf
