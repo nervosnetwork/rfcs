@@ -41,7 +41,7 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 这里 `announce` 字段的目的是为了区分 `Nodes` 消息是作为 `GetNodes` 消息的返回值还是广播消息，可以方便应用不同的规则来对节点的恶意行为做相应的处罚。涉及到的规则主要有:
 
 * 一个节点只能有一个 `Nodes` 消息 (announce=false) 作为 `GetNodes` 消息的返回值。
-* 一个节点的广播消息中只能第一个 `Nodes` 消息 (announce=true) 包含的节点信息数量超过 `ANNOUNCE_THRESHOLD` (默认 10) 个，这是为了防止对方发送重复的 `Node` 信息。
+* 一个节点的广播消息中只能第一个 `Nodes` 消息 (announce=true) 包含的节点信息数量超过 `ANNOUNCE_THRESHOLD` (默认 10) 个，这是为了防止对方发送过多重复的 `Node` 信息。
 
 所有 `Nodes` 消息中的每个 `Node` 中的 `addresses` 的数量不能超过 `MAX_NODE_ADDRESSES` (默认 3) 个。
 

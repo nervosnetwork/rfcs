@@ -41,7 +41,7 @@ When the client receives a `GetNodes` request, it SHOULD return a `Nodes` messag
 The `announce` field here is to distinguish a `Nodes` as a response of `GetNodes` or a broadcast message, so it's convenient to apply different rules for punishing misbehaviors. The main rules:
 
 * A node can only send one `Nodes` message (announce=false) as a response of `GetNodes` message.
-* Among a node's broadcast messages only the first `Nodes` message (announce=true) can include more than `ANNOUNCE_THRESHOLD` (default 10) node information, in case other peer send reduplicative node information.
+* Among a node's broadcast messages only the first `Nodes` message (announce=true) can include more than `ANNOUNCE_THRESHOLD` (default 10) node information, in case other peers send too many duplicate node information.
 
 The number of `addresses` field of each `Node` in all `Nodes` messages cannot exceed `MAX_NODE_ADDRESSES` (default 3).
 
