@@ -1,7 +1,7 @@
 ---
 Number: 0011
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Quake Wang
 Organization: Nervos Foundation
 Created: 2018-12-11

@@ -1,7 +1,7 @@
 ---
 Number: 0008
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2018-12-17
