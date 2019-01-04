@@ -98,7 +98,7 @@ Note that even though the script only requires part of the serialized Cell struc
 
 *Load Cell By Field* syscall first consumes 10 initial cycles, it then measures the size of the serialized data from the specified field: for every single byte in the serialized data, it consumes 10 more cycles.
 
-Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
+Note that even though the script only requires part of the specified serialized field, the syscall still charges based on the full serialized field size.
 
 #### Load Input By Field
 
