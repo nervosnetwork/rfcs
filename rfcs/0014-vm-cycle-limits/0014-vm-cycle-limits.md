@@ -27,6 +27,11 @@ Note there's no limit on the cycles for an individual transaction or a script. A
 
 Here we will specify the cycles needed by each CKB VM instructions or syscalls. Note right now in the RFC, we define hard rules for each instruction or syscall here, in future this might be moved into consensus rules so we can change them more easily.
 
+Note that right now, the cycles used here aren't carefully tested, what's more, hardcoding cycles here is also a temporary solution. In future we plan to have a different RFC that:
+
+1. Use numbers that go through more testing and real benchmarks to be more realistic.
+2. Put cycle rules in a cell so we can change them without needing hardforks.
+
 ### Instruction Cycles
 
 All CKB VM instructions consume 1 cycle except the following ones:
@@ -75,6 +80,12 @@ All CKB VM instructions consume 1 cycle except the following ones:
 | REMUW       | 16     |
 | ECALL       | 0      |
 | EBREAK      | 0      |
+
+In a nutshell, the following principles are applied in deciding those numbers:
+
+* Branches should be more expensive than normal instructions.
+* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
+* Multiplication and divisions should be much more expensive than normal instructions.
 
 ### Syscall Cycles
 
