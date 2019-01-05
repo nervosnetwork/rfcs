@@ -120,3 +120,13 @@ Note that even though the script only requires part of the serialized data, the 
 #### Debug
 
 *Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.
+
+#### Final note
+
+Notice that the two numbers used here (10 and 100) haven't gone through full testing, right now they are picked based on the following principles:
+
+* We want each syscall to at least consume some cycles even thought some syscall might return no data, hence we add either 10 or 100 initial cycles to each syscall.
+* Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most norma instructions.
+* We want to encourage using *Load Cell By Field* instead of *Load Cell*, since the former one makes easier implementation and less likely to be attacked, that's why *Load Cell* syscall use a factor of 100, while *Load Cell By Field* only use a factor of 10.
+
+In future a different RFC might revise those numbers and even put those rules in a cell for easier changes.
