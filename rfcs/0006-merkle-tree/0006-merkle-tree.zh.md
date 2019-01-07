@@ -54,7 +54,7 @@ CBMT可以用一个数组来表示，节点按照升序存放在数组中，上�
 
 ## Merkle Proof
 
-Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算出的节点，并且我们规定这些节点按照降序排列，采用降序排列的原因是这与节点的生成顺序相符且*proof*的生成及校验算法也会变得非常简单。如在6个item的Merkle Tree中为`[T1, T4]`生成的Proof中应只包含`[T5, T0, B3]`。
+Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算出的节点，并且我们规定这些节点按照降序排列，采用降序排列的原因是这与节点的生成顺序相符且*proof*的生成及校验算法也会变得非常简单。此外，要证明的item的index也应包含在Proof中，且按item的hash升序排列，如在6个item的Merkle Tree中为`[T1, T4]`生成的Proof中应只包含`[T5, T0, B3]`和`[9,6]`。
 
 ### Proof 结构
 
@@ -62,8 +62,8 @@ Proof 结构体的schema形式为：
 
 ```
 table Proof {
-  // size of items in the tree
-  size: uint32;
+  // indexes of items
+  indexes: [uint32];
   // nodes on the path which can not be calculated, in descending order by index
   nodes: [H256];
 }
@@ -72,12 +72,13 @@ table Proof {
 ### Proof 生成算法
 
 ```c++
-Proof gen_proof(Hash tree[], int indexes[]) {
+Proof gen_proof(Hash tree[], U32 indexes[]) {
   Hash nodes[];
+  U32 tree_indexes[];
   Queue queue;
   
   int size = len(tree) >> 1 + 1;
-  desending_sort(indexes);
+  indexes.desending_sort();
 
   for index in indexes {
     queue.push_back(index + size - 1);
@@ -99,24 +100,25 @@ Proof gen_proof(Hash tree[], int indexes[]) {
     }
   }
 
-  return Proof::new(size, nodes);
+  add (size-1) for every index in indexes;
+  sort indexes in ascending order by corresponding hash;
+
+  return Proof::new(indexes, nodes);
 }
 ```
 
 ### Proof 校验算法
 
 ```c++
-bool validate_proof(Proof proof, Hash root, Item items[]) {
-  if(proof.size = 0) {
-    return root == H256::zero;
+bool validate_proof(Proof proof, Hash root, Item items[]) {  
+  Queue queue;
+  ascending_sort_by_item_hash(items);
+  
+  for (index,item) in (proof.indexes, items) {
+    queue.push_back((item.hash(), index));
   }
 
-  Queue queue;
-  desending_sort_by_item_index(items);
-  
-  for item in items {
-    queue.push_back((item.hash(), item.index() + Proof.size - 1));
-  }
+  descending_sort_by_index(queue);
   
   int i = 0;
   while(queue is not empty) {
