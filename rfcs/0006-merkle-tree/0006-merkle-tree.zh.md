@@ -54,7 +54,7 @@ CBMT可以用一个数组来表示，节点按照升序存放在数组中，上�
 
 ## Merkle Proof
 
-Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算出的节点，并且我们规定这些节点按照降序排列，采用降序排列的原因是这与节点的生成顺序相符且*proof*的生成及校验算法也会变得非常简单。此外，要证明的item的index也应包含在Proof中，且按item的hash升序排列，如在6个item的Merkle Tree中为`[T1, T4]`生成的Proof中应只包含`[T5, T0, B3]`和`[9,6]`。
+Merkle Proof 能为一个或多个item提供存在性证明，Proof中应只包含从叶子节点到根节点路径中无法直接计算出的节点，并且我们规定这些节点按照降序排列，采用降序排列的原因是这与节点的生成顺序相符且*proof*的生成及校验算法也会变得非常简单。此外，计算root时还需要知道要证明的item的index，因此这些index也应包含在Proof中，且为了能够使这些index能够正确的对应到item，因此规定这些index按对应的item的hash升序排列，如在6个item的Merkle Tree中为`[T1, T4]`生成的Proof中应只包含`[T5, T0, B3]`和`[9,6]`。
 
 ### Proof 结构
 

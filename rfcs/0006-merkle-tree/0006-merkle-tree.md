@@ -57,7 +57,7 @@ Suppose a CBMT with *n* items, the size of the array would be *2n-1*, the index 
 
 ## Merkle Proof
 
-Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. We also specify that ***the nodes in the proof is presented in descending order***(with this, algorithms of proof's generation and verification could be much simple). The indexes of items that need to prove is also included in the proof, and ***presented in ascending order by corresponding hash***. For example, if we want to show that `[T1, T4]` is in the list of 6 items above, only nodes `[T5, T0, B3]` and indexes `[9, 6]` should be included in the proof.
+Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. We also specify that ***the nodes in the proof is presented in descending order***(with this, algorithms of proof's generation and verification could be much simple). Indexes of item that need to prove are essential to complete the root calculation, since the index is not the inner feature of item, so the indexes are also included in the proof, and in order to get the correct correspondence, we specify that the indexes are ***presented in ascending order by corresponding hash***. For example, if we want to show that `[T1, T4]` is in the list of 6 items above, only nodes `[T5, T0, B3]` and indexes `[9, 6]` should be included in the proof.
 
 ### Proof Structure
 
