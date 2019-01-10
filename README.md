@@ -55,7 +55,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 
 | Number | Title | Author | Category | Status |
 |--------|-------|--------|----------|--------|
-| [2](rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Blockchains and Applications](rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Draft |
+| [2](rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Crypto-Economy](rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Draft |
 | [3](rfcs/0003-ckb-vm) | [CKB-VM](rfcs/0003-ckb-vm/0003-ckb-vm.md) | Xuejie Xiao | Informational | Draft |
 | [4](rfcs/0004-ckb-block-sync) | [CKB Block Synchronization Protocol](rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md) | Ian Yang | Standards Track | Proposal |
 | [5](rfcs/0005-priviledged-mode) | [Privileged architecture support for CKB VM](rfcs/0005-priviledged-mode/0005-priviledged-mode.md) | Xuejie Xiao | Informational | Draft |
