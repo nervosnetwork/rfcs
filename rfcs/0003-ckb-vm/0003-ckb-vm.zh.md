@@ -29,17 +29,15 @@ CKB 中使用 64 位的 RISC-V 虚拟机作为 VM 来执行合约。VM 运行在
 
 ```c
 int main(int argc, char* argv[]) {
-  if (argc != 7) {
-    return -1;
-  }
+  uint64_t input_cell_length = 10000;
+  void *input_cell = malloc(input_cell_length);
+  ckb_load_cell(input_cell, &input_cell_length, 0, 0, CKB_SOURCE_INPUT);
 
-  const char *input_signature = (const char *) argv[0];
-  int input_cell_number = (int) argv[1];
-  int *input_cell_lengths = (int *) argv[2];
-  int output_cell_number = (int) argv[3];
-  int *output_cell_lengths = (int *) argv[4];
+  uint64_t output_cell_length = 10000;
+  void *output_cell = malloc(output_cell_length);
+  ckb_load_cell(output_cell, &output_cell_length, 0, 0, CKB_SOURCE_OUTPUT);
 
-  // processing and validating data
+  // Consume input & output cell
 
   return 0;
 }
@@ -140,7 +138,7 @@ int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char 
 假设 CKB 提供如下的方法用来读取 Cell 中的内容：
 
 ```c
-int ckb_read_cell(int cell_id, void** buffer, size_t* size);
+int ckb_read_cell_data(size_t index, size_t source, void** buffer, size_t* size);
 ```
 
 即给定 Cell ID，CKB 的虚拟机读取 Cell 中的内容，并映射到当前虚拟机的地址空间中，返回相应的指针，与 Cell 的大小。
@@ -163,23 +161,14 @@ int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_suppl
 }
 
 int main(int argc, char* argv[]) {
-  int ret = ckb_check_signature(argc, argv)
-  if (ret != 0) {
-    return ret;
-  }
-
-  int output_cell_id = atoi(argv[2]);
-  const char *owner = argv[3];
-  int64_t total_supply = atoll(argv[4]);
-
   data_t data;
-  ret = udt_initialize(&data, owner, total_supply);
+  ret = udt_initialize(&data, "<i am an owner>", 10000000);
   if (ret != 0) {
     return ret;
   }
 
   data_t *output_data = NULL;
-  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  ret = ckb_read_cell(0, CKB_SOURCE_OUTPUT, (void **) &output_data, NULL);
   if (ret != 0) {
     return ret;
   }
@@ -262,32 +251,20 @@ CKB 会提供工具链，可以将这里的二进制代码直接作为数据生�
 typedef int *transfer(data_t *, const char*, const char*, int64_t);
 
 int main(int argc, char* argv[]) {
-  int ret = ckb_check_signature(argc, argv)
-  if (ret != 0) {
-    return ret;
-  }
-
-  int function_cell_id = atoi(argv[2]);
-  int input_cell_id = atoi(argv[3]);
-  int output_cell_id = atoi(argv[4]);
-  const char *from = argv[5];
-  const char *to = argv[6];
-  int64_t tokens = atoll(argv[7]);
-
   data_t *input_data = NULL;
-  ret = ckb_read_cell(input_cell_id, (void **) &input_data, NULL);
+  ret = ckb_read_cell(0, CKB_SOURCE_INPUT, (void **) &input_data, NULL);
   if (ret != 0) {
     return ret;
   }
 
   data_t *output_data = NULL;
-  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  ret = ckb_read_cell(0, CKB_SOURCE_OUTPUT, (void **) &output_data, NULL);
   if (ret != 0) {
     return ret;
   }
 
   transfer *f = (transfer *) ckb_mmap_cell(function_cell_id, 0, -1, PROT_EXEC);
-  ret = f(input_data, from, to, tokens);
+  ret = f(input_data, from, to, 100);
   if (ret != 0) {
     return ret;
   }
@@ -321,22 +298,14 @@ int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char 
 ```c
 int main(int argc, char* argv[])
 {
-  int ret = ckb_check_signature(argc, argv)
-  if (ret != 0) {
-    return ret;
-  }
-
-  int input_cell_id = atoi(argv[2]);
-  int output_cell_id = atoi(argv[3]);
-
   data_t *input_data = NULL;
-  ret = ckb_read_cell(input_cell_id, (void **) &input_data, NULL);
+  ret = ckb_read_cell(0, CKB_SOURCE_INPUT, (void **) &input_data, NULL);
   if (ret != 0) {
     return ret;
   }
 
   data_t *output_data = NULL;
-  ret = ckb_read_cell(output_cell_id, (void **) &output_data, NULL);
+  ret = ckb_read_cell(0, CKB_SOURCE_OUTPUT, (void **) &output_data, NULL);
   if (ret != 0) {
     return ret;
   }
