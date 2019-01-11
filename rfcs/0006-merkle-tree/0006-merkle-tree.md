@@ -57,16 +57,16 @@ Suppose a CBMT with *n* items, the size of the array would be *2n-1*, the index 
 
 ## Merkle Proof
 
-Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. We also specify that ***the nodes in the proof is presented in descending order***(with this, algorithms of proof's generation and verification could be much simple). For example, if we want to show that `[T1, T4]` is in the list of 6 items above, only nodes `[T5, T0, B3]` should be included in the proof.
+Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. We also specify that ***the nodes in the proof is presented in descending order***(with this, algorithms of proof's generation and verification could be much simple). Indexes of item that need to prove are essential to complete the root calculation, since the index is not the inner feature of item, so the indexes are also included in the proof, and in order to get the correct correspondence, we specify that the indexes are ***presented in ascending order by corresponding hash***. For example, if we want to show that `[T1, T4]` is in the list of 6 items above, only nodes `[T5, T0, B3]` and indexes `[9, 6]` should be included in the proof.
 
-### Proof Sturct
+### Proof Structure
 
 The schema of proof struct is:
 
 ```
 table Proof {
-  // size of items in the tree
-  size: uint32;
+  // indexes of items
+  indexes: [uint32];
   // nodes on the path which can not be calculated, in descending order by index
   nodes: [H256];
 }
@@ -75,12 +75,13 @@ table Proof {
 ### Algorithm of proof generation
 
 ```c++
-Proof gen_proof(Hash tree[], int indexes[]) {
+Proof gen_proof(Hash tree[], U32 indexes[]) {
   Hash nodes[];
+  U32 tree_indexes[];
   Queue queue;
   
   int size = len(tree) >> 1 + 1;
-  desending_sort(indexes);
+  indexes.desending_sort();
 
   for index in indexes {
     queue.push_back(index + size - 1);
@@ -102,24 +103,25 @@ Proof gen_proof(Hash tree[], int indexes[]) {
     }
   }
 
-  return Proof::new(size, nodes);
+  add (size-1) for every index in indexes;
+  sort indexes in ascending order by corresponding hash;
+
+  return Proof::new(indexes, nodes);
 }
 ```
 
 ### Algorithm of validation
 
 ```c++
-bool validate_proof(Proof proof, Hash root, Item items[]) {
-  if(proof.size = 0) {
-    return root == H256::zero;
-  }
-  
+bool validate_proof(Proof proof, Hash root, Item items[]) {  
   Queue queue;
-  desending_sort_by_item_index(items);
+  ascending_sort_by_item_hash(items);
   
-  for item in items {
-    queue.push_back((item.hash(), item.index() + Proof.size - 1));
+  for (index,item) in (proof.indexes, items) {
+    queue.push_back((item.hash(), index));
   }
+
+  descending_sort_by_index(queue);
   
   int i = 0;
   while(queue is not empty) {
