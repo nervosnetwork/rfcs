@@ -34,6 +34,10 @@ CKB will NOT use the following features and any flatcc extensions, so the CFB li
 - Unions array
 - Struct and string in the union.
 
+CFB uses [Nested Flatbuffers][nested-flatbuffers] to embed block header and transaction in other tables to ease hash computation. The nested flatbuffers store the binaries in a `ubyte` array. The array data portion must align to 8, but can be customized by user-defined attribute `cfb_nested_flatbuffer_force_align`. See the data alignment rule described in the following chapter.
+
+[nested-flatbuffers]: https://github.com/nervosnetwork/flatcc/blob/master/doc/binary-format.md#nested-flatbuffers
+
 ## Format components
 
 The buffer consists of a root table offset and the data portion.
@@ -103,7 +107,7 @@ The vtable's starting position `t` must be a multiple of 2.
 
 The string's starting position `t` must be a multiple of 4.
 
-The vector's starting position `t` must be a multiple of 4, and `t + 4` is the multiple of the item alignment. **Specially**, if a vector of `ubyte` is marked as a nested buffer, `t + 4` must be multiple of 8.
+The vector's starting position `t` must be a multiple of 4, and `t + 4` is the multiple of the item alignment. **Specially**, if a vector of `ubyte` is marked by the attribute `nested_flatbuffer`, `t + 4` must be multiple of the user-defined attribute `cfb_nested_flatbuffer_force_align` on the field or 8 by default.
 
 Zeros are padded before to ensure the alignment. The number of zeros must be minimal. There should not be any padding at the end of the buffer.
 
