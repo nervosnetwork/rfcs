@@ -21,6 +21,19 @@ The name comes from [CER], which is a restricted variant of BER to encode data s
 
 [cer]: https://en.wikipedia.org/wiki/X.690#CER_encoding
 
+## FlatBuffers Compatibility
+
+CFB follows the FlatBuffers binary format. Or more specifically, CFB uses a [locked version of the specification][flatcc-spec] defined in flatcc.
+
+[flatcc-spec]: https://github.com/nervosnetwork/flatcc/blob/master/doc/binary-format.md
+
+CFB format is stricter, thus any FlatBuffers reader can decode a CFB buffer without any modifications, but a buffer built by a general FlatBuffers builder usually cannot pass the CFB verification.
+
+CKB will NOT use the following features and any flatcc extensions, so the CFB library implementers can safely ignore them.
+
+- Unions array
+- Struct and string in the union.
+
 ## Format components
 
 The buffer consists of a root table offset and the data portion.
