@@ -30,7 +30,7 @@ For example, CBMT with 6 items(suppose the hashes are `[T0, T1, T2, T3, T4, T5]`
       B1 -- node 1    B2 -- node 2       B1 -- node 1    B2 -- node 2
      /  \            /  \               /  \            /  \
     /    \          /    \             /    \          /    \
-   /      \        /      \           /      \        /      \  
+   /      \        /      \           /      \        /      \
   B3(3)   B4(4)  TO(5)    T1(6)      B3(3)   B4(4)   B5(5)   T0(6)
  /  \    /  \                       /  \    /  \    /  \
 T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
@@ -53,7 +53,7 @@ For example, the two trees above can be represented as:
 [B0, B1, B2, B3, B4, B5, T0, T1, T2, T3, T4, T5, T6]
 ```
 
-Suppose a CBMT with *n* items, the size of the array would be *2n-1*, the index of item i(start at 0) is *i+n-1*. For node at *i*, the index of its parent is *(i-1)/2*, the index of its sibling is `(i+1)^1-1`(*^* is xor) and the indexes of its children are `[2i+1, 2i+2]`.
+Suppose a CBMT with *n* items, the size of the array would be *2n-1*, the index of item i(start at 0) is *i+n-1*. For node at *i*, the index of its parent is *(i-1)/2*, the index of its sibling is *(i+1)^1-1*(*^* is xor) and the indexes of its children are *[2i+1, 2i+2]*.
 
 ## Merkle Proof
 
@@ -79,7 +79,7 @@ Proof gen_proof(Hash tree[], U32 indexes[]) {
   Hash nodes[];
   U32 tree_indexes[];
   Queue queue;
-  
+
   int size = len(tree) >> 1 + 1;
   indexes.desending_sort();
 
@@ -113,16 +113,16 @@ Proof gen_proof(Hash tree[], U32 indexes[]) {
 ### Algorithm of validation
 
 ```c++
-bool validate_proof(Proof proof, Hash root, Item items[]) {  
+bool validate_proof(Proof proof, Hash root, Item items[]) {
   Queue queue;
   ascending_sort_by_item_hash(items);
-  
+
   for (index,item) in (proof.indexes, items) {
     queue.push_back((item.hash(), index));
   }
 
   descending_sort_by_index(queue);
-  
+
   int i = 0;
   while(queue is not empty) {
     Hash hash, hash1, hash2;
