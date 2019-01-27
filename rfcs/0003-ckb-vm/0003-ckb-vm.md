@@ -13,13 +13,13 @@ Created: 2018-08-01
 
 VM layer in CKB is used to perform a series of validation rules to determine if transaction is valid given transaction's inputs and outputs.
 
-CKB uses [RISC-V](https://riscv.org/) ISA to implement VM layer. To be more precise, CKB uses rv64imac archivecture: it is based on core [RV64I](https://riscv.org/specifications/) ISA with M standard extension for integer multiplication and division, A extension for atomic operations, and C standard extension for RCV(RISC-V Compressed Instructions). Note that for now, CKB doesn't support floating point instructions, this might be added in future versions if needed.
+CKB uses [RISC-V](https://riscv.org/) ISA to implement VM layer. To be more precise, CKB uses rv64imc archivecture: it is based on core [RV64I](https://riscv.org/specifications/) ISA with M standard extension for integer multiplication and division, and C standard extension for RCV(RISC-V Compressed Instructions). Note that CKB doesn't support floating point instructions, a CKB script developer can choose to pack a softfloat implementation into the binary if needed.
 
 CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV64I support, such as [riscv-gcc](https://github.com/riscv/riscv-gcc), [riscv-llvm](https://github.com/lowRISC/riscv-llvm) or [Rust](https://github.com/rust-embedded/wg/issues/218) can be used to generate CKB compatible scripts.
 
 ## RISC-V Runtime Model
 
-CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. Additional atomic extension operations are also provided for compatibility with Rust. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
+CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
 
 Each contract has a maximum size of 10MB in uncompressed size, and 1MB in gzip size. CKB virtual machine has a maximum of 128 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 Contract starts from main function in the ELF formatted contract file, arguments are passed in via standard argc and argv. When main returns 0, the contract is treated as success. Note that due to space consideration, we might not store full inputs and outputs data in argv. Instead, we might just provide metadata in argv, and leverages additional libraries and syscalls to support input/output loading. This way the runtime cost can be minimized. CKB VM is a strict single-threaded model, contract can ship with coroutines of their own.
 
-For simplicity, CKB doesn't support floating point numbers for now. Even though CKB only supports single thread, A standard extension for atomic operations is still provided due to the widespread use of rv64imac.
+For simplicity and deterministic behavior, CKB doesn't support floating point numbers. We suggest a softfloat solution if floating point number is really needed. Since CKB runs in a single threaded environment, atomic instructions are not needed.
 
 ## Libraries and bootloader
 
