@@ -1,3 +1,10 @@
+## v2018.01.28
+
+### Updates
+
+* [RFC0002]: This is a major update to CKB whitepaper, one year after its publication. Jan added the latest results come from discussions and developments and removed obsolete contents. ([#64](https://github.com/nervosnetwork/rfcs/pull/64))
+* [RFC0003]: Previously, we keep atomic support in CKB VM hoping for maximum compatibility, but since now rv64imc without atomic support is starting to get popular, we don't need to keep atomic instruction support in our design. ([#68](https://github.com/nervosnetwork/rfcs/issues/68))
+
 ## v2018.01.14
 
 ### New RFC
