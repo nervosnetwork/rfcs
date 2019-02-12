@@ -1,3 +1,14 @@
+## v2019.02.12
+
+
+### Bug Fixes
+
+* **0002:** typo ([#69](https://github.com/nervosnetwork/rfcs/issues/69)) ([db4661c](https://github.com/nervosnetwork/rfcs/commit/db4661c))
+* **0003:** Remove atomic operation support in CKB VM ([#68](https://github.com/nervosnetwork/rfcs/issues/68)) ([af51e3a](https://github.com/nervosnetwork/rfcs/commit/af51e3a))
+* **0014:** url in readme ([#61](https://github.com/nervosnetwork/rfcs/issues/61)) ([558f2ba](https://github.com/nervosnetwork/rfcs/commit/558f2ba))
+
+
+
 ## v2018.01.28
 
 ### Updates
