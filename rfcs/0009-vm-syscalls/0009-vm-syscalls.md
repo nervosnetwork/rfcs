@@ -69,7 +69,15 @@ syscall(93, 10, 0, 0, 0, 0, 0);
 
 Note that even though *Exit* syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.
 
+- [Exit]
+- [Load Transaction]
+- [Load Cell]
+- [Load Cell By Field]
+- [Load Input By Field]
+- [Debug]
+
 ### Exit
+[exit]: #exit
 
 As shown above, *Exit* syscall has a signature like following:
 
@@ -83,6 +91,7 @@ void exit(int8_t code)
 *Exit* syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a script in CKB VM.
 
 ### Load Transaction
+[load transaction]: #load-transaction
 
 *Load Transaction* syscall has a signature like following:
 
@@ -119,6 +128,7 @@ The whole point of this process, is providing VM side a way to do partial readin
 One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer with 0 value as `len`, this syscall can be used to fetch the length of the serialized data part without reading any actual data.
 
 ### Load Cell
+[load cell]: #load-cell
 
 *Load Cell* syscall has a signature like following:
 
@@ -148,6 +158,7 @@ Specifying an invalid source value here would immediately trigger a VM error, sp
 Note this syscall is only provided for advanced usage that requires hashing the whole cell in a future proof way. In practice this is a very expensive syscall since it requires serializing the whole cell, in the case of a large cell with huge data, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Cell By Field* syscall below.
 
 ### Load Cell By Field
+[load cell by field]: #load-cell-by-field
 
 *Load Cell By Field* syscall has a signature like following:
 
@@ -192,6 +203,7 @@ With the binary result converted from different rules, CKB VM then applies the s
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Load Input By Field
+[load input by field]: #load-input-by-field
 
 *Load Input By Field* syscall has a signature like following:
 
@@ -223,6 +235,7 @@ This syscall would first locate an input in current transaction via `source` and
 Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 ### Debug
+[debug]: #debug
 
 *Debug* syscall has a signature like following:
 
