@@ -68,6 +68,7 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [12](rfcs/00012-node-discovery) | [Node Discovery](rfcs/0012-node-discovery/0012-node-discovery.md) | Linfeng Qian, Jinyang Jiang | Standards Track | Proposal |
 | [13](rfcs/0013-get-block-template) | [Block Template](rfcs/0013-get-block-template/0013-get-block-template.md) | Dingwei Zhang | Standards Track | Proposal |
 | [14](rfcs/0014-vm-cycle-limits) | [VM Cycle Limits](rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.md) | Xuejie Xiao | Standards Track | Proposal |
+| [15](rfcs/0015-occupied-capacity-increment-rate) | [Occupied Capacity Increment Rate](rfcs/0015-occupied-capacity-increment-rate/0015-occupied-capacity-increment-rate.md) | Jinyang Jiang | Standards Track | Proposal |
 
 ## License
 
