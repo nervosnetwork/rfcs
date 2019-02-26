@@ -1,5 +1,5 @@
 ---
-Number: 0005
+Number: "0005"
 Category: Informational
 Status: Draft
 Author: Xuejie Xiao

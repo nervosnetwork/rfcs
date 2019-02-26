@@ -1,5 +1,5 @@
 ---
-Number: 0011
+Number: "0011"
 Category: Standards Track
 Status: Proposal
 Author: Quake Wang
