@@ -1,5 +1,5 @@
 ---
-Number: 12
+Number: "0012"
 Category: Standards Track
 Status: Proposal
 Author: Linfeng Qian, JinYang Jiang
