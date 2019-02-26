@@ -1,5 +1,5 @@
 ---
-Number: 0009
+Number: 9
 Category: Standards Track
 Status: Proposal
 Author: Xuejie Xiao

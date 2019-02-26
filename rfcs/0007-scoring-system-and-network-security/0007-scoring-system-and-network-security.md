@@ -1,5 +1,5 @@
 ---
-Number: 0007
+Number: 7
 Category: Standards Track
 Status: Proposal
 Author: Jinyang Jiang

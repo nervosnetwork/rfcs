@@ -1,5 +1,5 @@
 ---
-Number: 0004
+Number: 4
 Category: Standards Track
 Status: Proposal
 Author: Ian Yang

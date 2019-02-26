@@ -1,5 +1,5 @@
 ---
-Number: 0006
+Number: 6
 Category: Standards Track
 Status: Proposal
 Author: Ke Wang

@@ -1,5 +1,5 @@
 ---
-Number: 0008
+Number: 8
 Category: Standards Track
 Status: Proposal
 Author: Ian Yang
