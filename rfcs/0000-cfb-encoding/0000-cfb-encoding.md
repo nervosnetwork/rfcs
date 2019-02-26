@@ -1,3 +1,12 @@
+---
+Number: "0000"
+Category: Standards Track
+Status: Proposal
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2018-12-07
+---
+
 # CFB Encoding
 
 CFB (Canonical FlatBuffers) is a restricted variant of FlatBuffers for producing unequivocal transfer syntax.
