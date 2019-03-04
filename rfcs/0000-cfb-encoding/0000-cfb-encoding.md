@@ -149,6 +149,11 @@ If a union is NONE, both the union type and value must omit.
 
 Except for the root table, it is not allowed to refer to a table with all fields omitted. References to empty strings and vectors are also forbidden. Instead, these fields should not be in the table.
 
+### Vtable Content
+
+The vtable must be empty or end with a non-zero field offset. The trailing
+zero field offset must be truncated.
+
 ## A Builder Strategy
 
 Since there is only one correct way to build the buffer for the give data, the builder interface has less freedom than the standard FlatBuffers. However, it is also an advantage, since CFB builder is simple.
