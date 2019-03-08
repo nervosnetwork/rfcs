@@ -6,7 +6,7 @@ Author: Kevin Wang, Jan Xie, Jiasun Li, David Zou
 Organization: Nervos Foundation
 Created: 2019-03-08
 ---
-# RFC: Crypto-Economics of the Nervos Common Knowledge Base
+# Crypto-Economics of the Nervos Common Knowledge Base
 
 ## 1. The Objectives of a Token Economics Design
 
