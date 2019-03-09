@@ -96,7 +96,7 @@ The data portion must only contain the components in the tree.
 
 See the example [data-order].
 
-[data-order]: examples/data-order.md
+[data-order]: examples/data_order.md
 
 ### Vtable order and deduplication
 
@@ -122,7 +122,7 @@ Zeros are padded before to ensure the alignment. The number of zeros must be min
 
 See the example [data-alignment].
 
-[data-alignment]: examples/data-alignment.md
+[data-alignment]: examples/data_alignment.md
 
 ### Table fields order
 
@@ -139,7 +139,7 @@ The union field is split into two separate virtual fields, replacing its origina
 
 See the example [table-fields-order].
 
-[table-fields-order]: examples/table-fields-order.md
+[table-fields-order]: examples/table_fields_order.md
 
 ### Default values
 
