@@ -78,9 +78,9 @@ Decentralized multi-assets smart contract platforms have to be Store of Assets t
 
 ## 5. Decentralization and the Need for Bounded State
 
-Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Comparing to payment networks, running a full node for a smart contract system is more resource intensive, therefore a Store of Assets platform has to take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
+Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Compared to payment networks, running a full node for a smart contract system is more resource intensive. Therefore, a Store of Assets platform has to take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
 
-Both Bitcoin and Ethereum throttle transaction throughput to make sure participation is not limited to only "super computers" - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever growing global state necessary for consensus participation and independent transaction validation.  This is especially a centralization force for high throughout smart contract platforms, where the global state grows even faster.
+Both Bitcoin and Ethereum throttle transaction throughput to make sure participation is not limited to only "super computers" - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever-growing global state necessary for consensus participation and independent transaction validation. This is especially a centralization force for high throughput smart contract platforms, where the global state grows even faster.
 
 In Bitcoin, the global state is the UTXO set, and its growth rate is effectively capped with block size limit. Users are encouraged to create UTXOs efficiently, since every new UTXO adds overhead to the transaction where it's created, making the transaction more expensive. However, once a UTXO is created, it doesn't cost anything to have it occupy the global state forever.
 
@@ -88,25 +88,25 @@ In Ethereum, the global state is represented with the EVM's state trie, the data
 
 
 - Neither the size nor the growth rate of the global state is bounded, this gives very little certainty in the cost of full node participation.
-- the system raises one-time revenue for expanding the state storage, but miners and full nodes have to bear the expense of storage over time.
-- there's no obvious reason why the cost of expanding storage should be priced in fixed Gas amounts, which is designed as measurement to price units of computation.
-- the "pay once, occupy forever" state storage model gives very little incentive for users to voluntarily clear state, and do so sooner than later.
+- The system raises one-time revenue for expanding the state storage, but miners and full nodes have to bear the cost of storage over time.
+- There's no obvious reason why the cost of expanding storage should be priced in fixed Gas amounts, which is designed as measurement to price units of computation.
+- The "pay once, occupy forever" state storage model gives very little incentive for users to voluntarily clear state, and do so sooner than later.
 
-The Ethereum community is actively working on this problem, and the leading solution is to charge smart contract "state rent" - contracts have to periodically pay fees based on the size of its state. If the rent is not paid, the contract goes to "hibernation" and not accessible before the payment is current again. We see several difficult-to-solve problems with this approach:
+The Ethereum community is actively working on this problem, and the leading solution is to charge smart contract "state rent" - contracts have to periodically pay fees based on the size of its state. If the rent is not paid, the contract goes to "hibernation" and is not accessible before the payment is current again. We see several difficult-to-solve problems with this approach:
 
 
-- many contracts, especially popular ERC20 contracts, represent decentralized communities and express asset ownership of many users. It's a difficult problem to coordinate all the users to pay for state rent in a fair and efficient way.
-- even a contract is current on its rent payment, it still may not be fully functional because some of its dependent contracts may be behind on their payments.
-- the user experience for contracts with state rent is sub-optimal
+- Many contracts, especially popular ERC20 contracts, represent decentralized communities and express asset ownership of many users. It's a difficult problem to coordinate all the users to pay for state rent in a fair and efficient way.
+- Even if a contract is current on its rent payment, it still may not be fully functional because some of its dependent contracts may be behind on their payments.
+- The user experience for contracts with state rent is sub-optimal
 
 We believe a well-designed mechanism to regulate the state storage has to be able to achieve the following goals:
 
 
-- the growth of the global state has to be bounded to give predictability for full node participation. Ideally, the cost is well within the range of non-professional participants to keep the network maximally decentralized. Keeping this barrier low allows participants of the decentralized network to verify history and state independently, without having to trust a third party or service. This is fundamentally the reason why public blockchains are valuable.
-- with bounded growth of the global state, the price for expanding it and the rewards for reducing it should be determined by the market. In particular, it's desirable to have the cost of expanding state storage higher when it's mostly full, and lower when it's mostly empty.
-- the system has to be able to continuously raise revenue from its state users to pay miners for providing this resource. This serves both purposes of balancing miner's economics and providing incentives for users to clear unnecessary states sooner than later.
+- The growth of the global state has to be bounded to give predictability for full node participation. Ideally, the cost is well within the range of non-professional participants to keep the network maximally decentralized. Keeping this barrier low allows participants of the decentralized network to verify history and state independently, without having to trust a third party or service. This is fundamentally the reason why public blockchains are valuable.
+- With bounded growth of the global state, the price for expanding it and the rewards for reducing it should be determined by the market. In particular, it's desirable to have the cost of expanding state storage higher when it's mostly full, and lower when it's mostly empty.
+- The system has to be able to continuously raise revenue from its state users to pay miners for providing this resource. This serves both purposes of balancing miner's economics and providing incentives for users to clear unnecessary states sooner than later.
 
-Just like how Bitcoin throttles and forces pricing on bandwidth, and Ethereum throttles and forces pricing on computation, to keep a blockchain network long term decentralized and sustainable, we have to come up with a way to constrain and price the global state. This is especially important for preservation focused, Store of Assets networks, where usage of the network is not about transactions that mostly happen off-chain, but ongoing occupation of the global state.
+Just like how Bitcoin throttles and forces pricing on bandwidth and Ethereum throttles and forces pricing on computation, to keep a blockchain network long term decentralized and sustainable, we have to come up with a way to constrain and price the global state. This is especially important for preservation focused, Store of Assets networks, where usage of the network is not about transactions that mostly happen off-chain, but ongoing occupation of the global state.
 
 ## 6. The Economic Model of the Nervos Common Knowledge Base
 
