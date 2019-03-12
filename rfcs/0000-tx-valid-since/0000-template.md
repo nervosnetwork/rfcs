@@ -39,7 +39,9 @@ end
 # cell only can be spent when block timestamp greater than "2019-03-12".
 def unlock?
   tx = CKB.load_tx
-  !tx.valid_since[63].zero? && tx.valid_since > 1552348800
+  return false if tx.valid_since[63].zero?
+  timestamp = (tx.valid_since & ~(1 << 63)) * 512
+  timestamp > 1552348800
 end
 ```
 
