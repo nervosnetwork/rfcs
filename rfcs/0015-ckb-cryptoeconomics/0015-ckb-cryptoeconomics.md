@@ -74,7 +74,7 @@ Decentralized multi-assets smart contract platforms have to be Store of Assets t
 
 ## 5. Decentralization and the Need for Bounded State
 
-Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Comparing to payment networks, running a full node for a smart contract system is more resource intensive, therefore a Store of Assets platform must take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
+Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Compared to payment networks, running a full node for a smart contract system is more resource intensive. Therefore a Store of Assets platform must take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
 
 Both Bitcoin and Ethereum throttle transaction throughput to ensure participation is not limited to only "super computers" - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever growing global state necessary for consensus participation and independent transaction validation.  This is especially a centralization force for high throughput smart contract platforms, where the global state grows even faster.
 
@@ -114,7 +114,6 @@ The Nervos Common Knowledge Base (Nervos CKB for short) is a preservation focuse
 The native token for the Nervos CKB is the "Common Knowledge Byte", or "CK Byte" for short. The CK Bytes represent cell capacity in bytes, and they give owners the ability to occupy a piece of the blockchain's overall global state. For example, if Alice owns 1000 CK Bytes, she can create a cell with 1000 bytes in capacity, or multiple cells that add up to 1000 bytes in capacity. She can use the 1000 bytes to store assets, application state, or other types of common knowledge.
 
 A cell's occupied capacity could be equal to or less than its specified capacity. For example, for a 1000 byte cell, 4 bytes would be used to specify its own capacity, 64 bytes for the lock script and 128 bytes for storing state. Then the cell's current occupied capacity is 196 bytes, but with room to grow up to 1000 bytes.
-
 
 
 ### Token Issuance
