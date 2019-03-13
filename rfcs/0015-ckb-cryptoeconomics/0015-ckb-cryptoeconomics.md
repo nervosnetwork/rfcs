@@ -39,14 +39,13 @@ Store of Value users view the Bitcoin network as a protocol to provide security 
 
 For Bitcoin to succeed as an SoV network, it has to continue to keep its monetary policy stable and its network secure and decentralized. However, Bitcoin's monetary policy has a hard cap, and after all the coins are mined, the network can only pay for the miners with transaction fees. It's still an open question whether this model could be sustainable, especially considering Store of Value networks themselves tend not to produce many transactions.
 
-
 ### Who Compensates the Miners Over the Long Run?
 
 Security and decentralization are two essential properties of a blockchain network and they come with a high cost that has to be paid to the operators of the network. Bitcoin's current model relies solely on transaction fees to compensate operators once all tokens are mined. The MoE users have very limited time exposure to the network's security risk and, therefore, won't be willing to pay for it;  the SoV users have prolonged exposure to the network's security risk and are willing to pay for it, but they produce nearly no transactions.
 
 Bitcoin's consensus mechanism incentivizes miners to recognize the longest chain as the network's canonical state. Miner's ongoing supply of hashing power doesn't only provide security for the current block, but the immutability of all the blocks before it on the canonical chain. Relying on the SoV users to make one time payments for the ongoing security protection they receive from miners is not sustainable.
 
-In an SoV network, relying on inflation to fund network security is more incentive compatible with the users. Inflation based block reward mechanism represents indirect payment from the beneficiary of the network's ongoing security to the provider of such security, in proportion to the duration that users enjoy the service.
+In an SoV network, relying on inflation to fund network security is more incentive compatible with the users. An inflation based block reward mechanism represents indirect payments from the beneficiaries of the network's ongoing security to the providers of such security, in proportion to the duration that they enjoy the service.
 
 ## 3. Preservational and Transactional Smart Contract Platforms
 
