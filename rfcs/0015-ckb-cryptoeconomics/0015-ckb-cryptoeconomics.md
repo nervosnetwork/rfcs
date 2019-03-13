@@ -12,7 +12,7 @@ Created: 2019-03-08
 
 Public permission-less blockchains are open and distributed systems with diverse groups of participants. A well-designed crypto-economics model is to provide incentives so that participants' pursuit of own economic interests leads to desired emergent behaviors in alignment with the protocol, to contribute to the blockchain network's success.
 
-More specifically, the design of a crypto-economic system has to provide answers to the following questions:
+More specifically, the design of a crypto-economic system must provide answers to the following questions:
 
 - How can the economic model ensure the security of the protocol?
 - How can the economic model ensure long term sustainability of the protocol?
@@ -37,12 +37,12 @@ It's challenging for Bitcoin to become a dominant MoE network. If the protocol c
 
 Store of Value users view the Bitcoin network as a protocol to provide security to its native cryptocurrency as an asset that can preserve value over time. They see the Medium of Exchange use case as the necessary function to go in and out of this asset. A store of value user, especially the ones who hold the cryptocurrency for a long time, doesn't care much about the transaction cost, as they can amortize it over time. They do care about the value of a Bitcoin, which depends on the network's security and decentralization - if the network becomes less secure and can be attacked easily, it'll stop being perceived as a store of value and the tokens will lose value; if the network becomes centralized, Bitcoin as an asset no longer has independent value, but has to assume counter-party risk.
 
-For Bitcoin to succeed as a SoV network, it has to continue to keep its monetary policy stable and its network secure and decentralized. However, Bitcoin's monetary policy has a hard cap, and after all the coins are mined, the network can only pay for the miners with transaction fees. It's still an open question whether this model could be sustainable, especially considering Store of Value networks themselves tend not to produce many transactions.
+For Bitcoin to succeed as a SoV network, it must continue to keep its monetary policy stable and its network secure and decentralized. However, Bitcoin's monetary policy has a hard cap, and after all the coins are mined, the network can only pay for the miners with transaction fees. It's still an open question whether this model could be sustainable, especially considering Store of Value networks themselves tend not to produce many transactions.
 
 
 ### Who Compensates the Miners Over the Long Run?
 
-Security and decentralization are two essential properties of a blockchain network, and they come with a high cost that has to be paid to the operators of the network. Bitcoin's current model has network security entirely paid with transaction fees after all the coins are mined. However, the MoE users have very limited time exposure to the network's security risk, therefore won't be willing to pay for it;  the SoV users have prolonged exposure to the network's security risk and are willing to pay for it, but they produce nearly no transactions.
+Security and decentralization are two essential properties of a blockchain network, and they come with a high cost that must be paid to the operators of the network. Bitcoin's current model has network security entirely paid with transaction fees after all the coins are mined. However, the MoE users have very limited time exposure to the network's security risk, therefore won't be willing to pay for it;  the SoV users have prolonged exposure to the network's security risk and are willing to pay for it, but they produce nearly no transactions.
 
 Bitcoin's consensus mechanism incentivizes miners to recognize the longest chain as the network's canonical state. Miner's ongoing supply of hashing power doesn't only provide security for the current block, but the immutability of all the blocks before it on the canonical chain. Relying on the SoV users to make one time payments for the ongoing security protection they receive from miners is not sustainable.
 
@@ -74,11 +74,11 @@ Decentralized multi-assets smart contract platforms have to be Store of Assets t
 
 ## 5. Decentralization and the Need for Bounded State
 
-Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Comparing to payment networks, running a full node for a smart contract system is more resource intensive, therefore a Store of Assets platform has to take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
+Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Comparing to payment networks, running a full node for a smart contract system is more resource intensive, therefore a Store of Assets platform must take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.
 
-Both Bitcoin and Ethereum throttle transaction throughput to make sure participation is not limited to only "super computers" - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever growing global state necessary for consensus participation and independent transaction validation.  This is especially a centralization force for high throughout smart contract platforms, where the global state grows even faster.
+Both Bitcoin and Ethereum throttle transaction throughput to ensure participation is not limited to only "super computers" - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever growing global state necessary for consensus participation and independent transaction validation.  This is especially a centralization force for high throughout smart contract platforms, where the global state grows even faster.
 
-In Bitcoin, the global state is the UTXO set, and its growth rate is effectively capped with block size limit. Users are encouraged to create UTXOs efficiently, since every new UTXO adds overhead to the transaction where it's created, making the transaction more expensive. However, once a UTXO is created, it doesn't cost anything to have it occupy the global state forever.
+In Bitcoin, the global state is the UTXO set, and its growth rate is effectively capped with the block size limit. Users are encouraged to create UTXOs efficiently, since every new UTXO adds overhead to the transaction where it's created, making the transaction more expensive. However, once a UTXO is created, it doesn't cost anything to have it occupy the global state forever.
 
 In Ethereum, the global state is represented with the EVM's state trie, the data structure that contains the balances and internal states of all accounts. When new accounts or new contract values are created, the size of the global state expands. Ethereum charges fixed amounts of Gas for inserting new values into its state storage and offers fixed amounts of Gas as transaction refund when values are removed. Ethereum's approach is a step in the right direction, but still has several issues: 
 
@@ -121,7 +121,7 @@ A cell's occupied capacity could be equal to or less than its specified capacity
 
 There are two types of native token issuance. The "base issuance" has a finite total supply with a Bitcoin like issuance schedule - the number of base issuance halves approximately every 4 years until all the base issuance tokens are mined out. All base issuance tokens are rewarded to the miners as incentives to protect the network.
 
-The "secondary issuance" is designed to collect state rent, and has issuance amount that's constant over time. After base issuance stops, there will only be secondary issuance.
+The "secondary issuance" is designed to collect state rent, and has issuance amount that is constant over time. After base issuance stops, there will only be secondary issuance.
 
 
 ### Collecting State Rent with Secondary Issuance and the NervosDAO
