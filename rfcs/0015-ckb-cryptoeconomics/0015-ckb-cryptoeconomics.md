@@ -46,7 +46,6 @@ Security and decentralization are two essential properties of a blockchain netwo
 
 Bitcoin's consensus mechanism incentivizes miners to recognize the longest chain as the network's canonical state. Miner's ongoing supply of hashing power doesn't only provide security for the current block, but the immutability of all the blocks before it on the canonical chain. Relying on the SoV users to make one time payments for the ongoing security protection they receive from miners is not sustainable.
 
-
 In an SoV network, relying on inflation to fund network security is more incentive compatible with the users. Inflation based block reward mechanism represents indirect payment from the beneficiary of the network's ongoing security to the provider of such security, in proportion to the duration that users enjoy the service.
 
 ## 3. Preservational and Transactional Smart Contract Platforms
