@@ -103,7 +103,7 @@ where
             .block_median_time_context
             .block_median_time(&self.tip_block_hash)
             .unwrap_or_else(|| 0)
-            < (valid_since ^ (1 << 63)) * 512
+            < (valid_since ^ (1 << 63)) * 512 * 1000
         {
             return Err(TransactionError::Immature);
         }
