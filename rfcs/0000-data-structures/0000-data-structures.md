@@ -2,7 +2,7 @@
 Number: "0000"
 Category: Standards Track
 Status: Proposal
-Author: Haichao Zhu
+Author: Haichao Zhu, Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2019-03-26
 ---
@@ -26,7 +26,11 @@ This documents list all the basic structures one may need to know in order to de
 {
     "capacity": 5000000,
     "data": "0x",
-    "lock": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
+    "lock": {
+      "args": [],
+      "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
+      "version": 0
+    }
     "type": null
 }
 ```
@@ -38,7 +42,7 @@ This documents list all the basic structures one may need to know in order to de
 | `capacity` | uint64     | **The size of the cell.** When a new cell is generated (via transaction), one of the verification rule is `capacity ≥ len(capacity)+len(data)+len(type)+len(lock)`. This value also represents the balance of CKB coin, just like the `balance` field in the Bitcoin's UTXO. (E.g. Alice owns 100 CKB coins means she can unlock a group of cells that has 100 amount of `capacity` in total.) |
 | `data`     | Bytes      | **Arbitrary data.** This part is for storing states or scripts.  In order to make this cell valid on-chain, the data filled in this field should comply with the logics and rules defined by `type` or `lock`. |
 | `type`     | `Script`   | **A Script that defines the type of the cell.** In a transaction, if an input cell and an output cell has the same `type` field, then the `data` part of these two cells is limited by the `type` script upon the transaction verification. (I.e. `type` is a script that limits how the `data` field of the new cells can be changed from the old cells.) `type` is required to has a data structure of `script`. **This field is optional.** |
-| `lock`     | H256(hash) | **The hash of a Script that defines the ownership of the cell**, just like the `lock` field in the Bitcoin's UTXO. Whoever can provide an unlock script that has the same hash of a cell's `lock` hash can use this cell as input in an transaction (i.e. has the ownership of this cell). This is similar to the P2SH scheme in Bitcoin. |
+| `lock`     | `Script`   | **A Script that defines the ownership of the cell**, just like the `lock` field in the Bitcoin's UTXO. Whoever can provide an unlock arguments that makes the execution of this script success can use this cell as input in an transaction (i.e. has the ownership of this cell). This is a more general version of P2SH scheme in Bitcoin. |
 
 
 
@@ -53,11 +57,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 ```json
 {
   "version": 0,
-  "binary": null,
-  "reference": "0x12b464bcab8f55822501cdb91ea35ea707d72ec970363972388a0c49b94d377c",
-  "signed_args": [
-    "024a501efd328e062c8675f2365970728c859c592beeefd6be8ead3d901330bc01"
-  ],
+  "binary_hash": "0x12b464bcab8f55822501cdb91ea35ea707d72ec970363972388a0c49b94d377c",
   "args": [
     "3044022038f282cffdd26e2a050d7779ddc29be81a7e2f8a73706d2b7a6fde8a78e950ee0220538657b4c01be3e77827a82e92d33a923e864c55b88fd18cd5e5b25597432e9b",
     "1"
@@ -69,17 +69,15 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 
 ### Description
 
-| Name          | Type    | Description                                                  |
-| :------------ | :------ | :----------------------------------------------------------- |
-| `version`     | uint8   | **The version of the script.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
-| `binary`      | Bytes   | **ELF formatted binary that contains an RISC-V based script.** This part of data is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
-| `reference`   | Bytes   | **The `type hash` of the script that is referred by this script.** It is possible to refer the script in another cell on-chain as the binary code in this script, instead of entering the binary directly into the script. **Notice:** When loading a script, CKB-VM will first try to load the  `binary` data. If `binary` is `null`, then `reference` would be used. |
-| `args`        | [Bytes] | **An array of arguments as the script input.** The arguments here are imported into the CKB-VM instance as input arguments for the scripts. This part is NOT used when calculating the hash of the script. |
-| `signed_args` | [Bytes] | **An array of arguments that belongs to the script for improving code reuse rate**. Please refer [this document](https://github.com/Mine77/ckb-demo-ruby-sdk/blob/docs/update-docs/docs/how-to-write-contracts.md#script-model) for more explanation about this field. |
+| Name          | Type       | Description                                                  |
+| :------------ | :--------- | :----------------------------------------------------------- |
+| `version`     | uint8      | **The version of the script.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
+| `binary_hash` | H256(hash) | **The hash of ELF formatted binary that contains an RISC-V based script. For space consideration, the actual script is either attached to current transaction as a dep cell, or included in as an embed field in current the transaction. In either case, the hash of actual binary(which is cell data part for a dep cell, and the content of the whole field for an embed field) should match binary_hash included here. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
+| `args`        | [Bytes]    | **An array of arguments as the script input.** The arguments here are imported into the CKB-VM instance as input arguments for the scripts. Note that for lock scripts, the corresponding CellInput would have another args field which is appended to the array here to form the real input arguments. |
 
 
 
-More information about Script can be [here](https://github.com/nervosnetwork/ckb-demo-ruby-sdk/blob/master/docs/how-to-write-contracts.md#script-model). 
+More information about Script can be [here](https://github.com/nervosnetwork/ckb-demo-ruby-sdk/blob/master/docs/how-to-write-contracts.md#script-model).
 
 Also you can find how the `Script` structure is implemented from [these codes](https://github.com/nervosnetwork/ckb/blob/17b48a0777753a91691146b3817758c02db6f415/core/src/script.rs#L13-L53)
 
@@ -99,22 +97,23 @@ Also you can find how the `Script` structure is implemented from [these codes](h
           "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
           "index": 4294967295
         },
-        "unlock": {
-          "args": [],
-          "binary": "0x0d00000000000000",
-          "reference": null,
-          "signed_args": [],
-          "version": 0
-        }
+        "args": []
       }
     ],
     "outputs": [
       {
         "capacity": 5000000,
         "data": "0x",
-        "lock": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
+        "lock": {
+          "args": [],
+          "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
+          "version": 0
+        }
         "type": null
       }
+    ],
+    "embeds": [
+      "0x0102030405"
     ],
     "version": 0
 }
@@ -124,15 +123,16 @@ Also you can find how the `Script` structure is implemented from [these codes](h
 
 #### Transaction
 
-| Name              | Type                             | Description                                                  |
-| ----------------- | -------------------------------- | ------------------------------------------------------------ |
-| `version`         | uint32                           | **The version of the transaction.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
-| `hash`            | H256(Hash)                       | **The hash of the transaction.** This also serve as the identifier of the transaction. |
-| `deps`            | [`outpoint`]                     | **An array of `outpoint` that point to the cells that are dependencies of this transaction.** Only live cells can be listed here. The cells listed are read-only. |
-| `inputs`          | [{`previsou_output` , `unlock`}] | **An array of {`previsou_output` , `unlock`}.**              |
-| `previous_output` | `outpoint`                       | **A cell outpoint that point to the cells used as inputs.** Input cells are in fact the output of previous transactions, hence they are noted as `previous_output` here. These cells are referred through  `outpoint`, which contains the transaction `hash` of the previous transaction, as well as this cell's `index` in its transaction's output list. |
-| `unlock`          | `script`                         | **A script for unlocking the corresponding input cell** (i.e. `previous_output`). See [here](https://github.com/nervosnetwork/ckb-demo-ruby-sdk/blob/develop/docs/how-to-write-contracts.md) for how to program this part. |
-| `outputs`         | [`cell`]                         | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
+| Name              | Type                           | Description                                                  |
+| ----------------- | ------------------------------ | ------------------------------------------------------------ |
+| `version`         | uint32                         | **The version of the transaction.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
+| `hash`            | H256(Hash)                     | **The hash of the transaction.** This also serve as the identifier of the transaction. |
+| `deps`            | [`outpoint`]                   | **An array of `outpoint` that point to the cells that are dependencies of this transaction.** Only live cells can be listed here. The cells listed are read-only. |
+| `inputs`          | [{`previsou_output` , `args`}] | **An array of {`previous_output`, `args`}.** |
+| `embeds`          | [Bytes]                        | **An array of one-time used RISC-V binaries that can be referenced by `scripts` included in the transaction. ** |
+| `previous_output` | `outpoint`                     | **A cell outpoint that point to the cells used as inputs.** Input cells are in fact the output of previous transactions, hence they are noted as `previous_output` here. These cells are referred through  `outpoint`, which contains the transaction `hash` of the previous transaction, as well as this cell's `index` in its transaction's output list. |
+| `args`            | [Bytes]                        | **Additional input arguments provided by transaction creator to make the execution of corresponding lock script success**. One example here, is that signed signatures might be include here to make sure a signature verification lock script passes. See [here](https://github.com/nervosnetwork/ckb-demo-ruby-sdk/blob/develop/docs/how-to-write-contracts.md) for how to program this part. |
+| `outputs`         | [`cell`]                       | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
 
 
 
@@ -160,37 +160,36 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 
 ```json
 {
-"commit_transactions": [
+  "commit_transactions": [
     {
-    "deps": [],
-    "hash": "0xabeb06aea75b59ec316db9d21243ee3f0b0ad0723e50f57761cef7e07974b9b5",
-    "inputs": [
+      "deps": [],
+      "hash": "0xabeb06aea75b59ec316db9d21243ee3f0b0ad0723e50f57761cef7e07974b9b5",
+      "inputs": [
+          {
+            "previous_output": {
+              "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "index": 4294967295
+            },
+            "args": []
+          }
+      ],
+      "outputs": [
         {
-        "previous_output": {
-            "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-            "index": 4294967295
-        },
-        "unlock": {
+          "capacity": 5000000,
+          "data": "0x",
+          "lock": {
             "args": [],
-            "binary": "0x0b00000000000000",
-            "reference": null,
-            "signed_args": [],
+            "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
             "version": 0
+          }
+          "type": null
         }
-        }
-    ],
-    "outputs": [
-        {
-        "capacity": 5000000,
-        "data": "0x",
-        "lock": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a",
-        "type": null
-        }
-    ],
-    "version": 0
+      ],
+      "embeds": [],
+      "version": 0
     }
-],
-"header": {
+  ],
+  "header": {
     "cellbase_id": "0xabeb06aea75b59ec316db9d21243ee3f0b0ad0723e50f57761cef7e07974b9b5",
     "difficulty": "0x100",
     "hash": "0xcddd882eff5edd2f7db25074cbbdc1d21cd698f60d6fb39412ef91d19eb900e8",
@@ -206,9 +205,9 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     "uncles_count": 1,
     "uncles_hash": "0x99cf8710e59303bfac236b57256fcea2c58192f2c9c39d1ea4c19cbcf88b4952",
     "version": 0
-},
-"proposal_transactions": [],
-"uncles": [
+  },
+  "proposal_transactions": [],
+  "uncles": [
     {
     "cellbase": {
         ...
@@ -218,7 +217,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     },
     "proposal_transactions": []
     }
-]
+  ]
 }
 ```
 
