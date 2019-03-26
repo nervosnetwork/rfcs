@@ -110,8 +110,9 @@ The arguments used here are:
 
 When calling, this syscall would take the current transaction, and remove:
 
-* `unlock` scripts in all inputs
+* `args` parts in all inputs
 * `data` part in all outputs
+* `lock` scripts in all outputs
 * `type` scripts in all outputs
 
 It then takes the modified transaction and serializes it into the CFB Encoding [1] format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
@@ -227,12 +228,14 @@ The arguments used here are:
     + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
     + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
 * `field`: a flag denoting the field of the input to read, possible values include:
-    + 0: unlock.
+    + 0: args.
     + 1: out_point.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM. Note that we can already use *Load Cell By Field* to load lock hash from input cell, hence this syscall only supports reading original `unlock` data to preserve orthogonality.
+This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+
+NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
 ### Debug
 [debug]: #debug
