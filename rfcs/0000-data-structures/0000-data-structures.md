@@ -72,7 +72,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 | Name          | Type       | Description                                                  |
 | :------------ | :--------- | :----------------------------------------------------------- |
 | `version`     | uint8      | **The version of the script.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
-| `binary_hash` | H256(hash) | **The hash of ELF formatted binary that contains an RISC-V based script.** For space efficiency consideration, the actual script is either attached to current transaction as a dep cell, or included in as an embed field in the current transaction. In either case, the hash of actual binary(which is cell data part for a dep cell, and the content of the whole field for an embed field) should match binary_hash included here. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
+| `binary_hash` | H256(hash) | **The hash of ELF formatted binary that contains an RISC-V based script.** For space efficiency consideration, the actual script is attached to current transaction as a dep cell, the hash specified here should match the hash of cell data part in the dep cell. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
 | `args`        | [Bytes]    | **An array of arguments as the script input.** The arguments here are imported into the CKB-VM instance as input arguments for the scripts. Note that for lock scripts, the corresponding CellInput would have another args field which is appended to the array here to form the real input arguments. |
 
 
@@ -112,9 +112,6 @@ Also you can find how the `Script` structure is implemented from [these codes](h
         "type": null
       }
     ],
-    "embeds": [
-      "0x0102030405"
-    ],
     "version": 0
 }
 ```
@@ -129,7 +126,6 @@ Also you can find how the `Script` structure is implemented from [these codes](h
 | `hash`            | H256(Hash)                     | **The hash of the transaction.** This also serve as the identifier of the transaction. |
 | `deps`            | [`outpoint`]                   | **An array of `outpoint` that point to the cells that are dependencies of this transaction.** Only live cells can be listed here. The cells listed are read-only. |
 | `inputs`          | [{`previsou_output` , `args`}] | **An array of {`previous_output`, `args`}.** |
-| `embeds`          | [Bytes]                        | **An array of one-time used RISC-V binaries that can be referenced by `scripts` included in the transaction.** |
 | `previous_output` | `outpoint`                     | **A cell outpoint that point to the cells used as inputs.** Input cells are in fact the output of previous transactions, hence they are noted as `previous_output` here. These cells are referred through  `outpoint`, which contains the transaction `hash` of the previous transaction, as well as this cell's `index` in its transaction's output list. |
 | `args`            | [Bytes]                        | **Additional input arguments provided by transaction creator to make the execution of corresponding lock script success**. One example here, is that signed signatures might be include here to make sure a signature verification lock script passes. See [here](https://github.com/nervosnetwork/ckb-demo-ruby-sdk/blob/develop/docs/how-to-write-contracts.md) for how to program this part. |
 | `outputs`         | [`cell`]                       | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
@@ -185,7 +181,6 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
           "type": null
         }
       ],
-      "embeds": [],
       "version": 0
     }
   ],
