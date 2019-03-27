@@ -77,7 +77,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 
 
 
-When a script is validated, CKB will run it in a RISC-V VM, `args` will be included via UNIX standard `argc`/`argv` convention. For more information on the CKB VM please refer to [CKB VM RFC](rfcs/0003-ckb-vm/0003-ckb-vm.md).
+When a script is validated, CKB will run it in a RISC-V VM, `args` will be included via UNIX standard `argc`/`argv` convention. For more information on the CKB VM please refer to [CKB VM RFC](../0003-ckb-vm/0003-ckb-vm.md).
 
 For more information regardingt how `Script` structure is implemented please refer to the [CKB repo](https://github.com/nervosnetwork/ckb).
 
@@ -144,7 +144,7 @@ For more information regardingt how `Script` structure is implemented please ref
 
 
 
-More information about the Transaction of Nervos CKB can be found in [whitepaper](rfcs/0002-ckb/0002-ckb.md#44-transaction).
+More information about the Transaction of Nervos CKB can be found in [whitepaper](../0002-ckb/0002-ckb.md#44-transaction).
 
 
 
