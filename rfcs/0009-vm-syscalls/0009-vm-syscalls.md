@@ -237,6 +237,27 @@ Specifying an invalid source value here would immediately trigger a VM error, ho
 
 NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
+### Load Embed
+[load embed]: #load-embed
+
+*Load Cell By Field* syscall has a signature like following:
+
+```c
+int ckb_load_embed(void* addr, uint64_t* len, size_t offset, size_t index)
+{
+  return syscall(2056, addr, len, offset, index, 0, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
+* `index`: an index value denoting the index of embeds to read.
+
+This syscall locates an embed in current transaction and reads it to VM memory space. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
+
 ### Debug
 [debug]: #debug
 
