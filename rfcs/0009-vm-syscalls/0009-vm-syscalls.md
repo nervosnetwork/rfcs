@@ -234,6 +234,46 @@ This syscall would first locate an input in current transaction via `source` and
 
 Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
+### Load Header Via Cell
+[load Header via cell]: #load-header-via-cell
+
+*Load Header Via Cell* syscall has a signature like following:
+
+```c
+int ckb_load_header_via_cell(void* addr, uint64_t* len, size_t offset,
+                            size_t index, size_t source, size_t field)
+{
+  return syscall(2056, addr, len, offset, index, source, field);
+}
+```
+
+The arguments used here are:
+
+* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
+* `index`: an index value denoting the index of cells to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 0: current cell, in this case `index` value would be ignored since there's only one current cell.
+    + 1: input cells.
+    + 2: dep cells.
+* `field`: a flag denoting the field of the header to read, possible values include:
+    + 0: all, read the whole header
+    + 1: version.
+    + 2: parent_hash.
+    + 3: timestamp.
+    + 4: number.
+    + 5: txs_commit.
+    + 6: txs_proposal.
+    + 7: difficulty.
+    + 8: cellbase_id.
+    + 9: uncles_hash.
+    + 10: uncles_count.
+
+This syscall would locate an ancestor header via a single cell we indicate based on `source` and `index` value, serialize the whole header into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
+
+Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
+
 ### Debug
 [debug]: #debug
 
