@@ -244,74 +244,74 @@ The economics of the consensus process is designed to incentivize nodes to parti
 A block producing node can do a cost/benefit analysis to answer this question. The benefit of including a transaction is to be able to collect its transaction fee, and the cost of including a transaction in a block has three parts:
 
 
-- Fee Estimation Cost (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/001.png) ): this is the cost to estimate the maximum possible income if a node where to include a transaction
-- Transaction Verification Cost (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/002.png) ): blocks containing invalid transactions will be rejected by the consensus process, therefore block producing nodes have to verify transactions before including them in a new block.
-- State Transition Cost (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/003.png)）: after a block is produced, the block producing node has to perform local state transitions defined by state machines of the transactions in the block.
+- Fee Estimation Cost (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/01.png) ): this is the cost to estimate the maximum possible income if a node where to include a transaction
+- Transaction Verification Cost (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/02.png) ): blocks containing invalid transactions will be rejected by the consensus process, therefore block producing nodes have to verify transactions before including them in a new block.
+- State Transition Cost (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/03.png)）: after a block is produced, the block producing node has to perform local state transitions defined by state machines of the transactions in the block.
 
-In particular, transaction verification, ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/004.png)  has two possible steps:
+In particular, transaction verification, ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/04.png)  has two possible steps:
 
-- ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/005.png): Authorization Verification Cost
+- ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/05.png): Authorization Verification Cost
 
-- ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/006.png): State Transition Verification Cost
+- ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/06.png): State Transition Verification Cost
 
 We use CPC and EVC to represent Complete Processing Cost and Estimation and Verification Cost:
 
 - CPC: Complete Processing Cost
-  - ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/007.png)
+  - ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/07.png)
 - EVC: Estimation and Verification Cost;
-  - ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/008.png)
+  - ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/08.png)
 
 ### Bitcoin's Transaction Cost Analysis
 
-Bitcoin allows flexible authorization verification with the Bitcoin Script. Users can script the authorization rules and build smart contracts through ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/009.png) when creating transactions. Bitcoin has a fixed state transition semantic, which is to spend and create new UTXOs. In Bitcoin, the result of the state transitions are already included in transactions, therefore the State Transition Cost (STC) is 0.
+Bitcoin allows flexible authorization verification with the Bitcoin Script. Users can script the authorization rules and build smart contracts through ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/09.png) when creating transactions. Bitcoin has a fixed state transition semantic, which is to spend and create new UTXOs. In Bitcoin, the result of the state transitions are already included in transactions, therefore the State Transition Cost (STC) is 0.
 
-Bitcoin uses the amount difference of the inputs and outputs to express transaction fees. Therefore, the cost of estimating transaction fees scales to ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/010.png) where ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/011.png) is the total number of inputs and outputs.
+Bitcoin uses the amount difference of the inputs and outputs to express transaction fees. Therefore, the cost of estimating transaction fees scales to ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/10.png) where ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/11.png) is the total number of inputs and outputs.
 
-Authorization verification in Bitcoin requires running scripts of all inputs. Because the Bitcoin Script prohibits JUMP/looping, the computation complexity can roughly scale to the length of the input scripts, as![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/012.gif), where ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/013.png) is the number of inputs and ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/014.gif) is the average script length of an input. Therefore, the total cost of ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/015.png) roughly scales to the size of total transaction.
+Authorization verification in Bitcoin requires running scripts of all inputs. Because the Bitcoin Script prohibits JUMP/looping, the computation complexity can roughly scale to the length of the input scripts, as![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/12.png), where ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/13.png) is the number of inputs and ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/14.png) is the average script length of an input. Therefore, the total cost of ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/15.png) roughly scales to the size of total transaction.
 
-Bitcoin's state transition rules are simple, and nodes only have to verify the total input amount is the same as the total output amount. Therefore, the ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/016.png) in Bitcoin is the same as ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/017.png), also scaling to ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/018.gif).
+Bitcoin's state transition rules are simple, and nodes only have to verify the total input amount is the same as the total output amount. Therefore, the ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/16.png) in Bitcoin is the same as ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/17.png), also scaling to ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/18.png).
 
 In total, Bitcoin's cost of processing a transaction roughly scales to the size of the transaction:
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/019.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/19.png)
 
 ### Ethereum's Transaction Cost Analysis
 
-Ethereum comes with Turing-complete scriptability, and gives users more flexibility to customize state transition rules with smart contracts. Ethereum transactions include *gaslimit* and *gasprice*, and the transaction fees are calculated using the product of their multiplication. Therefore, ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/020.png) is ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/021.png).
+Ethereum comes with Turing-complete scriptability, and gives users more flexibility to customize state transition rules with smart contracts. Ethereum transactions include *gaslimit* and *gasprice*, and the transaction fees are calculated using the product of their multiplication. Therefore, ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/20.png) is ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/21.png).
 
 Unlike Bitcoin, Ethereum's transactions only include the computation commands of state transitions, instead of the results of the state transitions. Therefore, Ethereum's transaction verification is limited to authorization verification, and doesn't have state transition verification. The rules of authorization verification in Ethereum are:
 
 
-- Verify the validility of the Secp256k1 signatures, with computation complexity of ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/022.gif)
-- Verify the nonce match of the transaction and the account that starts the transaction, with computation complexity of ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/023.png)
-- Verify the account that starts transaction has enough ether to pay for the transaction fees and the amount transferred. This requires access to the account's current balance. Ignoring the global state size's impact on account access, we can assume the complexity of this step is also ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/023.png).
+- Verify the validility of the Secp256k1 signatures, with computation complexity of ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/22.png)
+- Verify the nonce match of the transaction and the account that starts the transaction, with computation complexity of ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/23.png)
+- Verify the account that starts transaction has enough ether to pay for the transaction fees and the amount transferred. This requires access to the account's current balance. Ignoring the global state size's impact on account access, we can assume the complexity of this step is also ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/23.png).
 
-Based on the above, the overall authorization verification complexity in Ethereum is ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/024.gif).
+Based on the above, the overall authorization verification complexity in Ethereum is ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/24.png).
 
-Since every byte of the transaction data comes with cost ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/025.png), the larger ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/026.png) is, the more gas it needs, up to the *gaslimit* ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/027.png)specified. Therefore,
+Since every byte of the transaction data comes with cost ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/25.png), the larger ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/26.png) is, the more gas it needs, up to the *gaslimit* ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/27.png)specified. Therefore,
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/54.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/54.png)
 
-Ethereum comes with a Turing complete VM, and the computation of the result state could include logic of any complexity. Ethereum transaction's ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/028.png) caps the upper bound of computation, therefore ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/029.png)。To summarize all the above:
+Ethereum comes with a Turing complete VM, and the computation of the result state could include logic of any complexity. Ethereum transaction's ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/28.png) caps the upper bound of computation, therefore ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/29.png)。To summarize all the above:
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/030.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/30.png)
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/031.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/31.png)
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/032.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/32.png)
 
-Different from Bitcoin, ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/33.png) for the Ethereum nodes is less than ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/34.png). This is because Ethereum nodes only compute the result state after transactions are included in the block. This is also the reason that transaction results on Ethereum could be invalid, (e.g. exceptions in contract invocation or the gas limit is exceeded),  but the Bitcoin blockchain only has successfully executed transactions and valid results.
+Different from Bitcoin, ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/33.png) for the Ethereum nodes is less than ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/34.png). This is because Ethereum nodes only compute the result state after transactions are included in the block. This is also the reason that transaction results on Ethereum could be invalid, (e.g. exceptions in contract invocation or the gas limit is exceeded),  but the Bitcoin blockchain only has successfully executed transactions and valid results.
 
 ### Nervos CKB's Transaction Cost Analysis
 
-Nervos CKB's transactions are structured with inputs and outputs, similar to Bitcoin's. Therefore, the ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/35.png) and ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/36.png) for the Nervos CKB are the same as those of Bitcoin's:
+Nervos CKB's transactions are structured with inputs and outputs, similar to Bitcoin's. Therefore, the ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/35.png) and ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/36.png) for the Nervos CKB are the same as those of Bitcoin's:
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/37.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/37.png)
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/38.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/38.png)
 
 Because CKB transactions include the result of the transactions as outputs, therefore:
 
-![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/39.png)
+![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/39.png)
 
 ### Cycles as Measurement Units of Computation Complexity
 
@@ -321,17 +321,17 @@ Nodes can set their *cyclemax* to different values. *cyclemax* only impacts how 
 
 The following table shows the runtime differences in Bitcoin, Ethereum and the Nervos CKB.
 
-|          | Authorization (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/40.png)） | State Validation (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/41.png)) | State Transition（![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/42.png)） |
+|          | Authorization (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/40.png)） | State Validation (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/41.png)) | State Transition（![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/42.png)） |
 | -------- | ---------------------------- | ----------------------------- | ------------------------ |
 | Bitcoin  | Generalized                  | Fixed                         | None                     |
 | Ethereum | Fixed                        | None                          | Generalized              |
 | CKB      | Generalized                  | Generalized                   | None                     |
 
 
-Here's a summary of the computational complexity of different parts of the consensus process for Bitcoin, Ethereum and Nervos CKB (![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/55.png) means cycle limit)
+Here's a summary of the computational complexity of different parts of the consensus process for Bitcoin, Ethereum and Nervos CKB (![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/55.png) means cycle limit)
 
-|          |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/43.png)     |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/44.png)         |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/45.png)          |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/46.png)          | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/47.png)         |
+|          |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/43.png)     |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/44.png)         |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/45.png)          |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/46.png          | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/47.png)         |
 | -------- | ------------- | ---------------- | ---------------- | ---------------- | ---------------- |
-| Bitcoin  |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/48.png)| ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/49.png)    | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/50.png)         | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/49.png)   | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/49.png)  |
-| Ethereum |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/51.png)     |![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/49.png)    | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/52.png) | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/49.png)     | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/52.png) |
-| CKB      | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/48.png)  | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/53.png) | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/50.png)           | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/53.png)  | ![](https://raw.githubusercontent.com/Jack0814/Picture/master/Img%202/53.png) |
+| Bitcoin  |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/48.png)| ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png)    | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/50.png)         | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png)   | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png)  |
+| Ethereum |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/51.png)     |![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png)    | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/52.png) | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png)     | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/52.png) |
+| CKB      | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/48.png)  | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png) | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/50.png)           | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png)  | ![](https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png) |
