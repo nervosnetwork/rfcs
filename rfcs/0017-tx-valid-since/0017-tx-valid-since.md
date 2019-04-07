@@ -27,7 +27,7 @@ The consensus to validate this field described as follow:
 * ignore this validate rule if all 64 bits of `valid_since` are 0.
 * check `time_type` flag:
     * the lower 56 bits of `valid_since` represent block number if `time_type` is `0`.
-    * the lower 56 bits of `valid_since` represent block timestamp if `time_type` is `1` (the timestamp is represented as `(valid_since & 0x00ffffffffffffff) * 512` seconds).
+    * the lower 56 bits of `valid_since` represent block timestamp if `time_type` is `1` (because block timestamp is low accuracy,we represent the timestamp as `(valid_since & 0x00ffffffffffffff) << 9` seconds to save space).
 * check `absolute_or_relative_type`:
     * consider field as absolute lock time if `absolute_or_relative_type` is `0`:
         * fail the validation if tip's block number or block timestamp is less than `valid_since` field.
@@ -41,6 +41,7 @@ A cell lock script can check the `valid_since` field of an input and return inva
 This provides the ability to implement time-based fund lock scripts:
 
 ``` ruby
+# absolute time lock
 # cell only can be spent when block number greater than 10000.
 def unlock?
   input = CKB.load_current_input
@@ -53,12 +54,18 @@ end
 ```
 
 ``` ruby
-# cell only can be spent when block timestamp greater than "2019-03-12".
+# relative time lock
+# cell only can be spent after 3 days after block that produced this cell get confirmed
 def unlock?
-  tx = CKB.load_tx
-  return false if tx.valid_since[63].zero?
-  timestamp = (tx.valid_since ^ (1 << 63)) * 512
-  timestamp > 1552348800
+  input = CKB.load_current_input
+  # fail if it is absolute lock
+  return false if input.valid_since[63].zero?
+  # fail if time_type is block number
+  return false if input.valid_since[62].zero?
+  # extract lower 56 bits and convert to seconds
+  time = (valid_since & 0x00ffffffffffffff) << 9
+  # check time must greater than 3 days
+  time > 3 * 24 * 3600
 end
 ```
 
