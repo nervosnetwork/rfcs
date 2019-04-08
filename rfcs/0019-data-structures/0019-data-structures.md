@@ -1,6 +1,6 @@
 ---
 Number: "0019"
-Category: Standards Track
+Category: Informational
 Status: Proposal
 Author: Haichao Zhu, Xuejie Xiao
 Organization: Nervos Foundation
