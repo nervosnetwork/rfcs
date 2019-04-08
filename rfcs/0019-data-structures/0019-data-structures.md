@@ -182,7 +182,6 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     }
   ],
   "header": {
-    "cellbase_id": "0xabeb06aea75b59ec316db9d21243ee3f0b0ad0723e50f57761cef7e07974b9b5",
     "difficulty": "0x100",
     "number": 11,
     "parent_hash": "0x255f65bf9dc00bcd9f9b8be8624be222cba16b51366208a8267f1925eb40e7e4",
@@ -229,7 +228,6 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 
 | Name           | Type                | Description                                                  |
 | -------------- | ------------------- | ------------------------------------------------------------ |
-| `cellbase_id`  | H256(hash)          | **The hash of the Cellbase transaction.** Cellbase transaction is just like the coinbase transaction in Bitcoin. It's the transaction added by the miner who mined this block, by which the miner receives block reward for successfully mined the block. |
 | `difficulty`   | Bytes               | **The difficulty of the PoW puzzle.**                        |
 | `number`       | uint64              | **The block height.**                                        |
 | `parent_hash`  | H256(hash)          | **The hash of the parent block.**                            |
