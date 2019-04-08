@@ -18,8 +18,8 @@ This RFC suggests adding a new consensus rule to prevent a cell to be spent befo
 Transaction input adds a new `u64` type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
 
 The highest 8 bits of `valid_since` is `flags`, the other `56` bits represent `value`, `flags` allow us to determine behaviours:
-* `flags & (1 << 7)` represent `absolute_or_relative_type`.
-* `flags & (1 << 6)` represent `time_type`.
+* `flags & (1 << 7)` represent `absolute_flag`.
+* `flags & (1 << 6)` represent `metric_flag`.
 * other 6 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
