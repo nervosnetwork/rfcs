@@ -17,22 +17,24 @@ This RFC suggests adding a new consensus rule to prevent a cell to be spent befo
 
 Transaction input adds a new `u64` type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
 
-The highest 8 bits of `valid_since` is `flags`, the other `56` bits represent `value`, `flags` allow us to determine behaviours:
+The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
 * `flags & (1 << 7)` represent `absolute_flag`.
 * `flags & (1 << 6)` represent `metric_flag`.
+    * `valid_since` use a block based lock-time if `metric_flag` is `0`, `value` can be explained as a block number or a relative number.
+    * `valid_since` use a time based lock-time if `metric_flag` is `1`, because block timestamp is low accuracy, `value` can be explained as a timespan to save space, the 512 second granularity was chosen(equivalently shifting up by 9 bits), we can extract the time from `valid_since`: `(valid_since & 0x00ffffffffffffff) << 9` seconds.
 * other 6 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
 * iterate inputs, and validate each input by following rules.
 * ignore this validate rule if all 64 bits of `valid_since` are 0.
-* check `time_type` flag:
-    * the lower 56 bits of `valid_since` represent block number if `time_type` is `0`.
-    * the lower 56 bits of `valid_since` represent block timestamp if `time_type` is `1` (because block timestamp is low accuracy,we represent the timestamp as `(valid_since & 0x00ffffffffffffff) << 9` seconds to save space).
-* check `absolute_or_relative_type`:
-    * consider field as absolute lock time if `absolute_or_relative_type` is `0`:
+* check `metric_type` flag:
+    * the lower 56 bits of `valid_since` represent block number if `metric_type` is `0`.
+    * the lower 56 bits of `valid_since` represent block timestamp if `metric_type` is `1`.
+* check `absolute_flag`:
+    * consider field as absolute lock time if `absolute_flag` is `0`:
         * fail the validation if tip's block number or block timestamp is less than `valid_since` field.
-    * consider field as relative lock time if `absolute_or_relative_type` is `1`:
-        * find the block which produced the input cell, get the block timestamp or block number based on `time_type` flag.
+    * consider field as relative lock time if `absolute_flag` is `1`:
+        * find the block which produced the input cell, get the block timestamp or block number based on `metric_type` flag.
         * fail the validation if tip's number or timestamp minus block's number or timestamp is less than `valid_since` field.
 * Otherwise, the validation SHOULD continue.
 
@@ -47,7 +49,7 @@ def unlock?
   input = CKB.load_current_input
   # fail if it is relative lock
   return false if input.valid_since[63] == 1
-  # fail if time_type is timestamp
+  # fail if metric_type is timestamp
   return false if input.valid_since[62] == 1
   input.valid_since > 10000
 end
@@ -60,7 +62,7 @@ def unlock?
   input = CKB.load_current_input
   # fail if it is absolute lock
   return false if input.valid_since[63].zero?
-  # fail if time_type is block number
+  # fail if metric_type is block number
   return false if input.valid_since[62].zero?
   # extract lower 56 bits and convert to seconds
   time = (valid_since & 0x00ffffffffffffff) << 9
@@ -119,17 +121,17 @@ impl ValidSince {
         !self.is_absolute()
     }
 
-    fn time_type_is_number(self) -> bool {
+    fn metric_type_is_number(self) -> bool {
         self.0 & TIME_TYPE_FLAG == 0
     }
 
     #[inline]
-    fn time_type_is_timestamp(self) -> bool {
-        !self.time_type_is_number()
+    fn metric_type_is_timestamp(self) -> bool {
+        !self.metric_type_is_number()
     }
 
     pub fn block_timestamp(self) -> Option<u64> {
-        if self.time_type_is_timestamp() {
+        if self.metric_type_is_timestamp() {
             Some(((self.0 & VALUE_MUSK) << TIMESTAMP_SCALAR) * 1000)
         } else {
             None
@@ -137,7 +139,7 @@ impl ValidSince {
     }
 
     pub fn block_number(self) -> Option<u64> {
-        if self.time_type_is_number() {
+        if self.metric_type_is_number() {
             Some(self.0 & VALUE_MUSK)
         } else {
             None
