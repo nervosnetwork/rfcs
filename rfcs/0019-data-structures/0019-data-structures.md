@@ -1,7 +1,7 @@
 ---
 Number: "0019"
 Category: Informational
-Status: Proposal
+Status: Draft
 Author: Haichao Zhu, Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2019-03-26
