@@ -15,7 +15,7 @@ This RFC suggests adding a new consensus rule to prevent a cell to be spent befo
 
 ## Summary 
 
-Transaction input adds a new `u64` type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
+Transaction input adds a new `u64` (unsigned 64-bit integer) type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
 
 The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
 * `flags & (1 << 7)` represent `relative_flag`.
@@ -27,14 +27,14 @@ The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `
 The consensus to validate this field described as follow:
 * iterate inputs, and validate each input by following rules.
 * ignore this validate rule if all 64 bits of `valid_since` are 0.
-* check `metric_type` flag:
-    * the lower 56 bits of `valid_since` represent block number if `metric_type` is `0`.
-    * the lower 56 bits of `valid_since` represent block timestamp if `metric_type` is `1`.
+* check `metric_flag` flag:
+    * the lower 56 bits of `valid_since` represent block number if `metric_flag` is `0`.
+    * the lower 56 bits of `valid_since` represent block timestamp if `metric_flag` is `1`.
 * check `relative_flag`:
     * consider field as absolute lock time if `relative_flag` is `0`:
         * fail the validation if tip's block number or block timestamp is less than `valid_since` field.
     * consider field as relative lock time if `relative_flag` is `1`:
-        * find the block which produced the input cell, get the block timestamp or block number based on `metric_type` flag.
+        * find the block which produced the input cell, get the block timestamp or block number based on `metric_flag` flag.
         * fail the validation if tip's number or timestamp minus block's number or timestamp is less than `valid_since` field.
 * Otherwise, the validation SHOULD continue.
 
@@ -49,7 +49,7 @@ def unlock?
   input = CKB.load_current_input
   # fail if it is relative lock
   return false if input.valid_since[63] == 1
-  # fail if metric_type is timestamp
+  # fail if metric_flag is timestamp
   return false if input.valid_since[62] == 1
   input.valid_since > 10000
 end
@@ -62,7 +62,7 @@ def unlock?
   input = CKB.load_current_input
   # fail if it is absolute lock
   return false if input.valid_since[63].zero?
-  # fail if metric_type is block number
+  # fail if metric_flag is block number
   return false if input.valid_since[62].zero?
   # extract lower 56 bits and convert to seconds
   time = (valid_since & 0x00ffffffffffffff) << 9
