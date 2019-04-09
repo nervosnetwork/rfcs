@@ -18,7 +18,7 @@ This RFC suggests adding a new consensus rule to prevent a cell to be spent befo
 Transaction input adds a new `u64` type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
 
 The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
-* `flags & (1 << 7)` represent `absolute_flag`.
+* `flags & (1 << 7)` represent `relative_flag`.
 * `flags & (1 << 6)` represent `metric_flag`.
     * `valid_since` use a block based lock-time if `metric_flag` is `0`, `value` can be explained as a block number or a relative number.
     * `valid_since` use a time based lock-time if `metric_flag` is `1`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
@@ -30,10 +30,10 @@ The consensus to validate this field described as follow:
 * check `metric_type` flag:
     * the lower 56 bits of `valid_since` represent block number if `metric_type` is `0`.
     * the lower 56 bits of `valid_since` represent block timestamp if `metric_type` is `1`.
-* check `absolute_flag`:
-    * consider field as absolute lock time if `absolute_flag` is `0`:
+* check `relative_flag`:
+    * consider field as absolute lock time if `relative_flag` is `0`:
         * fail the validation if tip's block number or block timestamp is less than `valid_since` field.
-    * consider field as relative lock time if `absolute_flag` is `1`:
+    * consider field as relative lock time if `relative_flag` is `1`:
         * find the block which produced the input cell, get the block timestamp or block number based on `metric_type` flag.
         * fail the validation if tip's number or timestamp minus block's number or timestamp is less than `valid_since` field.
 * Otherwise, the validation SHOULD continue.
