@@ -19,30 +19,12 @@ CKB Address Format follows [Bitcoin base32 address format (BIP-173)][bip173] rul
 
 A Bech32 string is at most 90 characters long and consists of the **human-readable part**, the **separator**, and the **data part**. The last 6 characters of data part is checksum. The data part is base32 encoded. Here is the readable translation of base32 encoding table.
 
-{| class="wikitable"
-|-
-!
-!0
-!1
-!2
-!3
-!4
-!5
-!6
-!7
-|-
-!+0
-|q||p||z||r||y||9||x||8
-|-
-!+8
-|g||f||2||t||v||d||w||0
-|-
-!+16
-|s||3||j||n||5||4||k||h
-|-
-!+24
-|c||e||6||m||u||a||7||l
-|}
+|0|1|2|3|4|5|6|7|
+|-|-|-|-|-|-|-|-|
+|+0|q|p|z|r|y|9|x|8|
+|+8|g|f|2|t|v|d|w|0|
+|+16|s|3|j|n|5|4|k|h|
+|+24|c|e|6|m|u|a|7|l|
 
 
 The human-readable part is "ckb" for CKB mainnet, and "ckt" for the testnet. The separator is always "1".
