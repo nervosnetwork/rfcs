@@ -21,7 +21,7 @@ The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `
 * `flags & (1 << 7)` represent `absolute_flag`.
 * `flags & (1 << 6)` represent `metric_flag`.
     * `valid_since` use a block based lock-time if `metric_flag` is `0`, `value` can be explained as a block number or a relative number.
-    * `valid_since` use a time based lock-time if `metric_flag` is `1`, because block timestamp is low accuracy, `value` can be explained as a timespan to save space, the 512 second granularity was chosen(equivalently shifting up by 9 bits), we can extract the time from `valid_since`: `(valid_since & 0x00ffffffffffffff) << 9` seconds.
+    * `valid_since` use a time based lock-time if `metric_flag` is `1`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
 * other 6 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
