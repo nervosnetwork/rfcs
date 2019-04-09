@@ -21,10 +21,10 @@ A Bech32 string is at most 90 characters long and consists of the **human-readab
 
 |0|1|2|3|4|5|6|7|
 |-|-|-|-|-|-|-|-|
-|+0|q|p|z|r|y|9|x|8|
-|+8|g|f|2|t|v|d|w|0|
-|+16|s|3|j|n|5|4|k|h|
-|+24|c|e|6|m|u|a|7|l|
+|**+0**|q|p|z|r|y|9|x|8|
+|**+8**|g|f|2|t|v|d|w|0|
+|**+16**|s|3|j|n|5|4|k|h|
+|**+24**|c|e|6|m|u|a|7|l|
 
 
 The human-readable part is "ckb" for CKB mainnet, and "ckt" for the testnet. The separator is always "1".
@@ -75,21 +75,29 @@ Suppose that the binary_hash is from secp256k1 with hash160 algorithm implementa
 
 Firstly, compact lock script to payload.
 
-> payload = 0x00 | 'P2PH' | 0x13e41d6F9292555916f17B4882a5477C01270142
+```c
+payload = 0x00 | "P2PH" | 0x13e41d6F9292555916f17B4882a5477C01270142
+```
 
 Calculate the base32 format of hrp and payload.
 
-> Base32(hrp) = rrrqrtz\
-> Base32(payload) = qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z
+```c
+Base32(hrp) = "rrrqrtz"
+Base32(payload) = "qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z"
+```
 
 Calculate checksum
 
-> checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = fudqzw
+```c
+checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = fudqzw
+```
 
 Add up together
 
-> address = hrp | 1 | Base32(payload) | checksum \
-address = ckb1qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2zfudqzw
+```c
+address = hrp | 1 | Base32(payload) | checksum 
+        = "ckb1qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2zfudqzw"
+```
 
 
 [script-define]:https://github.com/nervosnetwork/ckb/blob/develop/core/src/script.rs#L17
