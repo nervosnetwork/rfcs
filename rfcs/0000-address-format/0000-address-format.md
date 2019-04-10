@@ -46,7 +46,7 @@ payload = type | parameter1 | parameter2 | ...
 
 Type 0 is a compact address format which identifies common used binary hash by 4 bytes instead of 32 bytes. Type 1 is a standard address format consists of full binary hash infomation. Other type number address formats are reserved.
 
-Note that current payload types only support 1 parameter in args field. However, it is easy to be extended to support multiple parameters.
+Note that current payload types only support 1 lock script argument (in parameter2 field). However, it is easy to be extended to support multiple arguments.
 
 ### bin-idx
 
