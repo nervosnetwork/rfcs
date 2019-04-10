@@ -52,10 +52,10 @@ Binary field in payload part means script binary reference, it could be in eithe
 |----------------|---------------------|------|
 |      SP2K      | SECP256K1 algorithm |  PK  |
 |      SP2R      | SECP256R1 algorithm |  PK  |
-|      P2PH      | SECP256K1 + hash160 | hash160(pk)  |
+|      P2PH      | SECP256K1 + blake160 | blake160(pk)  |
 |      P2PK      | Alias of SP2K       |  PK  |
 
-The hash160 here means the first 20 bytes truncation of Blake2b hash function.
+The blake160 here means the first 20 bytes truncation of Blake2b hash function.
 
 ## Examples
 
@@ -71,7 +71,7 @@ The original lock script is,
 }
 ```
 
-Suppose that the binary_hash is from secp256k1 with hash160 algorithm implementation binary. And the sole parameter of args is secp256k1 public key's hash160 result. We could simply encode the lock script into P2PH address format.
+Suppose that the binary_hash is from secp256k1 with blake160 algorithm implementation binary. And the sole parameter of args is secp256k1 public key's blake160 result. We could simply encode the lock script into P2PH address format.
 
 Firstly, compact lock script to payload.
 
