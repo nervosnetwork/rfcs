@@ -33,20 +33,24 @@ The human-readable part is "ckb" for CKB mainnet, and "ckt" for the testnet. The
 
 ## Payload
 
-The first step to encode lock script into address is to encode it to payload. We use type field in payload to identify different encoding methods according to different user scenario needs.
+The first step to encode lock script into address is to encode it to payload. We use type field in payload to identify different encoding methods according to different user scenario needs, and parameter fields to represent lock script data.
 
-|   type     | version  |    binary_ref    |    args     |
-|------------|----------|------------------|-------------|
-|    0x00    |    0     | bin-idx (Byte[4])|  PK/PKHash  |
-|    0x01    |    0     | bin-hash (H256)  |  PK/PKHash  |
+```
+payload = type | parameter1 | parameter2 | ...
+```
 
-There is a corresponding relationship between type and version field. We needn't embed version into payload. So the payload is a data combination of type, binary_ref, and args.
+|   type     |    parameter1    | parameter2  | lock script |
+|------------|------------------|-------------|-------------|
+|    0x00    | bin-idx (Byte[4])|  PK/PKHash  | {version:0, binary_hash: libs[p1], args:[p2]} |
+|    0x01    | bin-hash (H256)  |  PK/PKHash  | {version:0, binary_hash: p1, args:[p2]} |
 
-Note that current payload type only support 1 parameter in args field. However, it is easy to extend to support multiple parameters.
+Type 0 is a compact address format which identifies common used binary hash by 4 bytes instead of 32 bytes. Type 1 is a standard address format consists of full binary hash infomation. Other type number address formats are reserved.
+
+Note that current payload types only support 1 parameter in args field. However, it is easy to be extended to support multiple parameters.
 
 ### bin-idx
 
-Binary field in payload part means script binary reference, it could be in either bin-idx type or bin-hash type. Ref-hash is the simple H256 format hash of binary data. Bin-idx is a simplified binary hash index, which stored in application level. Different bin-id means different binary_hash with shorter length.
+Binary field in payload part means script binary reference, it could be in either bin-idx type or bin-hash type. Bin-hash is the simple H256 format hash of binary data. Bin-idx is a simplified binary hash index, which stored in application level. Different bin-idx means different binary_hash in shorter length.
 
 |     bin-idx    | binary_hash link    | args |
 |----------------|---------------------|------|
