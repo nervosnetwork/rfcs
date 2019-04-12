@@ -107,6 +107,12 @@ For more information regardingt how `Script` structure is implemented please ref
         "type": null
       }
     ],
+    "witnesses": [{
+      "data": [
+        "0xa85cc1ef9a5398e641c7570cb574b9c15b2582ae6ae417e74d47e37153626faf", 
+        "0xc39adfe3f166e113609ebccfb97d8dc7d6c089938a7b1998c8aba2d5fac58f1ca4d1938e9f30303e15914db84ff1bbd375973b6da33792215a88d58a566eae144c"
+      ]
+    }],
     "version": 0
 }
 ```
@@ -123,7 +129,7 @@ For more information regardingt how `Script` structure is implemented please ref
 | `previous_output` | `outpoint`                     | **A cell outpoint that point to the cells used as inputs.** Input cells are in fact the output of previous transactions, hence they are noted as `previous_output` here. These cells are referred through  `outpoint`, which contains the transaction `hash` of the previous transaction, as well as this cell's `index` in its transaction's output list. |
 | `args`            | [Bytes]                        | **Additional input arguments provided by transaction creator to make the execution of corresponding lock script success**. One example here, is that signatures might be include here to make sure a signature verification lock script passes. |
 | `outputs`         | [`cell`]                       | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
-
+| `witnesses`       | [`witness`]                    | **An array of `witness` that a vector of all witness data of each input**, The entirety of the transaction's effects are determined by cell consumption and new cell creation. Other transaction data, and signatures in particular, are only required to validate the blockchain state, not to determine it. Serializing witnesses separately from the rest of the transaction data, so that the transaction ID is no longer malleable |
 
 
 #### OutPoint
@@ -173,6 +179,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
           "type": null
         }
       ],
+      "witnesses": [],
       "version": 0
     }
   ],
@@ -221,20 +228,21 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 
 (`header` is a sub-structure of `block` and `UncleBlock`.)
 
-| Name           | Type                | Description                                                  |
-| -------------- | ------------------- | ------------------------------------------------------------ |
-| `difficulty`   | Bytes               | **The difficulty of the PoW puzzle.**                        |
-| `number`       | uint64              | **The block height.**                                        |
-| `parent_hash`  | H256(hash)          | **The hash of the parent block.**                            |
-| `seal`         | `nonce` and `proof` | **The seal of a block.** After finished the block assembling, the miner can start to do the calculation for finding the solution of the PoW puzzle. The "solution" here is called `seal`. |
-| `seal.nonce`   | uint64              | **The nonce.** Similar to [the nonce in Bitcoin](https://en.bitcoin.it/wiki/Nonce). |
-| `seal.proof`   | Bytes               | **The solution of the PoW puzzle.**                          |
-| `timestamp`    | uint64              | **A [Unix time](http://en.wikipedia.org/wiki/Unix_time) timestamp.** |
-| `txs_commit`   | H256(hash)          | **The Merkle Root of the Merkle trie with the hash of transactions as leaves.** |
-| `txs_proposal` | H256(hash)          | **The Merkle Root of the Merkle trie with the hash of short transaction IDs as leaves.** |
-| `uncles_count` | uint32              | **The number of uncle blocks.**                              |
-| `uncles_hash`  | H256(hash)          | **The hash of the serialized uncle blocks data.** This will later be changed to using [CFB Encoding](https://github.com/nervosnetwork/cfb). |
-| `version`      | uint32              | **The version of the block**. This is for solving the compatibility issues might be occurred after a fork. |
+| Name             | Type                | Description                                                  |
+| ---------------- | ------------------- | ------------------------------------------------------------ |
+| `difficulty`     | Bytes               | **The difficulty of the PoW puzzle.**                        |
+| `number`         | uint64              | **The block height.**                                        |
+| `parent_hash`    | H256(hash)          | **The hash of the parent block.**                            |
+| `seal`           | `nonce` and `proof` | **The seal of a block.** After finished the block assembling, the miner can start to do the calculation for finding the solution of the PoW puzzle. The "solution" here is called `seal`. |
+| `seal.nonce`     | uint64              | **The nonce.** Similar to [the nonce in Bitcoin](https://en.bitcoin.it/wiki/Nonce). |
+| `seal.proof`     | Bytes               | **The solution of the PoW puzzle.**                          |
+| `timestamp`      | uint64              | **A [Unix time](http://en.wikipedia.org/wiki/Unix_time) timestamp.** |
+| `txs_commit`     | H256(hash)          | **The Merkle Root of the Merkle trie with the hash of transaction serialization without witnesses data as leaves.** |
+| `txs_proposal`   | H256(hash)          | **The Merkle Root of the Merkle trie with the hash of short transaction IDs as leaves.** |
+| `witnesses_root` | H256(hash)          | **The Merkle Root of the Merkle trie with the hash of transaction serialization with witnesses data as leaves.** |
+| `uncles_count`   | uint32              | **The number of uncle blocks.**                              |
+| `uncles_hash`    | H256(hash)          | **The hash of the serialized uncle blocks data.** This will later be changed to using [CFB Encoding](https://github.com/nervosnetwork/cfb). |
+| `version`        | uint32              | **The version of the block**. This is for solving the compatibility issues might be occurred after a fork. |
 
 #### UncleBlock
 
@@ -245,4 +253,3 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | `cellbase`              | `Transaction` | **The cellbase transaction of the uncle block.** The inner structure of this part is same as [the Transaction structure](#transaction) above. |
 | `header`                | `Header`      | **The block header of the uncle block.** The inner structure of this part is same as [the Header structure](#header) above. |
 | `proposals`             | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
-
