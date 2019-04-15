@@ -41,10 +41,10 @@ payload = type | parameter1 | parameter2 | ...
 
 |   type     |    parameter1    | parameter2  | lock script |
 |------------|------------------|-------------|-------------|
-|    0x00    | bin-idx (Byte[4])|  PK/PKHash  | {version:0, binary_hash: libs[p1], args:[p2]} |
-|    0x01    | bin-hash (H256)  |  PK/PKHash  | {version:0, binary_hash: p1, args:[p2]} |
+|    0x00    | bin-hash (H256)  |  PK/PKHash  | {version:0, binary_hash: p1, args:[p2]} |
+|    0x01    | bin-idx (Byte[4])|  PK/PKHash  | {version:0, binary_hash: libs[p1], args:[p2]} |
 
-Type 0 is a compact address format which identifies common used binary hash by 4 bytes instead of 32 bytes. Type 1 is a standard address format consists of full binary hash infomation. Other type number address formats are reserved.
+ Type 0 is a standard address format consists of full binary hash infomation. Type 1 is a compact address format which identifies common used binary hash by 4 bytes instead of 32 bytes. Other type number address formats are reserved.
 
 Note that current payload types only support 1 lock script argument (in parameter2 field). However, it is easy to be extended to support multiple arguments.
 
