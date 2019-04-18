@@ -111,6 +111,10 @@ Note that even though the script only requires part of the specified serialized 
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
 
+#### Exec
+
+*Exec* syscall would first consumes 100 cycles, it also applies a multiple on the cycle cost of each created VM instance. Assume the initial VM has a `vm_depth` of 0, and the first created VM has a `vm_depth` of 1, the next VM created by the first created VM has a `vm_depth` of 2, etc. The cycle costs spent by each VM will then be multiplied by `2^{vm_depth}`. The sum of cycle costs spent by all the created VM instances, will then be added together to act as the total cost of the root level CKB VM script.
+
 #### Alter Page Permission
 
 No matter if the operation succeeds, this syscall would consumes 50 initial cycles. It then consumes 50 more cycles for each memory page altered.

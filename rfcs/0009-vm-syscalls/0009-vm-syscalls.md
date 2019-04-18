@@ -237,6 +237,25 @@ Specifying an invalid source value here would immediately trigger a VM error, ho
 
 NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
+### Exec
+[exec]: #exec
+
+*Exec* syscall has a signature like following:
+
+```
+int ckb_exec(void* hash, size_t len, int argc, char* argv[])
+{
+  return syscall(2056, hash, len, argc, argv);
+}
+```
+
+The arguments used here are:
+
+* `hash`/`len`: hash of the binary to load in current transaction environment, for now, the hash length would always be 32 bytes, though we still require `len` field here for future compatibility.
+* `argc`/`argv`: provide the arguments in standard UNIX style used to invoke the binary.
+
+This syscall locates a binary in current transaction environment(most likely in `deps`), then launch a new CKB VM instance running the binary separately, the newly created CKB VM instance will share the same transaction environment as current instance, upon completion, the return code of the newly created CKB VM instance will be returned via the syscall here.
+
 ### Alter Page Permission
 [alter page permission]: #alter-page-permission
 
