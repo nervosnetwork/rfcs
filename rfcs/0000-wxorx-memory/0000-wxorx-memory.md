@@ -11,7 +11,7 @@ Created: 2019-04-18
 
 ## Abstract
 
-This RFC suggests adding a new W^X memory feature into CKB VM hoping to simplify the VM implementaion significantly, while also improving the security of scripts running in CKB VM.
+This RFC suggests adding a new W^X memory feature into CKB VM hoping to simplify the VM implementation significantly, while also improving the security of scripts running in CKB VM.
 
 ## Motivation
 
@@ -19,7 +19,7 @@ As of right now, CKB VM does not have MMU. It works quite like CPUs in the very 
 
 However, like the early day computers, this architecture has certain problems:
 
-1. It makes the script running in CKB VM very prone to security problems. A buffer overflow, when not managed well, can easily lead to rewritting of code section, which changes the script behavior. On the other hand, specially crafted scripts can also be used to corrupt data section.
+1. It makes the script running in CKB VM very prone to security problems. A buffer overflow, when not managed well, can easily lead to rewriting of code section, which changes the script behavior. On the other hand, specially crafted scripts can also be used to corrupt data section.
 2. It also complicates the implementation of CKB VM, when we apply certain optimizations such as [trace cache](https://en.wikipedia.org/wiki/Trace_Cache), we have to add [special code](https://github.com/nervosnetwork/ckb-vm/blob/16207caf5755b5edde6df8228a2366a553960a10/src/machine.rs#L431) to make sure memory writes also invalidates certain trace cache, which is both error-prone and time consuming.
 
 As a result, we suggest adding a small feature into CKB VM named [W^X](https://en.wikipedia.org/wiki/W%5EX), basically, it ensures the memory is either writable or executable. A syscall will be provided to make the conversion between writable memory and executable memory.
@@ -122,4 +122,4 @@ The available flags are:
 One obvious disadvantage is that self-modifying code becomes harder to write in CKB VM, it also costs more to write such code since frequent switching between writable and executable memory might be needed. But we want to argue the benefits of introducing this feature outweighs the disadvantages since:
 
 1. It will already be rare to write self-modifying code in CKB VM.
-2. Comparing to a full featured MMU, the costs of switching betweeen writable and executable memory is rather low now and might actually still be feaisble.
+2. Comparing to a full featured MMU, the costs of switching between writable and executable memory is rather low now and might actually still be feasible.
