@@ -81,12 +81,6 @@ All CKB VM instructions consume 1 cycle except the following ones:
 | ECALL       | 0      |
 | EBREAK      | 0      |
 
-In a nutshell, the following principles are applied in deciding those numbers:
-
-* Branches should be more expensive than normal instructions.
-* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
-* Multiplication and divisions should be much more expensive than normal instructions.
-
 ### Syscall Cycles
 
 Each syscall in CKB has different rules for consuming cycles:
@@ -117,14 +111,29 @@ Note that even though the script only requires part of the specified serialized 
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
 
+#### Alter Page Permission
+
+No matter if the operation succeeds, this syscall would consumes 50 initial cycles. It then consumes 50 more cycles for each memory page altered.
+
+#### Install Page Fault
+
+This operation consumes 100 cycles.
+
 #### Debug
 
 *Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.
 
-#### Final note
+### Page Faults
 
-Notice that the two numbers used here (10 and 100) haven't gone through full testing, right now they are picked based on the following principles:
+When a page fault function as described [here](../0009-vm-syscalls/0009-vm-syscalls.md) is installed, a fixed amount of 100 cycles will be charged for the page fault operation. Then running the page fault function will be charged as any other normal operations.
 
+## Final note
+
+Notice that most numbers used here haven't gone through full testing, right now they are picked based on the following guidelines:
+
+* Branches should be more expensive than normal instructions.
+* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
+* Multiplication and divisions should be much more expensive than normal instructions.
 * We want each syscall to at least consume some cycles even thought some syscall might return no data, hence we add either 10 or 100 initial cycles to each syscall.
 * Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most norma instructions.
 * We want to encourage using *Load Cell By Field* instead of *Load Cell*, since the former one makes easier implementation and less likely to be attacked, that's why *Load Cell* syscall use a factor of 100, while *Load Cell By Field* only use a factor of 10.

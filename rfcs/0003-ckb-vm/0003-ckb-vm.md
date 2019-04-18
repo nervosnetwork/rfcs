@@ -21,7 +21,7 @@ CKB relies on dynamic linking and syscalls to provide additional capabilities re
 
 CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
 
-Each contract has a maximum size of 10MB in uncompressed size, and 1MB in gzip size. CKB virtual machine has a maximum of 128 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
+Each contract has a maximum size of 10MB in uncompressed size, and 1MB in gzip size. CKB virtual machine has a maximum of 16 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
 
 Running a contract is almost the same as running an executable in single core Linux environment:
 
@@ -44,6 +44,35 @@ int main(int argc, char* argv[]) {
 Contract starts from main function in the ELF formatted contract file, arguments are passed in via standard argc and argv. When main returns 0, the contract is treated as success. Note that due to space consideration, we might not store full inputs and outputs data in argv. Instead, we might just provide metadata in argv, and leverages additional libraries and syscalls to support input/output loading. This way the runtime cost can be minimized. CKB VM is a strict single-threaded model, contract can ship with coroutines of their own.
 
 For simplicity and deterministic behavior, CKB doesn't support floating point numbers. We suggest a softfloat solution if floating point number is really needed. Since CKB runs in a single threaded environment, atomic instructions are not needed.
+
+## W^X Memory
+
+CKB VM does not have an MMU unit. It works quite like CPUs in the very early era or CPUs in some embedded systems: the whole memory block can be readable, writable and executable at the same time. Nothing prevents a script from changing the code running next, or jumping to the stack section and assume the stack just contains code to run.
+
+However, like the early day computers, this architecture has certain problems:
+
+1. It makes the script running in CKB VM very prone to security problems. A buffer overflow, when not managed well, can easily lead to rewriting of code section, which changes the script behavior. On the other hand, specially crafted scripts can also be used to corrupt data section.
+2. It also complicates the implementation of CKB VM, when we apply certain optimizations such as [trace cache](https://en.wikipedia.org/wiki/Trace_Cache), we have to add [special code](https://github.com/nervosnetwork/ckb-vm/blob/16207caf5755b5edde6df8228a2366a553960a10/src/machine.rs#L431) to make sure memory writes also invalidates certain trace cache, which is both error-prone and time consuming.
+
+As a result, a small feature named [W^X](https://en.wikipedia.org/wiki/W%5EX) is added to CKB VM, basically, it ensures the memory is either writable or executable. Syscalls will be provided to make the conversion between writable memory and executable memory.
+
+For a more complete CPU model with proper MMU unit, it might not be necessary to make this feature mandatory, but we argue that in the sense of CKB VM, having mandatory W^X can actually be extremely useful here:
+
+1. It provides a way for the script to avoid most easily made mistakes out there by having clear distinction between writable memory, and executable memory. Obviously, attacks like [ROP](https://en.wikipedia.org/wiki/Return-oriented_programming) are still possible but W^X can already help with many types of exploits and beginner mistakes.
+2. It also simplifies the implementation significantly. In a VM with proper MMU, this won't make much difference, but for CKB VM which already lacks MMU, this can help reduce the last complicated piece in the memory part. In addition, it also enables us to more easily build JIT or even AOT solutions for CKB VM.
+
+### W^X Specification
+
+Following RISC-V specification, CKB VM will divide its running memory into multiple 4KB memory pages. The memory pages will be aligned on a 4KB boundary, meaning the memory pages would start at 0x0, 0x1000, 0x2000, etc. For each memory page, CKB VM will maintain separate flag denoting if the page is writable or executable. Notice the 2 flags will be mutual exclusive, meaning a memory page can either be writable or executable, but not both. The following checks will also be added:
+
+* Before executing an instruction, CKB VM will ensure the memory page containing current instruction is marked executable.
+* Before issuing a memory write, CKB VM will ensure the memory page that is written to is marked writable.
+
+Violating either rule above will result in page faults. Handling page faults will be discussed below.
+
+When booting CKB VM, all memory pages will be marked as writable, except for the `LOAD` code sections marked as `executable` in ELF. CKB VM will return immediately with an error when the ELF file tries to load a code section that is both `writable` and `executable`.
+
+When loading a executable code section that is not page aligned in ELF, CKB VM will enlarge the code section just enough to make it aligned to page boundaries. For example, loading an executable code section starting from 0x139080 which spans 0x1320 bytes will result in the memory from 0x139000 till 0x13b000 be marked as executable.
 
 ## Libraries and bootloader
 
