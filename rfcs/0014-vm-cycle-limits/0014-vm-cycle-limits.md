@@ -113,7 +113,9 @@ Note that even though the script only requires part of the serialized data, the 
 
 #### Exec
 
-*Exec* syscall would first consumes 100 cycles, it also applies a multiple on the cycle cost of each created VM instance. Assume the initial VM has a `vm_depth` of 0, and the first created VM has a `vm_depth` of 1, the next VM created by the first created VM has a `vm_depth` of 2, etc. The cycle costs spent by each VM will then be multiplied by `2^{vm_depth}`. The sum of cycle costs spent by all the created VM instances, will then be added together to act as the total cost of the root level CKB VM script.
+*Exec* syscall would first consumes 100 cycles, it would also consume 10 cycles for each byte of the cell data to execute, and 10 cycles for each byte in each argv item.
+
+It also applies a multiple on the cycle cost of each created VM instance: assume the initial VM has a `vm_depth` of 0, and the first created VM has a `vm_depth` of 1, the next VM created by the first created VM has a `vm_depth` of 2, etc. The cycle costs spent by each VM will then be multiplied by `2^{vm_depth}`. The sum of cycle costs spent by all the created VM instances, will then be added together to act as the total cost of the root level CKB VM script.
 
 #### Alter Page Permission
 
