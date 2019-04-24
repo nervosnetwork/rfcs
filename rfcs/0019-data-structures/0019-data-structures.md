@@ -24,7 +24,7 @@ This documents explains all the basic data structures used in CKB.
 
 ```json
 {
-    "capacity": 5000000,
+    "capacity": 500_000_000_000_000,
     "data": "0x",
     "lock": {
       "args": [],
@@ -38,7 +38,7 @@ This documents explains all the basic data structures used in CKB.
 
 | Name       | Type       | Description                                                  |
 | :--------- | :--------- | :----------------------------------------------------------- |
-| `capacity` | uint64     | **The size of the cell.** When a new cell is generated (via transaction), one of the verification rule is `capacity ≥ len(capacity)+len(data)+len(type)+len(lock)`. This value also represents the balance of CKB coin, just like the `nValue` field in the Bitcoin's CTxOut. (E.g. Alice owns 100 CKB coins means she can unlock a group of cells that has 100 amount of `capacity` in total.) |
+| `capacity` | uint64     | **The size of the cell (in shannons).** When a new cell is generated (via transaction), one of the verification rule is `capacity_in_bytes >= len(capacity) + len(data) + len(type) + len(lock)`. This value also represents the balance of CKB coin, just like the `nValue` field in the Bitcoin's CTxOut. (E.g. Alice owns 100 CKB coins means she can unlock a group of cells that has 100 amount of `bytes` (which is 10_000_000_000 amount of `shannons`) in total.) |
 | `data`     | Bytes      | **Arbitrary data.** This part is for storing states or scripts.  In order to make this cell valid on-chain, the data filled in this field should comply with the logics and rules defined by `type`. |
 | `type`     | `Script`   | **A Script that defines the type of the cell.** It limits how the `data` field of the new cells can be changed from old cells. `type` is required to has a data structure of `script`. **This field is optional.** |
 | `lock`     | `Script`   | **A Script that defines the ownership of the cell**, just like the `scriptPubKey` field in the Bitcoin's CTxOut. Whoever can provide unlock arguments that makes the execution of this script success can consume this cell as input in an transaction (i.e. has the ownership of this cell). |
@@ -98,7 +98,7 @@ For more information regardingt how `Script` structure is implemented please ref
     ],
     "outputs": [
       {
-        "capacity": 5000000,
+        "capacity": 500_000_000_000_000,
         "data": "0x",
         "lock": {
           "args": [],
@@ -164,12 +164,12 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
       ],
       "outputs": [
         {
-          "capacity": 5000000,
+          "capacity": 500_000_000_000_000,
           "data": "0x",
           "lock": {
             "args": [],
             "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
-          }
+          },
           "type": null
         }
       ],
