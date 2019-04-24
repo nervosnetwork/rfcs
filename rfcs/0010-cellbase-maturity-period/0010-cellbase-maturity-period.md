@@ -9,7 +9,7 @@ Created: 2018-12-20
 
 # Cellbase maturity period
 
-There are two kinds of transaction in CKB, "normal" one and cellbase one.
+There are two kinds of transaction in CKB, the "normal" one and the "cellbase" one.
 
 For "normal" transactions, the inputs refer to previous transactions. If a fork were to occur, the blocks become orphaned, their transactions are still valid and able to be confirmed in other blocks. Some blocks confirmations is decent number of confirmations to deter attacks without 51% of the hashrate.
 
