@@ -56,7 +56,7 @@ Binary field in payload part means script binary reference, it could be in eithe
 |----------------|---------------------|------|
 |      SP2K      | SECP256K1 algorithm |  PK  |
 |      SP2R      | SECP256R1 algorithm |  PK  |
-|      P2PH      | SECP256K1 + blake160 | blake160(pk)  |
+|      P2PH      | SECP256K1 + blake160 | blake160(PK)  |
 |      P2PK      | Alias of SP2K       |  PK  |
 
 The blake160 here means the first 20 bytes truncation of Blake2b hash function.
