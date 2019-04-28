@@ -80,7 +80,7 @@ Parameters below are required in Scoring System:
 Network layer should provide the scoring interface, allow upper sub-protocols (such as: `sync`, `relay`) to report behaviors of a peer, and update peer's score based on `SCORING_SCHEMA`.
 
 ``` ruby
-peer.score += BEHAVIOURS[i] * SCOREING_SCHEMA[BEHAVIORS[i]]
+peer.score += SCOREING_SCHEMA[BEHAVIOUR]
 ```
 
 Peer's behaviors can be distinguished into three categories:
