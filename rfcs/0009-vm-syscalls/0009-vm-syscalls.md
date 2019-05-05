@@ -71,6 +71,7 @@ Note that even though *Exit* syscall only needs one argument, our C wrapper requ
 
 - [Exit]
 - [Load Transaction]
+- [Load Transaction Hash]
 - [Load Cell]
 - [Load Cell By Field]
 - [Load Input By Field]
@@ -127,6 +128,26 @@ It then takes the modified transaction and serializes it into the CFB Encoding [
 The whole point of this process, is providing VM side a way to do partial reading when the available memory is not enough to support reading the whole data altogether.
 
 One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer with 0 value as `len`, this syscall can be used to fetch the length of the serialized data part without reading any actual data.
+
+### Load Transaction Hash
+[load transaction hash]: #load-transaction-hash
+
+*Load Transaction Hash* syscall has a signature like following:
+
+```c
+int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2049, addr, len, offset, 0, 0, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`: a pointer to a buffer in VM memory space denoting where we would load the serialized transaction data.
+* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
+* `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
+
+This syscall would calculate the hash of current transaction and copy it to VM memory space.
 
 ### Load Cell
 [load cell]: #load-cell

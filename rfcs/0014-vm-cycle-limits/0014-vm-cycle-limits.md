@@ -97,6 +97,12 @@ Each syscall in CKB has different rules for consuming cycles:
 
 Note that even though the script only requires part of the serialized TX data, the syscall still charges based on the full serialized data size.
 
+#### Load TX Hash
+
+*Load TX Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
+
 #### Load Cell
 
 *Load Cell* syscall first consumes 100 initial cycles, it then measures the size of the serialized cell structure data: for every single byte in the serialized data, it consumes 100 more cycles.
