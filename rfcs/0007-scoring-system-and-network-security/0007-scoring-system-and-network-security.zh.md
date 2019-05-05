@@ -84,7 +84,7 @@ PeerInfo {
 并根据 peer 行为和 `SCORING_SCHEMA` 调整 peer 的评分。
 
 ``` ruby
-peer.score += BEHAVIOURS[i] * SCOREING_SCHEMA[BEHAVIORS[i]]
+peer.score += SCOREING_SCHEMA[BEHAVIOUR]
 ```
 
 Peer 的评分是 CKB P2P 网络安全的重要部分，peer 的行为可以分为如下三种：
