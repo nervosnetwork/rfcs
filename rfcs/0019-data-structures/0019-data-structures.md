@@ -28,7 +28,7 @@ This documents explains all the basic data structures used in CKB.
     "data": "0x",
     "lock": {
       "args": [],
-      "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
+      "code_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
     },
     "type": null
 }
@@ -55,7 +55,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 
 ```json
 {
-  "binary_hash": "0x12b464bcab8f55822501cdb91ea35ea707d72ec970363972388a0c49b94d377c",
+  "code_hash": "0x12b464bcab8f55822501cdb91ea35ea707d72ec970363972388a0c49b94d377c",
   "args": [
     "3044022038f282cffdd26e2a050d7779ddc29be81a7e2f8a73706d2b7a6fde8a78e950ee0220538657b4c01be3e77827a82e92d33a923e864c55b88fd18cd5e5b25597432e9b",
     "1"
@@ -69,7 +69,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 
 | Name          | Type       | Description                                                  |
 | :------------ | :--------- | :----------------------------------------------------------- |
-| `binary_hash` | H256(hash) | **The hash of ELF formatted RISC-V binary that contains a CKB script.** For space efficiency consideration, the actual script is attached to current transaction as a dep cell, the hash specified here should match the hash of cell data part in the dep cell. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
+| `code_hash` | H256(hash) | **The hash of ELF formatted RISC-V binary that contains a CKB script.** For space efficiency consideration, the actual script is attached to current transaction as a dep cell, the hash specified here should match the hash of cell data part in the dep cell. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
 | `args`        | [Bytes]    | **An array of arguments as the script input.** The arguments here are imported into the CKB-VM instance as input arguments for the scripts. Note that for lock scripts, the corresponding CellInput would have another args field which is appended to the array here to form the complete input argument list. |
 
 
@@ -102,7 +102,7 @@ For more information regardingt how `Script` structure is implemented please ref
         "data": "0x",
         "lock": {
           "args": [],
-          "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
+          "code_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
         },
         "type": null
       }
@@ -168,7 +168,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
           "data": "0x",
           "lock": {
             "args": [],
-            "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
+            "code_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
           },
           "type": null
         }
