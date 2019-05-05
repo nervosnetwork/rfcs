@@ -137,7 +137,7 @@ One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer 
 ```c
 int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
 {
-  return syscall(2049, addr, len, offset, 0, 0, 0);
+  return syscall(2057, addr, len, offset, 0, 0, 0);
 }
 ```
 
