@@ -123,6 +123,12 @@ Note that even though the script only requires part of the specified serialized 
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
 
+#### Load Current Script Hash
+
+*Load Current Script Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized script hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
+
 #### Debug
 
 *Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.

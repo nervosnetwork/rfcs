@@ -168,7 +168,6 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
-    + 0: current cell, in this case `index` value would be ignored since there's only one current cell.
     + 1: input cells.
     + 2: output cells.
     + 3: dep cells.
@@ -199,7 +198,6 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
-    + 0: current cell, in this case `index` value would be ignored since there's only one current cell.
     + 1: input cells.
     + 2: output cells.
     + 3: dep cells.
@@ -244,7 +242,6 @@ The arguments used here are:
 * `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
-    + 0: current input, in this case `index` value would be ignored since there's only one current input.
     + 1: inputs.
     + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
     + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
@@ -257,6 +254,26 @@ This syscall would first locate an input in current transaction via `source` and
 Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
+
+### Load Current Script Hash
+[load current script hash]: #load-current-script-hash
+
+*Load Current Script Hash* syscall has a signature like following:
+
+```c
+int ckb_load_current_script_hash(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2058, addr, len, offset, 0, 0, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`: a pointer to a buffer in VM memory space denoting where we would load the serialized transaction data.
+* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
+* `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
+
+This syscall would calculate the hash of current cell and copy it to VM memory space. This is the only part a script can load on its own cell.
 
 ### Debug
 [debug]: #debug
