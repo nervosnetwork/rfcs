@@ -255,13 +255,13 @@ Specifying an invalid source value here would immediately trigger a VM error, ho
 
 NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
-### Load Current Script Hash
-[load current script hash]: #load-current-script-hash
+### Load Script Hash
+[load script hash]: #load-script-hash
 
-*Load Current Script Hash* syscall has a signature like following:
+*Load Script Hash* syscall has a signature like following:
 
 ```c
-int ckb_load_current_script_hash(void* addr, uint64_t* len, size_t offset)
+int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
 {
   return syscall(2058, addr, len, offset, 0, 0, 0);
 }
@@ -269,11 +269,11 @@ int ckb_load_current_script_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`: a pointer to a buffer in VM memory space denoting where we would load the serialized transaction data.
+* `addr`: a pointer to a buffer in VM memory space denoting where we would load the script hash.
 * `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
-* `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
+* `offset`: an offset specifying from which offset we should start loading the script hash.
 
-This syscall would calculate the hash of current cell and copy it to VM memory space. This is the only part a script can load on its own cell.
+This syscall would calculate the hash of current running script and copy it to VM memory space. This is the only part a script can load on its own cell.
 
 ### Debug
 [debug]: #debug
