@@ -147,7 +147,7 @@ The scalar field in a table which equals the default value must omit in the buff
 
 If a union is NONE, both the union type and value must omit.
 
-Except for the root table, it is not allowed to refer to a table with all fields omitted. References to empty strings and vectors are also forbidden. Instead, these fields should not be in the table.
+Except for the root table and tables in array, it is not allowed to refer to a table with all fields omitted. References to empty strings and vectors are also forbidden. Instead, these fields should not be in the table.
 
 ### Vtable Content
 
