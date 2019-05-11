@@ -143,9 +143,9 @@ int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`: a pointer to a buffer in VM memory space denoting where we would load the serialized transaction data.
-* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
-* `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
+* `addr`: the exact same addr pointer as used in Load Transaction syscall.
+* `len`: the exact same len pointer as used in Load Transaction syscall.
+* `offset`: the exact same offset value as used in Load Transaction syscall.
 
 This syscall would calculate the hash of current transaction and copy it to VM memory space.
 
@@ -205,20 +205,22 @@ The arguments used here are:
     + 0: capacity.
     + 1: data.
     + 2: data hash.
-    + 3: lock hash.
-    + 4: type.
-    + 5: type hash.
+    + 3: lock.
+    + 4: lock hash.
+    + 5: type.
+    + 6: type hash.
 
 This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
 * `capacity`: capacity is serialized into 8 little endian bytes, this is also how CFB Encoding [1] handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `data hash`: 32 raw bytes are extracted from `H256` structure by serializing data field
+* `lock`: lock script is serialized into the CFB Encoding [1] format
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
 * `type`: type script is serialized into the CFB Encoding [1] format
 * `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
-With the binary result converted from different rules, CKB VM then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
+With the binary result converted from different rules, the syscall then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
@@ -248,8 +250,9 @@ The arguments used here are:
 * `field`: a flag denoting the field of the input to read, possible values include:
     + 0: args.
     + 1: out_point.
+    + 2: since.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then serialize the extracted field into flatbuffer format, then use the same steps as documented in *Load Transaction* syscall to feed data into VM.
+This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into CFB format), then use the same steps as documented in *Load Transaction* syscall to feed data into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
