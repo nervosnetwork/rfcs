@@ -70,11 +70,13 @@ syscall(93, 10, 0, 0, 0, 0, 0);
 Note that even though *Exit* syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.
 
 - [Exit]
-- [Load Transaction]
 - [Load Transaction Hash]
+- [Load Script Hash]
 - [Load Cell]
 - [Load Cell By Field]
+- [Load Input]
 - [Load Input By Field]
+- [Load Header]
 - [Debug]
 
 ### Exit
@@ -91,15 +93,15 @@ void exit(int8_t code)
 
 *Exit* syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a script in CKB VM.
 
-### Load Transaction
-[load transaction]: #load-transaction
+### Load Transaction Hash
+[load transaction hash]: #load-transaction-hash
 
-*Load Transaction* syscall has a signature like following:
+*Load Transaction Hash* syscall has a signature like following:
 
 ```c
-int ckb_load_tx(void* addr, uint64_t* len, size_t offset)
+int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
 {
-  return syscall(2049, addr, len, offset, 0, 0, 0);
+  return syscall(2061, addr, len, offset, 0, 0, 0);
 }
 ```
 
@@ -109,14 +111,9 @@ The arguments used here are:
 * `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
 * `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
 
-When calling, this syscall would take the current transaction, and remove:
+This syscall would calculate the hash of current transaction and copy it to VM memory space.
 
-* `args` parts in all inputs
-* `data` part in all outputs
-* `lock` scripts in all outputs
-* `type` scripts in all outputs
-
-It then takes the modified transaction and serializes it into the CFB Encoding [1] format. Then the serialized result is fed into VM via the steps below. For ease of reference, we refer the serialized result as `data`, and the length of `data` as `data_length`.
+The result is fed into VM via the steps below. For ease of reference, we refer the result as `data`, and the length of `data` as `data_length`.
 
 1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
 2. `full_size` is calculated as `data_length - offset`.
@@ -129,25 +126,25 @@ The whole point of this process, is providing VM side a way to do partial readin
 
 One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer with 0 value as `len`, this syscall can be used to fetch the length of the serialized data part without reading any actual data.
 
-### Load Transaction Hash
-[load transaction hash]: #load-transaction-hash
+### Load Script Hash
+[load script hash]: #load-script-hash
 
-*Load Transaction Hash* syscall has a signature like following:
+*Load Script Hash* syscall has a signature like following:
 
 ```c
-int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
+int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
 {
-  return syscall(2057, addr, len, offset, 0, 0, 0);
+  return syscall(2062, addr, len, offset, 0, 0, 0);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: the exact same addr pointer as used in Load Transaction syscall.
-* `len`: the exact same len pointer as used in Load Transaction syscall.
-* `offset`: the exact same offset value as used in Load Transaction syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
 
-This syscall would calculate the hash of current transaction and copy it to VM memory space.
+This syscall would calculate the hash of current running script and copy it to VM memory space. This is the only part a script can load on its own cell.
 
 ### Load Cell
 [load cell]: #load-cell
@@ -157,24 +154,24 @@ This syscall would calculate the hash of current transaction and copy it to VM m
 ```c
 int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
 {
-  return syscall(2053, addr, len, offset, index, source, 0);
+  return syscall(2071, addr, len, offset, index, source, 0);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
     + 2: output cells.
     + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction* syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
 Note this syscall is only provided for advanced usage that requires hashing the whole cell in a future proof way. In practice this is a very expensive syscall since it requires serializing the whole cell, in the case of a large cell with huge data, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Cell By Field* syscall below.
 
@@ -187,15 +184,15 @@ Note this syscall is only provided for advanced usage that requires hashing the 
 int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
                            size_t index, size_t source, size_t field)
 {
-  return syscall(2054, addr, len, offset, index, source, field);
+  return syscall(2081, addr, len, offset, index, source, field);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
 * `index`: an index value denoting the index of cells to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -220,9 +217,39 @@ This syscall would locate a single cell in current transaction just like *Load C
 * `type`: type script is serialized into the CFB Encoding [1] format
 * `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
-With the binary result converted from different rules, the syscall then applies the same steps as documented in *Load Transaction* syscall to feed data into CKB VM.
+With the binary result converted from different rules, the syscall then applies the same steps as documented in *Load Transaction Hash* syscall to feed data into CKB VM.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, would result in `1` as return value, denoting index is out of bound. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state. Specifying a field that doesn't not exist(such as type on a cell without type script) would result in `2` as return value, denoting the item is missing.
+
+### Load Input
+[load input]: #load-input
+
+*Load Input* syscall has a signature like following:
+
+```c
+int ckb_load_input(void* addr, uint64_t* len, size_t offset,
+                   size_t index, size_t source)
+{
+  return syscall(2073, addr, len, offset, index, source, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
+* `index`: an index value denoting the index of inputs to read.
+* `source`: a flag denoting the source of inputs to locate, possible values include:
+    + 1: inputs.
+    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
+    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
+
+This syscall would locate a single input field in the current transaction based on `source` and `index` value, serialize the whole input into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+
+Specifying an invalid source value here would immediately trigger a VM error. Specifying a valid source that is not input, such as an output, would result in `2` as return value, denoting the item is missing. Specifying an invalid index value here would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
+
+Note this syscall is only provided for advanced usage that requires hashing the whole input in a future proof way. In practice this might be a very expensive syscall since it requires serializing the whole input, in the case of a large input with huge arguments, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Input By Field* syscall below.
 
 ### Load Input By Field
 [load input by field]: #load-input-by-field
@@ -233,15 +260,15 @@ Specifying an invalid source value here would immediately trigger a VM error, sp
 int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
                             size_t index, size_t source, size_t field)
 {
-  return syscall(2055, addr, len, offset, index, source, field);
+  return syscall(2083, addr, len, offset, index, source, field);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction* syscall.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
     + 1: inputs.
@@ -252,31 +279,38 @@ The arguments used here are:
     + 1: out_point.
     + 2: since.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into CFB format), then use the same steps as documented in *Load Transaction* syscall to feed data into VM.
+This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into CFB format), then use the same steps as documented in *Load Transaction Hash* syscall to feed data into VM.
 
-Specifying an invalid source value here would immediately trigger a VM error, however specifying `output` as the source here would only result in `2` as return value, specifying `current` as source in a *type* script, which doesn't have input, would also result in `2` as return value. Specifying an invalid index value here, would result in `2` as return value, denoting item missing state. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
 
 NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
-### Load Script Hash
-[load script hash]: #load-script-hash
+### Load Header
+[load header]: #load-header
 
-*Load Script Hash* syscall has a signature like following:
+*Load Header* syscall has a signature like following:
 
 ```c
-int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
+int ckb_load_header(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
 {
-  return syscall(2058, addr, len, offset, 0, 0, 0);
+  return syscall(2072, addr, len, offset, index, source, 0);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: a pointer to a buffer in VM memory space denoting where we would load the script hash.
-* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
-* `offset`: an offset specifying from which offset we should start loading the script hash.
+* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
+* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
+* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
+* `index`: an index value denoting the index of cells to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 1: input cells.
+    + 2: output cells.
+    + 3: dep cells.
 
-This syscall would calculate the hash of current running script and copy it to VM memory space. This is the only part a script can load on its own cell.
+This syscall would locate the header associated with an input or a dep OutPoint based on `source` and `index` value, serialize the whole header into CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+
+Specifying an invalid source value here would immediately trigger a VM error. Specifying `output` as source field would result in `2` as return value, denoting item missing state. Specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
 ### Debug
 [debug]: #debug
