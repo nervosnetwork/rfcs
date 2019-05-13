@@ -15,30 +15,30 @@ This RFC suggests adding a new consensus rule to prevent a cell to be spent befo
 
 ## Summary 
 
-Transaction input adds a new `u64` (unsigned 64-bit integer) type field `valid_since`, which prevents the transaction to be mined before an absolute or relative time.
+Transaction input adds a new `u64` (unsigned 64-bit integer) type field `since`, which prevents the transaction to be mined before an absolute or relative time.
 
-The highest 8 bits of `valid_since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
+The highest 8 bits of `since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
 * `flags & (1 << 7)` represent `relative_flag`.
 * `flags & (1 << 6)` represent `metric_flag`.
-    * `valid_since` use a block based lock-time if `metric_flag` is `0`, `value` can be explained as a block number or a relative number.
-    * `valid_since` use a time based lock-time if `metric_flag` is `1`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
+    * `since` use a block based lock-time if `metric_flag` is `0`, `value` can be explained as a block number or a relative number.
+    * `since` use a time based lock-time if `metric_flag` is `1`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
 * other 6 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
 * iterate inputs, and validate each input by following rules.
-* ignore this validate rule if all 64 bits of `valid_since` are 0.
+* ignore this validate rule if all 64 bits of `since` are 0.
 * check `metric_flag` flag:
-    * the lower 56 bits of `valid_since` represent block number if `metric_flag` is `0`.
-    * the lower 56 bits of `valid_since` represent block timestamp if `metric_flag` is `1`.
+    * the lower 56 bits of `since` represent block number if `metric_flag` is `0`.
+    * the lower 56 bits of `since` represent block timestamp if `metric_flag` is `1`.
 * check `relative_flag`:
     * consider field as absolute lock time if `relative_flag` is `0`:
-        * fail the validation if tip's block number or block timestamp is less than `valid_since` field.
+        * fail the validation if tip's block number or block timestamp is less than `since` field.
     * consider field as relative lock time if `relative_flag` is `1`:
         * find the block which produced the input cell, get the block timestamp or block number based on `metric_flag` flag.
-        * fail the validation if tip's number or timestamp minus block's number or timestamp is less than `valid_since` field.
+        * fail the validation if tip's number or timestamp minus block's number or timestamp is less than `since` field.
 * Otherwise, the validation SHOULD continue.
 
-A cell lock script can check the `valid_since` field of an input and return invalid when `valid_since` not satisfied condition, to indirectly prevent cell to be spent.
+A cell lock script can check the `since` field of an input and return invalid when `since` not satisfied condition, to indirectly prevent cell to be spent.
 
 This provides the ability to implement time-based fund lock scripts:
 
@@ -48,10 +48,10 @@ This provides the ability to implement time-based fund lock scripts:
 def unlock?
   input = CKB.load_current_input
   # fail if it is relative lock
-  return false if input.valid_since[63] == 1
+  return false if input.since[63] == 1
   # fail if metric_flag is timestamp
-  return false if input.valid_since[62] == 1
-  input.valid_since > 10000
+  return false if input.since[62] == 1
+  input.since > 10000
 end
 ```
 
@@ -61,11 +61,11 @@ end
 def unlock?
   input = CKB.load_current_input
   # fail if it is absolute lock
-  return false if input.valid_since[63].zero?
+  return false if input.since[63].zero?
   # fail if metric_flag is block number
-  return false if input.valid_since[62].zero?
+  return false if input.since[62].zero?
   # extract lower 56 bits and convert to seconds
-  time = (valid_since & 0x00ffffffffffffff) << 9
+  time = (since & 0x00ffffffffffffff) << 9
   # check time must greater than 3 days
   time > 3 * 24 * 3600
 end
@@ -73,7 +73,7 @@ end
 
 ## Detailed Specification
 
-`valid_since` SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when `type flag` is 1, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.
+`since` SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when `type flag` is 1, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.
 
 The median block time calculated from the past 11 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
 
@@ -100,7 +100,7 @@ pub trait BlockMedianTimeContext {
 }
 ```
 
-Validation of transaction `valid_since` defined as follow code:
+Validation of transaction `since` defined as follow code:
 
 ``` rust
 const LOCK_TYPE_FLAG: u64 = 1 << 63;
@@ -186,15 +186,15 @@ where
         }
     }
 
-    fn verify_absolute_lock(&self, valid_since: ValidSince) -> Result<(), TransactionError> {
-        if valid_since.is_absolute() {
-            if let Some(block_number) = valid_since.block_number() {
+    fn verify_absolute_lock(&self, since: ValidSince) -> Result<(), TransactionError> {
+        if since.is_absolute() {
+            if let Some(block_number) = since.block_number() {
                 if self.tip_number < block_number {
                     return Err(TransactionError::Immature);
                 }
             }
 
-            if let Some(block_timestamp) = valid_since.block_timestamp() {
+            if let Some(block_timestamp) = since.block_timestamp() {
                 let tip_timestamp = self
                     .block_median_time(self.tip_number.saturating_sub(1))
                     .unwrap_or_else(|| 0);
@@ -207,22 +207,22 @@ where
     }
     fn verify_relative_lock(
         &self,
-        valid_since: ValidSince,
+        since: ValidSince,
         cell_meta: &CellMeta,
     ) -> Result<(), TransactionError> {
-        if valid_since.is_relative() {
+        if since.is_relative() {
             // cell still in tx_pool
             let cell_block_number = match cell_meta.block_number {
                 Some(number) => number,
                 None => return Err(TransactionError::Immature),
             };
-            if let Some(block_number) = valid_since.block_number() {
+            if let Some(block_number) = since.block_number() {
                 if self.tip_number < cell_block_number + block_number {
                     return Err(TransactionError::Immature);
                 }
             }
 
-            if let Some(block_timestamp) = valid_since.block_timestamp() {
+            if let Some(block_timestamp) = since.block_timestamp() {
                 let tip_timestamp = self
                     .block_median_time(self.tip_number.saturating_sub(1))
                     .unwrap_or_else(|| 0);
@@ -248,13 +248,13 @@ where
                 Some(cell) => cell,
                 None => return Err(TransactionError::Conflict),
             };
-            // ignore empty valid_since
-            if input.valid_since == 0 {
+            // ignore empty since
+            if input.since == 0 {
                 continue;
             }
-            let valid_since = ValidSince(input.valid_since);
-            self.verify_absolute_lock(valid_since)?;
-            self.verify_relative_lock(valid_since, cell)?;
+            let since = ValidSince(input.since);
+            self.verify_absolute_lock(since)?;
+            self.verify_relative_lock(since, cell)?;
         }
         Ok(())
     }
