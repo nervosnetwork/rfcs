@@ -109,9 +109,9 @@ const TIMESTAMP_SCALAR: u64 = 9;
 const VALUE_MUSK: u64 = 0x00ff_ffff_ffff_ffff;
 
 #[derive(Copy, Clone, Debug)]
-struct ValidSince(u64);
+struct Since(u64);
 
-impl ValidSince {
+impl Since {
     pub fn is_absolute(self) -> bool {
         self.0 & LOCK_TYPE_FLAG == 0
     }
@@ -147,14 +147,14 @@ impl ValidSince {
     }
 }
 
-pub struct ValidSinceVerifier<'a, M> {
+pub struct SinceVerifier<'a, M> {
     rtx: &'a ResolvedTransaction,
     block_median_time_context: &'a M,
     tip_number: BlockNumber,
     median_timestamps_cache: RefCell<LruCache<BlockNumber, Option<u64>>>,
 }
 
-impl<'a, M> ValidSinceVerifier<'a, M>
+impl<'a, M> SinceVerifier<'a, M>
 where
     M: BlockMedianTimeContext,
 {
@@ -164,7 +164,7 @@ where
         tip_number: BlockNumber,
     ) -> Self {
         let median_timestamps_cache = RefCell::new(LruCache::new(rtx.input_cells.len()));
-        ValidSinceVerifier {
+        SinceVerifier {
             rtx,
             block_median_time_context,
             tip_number,
@@ -186,7 +186,7 @@ where
         }
     }
 
-    fn verify_absolute_lock(&self, since: ValidSince) -> Result<(), TransactionError> {
+    fn verify_absolute_lock(&self, since: Since) -> Result<(), TransactionError> {
         if since.is_absolute() {
             if let Some(block_number) = since.block_number() {
                 if self.tip_number < block_number {
@@ -207,7 +207,7 @@ where
     }
     fn verify_relative_lock(
         &self,
-        since: ValidSince,
+        since: Since,
         cell_meta: &CellMeta,
     ) -> Result<(), TransactionError> {
         if since.is_relative() {
@@ -252,7 +252,7 @@ where
             if input.since == 0 {
                 continue;
             }
-            let since = ValidSince(input.since);
+            let since = Since(input.since);
             self.verify_absolute_lock(since)?;
             self.verify_relative_lock(since, cell)?;
         }
