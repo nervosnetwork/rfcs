@@ -150,7 +150,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 
 ```json
 {
-  "commit_transactions": [
+  "transactions": [
     {
       "deps": [],
       "inputs": [
@@ -191,7 +191,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     "uncles_hash": "0x99cf8710e59303bfac236b57256fcea2c58192f2c9c39d1ea4c19cbcf88b4952",
     "version": 0
   },
-  "proposal_transactions": [],
+  "proposals": [],
   "uncles": [
     {
     "cellbase": {
@@ -200,7 +200,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     "header": {
         ...
     },
-    "proposal_transactions": []
+    "proposals": []
     }
   ]
 }
@@ -213,8 +213,8 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | Name                    | Type            | Description                                                  |
 | ----------------------- | --------------- | ------------------------------------------------------------ |
 | `header`                | `Header`        | **The block header of the block.** This part contains some metadata of the block. See [the Header section](#header) below for the details of this part. |
-| `commit_trasactions`    | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
-| `proposal_transactions` | [string]        | **An array of hex-encoded short transaction ID of the proposed transactions.** |
+| `trasactions`           | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
+| `proposals`             | [string]        | **An array of hex-encoded short transaction ID of the proposed transactions.** |
 | `uncles`                | [`UncleBlock`]  | **An array of uncle blocks of the block.** See [the UncleBlock section](#uncleblock) below for the details of this part. |
 
 #### Header
@@ -244,5 +244,5 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | ----------------------- | ------------- | ------------------------------------------------------------ |
 | `cellbase`              | `Transaction` | **The cellbase transaction of the uncle block.** The inner structure of this part is same as [the Transaction structure](#transaction) above. |
 | `header`                | `Header`      | **The block header of the uncle block.** The inner structure of this part is same as [the Header structure](#header) above. |
-| `proposal_transactions` | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
+| `proposals`             | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
 
