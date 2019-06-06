@@ -80,27 +80,27 @@ Suppose that the binary_hash is from secp256k1 with blake160 algorithm implement
 Firstly, compact lock script to payload.
 
 ```c
-payload = 0x00 | "P2PH" | 0x13e41d6F9292555916f17B4882a5477C01270142
+payload = 0x01 | "P2PH" | 0x13e41d6F9292555916f17B4882a5477C01270142
 ```
 
 Calculate the base32 format of hrp and payload.
 
 ```c
 Base32(hrp) = "rrrqrtz"
-Base32(payload) = "qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z"
+Base32(payload) = "q9gry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z"
 ```
 
 Calculate checksum
 
 ```c
-checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = fudqzw
+checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = 9l9k08
 ```
 
 Add up together
 
 ```c
 address = hrp | 1 | Base32(payload) | checksum 
-        = "ckb1qpgry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2zfudqzw"
+        = "ckb1q9gry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z9l9k08"
 ```
 
 
