@@ -161,6 +161,7 @@ Similar to Nakamoto Consensus , our protocol’s difficulty adjustment algorithm
 Among these inputs, *T<sub>i</sub>* and *C*<sub>*i*,m</sub> are determined by the last iteration of difficulty adjustment; *L*<sub>*i*</sub> and *C*<sub>*i*,o</sub> are measured after the epoch ends. The orphan rate *o*<sub>*i*</sub> is calculated as *C*<sub>*i*,o</sub> / *C*<sub>*i*,m</sub>. We do not include *C*<sub>*i*,o</sub> in the denominator to simplify the equation. As some orphans at the end of the epoch might be excluded from the main chain by an attack, *o*<sub>*i*</sub> is a lower bound of the actual number. However, [the proportion of deliberately excluded orphans is negligible](https://eprint.iacr.org/2014/765.pdf) as long as the epoch is long enough, as the difficulty of orphaning a chain grows exponentially with the chain length. 
 
 The algorithm outputs three values:
+
 | Name            | Description                          |
 | :-------------- | :----------------------------------- |
 | *T*<sub>*i*+1</sub>          | Next epoch’s target                       |
@@ -171,9 +172,9 @@ If the network hash rate and block propagation latency remains constant, *o*<sub
 
 #### Computing the Adjusted Hash Rate Estimation
 
-The adjusted hash rate estimation, denoted as *HPS<sub>i</sub>* is computed by applying a dampening factor τ to the last epoch’s actual hash rate ![1559068235154](/images/1559068235154.png). The actual hash rate is calculated as follows:
+The adjusted hash rate estimation, denoted as *HPS<sub>i</sub>* is computed by applying a dampening factor τ to the last epoch’s actual hash rate ![1559068235154](images/1559068235154.png). The actual hash rate is calculated as follows:
 
-![1559064934639](/images/1559064934639.png)
+![1559064934639](images/1559064934639.png)
 
 where:
 
@@ -181,11 +182,11 @@ where:
 - HSpace/*T<sub>i</sub>* is the expected number of hash operations to find a valid block, and 
 - *C*<sub>*i*,m</sub> + *C*<sub>*i*,o</sub> is the total number of blocks in epoch *i*
 
-![1559068266162](/images/1559068266162.png) is computed by dividing the expected total hash operations with the duration *L<sub>i</sub>*
+![1559068266162](images/1559068266162.png) is computed by dividing the expected total hash operations with the duration *L<sub>i</sub>*
 
 Now we apply the dampening filter:
 
-![1559064108898](/images/1559064108898.png)
+![1559064108898](images/1559064108898.png)
 
 where *HPS*<sub>*i*−1</sub> denotes the adjusted hash rate estimation output by the last iteration of the difficulty adjustment algorithm. The dampening factor ensures that the adjusted hash rate estimation does not change more than a factor of τ between two consecutive epochs. This adjustment is equivalent to the Nakamoto Consensus application of a dampening filter. Bounding the adjustment speed prevents the attacker from arbitrarily biasing the difficulty and forging a blockchain, even if some victims’ network is temporarily controlled by the attacker.
 
@@ -195,60 +196,60 @@ It is difficult, if not impossible, to model the detailed block propagation proc
 
 We assume all blocks follow a similar propagation model, in line with [[1](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.395.8058&rep=rep1&type=pdf), [2](https://fc16.ifca.ai/bitcoin/papers/CDE+16.pdf)]. In the last epoch, it takes *d* seconds for a block to be propagated to the entire network, and during this process, the average fraction of mining power working on the block’s parent is *p*. Therefore, during this *d* seconds, *HPS*<sub>*i* </sub> × *dp* hash operations work on the parent, thus not contributing to extending the blockchain, while the rest *HPS*<sub>*i*</sub> × *d*(1 − *p*) hashes work on the new block. Consequently, in the last epoch, the total number of hashes that do not extend the blockchain is *HPS*<sub>*i*</sub>  × *dp* × *C*<sub>*i*,m</sub>. If some of these hashes lead to a block, one of the competing blocks will be orphaned. The number of hash operations working on observed orphaned blocks is HSpace/*T*<sub>*i*</sub> × *C*<sub>*i*,o</sub>. If we ignore the rare event that more than two competing blocks are found at the same height, we have:
 
-![1559064685714](/images/1559064685714.png)
+![1559064685714](images/1559064685714.png)
 
 namely
 
-![1559064995366](/images/1559064995366.png)
+![1559064995366](images/1559064995366.png)
 
 
 
 If we join this equation with Equation (2), we can solve for *dp*:
 
-![1559065017925](/images/1559065017925.png)
+![1559065017925](images/1559065017925.png)
 
 where *o<sub>i</sub>* is last epoch’s orphan rate.
 
 #### Computing the Next Epoch’s Main Chain Block Number
 If the next epoch’s block propagation proceeds identically to the last epoch, the value *dp* should remain unchanged. In order to achieve the ideal orphan rate *o*<sub>ideal</sub> and the ideal epoch duration *L*<sub>ideal</sub>, following the same reasoning with Equation (4). We should have:
 
-![1559065197341](/images/1559065197341.png)
+![1559065197341](images/1559065197341.png)
 
 
 
-where ![1559065416713](/images/1559065416713.png)is the number of main chain blocks in the next epoch, if our only goal is to achieve *o*<sub>ideal</sub> and *L*<sub>ideal</sub> . 
+where ![1559065416713](images/1559065416713.png)is the number of main chain blocks in the next epoch, if our only goal is to achieve *o*<sub>ideal</sub> and *L*<sub>ideal</sub> . 
 
-By joining Equation (4) and (5), we can solve for ![1559065488436](/images/1559065416713.png):
+By joining Equation (4) and (5), we can solve for ![1559065488436](images/1559065416713.png):
 
-![1559065517956](/images/1559065517956.png)
+![1559065517956](images/1559065517956.png)
 
 
 
-Now we can apply the upper and lower bounds to![1559065488436](/images/1559065416713.png) and get *C*<sub>*i*+1,m</sub>:
+Now we can apply the upper and lower bounds to![1559065488436](images/1559065416713.png) and get *C*<sub>*i*+1,m</sub>:
 
-![1559065670251](/images/1559065670251.png)
+![1559065670251](images/1559065670251.png)
 
 Applying a lower bound ensures that an attacker cannot mine orphaned blocks deliberately to arbitrarily increase the block interval; applying an upper bound ensures that our protocol does not confirm more transactions than the capacity of most nodes.
 
 #### Determining the Target Difficulty
 
-First, we introduce an adjusted orphan rate estimation ![1559065968791](/images/1559065968791.png), which will be used to compute the target:
+First, we introduce an adjusted orphan rate estimation ![1559065968791](images/1559065968791.png), which will be used to compute the target:
 
-![1559065997745](/images/1559065997745.png)
+![1559065997745](images/1559065997745.png)
 
 
 
-Using ![1559065968791](/images/1559065968791.png) instead of *o*<sub>ideal</sub> prevents some undesirable situations when the main chain block number reaches the upper or lower bound. Now we can compute *T*<sub>*i*+1</sub>:
+Using ![1559065968791](images/1559065968791.png) instead of *o*<sub>ideal</sub> prevents some undesirable situations when the main chain block number reaches the upper or lower bound. Now we can compute *T*<sub>*i*+1</sub>:
 
-![1559066101731](/images/1559066101731.png)
+![1559066101731](images/1559066101731.png)
 
-where ![1559066131427](/images/1559066131427.png) is the total hashes, ![1559066158164](/images/1559066158164.png)is the total number of blocks. 
+where ![1559066131427](images/1559066131427.png) is the total hashes, ![1559066158164](images/1559066158164.png)is the total number of blocks. 
 
 The denominator in Equation (7) is the number of hashes required to find a block.
 
-Note that if none of the edge cases are triggered, such as ![1559066233715](/images/1559066233715.png)![1559066249700](/images/1559066249700.png) or ![1559066329440](/images/1559066329440.png)  , we can combine Equations (2), (6), and (7) and get:
+Note that if none of the edge cases are triggered, such as ![1559066233715](images/1559066233715.png)![1559066249700](images/1559066249700.png) or ![1559066329440](images/1559066329440.png)  , we can combine Equations (2), (6), and (7) and get:
 
-![1559066373372](/images/1559066373372.png)
+![1559066373372](images/1559066373372.png)
 
 
 
@@ -258,7 +259,7 @@ This result is consistent with our intuition. On one hand, if the last epoch’s
 
 Now we can compute the reward for each block:
 
-![1559066526598](/images/1559066526598.png)
+![1559066526598](images/1559066526598.png)
 
 The two cases differ only in the edge cases. The first case guarantees that the total reward issued in epoch *i* + 1 will not exceed R(*i* + 1).
 
