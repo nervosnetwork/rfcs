@@ -18,7 +18,7 @@ Created: 2019-6-19
   * [Two-Step Transaction Confirmation](###Two-Step Transaction Confirmation)
   * [Dynamic Difficulty Adjustment Mechanism](###Dynamic Difficulty Adjustment Mechanism)
 
-<a name="abstract"/>
+<a name="abstract"></a>
 ## Abstract
 
 Bitcoin's Nakamoto Consensus (NC) is well-received due to its simplicity and low communication overhead. However, NC suffers from two kinds of drawback: first, its transaction processing throughput is far from satisfactory; second, it is vulnerable to a selfish mining attack, where attackers can gain more block rewards by deviating from the protocol's prescribed behavior.
