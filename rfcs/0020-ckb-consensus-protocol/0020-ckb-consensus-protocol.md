@@ -8,7 +8,7 @@ Created: 2019-6-19
 ---
 # CKB Consensus Protocol
 
-* [Abstract](## Abstract)
+* [Abstract](##Abstract)
 * [Motivation](##Motivation)
 * [Technical Overview](##Technical Overview)
   * [Eliminating the Bottleneck in Block Propagation](###Eliminating the Bottleneck in Block Propagation)
