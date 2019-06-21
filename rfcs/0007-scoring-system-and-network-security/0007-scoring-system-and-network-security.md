@@ -46,8 +46,8 @@ CKB client should implement the scoring system and following security strategies
 * `Peer` - Other nodes connected through the network
 * `PeerInfo` - A data struct used for describing information of `Peer`
 * `PeerStore` - A component used to store `PeerInfo`
-* `outbound peer` - describe a peer which we initiate a connection.
-* `inbound peer` - describe a peer which the peer initiates a connection.
+* `outbound peer` - describe a peer which initiates a connection.
+* `inbound peer` - describe a peer which accepts a connection.
 * `max_outbound` - Max number of outbound peers.
 * `max_inbound` - Max number of inbound peers.
 * `network group` - A concept which used when to evict out peers, calculating from the peer's IP address(prefix 16 bits of IPv4 and prefix 32 bits of IPv6).
