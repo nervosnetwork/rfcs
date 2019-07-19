@@ -85,7 +85,7 @@ function sponge( input, output_length ):
 Eaglesong is member of a family of ciphers that use only three operations: addition, rotation, and xor. The operands are always 32-bit integers. This motivates the following notational overload:
 
  - `+`: addition modulo 2^32;
- - `<<<`: left rotation, specifically `a <<< r` is equivalent to `((a << r) xor (a >> (32-r))) and 0xffffffff`, where `<<` and `>>` denote left and shift, respectively.
+ - `<<<`: left rotation, specifically `a <<< r` is equivalent to `((a << r) xor (a >> (32-r))) and 0xffffffff`, where `<<` and `>>` denote left and right shift, respectively.
 
 <a name="Round-Function"></a>
 # Round Function
