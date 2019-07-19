@@ -19,8 +19,8 @@ This documents specifies the Eaglesong hash function as it is to be used in the 
    * [Bit Matrix](#Bit-Matrix)
    * [Circulant Multiplication](#Circulant-Multiplication)
    * [Injection of Constants](#Injection-of-Constants)
-   * [Addition-Rotation-Addition] (#Addition-Rotation-Addition)
-   * [Full Permutation] (#Full-Permutation)
+   * [Addition-Rotation-Addition](#Addition-Rotation-Addition)
+   * [Full Permutation](#Full-Permutation)
  * [Eaglesong Hash](#Eaglesong-Hash)
  * [Reference Implementations](#Reference-Implementations)
 
