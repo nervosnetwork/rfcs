@@ -2,7 +2,7 @@
 Number: "0020"
 Category: Informational
 Status: Draft
-Author: <TBD>
+Author: Ren Zhang
 Organization: Nervos Foundation
 Created: 2019-6-19
 ---
