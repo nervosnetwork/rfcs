@@ -1,11 +1,14 @@
 ---
 Number: "0008"
 Category: Standards Track
-Status: Proposal
+Status: Obsolete
 Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2018-12-17
 ---
+
+Obsoleting reason: we are developing a new serialization method to replace
+FlatBuffers.
 
 # Serialization
 
