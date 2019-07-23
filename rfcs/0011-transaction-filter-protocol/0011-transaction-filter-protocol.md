@@ -1,5 +1,5 @@
 ---
-Number: 0011
+Number: "0011"
 Category: Standards Track
 Status: Proposal
 Author: Quake Wang
@@ -95,6 +95,6 @@ table IndexTransaction {
 The filter can be tested against all broadcast transactions, to determine if a transaction matches the filter, the following algorithm is used. Once a match is found the algorithm aborts.
 
 1. Test the hash of the transaction itself.
-2. For each CellInput, test the hash of `previous_output` and `type hash` of unlock script.
-3. For each CellOutput, test the `lock` and `type hash` of contract.
+2. For each CellInput, test the hash of `previous_output`.
+3. For each CellOutput, test the `lock hash` and `type hash` of script.
 4. Otherwise there is no match.

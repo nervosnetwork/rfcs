@@ -1,5 +1,5 @@
 ---
-Number: 0014
+Number: "0014"
 Category: Standards Track
 Status: Proposal
 Author: Xuejie Xiao
@@ -91,11 +91,17 @@ In a nutshell, the following principles are applied in deciding those numbers:
 
 Each syscall in CKB has different rules for consuming cycles:
 
-#### Load TX
+#### Load TX Hash
 
-*Load TX* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction data: for every single byte in the data, it consumes 10 more cycles.
+*Load TX Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
 
-Note that even though the script only requires part of the serialized TX data, the syscall still charges based on the full serialized data size.
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
+
+#### Load Current Script Hash
+
+*Load Current Script Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized script hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
 
 #### Load Cell
 
@@ -111,11 +117,25 @@ Note that even though the script only requires part of the serialized Cell struc
 
 Note that even though the script only requires part of the specified serialized field, the syscall still charges based on the full serialized field size.
 
+#### Load Input
+
+*Load Input* syscall first consumes 100 initial cycles, it then measures the size of the serialized input data: for every single byte in the serialized data, it consumes 100 more cycles.
+
+Notice the charged cycles here is 10 times the cycles charged in `Load Input By Field` syscall, this is because we are discouraging the use of this syscall. One should only use this if they really need the full serialized input.
+
+Note that even though the script only requires part of the serialized input data, the syscall still charges based on the full serialized data size.
+
 #### Load Input By Field
 
 *Load Input By Field* syscall first consumes 10 initial cycles, it then measures the size of the serialized data from the specified field: for every single byte in the serialized data, it consumes 10 more cycles.
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
+
+#### Load Header
+
+*Load Header* syscall first consumes 10 initial cycles, it then measures the size of the serialized header: for every single byte in the serialized data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized header data, the syscall still charges based on the full serialized data size.
 
 #### Debug
 
