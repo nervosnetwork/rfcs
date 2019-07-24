@@ -111,6 +111,10 @@ Note that even though the script only requires part of the specified serialized 
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
 
+#### Load Code
+
+*Load Code* syscall first consumes 10 initial cycles, it then measures the size of actual loaded code section, for every single byte in the loaded code, it consumes 10 cycles.
+
 #### Exec
 
 *Exec* syscall would first consumes 100 cycles, it would also consume 10 cycles for each byte of the cell data to execute, and 10 cycles for each byte in each argv item.
