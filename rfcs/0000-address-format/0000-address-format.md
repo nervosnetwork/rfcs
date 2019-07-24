@@ -84,20 +84,20 @@ Calculate the base32 format of hrp and payload.
 
 ```c
 Base32(hrp) = "rrrqrtz"
-Base32(payload) = "q9gry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z"
+Base32(payload) = "qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pq"
 ```
 
 Calculate checksum
 
 ```c
-checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = 9l9k08
+checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = rn323p
 ```
 
 Add up together
 
 ```c
 address = hrp | 1 | Base32(payload) | checksum 
-        = "ckb1q9gry5zgz0jp6mujjf24j9h30dyg9f280sqjwq2z9l9k08"
+        = "ckb1qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pqrn323p"
 ```
 
 [bip173]: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
