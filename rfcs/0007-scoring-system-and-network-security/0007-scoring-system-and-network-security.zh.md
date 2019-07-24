@@ -48,8 +48,8 @@ RFC 描述了客户端应该实现的打分系统和下文的几种安全策略�
 * `Peer` - 网络上的其他节点
 * `PeerInfo` - 描述 Peer 信息的数据结构
 * `PeerStore` - 用于存储 PeerInfo 的组件
-* `outbound peer` - 连接由节点发起
-* `inbound peer` - 连接由 Peer 发起
+* `outbound peer` - 主动发起连接的节点
+* `inbound peer` - 被动接受连接的节点
 * `max_outbound` - 节点主动连接的 Peers 上限
 * `max_inbound` - 节点被动接受的 Peers 上限
 * `network group` - 驱逐节点时用到的概念，对 Peer 连接时的 IP 计算，IPv4 取前 16 位，Ipv6 取前 32 位
@@ -84,7 +84,7 @@ PeerInfo {
 并根据 peer 行为和 `SCORING_SCHEMA` 调整 peer 的评分。
 
 ``` ruby
-peer.score += BEHAVIOURS[i] * SCOREING_SCHEMA[BEHAVIORS[i]]
+peer.score += SCOREING_SCHEMA[BEHAVIOUR]
 ```
 
 Peer 的评分是 CKB P2P 网络安全的重要部分，peer 的行为可以分为如下三种：

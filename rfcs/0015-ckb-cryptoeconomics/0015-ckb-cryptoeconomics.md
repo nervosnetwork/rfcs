@@ -115,6 +115,9 @@ The native token for the Nervos CKB is the "Common Knowledge Byte", or "CK Byte"
 
 A cell's occupied capacity could be equal to or less than its specified capacity. For example, for a 1000 byte cell, 4 bytes would be used to specify its own capacity, 64 bytes for the lock script and 128 bytes for storing state. Then the cell's current occupied capacity is 196 bytes, but with room to grow up to 1000 bytes.
 
+The smallest unit of the native token is "CK Shannon": `1 CK Byte = 100_000_000 CK Shannons`.
+"CK Shannon" is the indivisible unit.
+"CK Shannon" is designed for the scenes that people want to transfer value less than one "CK Byte".
 
 ### Token Issuance
 

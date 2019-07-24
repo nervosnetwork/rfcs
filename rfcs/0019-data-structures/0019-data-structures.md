@@ -24,7 +24,7 @@ This documents explains all the basic data structures used in CKB.
 
 ```json
 {
-    "capacity": 5000000,
+    "capacity": 500_000_000_000_000,
     "data": "0x",
     "lock": {
       "args": [],
@@ -38,7 +38,7 @@ This documents explains all the basic data structures used in CKB.
 
 | Name       | Type       | Description                                                  |
 | :--------- | :--------- | :----------------------------------------------------------- |
-| `capacity` | uint64     | **The size of the cell.** When a new cell is generated (via transaction), one of the verification rule is `capacity ≥ len(capacity)+len(data)+len(type)+len(lock)`. This value also represents the balance of CKB coin, just like the `nValue` field in the Bitcoin's CTxOut. (E.g. Alice owns 100 CKB coins means she can unlock a group of cells that has 100 amount of `capacity` in total.) |
+| `capacity` | uint64     | **The size of the cell (in shannons).** When a new cell is generated (via transaction), one of the verification rule is `capacity_in_bytes >= len(capacity) + len(data) + len(type) + len(lock)`. This value also represents the balance of CKB coin, just like the `nValue` field in the Bitcoin's CTxOut. (E.g. Alice owns 100 CKB coins means she can unlock a group of cells that has 100 amount of `bytes` (which is 10_000_000_000 amount of `shannons`) in total.) |
 | `data`     | Bytes      | **Arbitrary data.** This part is for storing states or scripts.  In order to make this cell valid on-chain, the data filled in this field should comply with the logics and rules defined by `type`. |
 | `type`     | `Script`   | **A Script that defines the type of the cell.** It limits how the `data` field of the new cells can be changed from old cells. `type` is required to has a data structure of `script`. **This field is optional.** |
 | `lock`     | `Script`   | **A Script that defines the ownership of the cell**, just like the `scriptPubKey` field in the Bitcoin's CTxOut. Whoever can provide unlock arguments that makes the execution of this script success can consume this cell as input in an transaction (i.e. has the ownership of this cell). |
@@ -98,7 +98,7 @@ For more information regardingt how `Script` structure is implemented please ref
     ],
     "outputs": [
       {
-        "capacity": 5000000,
+        "capacity": 500_000_000_000_000,
         "data": "0x",
         "lock": {
           "args": [],
@@ -119,7 +119,7 @@ For more information regardingt how `Script` structure is implemented please ref
 | ----------------- | ------------------------------ | ------------------------------------------------------------ |
 | `version`         | uint32                         | **The version of the transaction.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
 | `deps`            | [`outpoint`]                   | **An array of `outpoint` that point to the cells that are dependencies of this transaction.** Only live cells can be listed here. The cells listed are read-only. |
-| `inputs`          | [{`previsou_output` , `args`}] | **An array of {`previous_output`, `args`}.** |
+| `inputs`          | [{`previous_output` , `args`}] | **An array of {`previous_output`, `args`}.** |
 | `previous_output` | `outpoint`                     | **A cell outpoint that point to the cells used as inputs.** Input cells are in fact the output of previous transactions, hence they are noted as `previous_output` here. These cells are referred through  `outpoint`, which contains the transaction `hash` of the previous transaction, as well as this cell's `index` in its transaction's output list. |
 | `args`            | [Bytes]                        | **Additional input arguments provided by transaction creator to make the execution of corresponding lock script success**. One example here, is that signatures might be include here to make sure a signature verification lock script passes. |
 | `outputs`         | [`cell`]                       | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
@@ -150,7 +150,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 
 ```json
 {
-  "commit_transactions": [
+  "transactions": [
     {
       "deps": [],
       "inputs": [
@@ -164,12 +164,12 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
       ],
       "outputs": [
         {
-          "capacity": 5000000,
+          "capacity": 500_000_000_000_000,
           "data": "0x",
           "lock": {
             "args": [],
             "binary_hash": "0xa58a960b28d6e283546e38740e80142da94f88e88d5114d8dc91312b8da4765a"
-          }
+          },
           "type": null
         }
       ],
@@ -191,7 +191,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     "uncles_hash": "0x99cf8710e59303bfac236b57256fcea2c58192f2c9c39d1ea4c19cbcf88b4952",
     "version": 0
   },
-  "proposal_transactions": [],
+  "proposals": [],
   "uncles": [
     {
     "cellbase": {
@@ -200,7 +200,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
     "header": {
         ...
     },
-    "proposal_transactions": []
+    "proposals": []
     }
   ]
 }
@@ -213,8 +213,8 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | Name                    | Type            | Description                                                  |
 | ----------------------- | --------------- | ------------------------------------------------------------ |
 | `header`                | `Header`        | **The block header of the block.** This part contains some metadata of the block. See [the Header section](#header) below for the details of this part. |
-| `commit_trasactions`    | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
-| `proposal_transactions` | [string]        | **An array of hex-encoded short transaction ID of the proposed transactions.** |
+| `trasactions`           | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
+| `proposals`             | [string]        | **An array of hex-encoded short transaction ID of the proposed transactions.** |
 | `uncles`                | [`UncleBlock`]  | **An array of uncle blocks of the block.** See [the UncleBlock section](#uncleblock) below for the details of this part. |
 
 #### Header
@@ -244,5 +244,5 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | ----------------------- | ------------- | ------------------------------------------------------------ |
 | `cellbase`              | `Transaction` | **The cellbase transaction of the uncle block.** The inner structure of this part is same as [the Transaction structure](#transaction) above. |
 | `header`                | `Header`      | **The block header of the uncle block.** The inner structure of this part is same as [the Header structure](#header) above. |
-| `proposal_transactions` | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
+| `proposals`             | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
 

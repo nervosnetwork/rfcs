@@ -85,11 +85,17 @@ All CKB VM instructions consume 1 cycle except the following ones:
 
 Each syscall in CKB has different rules for consuming cycles:
 
-#### Load TX
+#### Load TX Hash
 
-*Load TX* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction data: for every single byte in the data, it consumes 10 more cycles.
+*Load TX Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
 
-Note that even though the script only requires part of the serialized TX data, the syscall still charges based on the full serialized data size.
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
+
+#### Load Current Script Hash
+
+*Load Current Script Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized script hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
 
 #### Load Cell
 
@@ -105,37 +111,33 @@ Note that even though the script only requires part of the serialized Cell struc
 
 Note that even though the script only requires part of the specified serialized field, the syscall still charges based on the full serialized field size.
 
+#### Load Input
+
+*Load Input* syscall first consumes 100 initial cycles, it then measures the size of the serialized input data: for every single byte in the serialized data, it consumes 100 more cycles.
+
+Notice the charged cycles here is 10 times the cycles charged in `Load Input By Field` syscall, this is because we are discouraging the use of this syscall. One should only use this if they really need the full serialized input.
+
+Note that even though the script only requires part of the serialized input data, the syscall still charges based on the full serialized data size.
+
 #### Load Input By Field
 
 *Load Input By Field* syscall first consumes 10 initial cycles, it then measures the size of the serialized data from the specified field: for every single byte in the serialized data, it consumes 10 more cycles.
 
 Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
 
+#### Load Header
+
+*Load Header* syscall first consumes 10 initial cycles, it then measures the size of the serialized header: for every single byte in the serialized data, it consumes 10 more cycles.
+
+Note that even though the script only requires part of the serialized header data, the syscall still charges based on the full serialized data size.
+
 #### Load Code
 
 *Load Code* syscall first consumes 10 initial cycles, it then measures the size of actual loaded code section, for every single byte in the loaded code, it consumes 10 cycles.
 
-#### Exec
-
-*Exec* syscall would first consumes 100 cycles, it would also consume 10 cycles for each byte of the cell data to execute, and 10 cycles for each byte in each argv item.
-
-It also applies a multiple on the cycle cost of each created VM instance: assume the initial VM has a `vm_depth` of 0, and the first created VM has a `vm_depth` of 1, the next VM created by the first created VM has a `vm_depth` of 2, etc. The cycle costs spent by each VM will then be multiplied by `2^{vm_depth}`. The sum of cycle costs spent by all the created VM instances, will then be added together to act as the total cost of the root level CKB VM script.
-
-#### Alter Page Permission
-
-No matter if the operation succeeds, this syscall would consumes 50 initial cycles. It then consumes 50 more cycles for each memory page altered.
-
-#### Install Page Fault
-
-This operation consumes 100 cycles.
-
 #### Debug
 
 *Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.
-
-### Page Faults
-
-When a page fault function as described [here](../0009-vm-syscalls/0009-vm-syscalls.md) is installed, a fixed amount of 100 cycles will be charged for the page fault operation. Then running the page fault function will be charged as any other normal operations.
 
 ## Final note
 
