@@ -11,8 +11,8 @@ void main( int argc, char ** argv ) {
 
     i = 0;
     while( 1 ) {
-	    c = getchar();
-	    if( c == EOF ) {
+        c = getchar();
+        if( c == EOF ) {
             break;
         }
         input[i] = c;
