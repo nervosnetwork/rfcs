@@ -9,7 +9,7 @@ Created: 2019-07-18
 
 # Eaglesong (Proof-of-Work Function for Nervos CKB)
 
-This documents specifies the Eaglesong hash function as it is to be used in the context of Nervos CKB proof-of-work.
+This document specifies the Eaglesong hash function as it is to be used in the context of Nervos CKB proof-of-work.
 
  * [Notation](#Notation)
  * [Design Strategies](#Desgin-Strategies)
@@ -97,7 +97,7 @@ The state of the Eaglesong permutation consists of 16 integers.
 <a name="Bit-Matrix"></a>
 ## Bit Matrix
 
-The state vector is mapped to a new state vector determined via (row-)vector-matrix multiplication, where the coefficients of the matrix are either 0 or 1. Every row of this matrix represents an indications of which state elements to xor together.
+The state vector is mapped to a new state vector determined via (row-)vector-matrix multiplication, where the coefficients of the matrix are either 0 or 1. Every row of this matrix represents an indication of which state elements to xor together.
 
 The matrix is given below. A multiplication procedure follows.
 
@@ -167,7 +167,7 @@ function ApplyCirculantMultiplication( state_vector ):
 <a name="Injection-of-Constants"></a>
 ## Injection of Constants
 
-A given constant is xorred into every component of the state vector. The coefficients differ per component and per round. They are determined from using Keccak to expand the ASCII string 
+A given constant is xored into every component of the state vector. The coefficients differ per component and per round. They are determined from using Keccak to expand the ASCII string 
 
 ```
 The various ways in which the knowledge on which people base their plan is communicated to them is the crucial problem for any theory explaining the economic process, and the problem of what is the best way to utilizing knowledge initially dispersed among all the people is at least one of the main problems of economic policy - or of designing an efficient economic system.
