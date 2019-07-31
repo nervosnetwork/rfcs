@@ -172,7 +172,7 @@ void EaglesongSponge( unsigned char * output, unsigned int output_length, const 
             integer = 0;
             for( k = 0 ; k < 4 ; ++k ) {
                 if( i*rate/8 + j*4 + k < input_length ) {
-                    integer = (integer << 8) ^ input[j*4 + k];
+                    integer = (integer << 8) ^ input[i*rate/8 + j*4 + k];
                 }
                 else if( i*rate/8 + j*4 + k == input_length ) {
                     integer = (integer << 8) ^ delimiter;

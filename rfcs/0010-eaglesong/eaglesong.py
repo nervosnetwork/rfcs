@@ -159,7 +159,7 @@ def EaglesongSponge( input_bytes, num_output_bytes, delimiter ):
             integer = 0
             for k in range(0, 4):
                 if i*rate//8 + j*4 + k < len(input_bytes):
-                    integer = (integer << 8) ^ input_bytes[j*4 + k]
+                    integer = (integer << 8) ^ input_bytes[i*rate//8 + j*4 + k]
                 elif i*rate//8 + j*4 + k == len(input_bytes):
                     integer = (integer << 8) ^ delimiter
             state[j] = state[j] ^ integer
