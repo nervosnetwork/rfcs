@@ -42,10 +42,10 @@ payload = type | parameter1 | parameter2 | ...
 ```
 
 |   type     |    parameter1    | parameter2  |  lock hash / script |
-|------------|------------------|-------------|-------------|
-|    0x00    |    lock hash    |     --     |    lock hash     |
-|    0x01    | 1 byte index |  PK/PKHash  | lock script = {code_hash: table[p1], args:[p2]} |
-|    <TBD>   |     --       |  --   | -- |
+|-----------|---------------------|------------------|------------------------|
+|    0x00    |      lock hash      |              --           |         lock hash        |
+|    0x01    |   1 byte index    |  PK/PKHash  | lock script = {code_hash: table[p1], args:[p2]} |
+|  <TBD>  |              --               |             --            |                  --                |
 
 Type 0  simply wraps the lock hash to an address. Type 1 is a compact format which identifies common used code hash by 1 byte code hash index instead of 32 bytes code hash. Other type number address formats are to be defined.
 
@@ -56,8 +56,8 @@ Note that current payload types only support 1 lock script argument (in paramete
 Type 1 of ckb address format uses 1 byte index to refer to common used code hash. Here is a predefined code hash table.
 
 |     code hash index  | code_hash    | args |
-|----------------|---------------------|------|
-|      0x00      | SECP256K1 + blake160 | blake160(PK)  |
+|--------------------------|------------------|-------|
+|                0x00               | SECP256K1 + blake160 | blake160(PK)  |
 
 The blake160 here means the first 20 bytes truncation of Blake2b hash function.
 
