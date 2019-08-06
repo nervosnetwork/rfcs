@@ -67,13 +67,13 @@ The blake160 here means the first 20 bytes truncation of Blake2b hash function.
 
 Suppose we have
 
-```c
-lock_hash = 0xcdf2b97ef29371a53482cf977ac0c1319cc2e102e6ac8185e973c89996b4eaf7
+`
+lock_hash = 0xcdf2b97ef29371a53482cf977ac0c1319cc2e102e6ac8185e973c89996b4eaf7`
 
 then,
 
-payload = 0x00 | lock_hash
-```
+`payload = 0x00 | lock_hash`
+
 Calculate the base32 format of hrp and payload.
 ```c
 Base32(hrp) = "rrrqrtz"
@@ -89,7 +89,6 @@ Add up together
 address = hrp | 1 | Base32(payload) | checksum 
         = "ckb1qrxl9wt772fhrff5st8ew7kqcyceeshpqtn2eqv9a9eu3xvkkn40wv6tu2p"
 ```
-
 
 ### Encode lock script to type 1 address
 
