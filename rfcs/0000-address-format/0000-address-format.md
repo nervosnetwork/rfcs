@@ -11,11 +11,13 @@ Created: 2019-01-20
 
 ## Abstract
 
-CKB Address Format is an application level lock script display recommendation. The lock script consists of two key parameters, including *code hash* and *arguments*. In the consideration of user experience, it is necessary to wrap the raw data structure into a verifiable and extensible format.
+CKB Address Format is an application level *lock hash* display recommendation. *lock hash*  is the 256bit Blake2b hash result of *lock script*. The lock script consists of two key parameters, including *code hash* and *arguments*. To provide lock hash, one could use the original lock script, or directly the hash of the script.
+
+In the consideration of user experience, it is necessary to wrap the raw data structure into a verifiable and extensible format.
 
 ## Solution
 
-CKB Address Format follows [Bitcoin base32 address format (BIP-173)][bip173] rules, which wraps code_hash ahd args in **Bech32** encoding and a [BCH checksum][bch].
+CKB Address Format follows [Bitcoin base32 address format (BIP-173)][bip173] rules, which wraps data in **Bech32** encoding and a [BCH checksum][bch].
 
 A Bech32 string is at most 90 characters long and consists of the **human-readable part**, the **separator**, and the **data part**. The last 6 characters of data part is checksum. The data part is base32 encoded. Here is the readable translation of base32 encoding table.
 
@@ -33,18 +35,19 @@ The human-readable part is "**ckb**" for CKB mainnet, and "**ckt**" for the test
 
 ## Payload
 
-The first step to encode lock script into address is to encode it to payload. We use type field in payload to identify different encoding methods according to different user scenario needs, and parameter fields to represent lock script data.
+The first step to encode lock hash or lock script into address is to encode them to payload. We use type field in payload to identify different encoding methods according to different user scenario needs, and parameter fields to represent extensional data.
 
 ```
 payload = type | parameter1 | parameter2 | ...
 ```
 
-|   type     |    parameter1    | parameter2  | => lock script |
+|   type     |    parameter1    | parameter2  |  lock hash / script |
 |------------|------------------|-------------|-------------|
-|    0x01    | 1 byte index |  PK/PKHash  | {code_hash: libs[p1], args:[p2]} |
+|    0x00    |    lock hash    |     --     |    lock hash     |
+|    0x01    | 1 byte index |  PK/PKHash  | lock script = {code_hash: table[p1], args:[p2]} |
 |    <TBD>   |     --       |  --   | -- |
 
-Type 1 is a compact address format which identifies common used code hash by 1 byte code hash index instead of 32 bytes code hash. Other type number address formats are reserved.
+Type 0  simply wraps the lock hash to an address. Type 1 is a compact format which identifies common used code hash by 1 byte code hash index instead of 32 bytes code hash. Other type number address formats are to be defined.
 
 Note that current payload types only support 1 lock script argument (in parameter2 field). However, it is easy to be extended to support multiple arguments.
 
@@ -60,7 +63,35 @@ The blake160 here means the first 20 bytes truncation of Blake2b hash function.
 
 ## Examples
 
-### Encode lock script to address
+### Encode lock hash to type 0 address
+
+Suppose we have
+
+```c
+lock_hash = 0xcdf2b97ef29371a53482cf977ac0c1319cc2e102e6ac8185e973c89996b4eaf7
+
+then,
+
+payload = 0x00 | lock_hash
+```
+Calculate the base32 format of hrp and payload.
+```c
+Base32(hrp) = "rrrqrtz"
+Base32(payload) = "qrxl9wt772fhrff5st8ew7kqcyceeshpqtn2eqv9a9eu3xvkkn40w"
+```
+Calculate checksum
+```c
+checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = v6tu2p
+```
+Add up together
+
+```c
+address = hrp | 1 | Base32(payload) | checksum 
+        = "ckb1qrxl9wt772fhrff5st8ew7kqcyceeshpqtn2eqv9a9eu3xvkkn40wv6tu2p"
+```
+
+
+### Encode lock script to type 1 address
 
 The original lock script is,
 
