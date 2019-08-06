@@ -42,7 +42,7 @@ payload = type | parameter1 | parameter2 | ...
 |   type     |    parameter1    | parameter2  | => lock script |
 |------------|------------------|-------------|-------------|
 |    0x01    | 1 byte index |  PK/PKHash  | {code_hash: libs[p1], args:[p2]} |
-|    other   | reserved  |  --   | -- |
+|    <TBD>   |     --       |  --   | -- |
 
 Type 1 is a compact address format which identifies common used code hash by 1 byte code hash index instead of 32 bytes code hash. Other type number address formats are reserved.
 
