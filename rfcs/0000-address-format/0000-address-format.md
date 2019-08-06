@@ -55,7 +55,6 @@ Type 1 of ckb address format uses 1 byte index to refer to common used code hash
 |     code hash index  | code_hash    | args |
 |----------------|---------------------|------|
 |      0x00      | SECP256K1 + blake160 | blake160(PK)  |
-|      reserved      | -- | --  |
 
 The blake160 here means the first 20 bytes truncation of Blake2b hash function.
 
