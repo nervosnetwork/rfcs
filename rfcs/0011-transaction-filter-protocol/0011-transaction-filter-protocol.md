@@ -23,7 +23,7 @@ Without this protocol, peers have to download the entire blocks and accept all b
 
 ## Messages
 
-*Message serialization format is [CFB](../0008-serialization/0008-serialization.md)*
+*Message serialization format is [Molecule](../0008-serialization/0008-serialization.md)*
 
 ### SetFilter
 
