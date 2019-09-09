@@ -39,10 +39,12 @@ To translate payload to lock script, one can convert code_hash_index to code_has
 
 
 | code_hash_index |        code_hash     |   code_type  |      args     |
-|:---------------:|----------------------|--------------|---------------|
-|      0x00       | SECP256K1 + blake160 |     Data     |  blake160(PK) |
+|:---------------:|----------------------|:------------:|---------------|
+|      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK) |
+|      0x01       | SECP256K1 + hash160  |     Type     |  hash160(PK)  |
 
 \* The blake160 here means the leading 20 bytes truncation of Blake2b hash result.
+\* The hash160 here means Bitcoin address calculation *double hash* algorithm, which means `hash160(PK) := Ripemd160(SHA256(PK))`.
 
 ### Full Payload Format
 
