@@ -11,124 +11,86 @@ Created: 2019-01-20
 
 ## Abstract
 
-CKB Address Format is an application level *lock hash* display recommendation. *lock hash*  is the 256bit Blake2b hash result of *lock script*. The lock script consists of two key parameters, including *code hash* and *arguments*. To provide lock hash, one could use the original lock script, or directly the hash of the script.
+*CKB Address Format* is an application level cell **lock script** display recommendation. The lock script consists of three key parameters, including *code_hash*, *hash_type* and *args*. CKB address packages lock script into a single line, verifiable, and human read friendly format.
 
-In the consideration of user experience, it is necessary to wrap the raw data structure into a verifiable and extensible format.
+## Data Structure
 
-## Solution
+### Payload Format Types
 
-CKB Address Format follows [Bitcoin base32 address format (BIP-173)][bip173] rules, which wraps data in **Bech32** encoding and a [BCH checksum][bch].
+To generate a CKB address, we firstly encode lock script to bytes array, name *payload*. And secondly, we wrap the payload into final address format.
 
-A Bech32 string is at most 90 characters long and consists of the **human-readable part**, the **separator**, and the **data part**. The last 6 characters of data part is checksum. The data part is base32 encoded. Here is the readable translation of base32 encoding table.
+There are several methods to convert lock script into payload bytes array. We use 1 byte to identify the payload format.
 
-|0|1|2|3|4|5|6|7|
-|-|-|-|-|-|-|-|-|
-|**+0**|q|p|z|r|y|9|x|8|
-|**+8**|g|f|2|t|v|d|w|0|
+| format type |                   description                  |
+|:-----------:|------------------------------------------------|
+|  0x01       | short version for locks with popular code_hash |
+|  0x02       | full version with hash_type = "Data"           |
+|  0x04       | full version with hash_type = "Type"           |
+
+### Short Payload Format
+
+Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
+
+```c
+payload = 0x01 | code_hash_index | single_arg
+```
+
+To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And single_arg as the args.
+
+
+| code_hash_index |        code_hash     |   code_type  |      args     |
+|:---------------:|----------------------|--------------|---------------|
+|      0x00       | SECP256K1 + blake160 |     Data     |  blake160(PK) |
+
+\* The blake160 here means the leading 20 bytes truncation of Blake2b hash result.
+
+### Full Payload Format
+
+Full payload format directly encodes all data field of lock script.
+
+```c
+payload = 0x02/0x04 | code_hash | len(arg[0]) | arg[0] | ...
+```
+
+The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for "Type". We convert every element of args to plain bytes array format, and add a length number in front of every array. To keep it simple, we limit every argument size to maxium 256, which is 1 byte.
+
+## Wrap to Address
+
+We follow [Bitcoin base32 address format (BIP-173)][bip173] rules to wraps payload in to address, which ueses Bech32 encoding and a [BCH checksum][bch].
+
+The original version of Bech32 allows at most 90 characters long. Similar with [BOLT][BOLT_url], we simply remove the length limit. The error correction function is disabled when the Bech32 string is longer than 90. We don't intent to use this function anyway, because there is a risk to get wrong correction result.
+
+A Bech32 string consists of the **human-readable part**, the **separator**, and the **data part**. The last 6 characters of data part is checksum. The data part is base32 encoded. Here is the readable translation of base32 encoding table.
+
+|       |0|1|2|3|4|5|6|7|
+|-------|-|-|-|-|-|-|-|-|
+|**+0** |q|p|z|r|y|9|x|8|
+|**+8** |g|f|2|t|v|d|w|0|
 |**+16**|s|3|j|n|5|4|k|h|
 |**+24**|c|e|6|m|u|a|7|l|
-
 
 The human-readable part is "**ckb**" for CKB mainnet, and "**ckt**" for the testnet. The separator is always "1".
 
 ![](images/ckb-address.png)
 
-## Payload
+## Examples and Demo Code
 
-The first step to encode lock hash or lock script into address is to encode them to payload. We use type field in payload to identify different encoding methods according to different user scenario needs, and parameter fields to represent extensional data.
+```py
+    # for short payload format
+    pk = "13e41d6F9292555916f17B4882a5477C01270142"
+    address = "ckb1qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pqrn323p"
 
-```
-payload = type | parameter1 | parameter2 | ...
-```
-
-|   type     |    parameter1    | parameter2  |  lock hash / script |
-|-----------|---------------------|------------------|------------------------|
-|    0x00    |      lock hash      |              --           |         lock hash        |
-|    0x01    |   1 byte index    |  PK/PKHash  | lock script = {code_hash: table[p1], args:[p2]} |
-|  <TBD>  |              --               |             --            |                  --                |
-
-Type 0  simply wraps the lock hash to an address. Type 1 is a compact format which identifies common used code hash by 1 byte code hash index instead of 32 bytes code hash. Other type number address formats are to be defined.
-
-Note that current payload types only support 1 lock script argument (in parameter2 field). However, it is easy to be extended to support multiple arguments.
-
-### Code Hash Index
-
-Type 1 of ckb address format uses 1 byte index to refer to common used code hash. Here is a predefined code hash table.
-
-|     code hash index  | code_hash    | args |
-|--------------------------|------------------|-------|
-|                0x00               | SECP256K1 + blake160 | blake160(PK)  |
-
-The blake160 here means the first 20 bytes truncation of Blake2b hash function.
-
-## Examples
-
-### Encode lock hash to type 0 address
-
-Suppose we have
-
-`
-lock_hash = 0xcdf2b97ef29371a53482cf977ac0c1319cc2e102e6ac8185e973c89996b4eaf7`
-
-then,
-
-`payload = 0x00 | lock_hash`
-
-Calculate the base32 format of hrp and payload.
-```c
-Base32(hrp) = "rrrqrtz"
-Base32(payload) = "qrxl9wt772fhrff5st8ew7kqcyceeshpqtn2eqv9a9eu3xvkkn40w"
-```
-Calculate checksum
-```c
-checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = v6tu2p
-```
-Add up together
-
-```c
-address = hrp | 1 | Base32(payload) | checksum 
-        = "ckb1qrxl9wt772fhrff5st8ew7kqcyceeshpqtn2eqv9a9eu3xvkkn40wv6tu2p"
+    # for full payload format
+    code_hash = "48a2ce278d84e1102b67d01ac8a23b31a81cc54e922e3db3ec94d2ec4356c67c"
+    hash_type = "Data"
+    args = ['dde7801c073dfb3464c7b1f05b806bb2bbb84e99', '00c1ddf9c135061b7635ca51e735fc2b03cee339']
+    address = "ckb1qfy29n383kzwzyptvlgp4j9z8vc6s8x9f6fzu0dnaj2d9mzr2mr8c9xau7qpcpealv6xf3a37pdcq6ajhwuyaxg5qrqam7wpx5rpka34efg7wd0u9vpuaceeu5fsh5"
 ```
 
-### Encode lock script to type 1 address
-
-The original lock script is,
-
-```js
-{
-    args: ['13e41d6F9292555916f17B4882a5477C01270142'],
-    code_hash: 0x48a2ce278d84e1102b67d01ac8a23b31a81cc54e922e3db3ec94d2ec4356c67c
-}
-```
-
-Suppose that the code_hash is from secp256k1 with blake160 algorithm implementation binary. And the sole parameter of args is secp256k1 public key's blake160 result. We could simply encode the lock script into P2PH address format.
-
-Firstly, compact lock script to payload.
-
-```c
-payload = 0x01 | 0x00 | 0x13e41d6F9292555916f17B4882a5477C01270142
-```
-
-Calculate the base32 format of hrp and payload.
-
-```c
-Base32(hrp) = "rrrqrtz"
-Base32(payload) = "qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pq"
-```
-
-Calculate checksum
-
-```c
-checksum = BCH_checksum(Base32(hrp) | Base32(payload)) = rn323p
-```
-
-Add up together
-
-```c
-address = hrp | 1 | Base32(payload) | checksum 
-        = "ckb1qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pqrn323p"
-```
+Demo code: https://github.com/CipherWang/ckb-address-demo 
 
 [bip173]: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
 
 [bch]: https://en.wikipedia.org/wiki/BCH_code
+
+[BOLT_url]: https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
