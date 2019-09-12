@@ -7,7 +7,7 @@ Organization: Nervos Foundation
 Created: 2019-01-20
 ---
 
-# Address Format
+# CKB Address Format
 
 ## Abstract
 
