@@ -58,7 +58,7 @@ The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for
 
 ## Wrap to Address
 
-We follow [Bitcoin base32 address format (BIP-173)][bip173] rules to wraps payload in to address, which ueses Bech32 encoding and a [BCH checksum][bch].
+We follow [Bitcoin base32 address format (BIP-173)][bip173] rules to wraps payload in to address, which uses Bech32 encoding and a [BCH checksum][bch].
 
 The original version of Bech32 allows at most 90 characters long. Similar with [BOLT][BOLT_url], we simply remove the length limit. The error correction function is disabled when the Bech32 string is longer than 90. We don't intent to use this function anyway, because there is a risk to get wrong correction result.
 
