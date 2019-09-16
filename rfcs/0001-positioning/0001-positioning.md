@@ -513,7 +513,15 @@ The economic model of the Common Knowledge Base aligns incentives for all partic
 - Developers: rising token price provides more security for their users, without significantly raising the cost to developers
 - Token holders: rising token price increases the value of their tokens
 
-By aligning the incentives of all participants, a united Nervos community can grow and the economic value of the network also becomes hard-fork resistant.
+The Nervos Common Knowledge Base is built explicitly for secure value preservation, instead of cheap transaction fees. This critical positioning will attract store of value users, similar to the user community of Bitcoin, instead of medium of exchange users.
+
+Medium of exchange use cases have a tendency to always push a blockchain network toward centralization, in pursuit of greater efficiency and low fees. Without significant fee income for infrastructure operators that secure the network (miners or validators), security must be funded through monetary inflation, or is simply under-funded. Monetary inflation is detrimental to long-term holders, and under-funded security is detrimental to any stakeholder of the network.
+
+Store of value users however, have strong demands for censorship resistance and asset security. They rely on miners to provide this, and in turn compensate them for their role. In a store of value network, these parties have aligned interests.
+
+Though in other networks long-term holders may be considered "speculators", token holders are direct contributors to the total value of Nervos Network. These users create demand for the native tokens, which contributes to the network's increased security budget.
+
+By aligning the incentives of all participants, a united Nervos community can grow, and the aligned economic system of the network will also be hard-fork resistant.
 
 ### 6.5 Value Capture and Value Generation
 
