@@ -11,11 +11,11 @@ Created: 2019-09-12
 
 ## 1.Purpose of This Paper
 
-The Nervos Network is made up of a number of protocols and innovations. It's important to have clear documentation and technical specifications on key protocol design and implementations - for which we utilize an [RFC](https://github.com/nervosnetwork/rfcs) (request for comment) process. However, we feel it's equally important that we help our communities to understand what we try to accomplish, the trade-offs we have made, and how we have arrived at our current design decisions. 
+The Nervos Network is made up of a number of protocols and innovations. It's important to have clear documentation and technical specifications on key protocol design and implementations - for which we utilize an [RFC](https://github.com/nervosnetwork/rfcs) (request for comment) process. However, we feel it's equally important that we help our communities to understand what we try to accomplish, the trade-offs we have made, and how we have arrived at our current design decisions.
 
-We start this document with a detailed examination of the problems that public permissionless blockchains face today and the existing solutions attempting to solve them. We hope this provides the necessary context for our readers to understand our own rationale on how best to approach these challenges, and our underlying design decisions. We then provide a high-level walkthrough of all parts of the Nervos Network, with a focus on how they work together to support the overall vision of the network. 
+We start this document with a detailed examination of the problems that public permissionless blockchains face today and the existing solutions attempting to solve them. We hope this provides the necessary context for our readers to understand our own rationale on how best to approach these challenges, and our underlying design decisions. We then provide a high-level walkthrough of all parts of the Nervos Network, with a focus on how they work together to support the overall vision of the network.
 
-## 2. Background 
+## 2. Background
  
 Scalability, sustainability and interoperability are among the largest challenges public permissionless blockchains face today. While many projects claim to have solutions to these problems, it's important to understand where these problems come from and put solutions in the context of possible trade-offs.
 
@@ -537,11 +537,11 @@ Finally, through the design of the NervosDAO and its "inflation shelter" functio
 
 Permissionless blockchains allow total decentralization in asset issuance and transaction. This is what makes them valuable, but is also the reason they aren't compatible with real-world financial and judicial systems.
 
-The emergence of a layered architecture provides the opportunity to create regulatory compliant portions of an unregulated, permissionless blockchain. For example, users can store their decentralized assets on layer 1, enjoy absolute property ownership of these assets, and can also process real-world business on layer 2, where they are subject to regulatory and legal constraints. 
+The emergence of a layered architecture provides the opportunity to create regulatory compliant portions of an unregulated, permissionless blockchain. For example, users can store their decentralized assets on layer 1, enjoy absolute property ownership of these assets, and can also process real-world business on layer 2, where they are subject to regulatory and legal constraints.
 
-Take for example cryptocurrency exchanges - countries such as Japan and Singapore have issued licenses to exchanges and created regulatory requirements. A compliant exchange or a branch of a global exchange could build a layer 2 trading chain, import user identities and assets and then conduct legal business in accordance with local regulatory requirements. 
+Take for example cryptocurrency exchanges - countries such as Japan and Singapore have issued licenses to exchanges and created regulatory requirements. A compliant exchange or a branch of a global exchange could build a layer 2 trading chain, import user identities and assets and then conduct legal business in accordance with local regulatory requirements.
 
-Issuance and transaction of real-world assets become possible within a layered blockchain construction. Real-world assets can flow to the blockchain ecosystem through a regulated layer 2 side-chain to the permissionless layer 1 blockchain, allowing these assets access to the largest ecosystem of composable, decentralized financial services and maximized value. 
+Issuance and transaction of real-world assets become possible within a layered blockchain construction. Real-world assets can flow to the blockchain ecosystem through a regulated layer 2 side-chain to the permissionless layer 1 blockchain, allowing these assets access to the largest ecosystem of composable, decentralized financial services and maximized value.
 
 In the future, the Nervos Network will also use these kind of layer 2 side-chains and applications as the foundation of large-scale user adoption, in cooperation with leading companies in this space.
 
