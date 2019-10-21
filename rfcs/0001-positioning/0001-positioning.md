@@ -104,10 +104,10 @@ While there has been a lot of research into consensus protocols in recent years,
 
 We believe that a well-designed economic model should go beyond the consensus process and ensure the long-term sustainability of the protocol as well. In particular, the economic model should be designed with the following goals:
 
-- the network should have a sustainable way to raise revenue to compensate service providers (typically miners or validators), ensuring that the network remains sustainably secure
+- the network should have a sustainable way to compensate service providers (typically miners or validators), ensuring that the network remains sustainably secure
 - the network should have a sustainable way to maintain a low barrier to participation, ensuring that the network remains decentralized over time
 - the resources of the public network should be efficiently and fairly allocated
-- the blockchain's native token must have a convincing intrinsic value
+- the blockchain's native token must have intrinsic value
 
 #### 2.2.3 Analysis of Bitcoin's Economic Model
 
@@ -149,9 +149,9 @@ Smart contract platforms like Ethereum are multi-asset platforms. They support i
 
 With its block rewards, Bitcoin has an excellent "store of value" economic model. Miners are paid a fixed block reward denominated in BTC, and thus their income rises along with the price of BTC. Therefore, the platform has the ability to raise revenue for miners to increase security (measured by the cost of attack) while maintaining a sustainable economic model.
 
-For multi-asset platforms, it becomes much more challenging to fulfill this requirement, because "value" can be expressed with crypto-assets beyond the native token. If the value of crypto-assets secured by the platform increases, however the value of the native token doesn't, network security therefore doesn't increase, and it becomes more profitable to attack the platform's consensus process to double spend crypto-assets stored on the platform.
+For multi-asset platforms, it becomes much more challenging to fulfill this requirement, because "value" can be expressed with crypto-assets beyond the native token. If the value of crypto-assets secured by the platform increases, but network security doesn't, it becomes more profitable to attack the platform's consensus process to double spend crypto-assets stored on the platform.
 
-For a multi-asset smart contract platform to function as a store of value, the demand to own on-chain assets must have a clear way to generate demand for ownership of its native token. Or put another way, the platform's native token must be a good value capture of the platform's aggregate asset value. If the intrinsic value of a platform's native token is limited to transaction fee payment, its value would be determined solely by transaction demand, instead of the demand of asset storage.
+For a multi-asset smart contract platform to function as a store of value, proper incentives must be put in place to align in the growth in value of a network's assets with its underlying security. Or put another way, the platform's native token must be a good value capture of the platform's aggregate asset value. If the intrinsic value of a platform's native token is limited to transaction fee payment, its value would be determined solely by transaction demand, instead of the demand of asset storage.
 
 Smart contract platforms that are not designed to function as a store of value have to rely on the native token's monetary premium (the willingness of people to hold the tokens beyond their intrinsic value) to support its ongoing security. This is only feasible if one platform dominates with unique features that can't be found elsewhere, or out-competes others by delivering the lowest possible cost of transactions.
 
@@ -181,7 +181,7 @@ The crypto-economics of cross-chain networks may need further study as well. For
 
 Cross-chain networks benefit from network effects - the more interconnected chains there are in a network, the more valuable the network is, and the more attractive it is to potential new participants in the network. Ideally, such value would be captured by the native token and used to further encourage the growth of the network. However, in a pooled security network such as Polkadot, higher cost of network participation becomes a deterrent for the network to accrue further value. In a loosely connected network like Cosmos, if we assume same cross-chain transaction demand and fees, higher cost of staking participation lowers the expected return for validators, discouraging further staking participation.
 
-With its layered approach, the Nervos Network is also a multi-chain network. Architecturally, Nervos uses the cell model and a low-level virtual machine to support true customization and user-created cryptographic primitives, enabling interoperability across heterogeneous blockchains (covered in 4.4.1). Crypto-economically, the Nervos Network concentrates valuable assets (instead of message passing) to its root chain. This mechanism raises the network's security budget as the aggregate value secured by the network rises. This is covered in detail in (4.4).
+With its layered approach, the Nervos Network is also a multi-chain network. Architecturally, Nervos uses the cell model and a low-level virtual machine to support true customization and user-created cryptographic primitives, enabling interoperability across heterogeneous blockchains (covered in 4.4.1). Crypto-economically, the Nervos Network concentrates value (instead of message passing) to its root chain. This mechanism raises the network's security budget as the aggregate value secured by the network rises. This is covered in detail in (4.4).
 
 ## 3. Core Principles of the Nervos Network
 
@@ -362,7 +362,7 @@ The portion of secondary issuance that doesn't go to 1) miners or 2) long-term h
 
 The treasury fund will be used to fund ongoing research and development of the protocol, as well as building the ecosystem of the Nervos Network. The use of the treasury funds will be open, transparent and on-chain for everyone to see. Compared to an inflation-based treasury funding model, this model doesn't dilute long-term token holders (who have deposited their tokens into the NervosDAO). Funding of protocol development is strictly derived from the opportunity cost to short-term token holders.
 
-The treasury won't be activated immediately upon the main-net launch of the Nervos Common Knowledge Base. It will be activated with a hard-fork later, only after the Nervos Foundation has exhausted the Ecosystem Fund, included in the Genesis block. Prior to activation of the treasury, this portion of the secondary issuance will be burned. 
+The treasury won't be activated immediately upon the main-net launch of the Nervos Common Knowledge Base. With the community's approval, it will be activated with a hard-fork later, only after the Nervos Foundation has exhausted the Ecosystem Fund, included in the Genesis block. Prior to activation of the treasury, this portion of the secondary issuance will be burned.
 
 
 ### 4.7 Governance
@@ -377,9 +377,7 @@ Some projects, such as Tezos, go further, and implement on-chain governance to e
 
 However, despite its straightforwardness, on-chain governance in practice is not as elegant as it is presented. First of all, votes only reflect the interest of token holders, while simply ignoring all other parties. Secondly, a low voting rate is a long-standing problem in both the blockchain world and real world. How can results be in the best interest of the majority if only a minority vote? Last but most importantly, a hard fork should always be considered as final recourse for all stakeholders. Given the excellent data availability provided by the wide replication of a permissionless blockchain, forking away from the existing chain with full data preservation and without interruption should always be an option. A hard fork could never be implemented via on-chain governance.
 
-There are not yet viable answers to the questions of governance, so for Nervos Network we will take an evolving approach. In the early days, the Nervos Foundation will assume the role of the governing body of the project. The Nervos Foundation is a Panamanian Foundation with a board of independent councils. The foundation is tasked with mandates to further the development of the Nervos Network and the cultivation of its ecosystem and adoption.
-
-Over time, as more tokens are mined, mining becomes more distributed, and more developers are engaged, governance responsibilities will gradually shift to the community. Over the long term, community-based governance will manage the protocol upgrade process and resource allocation from the treasury.
+There are not yet viable answers to the questions of governance, so for Nervos Network we will take an evolving approach. We expect the community to develop organically in the early days and over time, as more tokens are mined, mining becomes more distributed, and more developers are engaged, governance responsibilities will gradually become more decentralized. Over the long term, community-based governance will manage the protocol upgrade process and resource allocation from the treasury.
 
 Nervos CKB is designed to be decentralized autonomous infrastructure that could last for hundreds of years, which means there are certain things that demand our best effort as a community to hold true, no matter how this network evolves. The 3 core invariants are:
 
@@ -453,7 +451,7 @@ The construction outlined above should be able to support more complex state tra
 
 While layer 2 solutions provide impressive scalability, the token economics of these systems may pose design challenges.
 
-Layer 2 token economics may involve compensation for critical infrastructure (such as validators and watchtowers), as well as application-specific incentive design. Critical layer 2 infrastructure tends to work better with a duration-based, subscription model. In the Nervos Network, this pricing structure can be easily implemented through the CKB's opportunity cost-based payment method. Service providers can collect interest on their users' "security deposits" through the NervosDAO. Layer 2 developers can then focus token economic models on incentives specific to their applications.
+Layer 2 token economics may involve compensation for critical infrastructure (such as validators and watchtowers), as well as application-specific incentive design. Critical layer 2 infrastructure tends to work better with a duration-based, subscription model. In the Nervos Network, this pricing structure can be easily implemented through the CKB's opportunity cost-based payment method. Service providers can collect fees on their users' "deposits" through the NervosDAO. Layer 2 developers can then focus token economic models on incentives specific to their applications.
 
 In a way, this pricing model is exactly how users pay for state storage on the CKB as well. They're essentially paying a subscription fee to miners with the distribution of their inflation rewards issued by the NervosDAO.
 
@@ -488,7 +486,7 @@ Axon is a complete solution built with Muta to provide developers a turnkey side
 
 Both Muta and Axon are currently under heavy development. We'll open source the frameworks soon, and RFCs for both Muta and Axon are also on the way.
 
-Layer 2 protocols are a flourishing area of research and development. We foresee a future in which all layer 2 protocols are standardized and seamlessly interoperate. However, we acknowledge that layer 2 solutions are still maturing, and we're often still pushing the boundaries of what they can do, as well as finding their acceptable trade-offs. We've seen early promising solutions, but there's still plenty of research to conduct on subjects such as interoperability, security and economic models in layer 2 designs. After our main-net launch, we'll dedicate much of our research effort to layer 2 protocols.
+Layer 2 protocols are a flourishing area of research and development. We foresee a future in which all layer 2 protocols are standardized and seamlessly interoperate. However, we acknowledge that layer 2 solutions are still maturing, and we're often still pushing the boundaries of what they can do, as well as finding their acceptable trade-offs. We've seen early promising solutions, but there's still plenty of research to conduct on subjects such as interoperability, security and economic models in layer 2 designs.
 
 ### 6.3 Sustainability
 
@@ -512,17 +510,17 @@ Medium of exchange use cases have a tendency to always push a blockchain network
 
 Store of value users however, have strong demands for censorship resistance and asset security. They rely on miners to provide this, and in turn compensate them for their role. In a store of value network, these parties have aligned interests.
 
-By aligning the incentives of all participants, a united Nervos community can grow, and the aligned economic system of the network will also be hard-fork resistant.
+By aligning the incentives of all participants, a united Nervos community can grow, and the aligned economic system of the network is also expected be hard-fork resistant.
 
 ### 6.5 Value Capture and Value Generation
 
-For any blockchain to remain secure as the value of assets secured by the platform increases, the system must have a mechanism to capture value as the value of assets secured grows. By bounding state, the CKB makes the state space a scarce and market-priced resource. As demand for asset storage on the network rises, the system is able to capture more value to compensate the miners.
+For any blockchain to remain secure as the value of assets secured by the platform increases, the system must have a mechanism to capture value as the value of assets secured grows. By bounding state, the CKB makes the state space a scarce and market-priced resource. As demand for asset storage on the network rises, the system is expected to better compensate the miners for securing such assets.
 
-As a value preserving platform, the intrinsic value of the CKB as a platform is determined by the amount of security it provides to the assets it preserves. As the value of assets secured rises, the value capture mechanism of the CKB economic model is able to automatically raise the CKB's security budget to attract more mining resources, making the platform more secure and raising the platform's own intrinsic value. Not only is this important to make the platform sustainable, it also provides a path of growth for the platform's intrinsic value - as the platform becomes more secure, it also becomes more attractive to higher-value assets, generating more demand. Obviously, this is bound by the overall aggregate value that will eventually move to the blockchain space, but we believe that the CKB will capture a significant share of this demand.
+As a value preserving platform, the intrinsic value of the CKB as a platform is determined by the amount of security it provides to the assets it preserves. As the value of assets secured rises, the value capture mechanism of the CKB economic model is able to automatically raise the CKB's security budget to attract more mining resources, making the platform more secure. Not only is this important to make the platform sustainable, it also provides a path of growth for the platform's intrinsic value - as the platform becomes more secure, it also becomes more attractive to higher-value assets, generating more demand. Obviously, this is bound by the overall aggregate value that will eventually move to the blockchain space.
 
 Over time, we expect the economic density of the CKB to increase. CKBytes will be used for high-value asset storage and low-value assets will to move to blockchains connected to the CKB, such as layer 2 side-chains. Instead of directly securing assets, the CKB can be used as a trust root to secure an entire side-chain’s ecosystem through, for example,  a few hundred bytes of cryptographic proofs. The economic density of such proofs is extraordinarily high, further supporting the demand curve of storage space: analogous to a small parcel of land significantly increasing its economic density by supporting a skyscraper.
 
-Finally, through the design of the NervosDAO and its "inflation shelter" function, long-term token holders will always retain a fixed percentage of total issuance, making the native token itself an excellent store of value.
+Finally, through the design of the NervosDAO and its "inflation shelter" function, long-term token holders will always retain a fixed percentage of total issuance, making the native token itself a robust store of value.
 
 ### 6.6 Bridging the Regulatory Gap
 
@@ -532,9 +530,9 @@ The emergence of a layered architecture provides the opportunity to create regul
 
 Take for example cryptocurrency exchanges - countries such as Japan and Singapore have issued licenses to exchanges and created regulatory requirements. A compliant exchange or a branch of a global exchange could build a layer 2 trading chain, import user identities and assets and then conduct legal business in accordance with local regulatory requirements.
 
-Issuance and transaction of real-world assets become possible within a layered blockchain construction. Real-world assets can flow to the blockchain ecosystem through a regulated layer 2 side-chain to the permissionless layer 1 blockchain, allowing these assets access to the largest ecosystem of composable, decentralized financial services and maximized value.
+Issuance and transaction of real-world assets become possible within a layered blockchain construction. Real-world assets can flow to the blockchain ecosystem through a regulated layer 2 side-chain to the permissionless layer 1 blockchain, allowing these assets access to the largest ecosystem of composable, decentralized financial services.
 
-In the future, the Nervos Network will also use these kind of layer 2 side-chains and applications as the foundation of large-scale user adoption, in cooperation with leading companies in this space.
+In the future, it is expected that the Nervos Network will also use layer 2 side-chains and applications as the foundation of large-scale user adoption, in cooperation with leading companies in this space.
 
 # References
 
