@@ -169,7 +169,7 @@ The arguments used here are:
     + 2: output cells.
     + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
@@ -209,12 +209,12 @@ The arguments used here are:
 
 This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
 
-* `capacity`: capacity is serialized into 8 little endian bytes, this is also how CFB Encoding [1] handles 64-bit unsigned integers.
+* `capacity`: capacity is serialized into 8 little endian bytes, this is also how Molecule Encoding [1] handles 64-bit unsigned integers.
 * `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
 * `data hash`: 32 raw bytes are extracted from `H256` structure by serializing data field
-* `lock`: lock script is serialized into the CFB Encoding [1] format
+* `lock`: lock script is serialized into the Molecule Encoding [1] format
 * `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
-* `type`: type script is serialized into the CFB Encoding [1] format
+* `type`: type script is serialized into the Molecule Encoding [1] format
 * `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
 
 With the binary result converted from different rules, the syscall then applies the same steps as documented in *Load Transaction Hash* syscall to feed data into CKB VM.
@@ -245,7 +245,7 @@ The arguments used here are:
     + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
     + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
 
-This syscall would locate a single input field in the current transaction based on `source` and `index` value, serialize the whole input into the CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate a single input field in the current transaction based on `source` and `index` value, serialize the whole input into the Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error. Specifying a valid source that is not input, such as an output, would result in `2` as return value, denoting the item is missing. Specifying an invalid index value here would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
@@ -279,11 +279,9 @@ The arguments used here are:
     + 1: out_point.
     + 2: since.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into CFB format), then use the same steps as documented in *Load Transaction Hash* syscall to feed data into VM.
+This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into Molecule format), then use the same steps as documented in *Load Transaction Hash* syscall to feed data into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
-
-NOTE there is one quirk when requesting `args` part in `deps`: since CFB doesn't allow using a vector as the root type, we have to wrap `args` in a `CellInput` table, and provide the `CellInput` table as the CFB root type instead.
 
 ### Load Header
 [load header]: #load-header
@@ -308,7 +306,7 @@ The arguments used here are:
     + 2: output cells.
     + 3: dep cells.
 
-This syscall would locate the header associated with an input or a dep OutPoint based on `source` and `index` value, serialize the whole header into CFB Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate the header associated with an input or a dep OutPoint based on `source` and `index` value, serialize the whole header into Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
 
 Specifying an invalid source value here would immediately trigger a VM error. Specifying `output` as source field would result in `2` as return value, denoting item missing state. Specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
@@ -328,4 +326,6 @@ This syscall accepts a null terminated string and prints it out as debug log in 
 
 # Reference
 
-* [1]: CFB Encoding, *citation link pending*
+* [1]: [Molecule Encoding][1]
+
+[1]: ../0008-serialization/0008-serialization.md

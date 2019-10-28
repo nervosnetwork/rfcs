@@ -52,7 +52,7 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 `GetNodes` 消息只能通过 outbound 连接发送出去。
 
 ## 相关数据结构
-我们使用 [CFB][2] 作为数据序列化格式，以下为相关数据结构的 schema:
+我们使用 [Molecule][2] 作为数据序列化格式，以下为相关数据结构的 schema:
 
 ```
 table DiscoveryMessage {
@@ -90,5 +90,5 @@ table Node {
 
 [0]: https://en.bitcoin.it/wiki/Satoshi_Client_Node_Discovery
 [1]: https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
-[2]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md
+[2]: ../0008-serialization/0008-serialization.md
 [3]: https://arxiv.org/pdf/1410.6079.pdf
