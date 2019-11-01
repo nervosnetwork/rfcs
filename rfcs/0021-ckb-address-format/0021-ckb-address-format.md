@@ -37,7 +37,6 @@ payload = 0x01 | code_hash_index | single_arg
 
 To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And single_arg as the args.
 
-
 | code_hash_index |        code_hash     |   code_type  |          args           |
 |:---------------:|----------------------|:------------:|-------------------------|
 |      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK)*          |
@@ -66,10 +65,10 @@ For example, Alice, Bob, and Cipher collectively control a multisig locked cell.
 Full payload format directly encodes all data field of lock script.
 
 ```c
-payload = 0x02/0x04 | code_hash | len(arg[0]) | arg[0] | ...
+payload = 0x02/0x04 | code_hash | args
 ```
 
-The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for "Type". We convert every element of args to plain bytes array format, and add a length number in front of every array. To keep it simple, we limit every argument size to maxium 256, which is 1 byte.
+The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for "Type". 
 
 ## Wrap to Address
 

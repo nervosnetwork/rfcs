@@ -59,23 +59,23 @@ The Objects listed in the response's "commit_transactions" key contains these ke
 | required | No       | Boolean          | if provided and true, this transaction must be in the final block                                                                                                                                                                 |
 | cycles   | No       | Number           | total number of cycles, if key is not present, cycles is unknown and clients MUST NOT assume there aren't any                                                                                                                     |
 | depends  | No       | Array of Numbers | other transactions before this one (by 1-based index in "transactions" list) that must be present in the final block if this one is; if key is not present, dependencies are unknown and clients MUST NOT assume there aren't any |
-| data     | Yes      | String           | transaction [CFB][3] bytes in  hex-encoded string                                                                                                                                                                                 |
+| data     | Yes      | String           | transaction [Molecule][3] bytes in  hex-encoded string                                                                                                                                                                            |
 
 ### Block Submission
 
-A JSON-RPC method is defined, called `submit_block`. to submit potential blocks (or shares). It accepts two arguments: the first is always a String of the hex-encoded block [CFB][3] bytes to submit; the second is String of work_id.
+A JSON-RPC method is defined, called `submit_block`. to submit potential blocks (or shares). It accepts two arguments: the first is always a String of the hex-encoded block [Molecule][3] bytes to submit; the second is String of work_id.
 
 | Key     | Required | Type   | Description                                                           |
 | ------- | -------- | ------ | --------------------------------------------------------------------- |
-| data    | Yes      | String | block [CFB][3] bytes in  hex-encoded string                           |
+| data    | Yes      | String | block [Molecule][3] bytes in  hex-encoded string                      |
 | work_id | No       | String | if the server provided a workid, it MUST be included with submissions |
 
 ### References
 
 * bitcoin Getwork, https://en.bitcoin.it/wiki/Getwork
 * ethereum Getwork, https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getwork
-* CFB Encoding, https://github.com/nervosnetwork/rfcs/pull/47
+* [Molecule Encoding][3]
 
 [1]: https://en.bitcoin.it/wiki/Getwork
 [2]: https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getwork
-[3]: https://github.com/nervosnetwork/rfcs/pull/47
+[3]: ../0008-serialization/0008-serialization.md
