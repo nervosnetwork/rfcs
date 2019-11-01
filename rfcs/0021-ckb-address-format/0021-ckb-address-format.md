@@ -48,15 +48,15 @@ To translate payload to lock script, one can convert code_hash_index to code_has
 \*\* The *multisig script hash* is the 20 bytes blake160 hash of multisig script. The multisig script should be assembled in the following format:
 
 ```
-S | R | M | N | Pubkey1 | Pubkey2 | ...
+S | R | M | N | blake160(Pubkey1) | blake160(Pubkey2) | ...
 ```
 
-Where S/R/M/N are four single byte unsigned integers, ranging from 0 to 255, and Pubkeys are SECP256K1 public keys. S is format version, currently fixed to 0. M/N means the user must provide M of N signatures to unlock the cell. And R means the provided signatures at least match the first R items of the Pubkey list.
+Where S/R/M/N are four single byte unsigned integers, ranging from 0 to 255, and blake160(Pubkey1) are first 160bit blake2b hash of SECP256K1 compressed public keys. S is format version, currently fixed to 0. M/N means the user must provide M of N signatures to unlock the cell. And R means the provided signatures at least match the first R items of the Pubkey list.
 
 For example, Alice, Bob, and Cipher collectively control a multisig locked cell. They define the unlock rule like "any two of us can unlock the cell, but Cipher must approve". The corresponding multisig script is:
 
 ```
-0 | 1 | 2 | 3 | Pk_Cipher | Pk_Alice | Pk_Bob
+0 | 1 | 2 | 3 | Pk_Cipher_h | Pk_Alice_h | Pk_Bob_h
 ```
 
 **Notice**: The multisig lock code also support [valid since parameter][multisig_code]. Users could append a uint64 format since parameter to multisig script hash to setup cell lock period. The [RFC-0017][RFC0017] shows what the valid since means. To use this feature, we combine the 160 bits multisig script hash with 64 bits since variable, together as lock script arg. However, to keep address independent form time related variables, we don't encode the 64 bits since variable into address format. So **the multisig short address specification only cover first 20 bytes multisig script hash parameter, and simply ignore the following 8 bytes since parameter of lock script arg**.
