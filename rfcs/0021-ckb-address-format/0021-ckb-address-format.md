@@ -51,7 +51,7 @@ To translate payload to lock script, one can convert code_hash_index to code_has
 S | R | M | N | blake160(Pubkey1) | blake160(Pubkey2) | ...
 ```
 
-Where S/R/M/N are four single byte unsigned integers, ranging from 0 to 255, and blake160(Pubkey1) are first 160bit blake2b hash of SECP256K1 compressed public keys. S is format version, currently fixed to 0. M/N means the user must provide M of N signatures to unlock the cell. And R means the provided signatures at least match the first R items of the Pubkey list.
+Where S/R/M/N are four single byte unsigned integers, ranging from 0 to 255, and blake160(Pubkey1) it the first 160bit blake2b hash of SECP256K1 compressed public keys. S is format version, currently fixed to 0. M/N means the user must provide M of N signatures to unlock the cell. And R means the provided signatures at least match the first R items of the Pubkey list.
 
 For example, Alice, Bob, and Cipher collectively control a multisig locked cell. They define the unlock rule like "any two of us can unlock the cell, but Cipher must approve". The corresponding multisig script is:
 
