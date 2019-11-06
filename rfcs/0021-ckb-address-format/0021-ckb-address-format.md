@@ -37,14 +37,26 @@ payload = 0x01 | code_hash_index | single_arg
 
 To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And single_arg as the args.
 
-
-| code_hash_index |        code_hash     |   hash_type  |      args     |
-|:---------------:|----------------------|:------------:|---------------|
-|      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK) |
-|      0x01       | SECP256K1 + hash160  |     Type     |  hash160(PK)  |
+| code_hash_index |        code_hash     |   code_type  |          args           |
+|:---------------:|----------------------|:------------:|-------------------------|
+|      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK)*          |
+|      0x01       | SECP256K1 + multisig |     Type     |  multisig script hash** |
 
 \* The blake160 here means the leading 20 bytes truncation of Blake2b hash result.
-\* The hash160 here means Bitcoin address calculation *double hash* algorithm, which means `hash160(PK) := Ripemd160(SHA256(PK))`.
+
+\*\* The *multisig script hash* is the 20 bytes blake160 hash of multisig script. The multisig script should be assembled in the following format:
+
+```
+S | R | M | N | blake160(Pubkey1) | blake160(Pubkey2) | ...
+```
+
+Where S/R/M/N are four single byte unsigned integers, ranging from 0 to 255, and blake160(Pubkey1) it the first 160bit blake2b hash of SECP256K1 compressed public keys. S is format version, currently fixed to 0. M/N means the user must provide M of N signatures to unlock the cell. And R means the provided signatures at least match the first R items of the Pubkey list.
+
+For example, Alice, Bob, and Cipher collectively control a multisig locked cell. They define the unlock rule like "any two of us can unlock the cell, but Cipher must approve". The corresponding multisig script is:
+
+```
+0 | 1 | 2 | 3 | Pk_Cipher_h | Pk_Alice_h | Pk_Bob_h
+```
 
 ### Full Payload Format
 
@@ -96,3 +108,5 @@ Demo code: https://github.com/CipherWang/ckb-address-demo
 [bch]: https://en.wikipedia.org/wiki/BCH_code
 
 [BOLT_url]: https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
+
+[multisig_code]: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c
