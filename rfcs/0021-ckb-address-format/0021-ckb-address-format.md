@@ -58,8 +58,6 @@ For example, Alice, Bob, and Cipher collectively control a multisig locked cell.
 0 | 1 | 2 | 3 | Pk_Cipher_h | Pk_Alice_h | Pk_Bob_h
 ```
 
-**Notice**: The multisig lock code also support [valid since parameter][multisig_code]. Users could append a uint64 format since parameter to multisig script hash to setup cell lock period. The [RFC-0017][RFC0017] shows what the valid since means. To use this feature, we combine the 160 bits multisig script hash with 64 bits since variable, together as lock script arg. However, to keep address independent form time related variables, we don't encode the 64 bits since variable into address format. So **the multisig short address specification only cover first 20 bytes multisig script hash parameter, and simply ignore the following 8 bytes since parameter of lock script arg**.
-
 ### Full Payload Format
 
 Full payload format directly encodes all data field of lock script.
@@ -112,5 +110,3 @@ Demo code: https://github.com/CipherWang/ckb-address-demo
 [BOLT_url]: https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
 
 [multisig_code]: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c
-
-[RFC0017]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md
