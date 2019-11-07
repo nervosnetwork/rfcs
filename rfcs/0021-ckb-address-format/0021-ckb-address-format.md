@@ -37,7 +37,7 @@ payload = 0x01 | code_hash_index | single_arg
 
 To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And single_arg as the args.
 
-| code_hash_index |        code_hash     |   code_type  |          args           |
+| code_hash_index |        code_hash     |   hash_type  |          args           |
 |:---------------:|----------------------|:------------:|-------------------------|
 |      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK)*          |
 |      0x01       | SECP256K1 + multisig |     Type     |  multisig script hash** |
