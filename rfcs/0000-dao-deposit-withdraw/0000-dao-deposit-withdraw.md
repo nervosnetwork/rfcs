@@ -19,18 +19,18 @@ Note the very end of this RFC will include a `Gotchas` section, including common
 
 Nervos DAO is a smart contract, with which users can interact the same way as any smart contract on CKB. One function of Nervos DAO is to provide an dilution counter-measure for CKByte holders. By deposit in Nervos DAO, holders get proportional secondary rewards, which guarantee their holding are only affected by hardcapped primary issuance as in Bitcoin.
 
-Holders can deposit their CKBytes into Nervos DAO at any time. Nervos DAO deposit is a time deposit with a minimum deposit period (counted in blocks). Holders can only withdraw after a full deposit period. If the holder does not withdraw at the end of the deposit period, those CKBytes should enter a new deposit period automatically, so holders’ interaction with CKB could be minimized.
+Holders can deposit their CKBytes into Nervos DAO at any time. Nervos DAO deposit is a time deposit with a minimum deposit period (counted in blocks). Holders can only withdraw after a full deposit period. If the holder does not withdraw at the end of the deposit period, those CKBytes should enter a new deposit period automatically, so holders' interaction with CKB could be minimized.
 
 ## Background
 
 CKB's token issuance curve consists of two components:
 
 - Primary issuance: Hardcapped issuance for miners, using the same issuance curve as Bitcoin, half at every 4 years.
-- Secondary issuance: Constant issuance, the same amount of CKBytes will be issued at every epoch, which means secondary issuance rate approaches zero gradually over time. \[Because epoch length is dynamically adjusted\](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md), secondary issuance at every block is a variable. 
+- Secondary issuance: Constant issuance, the same amount of CKBytes will be issued at every epoch, which means secondary issuance rate approaches zero gradually over time. [Because epoch length is dynamically adjusted](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md), secondary issuance at every block is a variable. 
 
-If there’s only primary issuance but no secondary issuance in CKB, the total supply of CKBytes would have a hardcap and the issuance curve would be the exact same as Bitcoin. To counter the dilution effect caused by secondary issuance, CKBytes locked in Nervos DAO will get the proportion of secondary issuance equals to the locked CKByte’s percentage in circulation.
+If there's only primary issuance but no secondary issuance in CKB, the total supply of CKBytes would have a hardcap and the issuance curve would be the exact same as Bitcoin. To counter the dilution effect caused by secondary issuance, CKBytes locked in Nervos DAO will get the proportion of secondary issuance equals to the locked CKByte's percentage in circulation.
 
-For more information of Nervos DAO and CKB’s economic model, please check \[Nervos RFC #0015\](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md).
+For more information of Nervos DAO and CKB's economic model, please check [Nervos RFC #0015](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md).
 
 ## Deposit
 
@@ -39,7 +39,7 @@ Users can send a transaction to deposit CKBytes into Nervos DAO at any time. CKB
 - The type script of the created output cell must be set to the Nervos DAO script.
 - The output cell must have 8 byte length cell data, filled with all zeros.
 
-For convenience, a cell satisfying the above conditions will be called a `Nervos DAO deposit cell`. To obey CKB’s script validation logic, one also needs to include a reference to Nervos DAO type script in the `cell_deps` part of the enclosing transaction. Notice there’s no limit on the number of deposits completed in one transaction, more than one Nervos DAO deposit cell can be created in a single valid transaction.
+For convenience, a cell satisfying the above conditions will be called a `Nervos DAO deposit cell`. To obey CKB's script validation logic, one also needs to include a reference to Nervos DAO type script in the `cell_deps` part of the enclosing transaction. Notice there's no limit on the number of deposits completed in one transaction, more than one Nervos DAO deposit cell can be created in a single valid transaction.
 
 ## Withdraw
 
@@ -60,7 +60,7 @@ A phase 1 transaction should satisfying the following conditions:
     - The withdrawing cell should have the same lock script as the deposit cell
     - The withdrawing cell should have the same Nervos DAO type script as the deposit cell
     - The withdrawing cell should have the same capacity as the deposit cell
-    - The withdrawing cell should also have 8 byte length cell data, but instead of 8 zero, the cell data part should store the block number of the deposit cell’s including block. The number should be packed in 64-bit unsigned little endian integer format.
+    - The withdrawing cell should also have 8 byte length cell data, but instead of 8 zero, the cell data part should store the block number of the deposit cell's including block. The number should be packed in 64-bit unsigned little endian integer format.
 - The Nervos DAO type script should be included in the `cell_deps` of withdraw transaction.
 
 Once this transaction is included in CKB, the user can start preparing phase 2 transaction.
@@ -75,13 +75,13 @@ A phase 2 transaction should satisfying the following conditions:
 - For each Nervos DAO withdrawing cell, the transaction should also include the reference to its associated including block in `header_deps`, which will be used by Nervos DAO type script as the end point of deposit.
 - For a Nervos DAO withdrawing cell at input index `i`, the user should locate the deposit block header, meaning the block header in which the original Nervos DAO deposit cell is included. With the deposit block header, 2 operations are required:
     - The deposit block header hash should be included in `header_deps` of current transaction
-    - The index of the deposit block header hash in `header_deps` should be kept using 64-bit unsigned little endian integer format in the part belonging to input cell’s type script of corresponding witness at index `i`. A separate RFC would explain current argument organization in the witness. An example will also show this process in details below.
-- For a Nervos DAO withdrawing cell, the `since` field in the cell input should reflect the Nervos DAO cell’s lock period requirement, which is 180 epoches. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc. Notice the calculation of lock period is independent of the calculation of interest. It’s totally valid to deposit at epoch 5, use a `withdraw block` at epoch 100, and use a `since` field at 185. Please refer to the \[since RFC\](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md) on how to represent valid epoch numbers, Nervos DAO type script only accepts absolute epoch numbers as since values now.
+    - The index of the deposit block header hash in `header_deps` should be kept using 64-bit unsigned little endian integer format in the part belonging to input cell's type script of corresponding witness at index `i`. A separate RFC would explain current argument organization in the witness. An example will also show this process in details below.
+- For a Nervos DAO withdrawing cell, the `since` field in the cell input should reflect the Nervos DAO cell's lock period requirement, which is 180 epoches. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc. Notice the calculation of lock period is independent of the calculation of interest. It's totally valid to deposit at epoch 5, use a `withdraw block` at epoch 100, and use a `since` field at 185. Please refer to the [since RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md) on how to represent valid epoch numbers, Nervos DAO type script only accepts absolute epoch numbers as since values now.
 - The interest calculation logic is totally separate from the lock period calculation logic, we will explain the interest calculation logic in the next section.
-- The Nervos DAO type script requires the sum of all input cells’ capacities plus interests is larger or equaled to the sum of all output cells’ capacities.
+- The Nervos DAO type script requires the sum of all input cells' capacities plus interests is larger or equaled to the sum of all output cells' capacities.
 - The Nervos DAO type script should be included in the `cell_deps`.
 
-As hinted in the above steps, it’s perfectly possible to do multiple withdraws in one transaction. What’s more, Nervos DAO doesn’t limit the purpose of withdrawed tokens, it’s also valid to deposit the newly withdrawed tokens again to Nervos DAO right away in the same transaction. In fact, one transaction can be used to freely mix all the following actions together:
+As hinted in the above steps, it's perfectly possible to do multiple withdraws in one transaction. What's more, Nervos DAO doesn't limit the purpose of withdrawed tokens, it's also valid to deposit the newly withdrawed tokens again to Nervos DAO right away in the same transaction. In fact, one transaction can be used to freely mix all the following actions together:
 
 1. Deposit tokens into Nervos DAO.
 2. Transform some Nervos DAO deposit cells to Nervos DAO withdrawing cells.
@@ -91,7 +91,7 @@ As hinted in the above steps, it’s perfectly possible to do multiple withdraws
 
 This section explains the calculation of Nervos DAO interest and relevant fields in the CKB block header.
 
-CKB’s block header has a special field named `dao` containing auxiliary information for Nervos DAO’s use. Specifically, the following data are packed in a 32-byte `dao` field in the following order:
+CKB's block header has a special field named `dao` containing auxiliary information for Nervos DAO's use. Specifically, the following data are packed in a 32-byte `dao` field in the following order:
 
 - `C_i` : the total issuance up to and including block `i`.
 - `AR_i`: the current `accumulated rate` at block `i`. `AR_j / AR_i` reflects the CKByte amount if one deposit 1 CKB to Nervos DAO at block `i`, and withdraw at block `j`.
@@ -100,7 +100,7 @@ CKB’s block header has a special field named `dao` containing auxiliary inform
 
 Each of the 4 values is stored as unsigned 64-bit little endian number in the `dao` field. To maintain enough precision `AR_i`  is stored as the original value multiplied by `10 ** 16` .
 
-For a single block `i`, it’s easy to calculate the following values:
+For a single block `i`, it's easy to calculate the following values:
 
 - `p_i`: primary issuance for block `i`
 - `s_i`: secondary issuance for block `i`
@@ -124,7 +124,7 @@ Then from the genesis block, the values for each succeeding block can be calcula
 - `S_i` : `S_{i-1}` - `I_i` + `s_i` - floor( `s_i` * `U_{i-1}` / `C_{i-1}` )
 - `AR_i` : `AR_{i-1}` + floor( `AR_{i-1}` * `s_i` / `C_{i-1}` )
 
-With those values, it’s now possible to calculate the Nervos DAO interest for a cell. Assuming a Nervos DAO cell is deposited at block `m` (also meaning the Nervos DAO deposit cell is included at block `m`), the user chooses to start withdrawing process from block `n` (meaning the Nervos DAO withdrawing cell is included at block `n`), the total capacity for the Nervos DAO cell is `c_t`, the occupied capacity for the Nervos DAO cell is `c_o`. The Nervos DAO interest is calculated with the following formula:
+With those values, it's now possible to calculate the Nervos DAO interest for a cell. Assuming a Nervos DAO cell is deposited at block `m` (also meaning the Nervos DAO deposit cell is included at block `m`), the user chooses to start withdrawing process from block `n` (meaning the Nervos DAO withdrawing cell is included at block `n`), the total capacity for the Nervos DAO cell is `c_t`, the occupied capacity for the Nervos DAO cell is `c_o`. The Nervos DAO interest is calculated with the following formula:
 
 ( `c_t` - `c_o` ) * `AR_n` / `AR_m` - ( `c_t` - `c_o` )
 
@@ -134,7 +134,7 @@ Meaning that the maximum total withdraw capacity one can get from this Nervos DA
 
 ## Example
 
-In this Nervos DAO example, it’s assumed that the type script below is used to represent a Nervos DAO script:
+In this Nervos DAO example, it's assumed that the type script below is used to represent a Nervos DAO script:
 
     {
       "code_hash": "0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e",
@@ -152,7 +152,7 @@ And the following OutPoint refers to cell containing NervosDAO script:
       "dep_type": "code"
     }
 
-Note that each independent chain configuration might use different values here, it’s always a good idea to check the chain configuration first to make sure the correct values are used.
+Note that each independent chain configuration might use different values here, it's always a good idea to check the chain configuration first to make sure the correct values are used.
 
 The following transaction deposits 100 CKB into Nervos DAO:
 
@@ -294,7 +294,7 @@ The following transaction, can then be used to start phase 1 of withdrawing proc
       "hash": "0x120ce30560ceef8c4825dac108511ccf2736d84af76dbbc974fa879722405673"
     }
 
-There’re couple of important points worth mentioning in this transaction:
+There're couple of important points worth mentioning in this transaction:
 
 - The input Nervos DAO deposit cell is included in `0x3553c12dc0c2ba432ede6900c0187c86eececdc748a7244d48df789ad7e2d8f0` block, hence it is included in `header_deps`.
 - The including block number is `1634`, which is `0x6206000000000000` packed in 64-bit unsigned little endian integer number also in HEX format.
@@ -375,7 +375,7 @@ The following phase 2 transaction can finally be used to withdraw tokens from Ne
       "hash": "0x24b76688a4d532271a55d99e80b59ca65f6fbb86567ff9a2071158f26533f287"
     }
 
-There’re couple of important points worth mentioning in this transaction:
+There're couple of important points worth mentioning in this transaction:
 
 - The `header_deps` in this transaction contains 2 headers: `0x3553c12dc0c2ba432ede6900c0187c86eececdc748a7244d48df789ad7e2d8f0` contains block header hash in which the original Nervos DAO deposit cell is included, while `0x460884f23454f885fad82f5bdcf74c76c66c0c90ac1791031a4acdb998c1e388` is the block in which the Nervos DAO withdrawing cell is included.
 - Since `0x3553c12dc0c2ba432ede6900c0187c86eececdc748a7244d48df789ad7e2d8f0` is at index 0 in `header_deps`. The number `0` will be packed in 64-bit little endian unsigned integer, which is `0000000000000000`, and appended to the end of the witness corresponding with the Nervos DAO input cell.
