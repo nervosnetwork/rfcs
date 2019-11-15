@@ -296,7 +296,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | `proposals_hash`    | H256(hash) | **The hash of concatenated proposal ids.** (all zeros when proposals is empty) |
 | `uncles_hash`       | H256(hash) | **The hash of concatenated hashes of uncle block headers.** （all zeros when uncles is empty) |
 | `version`           | uint32     | **The version of the block**. This is for solving the compatibility issues might be occurred after a fork. |
-| `epoch`             | uint64     | **A [Unix time](http://en.wikipedia.org/wiki/Unix_time) timestamp.** |
+| `epoch`             | uint64     | **Current epoch information.** Assume `number` represents the current epoch number, `index` represents the index of the block in the current epoch(start at 0), `length` represents the length of current epoch. The value store here will then be `(number & 0xFFFFFF) | ((index & 0xFFFF) << 24) | ((length & 0xFFFF) << 40)` |
 | `dao`               | Bytes      | **Data containing DAO related information.** Please refer to Nervos DAO RFC for details on this field. |
 
 #### UncleBlock
