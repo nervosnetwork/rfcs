@@ -24,7 +24,7 @@ The highest 8 bits of `since` is `flags`, the remain `56` bits represent `value`
     * `since` use a epoch based lock-time if `metric_flag` is `01`, `value` can be explained as a epoch number or a relative epoch number.
     * `since` use a time based lock-time if `metric_flag` is `10`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
     * `metric_flag` `11` is invalid.
-* other 6 `flags` bits remain for other use.
+* other 5 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
 * iterate inputs, and validate each input by following rules.
