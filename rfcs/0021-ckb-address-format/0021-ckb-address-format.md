@@ -32,10 +32,10 @@ There are several methods to convert lock script into payload bytes array. We us
 Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
 
 ```c
-payload = 0x01 | code_hash_index | single_arg
+payload = 0x01 | code_hash_index | args
 ```
 
-To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And single_arg as the args.
+To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And args as the args.
 
 | code_hash_index |        code_hash     |   hash_type  |          args           |
 |:---------------:|----------------------|:------------:|-------------------------|
@@ -89,16 +89,22 @@ The human-readable part is "**ckb**" for CKB mainnet, and "**ckt**" for the test
 
 ## Examples and Demo Code
 
-```py
-    # for short payload format
-    pk = "13e41d6F9292555916f17B4882a5477C01270142"
-    address = "ckb1qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pqrn323p"
+```yml
+== short address (code_hash_index = 0x00) test ==
+args to encode:          b39bbc0b3673c7d36450bc14cfcdad2d559c6c64
+address generate:        ckb1qyqt8xaupvm8837nv3gtc9x0ekkj64vud3jqfwyw5v
 
-    # for full payload format
-    code_hash = "48a2ce278d84e1102b67d01ac8a23b31a81cc54e922e3db3ec94d2ec4356c67c"
-    hash_type = "Data"
-    args = ['dde7801c073dfb3464c7b1f05b806bb2bbb84e99', '00c1ddf9c135061b7635ca51e735fc2b03cee339']
-    address = "ckb1qfy29n383kzwzyptvlgp4j9z8vc6s8x9f6fzu0dnaj2d9mzr2mr8c9xau7qpcpealv6xf3a37pdcq6ajhwuyaxg5qrqam7wpx5rpka34efg7wd0u9vpuaceeu5fsh5"
+== short address (code_hash_index = 0x01) test ==
+multi sign script:       0 | 1 | 2 | 3 | bd07d9f32bce34d27152a6a0391d324f79aab854 | 094ee28566dff02a012a66505822a2fd67d668fb | 4643c241e59e81b7876527ebff23dfb24cf16482
+script encoded:          30313233bd07d9f32bce34d27152a6a0391d324f79aab854094ee28566dff02a012a66505822a2fd67d668fb4643c241e59e81b7876527ebff23dfb24cf16482
+args to encode:          38c0ae47fd1ab954d97beb873fb54ee3670b742a
+address generate:        ckb1qyqkpcpr3au0ve09wzrp5q7cn96hl8d7jwls47g2ys
+
+== full address test ==
+code_hash to encode:     9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
+with args to encode:     b39bbc0b3673c7d36450bc14cfcdad2d559c6c64
+code type:               Type
+full address generate:   ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks
 ```
 
 Demo code: https://github.com/CipherWang/ckb-address-demo 
