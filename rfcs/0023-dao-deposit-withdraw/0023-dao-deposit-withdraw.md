@@ -235,7 +235,7 @@ Assume this transaction is include in the following block:
       "dao": "0x936bfda6bfb608008527f42b60d82400ea0bfcc9b53d0000004de839667e0100"
     }
 
-As mentioned above, `dao` field here contains 4 fields, `AR` is the second field in the list, extracting the little endian integer from offset `8` through offset `16`, the current deposit `AR` is `10371006727464837`, which is `1.03710067274648357` considering `AR` is stored with the original value multiplied by `10 ** 16` .
+As mentioned above, `dao` field here contains 4 fields, `AR` is the second field in the list, extracting the little endian integer from offset `8` through offset `16`, the current deposit `AR` is `10371006727464837`, which is `1.0371006727464837` considering `AR` is stored with the original value multiplied by `10 ** 16` .
 
 The following transaction, can then be used to start phase 1 of withdrawing process, which transforms Nervos DAO deposit cell to Nervos DAO withdrawing cell:
 
