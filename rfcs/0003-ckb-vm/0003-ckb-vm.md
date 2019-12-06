@@ -21,7 +21,7 @@ CKB relies on dynamic linking and syscalls to provide additional capabilities re
 
 CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.
 
-Each contract has a maximum size of 10MB in uncompressed size, and 1MB in gzip size. CKB virtual machine has a maximum of 16 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
+CKB virtual machine has a maximum of 4 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.
 
 Running a contract is almost the same as running an executable in single core Linux environment:
 
