@@ -14,7 +14,7 @@ Created: <TBD>
 The original intention of aggron testnet is to provide a development-friendly testnet,
  allow develops to deploy and test contracts, it's supposed to be similar to mainnet and provide stable services.
 
-However, the mining power on aggron is very unstable[chars](https://explorer.nervos.org/aggron/charts), Obviously for a reasonable miner there is no incitive to mine the testnet coins, and any new miner or mining pool join the testnet will speedup the block produces time temporally, then they leave, the testnet become extremely slow, the avg block time becomes few minutes or even longer.
+However, the mining power on aggron is very unstable (shown in [chars](https://explorer.nervos.org/aggron/charts)), obviously for a reasonable miner there is no incitive to mine the testnet coins, and any new miner or mining pool join the testnet will speedup the block produces time temporally, then they leave, the testnet become extremely slow, the avg block time becomes few minutes or even longer.
 
 A POW blockchain only works when the miner has economic incentives. So we propose a new POA consensus testnet to serve contract development purposes.
 
