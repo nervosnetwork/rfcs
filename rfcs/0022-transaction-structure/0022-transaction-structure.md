@@ -110,7 +110,7 @@ If you want to use a script in CKB, follow the code locating rules:
 - Create a cell which stores the binary as data in a transaction, and send the transaction to the chain.
 - Construct a script structure, which `hash_type` is "Data", and `code_hash` is just the hash of the built binary.
 - Use the script as the type or the lock script in a cell.
-- If the script has to run in a transaction, include the code cell out point in the `cell_deps`.
+- If the script has to run in a transaction, include the code cell's out point in the `cell_deps`.
 
 The cells in `cell_deps` must be live, just like `inputs`. Unlike `inputs`, a cell only used in `cell_deps` is not considered dead.
 
