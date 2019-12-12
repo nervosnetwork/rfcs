@@ -13,7 +13,7 @@ Created: 2019-10-30
 
 This document describes deposit and withdraw transaction in Nervos DAO.
 
-Note the very end of this RFC will include a `Gotchas` section, including common and very important points you should be aware to use Nervos DAO well without losing CKBs. Please pay attention to this section even if you might want to skip some part of this RFC.
+Note: a `Common Gotchas` page is maintained at [here](https://github.com/nervosnetwork/ckb/wiki/Common-Gotchas), including common and very important points you should be aware to use Nervos DAO well without losing CKBs. Please pay attention to this page even if you might want to skip some part of this RFC.
 
 ## Motivation
 
@@ -395,7 +395,3 @@ Now the maximum capacity that can be withdrawed from the above NervosDAO input c
 `maximum_withdraw_capacity` = 1800000000 * 11093675231018937 / 10371006727464837 + 10200000000 = 12125426907 = 0x2d2bb54db
 
 `0x2d2bb54db` here is exactly the capacity for the output cell in the above transaction.
-
-## Gotchas
-
-* Right now Nervos DAO only supports *absolute epoch number* in the since field relating to Nervos DAO withdrawing input. That means if you are using a lock script with lock period, make sure to ONLY use *absolute epoch number* for now, otherwise your CKBs might be locked in CKB with no way to spend it again.
