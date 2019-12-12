@@ -81,12 +81,6 @@ All CKB VM instructions consume 1 cycle except the following ones:
 | ECALL       | 0      |
 | EBREAK      | 0      |
 
-In a nutshell, the following principles are applied in deciding those numbers:
-
-* Branches should be more expensive than normal instructions.
-* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
-* Multiplication and divisions should be much more expensive than normal instructions.
-
 ### Syscall Cycles
 
 Each syscall in CKB has different rules for consuming cycles:
@@ -137,14 +131,21 @@ Note that even though the script only requires part of the serialized data, the 
 
 Note that even though the script only requires part of the serialized header data, the syscall still charges based on the full serialized data size.
 
+#### Load Code
+
+*Load Code* syscall first consumes 10 initial cycles, it then measures the size of actual loaded code section, for every single byte in the loaded code, it consumes 10 cycles.
+
 #### Debug
 
 *Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.
 
-#### Final note
+## Final note
 
-Notice that the two numbers used here (10 and 100) haven't gone through full testing, right now they are picked based on the following principles:
+Notice that most numbers used here haven't gone through full testing, right now they are picked based on the following guidelines:
 
+* Branches should be more expensive than normal instructions.
+* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
+* Multiplication and divisions should be much more expensive than normal instructions.
 * We want each syscall to at least consume some cycles even thought some syscall might return no data, hence we add either 10 or 100 initial cycles to each syscall.
 * Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most norma instructions.
 * We want to encourage using *Load Cell By Field* instead of *Load Cell*, since the former one makes easier implementation and less likely to be attacked, that's why *Load Cell* syscall use a factor of 100, while *Load Cell By Field* only use a factor of 10.
