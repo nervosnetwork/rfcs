@@ -13,7 +13,7 @@ Created: 2019-10-30
 
 This document describes deposit and withdraw transaction in Nervos DAO.
 
-Note: a `Common Gotchas` page is maintained at [here](https://github.com/nervosnetwork/ckb/wiki/Common-Gotchas#nervos-dao), including common and very important points you should be aware to use Nervos DAO well without losing CKBs. Please pay attention to this page even if you might want to skip some part of this RFC.
+Note: a `Common Gotchas` page is maintained at [here](https://github.com/nervosnetwork/ckb/wiki/Common-Gotchas#nervos-dao), including common and very important points you should be aware to use Nervos DAO well without losing CKBs. Please pay attention to this page even if you might want to skip some parts of this RFC.
 
 ## Motivation
 
