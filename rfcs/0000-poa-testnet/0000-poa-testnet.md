@@ -4,21 +4,20 @@ Category: <TBD>
 Status: <TBD>
 Author: <TBD>
 Organization: <TBD>
-Created: <TBD>
+Created: 2019-12-9
 ---
 
 # POA testnet
 
 ## Motivation
 
-The original intention of aggron testnet is to provide a development-friendly testnet,
- allow developers to deploy and test contracts, it's supposed to be similar to mainnet and provide stable services.
+The original intention of the aggron testnet is to provide a stable environment for contract development.
 
-However, the mining power on aggron is very unstable (shown in [charts](https://explorer.nervos.org/aggron/charts)), because a rational miner has no incentive to mine the testnet coins continuously. If any new miner or mining pool joins the mining difficulty will raise. Once they leave, the testnet transaction processing will become extremely slow due to a sudden drop of hashrate, and the average block time would require minutes or even longer.
+However, the mining power on aggron is volatile (shown in [charts](https://explorer.nervos.org/aggron/charts)), since a rational miner has no incentive to mine the testnet coins continuously. If any new miner or mining pool joins, the mining difficulty rises fast. Once they leave, the testnet block produce becomes extremely slow due to a sudden drop of hashrate, and the average block time would require minutes or even longer.
 
-A POW blockchain only works when the miner has economic incentives. So we propose a new POA consensus testnet to serve contract development purposes.
+A POW blockchain only works when the miner has economic incentives, it's not adapted for the testnet, so we propose a new POA consensus testnet to serve the contract development purpose.
 
-We expect the new POA testnet to be long term stable, the testnet should be just like the mainnet without using POW. A contract developer should feel no difference when developing on POA testnet and mainnet.
+We expect the new POA testnet to be long term stable, and the testnet should be just like the mainnet without using POW. A contract developer should feel no difference when developing on POA testnet and mainnet.
 
 In the purpose we design the POA testnet with the following principles:
 
@@ -35,48 +34,71 @@ We define the following variables:
 * `BLOCK_INTERVAL` - the interval of blocks, set to 8 seconds.
 * `VOTE_LIMIT` - The least votes to make a new validator join or to evict an old validator, should be at least `VALIDATOR_COUNT / 2 + 1`.
 
-## attest a new block
+### attest a new block
 
-let's pre assuming the validator list already exists. Our protocol is simple enough that the change of validator list will not affect our purpose, we can assume the validator list is fixed for now.
+Instead of POW mining, a list of validators plays the role of producing blocks in POA testnet. Validators work in a round-robin style; in each block height, there exists a corresponded validator sign the block with its private key to attest to a new block. For convenient, we call the validator who attest a block an **attester** to distinguish it from other validators.
 
-Validators use a round-robin style to attest blocks.
-For block `n`, the validator which index equals `n % VALIDATOR_COUNT` suppose to be the attester. However, a validator can fail to produce a block in time due to network congestion or other reasons, in this case, other validators should produce the block `n`.
+The community chooses the initial validator list of the POA network by some off-chain governance mechanism, which does not cover in this proposal. At this moment, we can ignore the possible updating of the validator list; our protocol is simple enough works for both dynamic and fixed validators.
 
-Validators can use a simple strategy to achieve this:
+The protocol uses `n % VALIDATOR_COUNT` as the index to choose the attester from validators; each validator checks the index and decides whether to attest a new block itself or wait for another attester to produce a new block.
 
-* If `INDEX == n % VALIDATOR_COUNT`, wait for `BLOCK_INTERVAL` seconds then produce a new block with difficulty set to `2`.
-* If `INDEX != n % VALIDATOR_COUNT`, wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds then produce a new block with difficulty set to `1`.
-* If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
+However, an in-turned attester may fail to produce a block due to network error or other reasons; in this case, other validators must produce the new block to make the POA testnet continue.
 
-`ATTEST_INTERVAL` is used for preventing malicious validators to censor the POA network. When malicious validators are less than `ATTEST_INTERVAL + 1` at least one honest validator has the chance to submit votes and evict malicious validators.
+Validators can use a simple strategy:
 
-`ATTEST_INTERVAL` can be set to `VALIDATOR_COUNT / 2` the honest validators could eventually evict malicious validators unless the half of validators are corrupted.
+1. If `INDEX == n % VALIDATOR_COUNT`, which means the validator itself is the attester for block `n`, the validator wait for `BLOCK_INTERVAL` seconds then attests a new block with difficulty set to `2`.
+2. If `INDEX != n % VALIDATOR_COUNT` which means the validator is not the attester for block `n`, the validator should wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds, and if there are no new block produced, the validator should attest a new block with difficulty set to `1`.
+3. If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
 
-## validator list
+Notice the difficulty set to `2` when an in-turn attester produces a block and set to `1` when a not in-turn attester produces a block. This makes the in-turn attester's block total difficulty higher than the not in-turn attester's block; once two validators attest at the same height due to the network error, the other nodes still chooses the higher total difficulty block as the main chain.
 
-Validator list can be represented as a list of pubkey hash.
+`ATTEST_INTERVAL` is used to preventing malicious validators censor the POA network. A validator cannot attest two blocks within the `ATTEST_INTERVAL` number.  Consider the situation that malicious validators try to control the whole network: 
+
+The first malicious validator must wait for `ATTEST_INTERVAL + 1` blocks to produce a block again. When the number of malicious validators is less than `ATTEST_INTERVAL + 1`, there must exist an honest validator who has the chance to submit a block includes majority voting to evict malicious validators.
+
+`ATTEST_INTERVAL` can be set to `VALIDATOR_COUNT / 2` the honest validators could eventually evict malicious validators unless the half of validators corrupted.
+
+### validator list and on-chain governance
+
+As previously described, the POA testnet maintained by a group of validators. We have a build-in on-chain governance mechanism to allows updating the exists validator list. The on-chain governance mechanism designed to be loose; it allows several validators that greater than `VOTE_LIMIT` to sign a transaction together that updating the exists validators to a list of new validators.
+
+As a natural thought, we can use a CKB cell to store the validator list, and the validator list can represent in a list of pubkey hash.
 
 ``` txt
 pubkey_hash_1 | pubkey_hash_2 | pubkey_hash_3 ...
 ```
 
-We can use an `M of N` multisig lock to describe the validator list, the `M` is set to `VOTE_LIMIT`, and `N` is `VALIDATORS_COUNT`.
+The `pubkey_hash` calculate from the secp256k1 pubkey: `blake160(Pubkey)`.
 
-To change the validator list, a validator can collect enough votes(the signatures) and send a tx to spent the old multisig lock and construct a new multisig lock with new pubkey hashes. A validator node can use `type_id` to track this validator list.
+The pre-defined [multisig script] satisfies our on-chain governance requirements except that `multisig script` should be revealed so other nodes can check the new validator list.
 
-The pre-defined [multisig script](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md#short-payload-format) satisfies the requirements except that `multisig script` should be revealed so other nodes can check new validator list. Validators should make sure the entire `multisig script` is stored in a cell, and only one cell is constructed to represent the validator list.
+So we choose to use a cell to represent the POA validator list. The cell contains the following `multisig script` in its data field, and with a multisig lock to lock the cell, the `multisig script` in data must corresponding to the lock's `multisig script`.
 
-Notice, the process of collecting votes is not included in the POA protocol for simplification, a responsible validator should check votes carefully before signing it.
+``` txt
+0 | 0 | VOTE_LIMIT | VALIDATOR_COUNT | blake160(Pubkey1) | blake160(Pubkey2) | ...
+```
+
+We use a cell with `M of N` multisig lock to describe the validator list, the'M` set to `VOTE_LIMIT`, and `N` set to `VALIDATORS_COUNT`.
+
+To change the validator list, anyone that collects enough votes(the signatures) can send a transaction to update the old validator list cell and construct a new validator list cell.
+
+For simplify to track this cell, we assign a `type_id` on it; validators or anyone who wants to verify POA blocks must track this cell to keep validator list fresh.
+
+Before sign a vote transaction, validators must make sure the `multisig script`  in the cell is valid and corresponding to the lock, and only one cell constructed to represent the validator list; otherwise, the POA consensus wound broken.
+
+To simplify, the process of collecting votes do not include in the POA protocol.
 
 ## POA header
 
-CKB header is fixed-length, the `nonce` field is 128 bits, we can't put 256 bits secp256k1 signature into the header directly.
+CKB header encoded in fixed-length, the size of the `nonce` field is 128 bits, we can't put 256 bits secp256k1 signature into the header directly.
 
-For the ease of implementation, instead of changing the block header structure, we put an extra POA payload `POAContext` in the cellbase transaction's first witness. To verify a header attestation, we need both the header and the cellbase transaction.
+For the ease of implementation, instead of changing the block header structure, we put an extra POA payload `POAContext` in the cellbase transaction's first witness. To verify a header, we need both the header and the cellbase transaction.
+
+Since  CKB constraint the first witness of cellbase to use the `CellbaseWitness` structure, we append the `POAContext` after the content of the first witness: `CellbaseWitness | POAContext`.
 
 The structure of `POAContext`:
 
-``` txt
+```txt
 table POAContext {
     signature:              Byte65,
     transactions_count:     Uint32,
@@ -86,39 +108,46 @@ table POAContext {
 }
 ```
 
-The first field `signature` is a secp256k1 signature signed by a validator.
+The first field `signature` is a secp256k1 signature signed by a validator. The signature's message is supposed to digest the whole block except the signature self, so the block hash is chosen to be the signature's message.
 
-The signature message is supposed to digest the whole block except the signature itself.
+Since we put the signature into the cellbase transaction's witness, and the cellbase itself is digested by the `transaction_root` in the header. If we directly update the signature, the `transaction_root` and block hash also changed.
 
-Because the signature is put into the cellbase transaction's witness, and the cellbase itself is digested by the `transaction_root` in the header. If we change the cellbase transaction the `transaction_root` and block hash will also be changed. A validator needs to 'zeroize' the signature field before signing.
+To simply solve this issue, an attester needs to zero the signature field of `POAContext`, then re-compute the block hash as signature's message, after signing replace the zero signature with actually signature.
 
-We use merkle proof to prove the only changes of the header hash is caused by the `signature` field.
+An attester also needs to provide `cellbase transaction` and merkle proof to convince other validators in the [header-first synchronize]. So we also defined the following fields in the `POAContext`:
 
-* `merkle_proof` - a merkle proof to prove that cellbase transaction belongs to a `witness_transactions_root`.
-* `raw_transactions_root` - raw transactions root of current block.
-* `transactions_count` - number of transactions.
+* `merkle_proof` - a merkle proof to prove that cellbase transaction is the first leaf of `witness_transactions_root`.
+* `raw_transactions_root` - raw transactions root of current block, since CKB use `merkle_root(raw_transactions_root | witness_transactions_root)` to calculate `transactions_root`.
+* `transactions_count` - the number of transactions.
 
-A node does the following steps to verify the POA header:
+A node does the following steps to verify a POA header:
 
-1. verify merkle proof is correct.
-    1. calculate `witness_transactions_root` from cellbase and merkle proof `merkle_proof.root(cellbase_hash, transactions_count)`
-    2. calculate `transactions_root = merkle_root([witness_transactions_root, raw_transactions_root])`
+1. verify merkle proof of cellbase transaction:
+    1. calculate `witness_transactions_root = merkle_proof.root(cellbase.hash(), transactions_count)`
+    2. calculate `transactions_root = merkle_root([raw_transactions_root, witness_transactions_root])`
     3. check `transactions_root` equals to `header.transactions_root`
-2. zerorize `signature` field of POAContext in cellbase transaction.
-    1. extract `POAContext` from cellbase transaction witness
-    2. set `signature` field to "0x000...0000(32bytes)"
+2. zero `signature` field of POAContext:
+    1. extract `POAContext` from cellbase transaction
+    2. set `signature` field to "0x000...0000"
     3. set `POAContext` back to cellbase transaction witness
-3. calculate signing message from zerorized cellbase transaction.
-    1. calculate `transactions_root` with zerorized cellbase transaction
-    2. replace header's old `transactions_root` then calculate `blake2b_256(header)` as signature message
-4. recovery the pubkey from `signature` then check the pubkey hash is belongs to a validator.
+3. re-comute the block's `transaction_root` and block hash. 
+4. recovery the pubkey, then check the pubkey hash is belongs to a validator.
 
-Because we have a dynamic validators group, To keep enough information to verify a header, we also put the voting transactions into `voting_txs` field, a validator can verify header and get newest validator groups without download the whole blocks
+Now we can verify a POAHeader with fixed validators. However, when a validator list updated, the header-first synchronization may not handle it correctly, think the following situation:
+The initial validators list is `[A, B, C, D]`.
+Since block `N`, the validator list updated to `[A, B, D, E]`.
+A header-first synchronization from `N - 1` to `N + 4` wound fails to sync due to the unknown validator `E`.
+To solve this issue, we require `POAContext` also provides the update information of validators to verifiers.
 
-## changes on CKB
+So the `voting_txs` field of `POAContext` is introduced. When a block contains voting transactions, the attester must put voting transactions into `POAContext`, and the `merkle_proof` must proof both cellbase transaction and voting transactions are leaves of the `witness_transactions_root`.
 
-(TODO)
+A POA block header verifier should update its validator list according to the `voting_txs` field. With this design, we can verify headers and update the validator list without downloading the whole blocks.
 
 ## references
 
 1. [Rinkeby proposal](https://github.com/ethereum/EIPs/issues/225)
+2. [header-first synchronize]
+3. [multisig script]
+
+[header-first synchronize]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md "Header first synchronize."
+[multisig script]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md#short-payload-format "multisig script."
