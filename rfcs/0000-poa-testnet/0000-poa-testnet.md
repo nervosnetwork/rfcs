@@ -12,9 +12,9 @@ Created: <TBD>
 ## Motivation
 
 The original intention of aggron testnet is to provide a development-friendly testnet,
- allow develops to deploy and test contracts, it's supposed to be similar to mainnet and provide stable services.
+ allow developers to deploy and test contracts, it's supposed to be similar to mainnet and provide stable services.
 
-However, the mining power on aggron is very unstable (shown in [chars](https://explorer.nervos.org/aggron/charts)), obviously for a reasonable miner there is no incitive to mine the testnet coins, and any new miner or mining pool join the testnet will speedup the block produces time temporally, then they leave, the testnet become extremely slow, the avg block time becomes few minutes or even longer.
+However, the mining power on aggron is very unstable (shown in [charts](https://explorer.nervos.org/aggron/charts)), because a rational miner has no incentive to mine the testnet coins continuously. If any new miner or mining pool joins the mining difficulty will raise. Once they leave, the testnet transaction processing will become extremely slow due to a sudden drop of hashrate, and the average block time would require minutes or even longer.
 
 A POW blockchain only works when the miner has economic incentives. So we propose a new POA consensus testnet to serve contract development purposes.
 
@@ -28,7 +28,7 @@ In the purpose we design the POA testnet with the following principles:
 
 ## POA protocol
 
-For easy to describe the protocol, we define the following variables:
+We define the following variables:
 
 * `VALIDATOR_COUNT` - Number of current validators, this value changed due to new validators join or old validator leaves.
 * `ATTEST_INTERVAL` - A validator cannot attest two blocks within `ATTEST_INTERVAL` number. For example, a validator who attest block (6) must wait for at least `ATTEST_INTERVAL` blocks to do next attest: block (6 + `ATTEST_INTERVAL` + 1). Notice when the `VALIDATOR_COUNT` <= `ATTEST_INTERVAL`, the POA testnet will stuck forever due to no validators can attest a new block.
@@ -48,7 +48,7 @@ Validators can use a simple strategy to achieve this:
 * If `INDEX != n % VALIDATOR_COUNT`, wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds then produce a new block with difficulty set to `1`.
 * If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
 
-`ATTEST_INTERVAL` is used for preventing malicious validators to censors the POA network. When malicious validators are less than `ATTEST_INTERVAL + 1` that at least an honest validator have the chance to submit votes and evict malicious validators.
+`ATTEST_INTERVAL` is used for preventing malicious validators to censor the POA network. When malicious validators are less than `ATTEST_INTERVAL + 1` at least one honest validator has the chance to submit votes and evict malicious validators.
 
 `ATTEST_INTERVAL` can be set to `VALIDATOR_COUNT / 2` the honest validators could eventually evict malicious validators unless the half of validators are corrupted.
 
@@ -64,15 +64,15 @@ We can use an `M of N` multisig lock to describe the validator list, the `M` is 
 
 To change the validator list, a validator can collect enough votes(the signatures) and send a tx to spent the old multisig lock and construct a new multisig lock with new pubkey hashes. A validator node can use `type_id` to track this validator list.
 
-The pre-defined [multisig script](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md#short-payload-format) is satisfied the requirements, one except is the `multisig script` should be public so other nodes can check new validator list. Validators should make sure the entire `multisig script` is stored to cell data, and only one cell is constructed to represent the validator list.
+The pre-defined [multisig script](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md#short-payload-format) satisfies the requirements except that `multisig script` should be revealed so other nodes can check new validator list. Validators should make sure the entire `multisig script` is stored in a cell, and only one cell is constructed to represent the validator list.
 
-Notice, the process of collect data is not included in the POA protocol for simplifying, a responsible validator should check the vote tx carefully before signing it.
+Notice, the process of collecting votes is not included in the POA protocol for simplification, a responsible validator should check votes carefully before signing it.
 
 ## POA header
 
-Unfortunately, CKB header is fixed-length, the `nonce` field takes 128 bits, we can't just put 256 bits secp256k1 signature into the header.
+CKB header is fixed-length, the `nonce` field is 128 bits, we can't put 256 bits secp256k1 signature into the header directly.
 
-For easier implementation, instead change the block header structure, we put an extra POA context concatenated after cellbase transaction's first witness. To verify a header attestation, we need both the header and the cellbase transaction.
+For the ease of implementation, instead of changing the block header structure, we put an extra POA payload `POAContext` in the cellbase transaction's first witness. To verify a header attestation, we need both the header and the cellbase transaction.
 
 The structure of `POAContext`:
 
@@ -90,7 +90,7 @@ The first field `signature` is a secp256k1 signature signed by a validator.
 
 The signature message is supposed to digest the whole block except the signature itself.
 
-Because the signature is put into the cellbase transaction's witness, and the cellbase itself is digested by the `transaction_root` in the header. If we change the cellbase transaction the `transaction_root` and block hash will also be changed.
+Because the signature is put into the cellbase transaction's witness, and the cellbase itself is digested by the `transaction_root` in the header. If we change the cellbase transaction the `transaction_root` and block hash will also be changed. A validator needs to 'zeroize' the signature field before signing.
 
 We use merkle proof to prove the only changes of the header hash is caused by the `signature` field.
 
