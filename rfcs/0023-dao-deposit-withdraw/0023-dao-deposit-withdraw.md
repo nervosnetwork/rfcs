@@ -95,7 +95,7 @@ CKB's block header has a special field named `dao` containing auxiliary informat
 
 - `C_i` : the total issuance up to and including block `i`.
 - `AR_i`: the current `accumulated rate` at block `i`. `AR_j / AR_i` reflects the CKByte amount if one deposit 1 CKB to Nervos DAO at block `i`, and withdraw at block `j`.
-- `S_i`: the total unissued secondary issuance up to and including block `i`.
+- `S_i`: the total unissued secondary issuance up to and including block `i`, including unclaimed Nervos DAO compensation and treasury funds.
 - `U_i` : the total `occupied capacities` currently in the blockchain up to and including block `i`. Occupied capacity is the sum of capacities used to store all cells.
 
 Each of the 4 values is stored as unsigned 64-bit little endian number in the `dao` field. To maintain enough precision `AR_i`  is stored as the original value multiplied by `10 ** 16` .
@@ -108,7 +108,7 @@ For a single block `i`, it's easy to calculate the following values:
 - `U_{out,i}` : occupied capacities for all output cells in block `i`
 - `C_{in,i}` : total capacities for all input cells in block `i`
 - `C_{out,i}` : total capacities for all output cells in block `i`
-- `I_i` : total Nervos DAO compensation generated in block `i`
+- `I_i` : total withdrawed Nervos DAO compensation in block `i` (not includes withdrawing compensation)
 
 In genesis block, the values are defined as follows:
 
