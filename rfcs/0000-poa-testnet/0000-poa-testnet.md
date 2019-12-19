@@ -36,7 +36,7 @@ We define the following variables:
 
 ### attest a new block
 
-Instead of POW mining, a list of validators plays the role of producing blocks in POA testnet. Validators work in a round-robin style; in each block height, there exists a corresponded validator sign the block with its private key to attest to a new block. For convenient, we call the validator who attest a block an **attester** to distinguish it from other validators.
+Instead of POW mining, a list of validators plays the role of producing blocks in POA testnet. Validators work in a round-robin style; in each block height, there exists a corresponded validator that attests to the new block by sign the block with its private key. For convenient, we call the validator who attest a block an **attester** to distinguish it from other validators.
 
 The community chooses the initial validator list of the POA network by some off-chain governance mechanism, which does not cover in this proposal. At this moment, we can ignore the possible updating of the validator list; our protocol is simple enough works for both dynamic and fixed validators.
 
@@ -78,7 +78,11 @@ So we choose to use a cell to represent the POA validator list. The cell contain
 0 | 0 | VOTE_LIMIT | VALIDATOR_COUNT | blake160(Pubkey1) | blake160(Pubkey2) | ...
 ```
 
-We use a cell with `M of N` multisig lock to describe the validator list, the'M` set to `VOTE_LIMIT`, and `N` set to `VALIDATORS_COUNT`.
+We use a cell with `M of N` multisig lock to describe the validator list, the`M` set to `VOTE_LIMIT`, and `N` set to `VALIDATORS_COUNT`, we need an extra parameter to represent `ATTEST_INTERVAL`, so the final data is a 4 bytes little-endian number to represent `ATTEST_INTERVAL` plus a `multisig script`:
+
+``` txt
+ATTEST_INTERVAL(4 bytes little-endian) | 0 | 0 | VOTE_LIMIT | VALIDATOR_COUNT | blake160(Pubkey1) | blake160(Pubkey2) | ...
+```
 
 To change the validator list, anyone that collects enough votes(the signatures) can send a transaction to update the old validator list cell and construct a new validator list cell.
 
@@ -87,6 +91,22 @@ For simplify to track this cell, we assign a `type_id` on it; validators or anyo
 Before sign a vote transaction, validators must make sure the `multisig script`  in the cell is valid and corresponding to the lock, and only one cell constructed to represent the validator list; otherwise, the POA consensus wound broken.
 
 To simplify, the process of collecting votes do not include in the POA protocol.
+
+### off-chain governance
+
+The main intention of this document is to describe the POA testnet protocol. However, to better explain how the POA testnet validator works, we add this section as a suggestion to the off-chain governance, notice this section is more like a suggestion than a specification.
+
+The intention of on-chain governance and dynamic validators design is to decentralize the POA testnet. Instead of the foundation itself, the community should finally maintain the POA testnet validators.
+
+In the initial stage of the POA testnet, there may be just a small group validator that invited by the Nervos foundation. The validators together should governance the testnet and invite more validators from the community. A candidate validator may be a company or organization that influences the community. 
+
+A possible way to elect candidate validators: 
+
+The exists validators deploy a permissionless voting DAPP on the mainnet allows any company and organization can register them as a candidate. 
+Anyone can deposit mainnet coins to vote on the candidates. 
+The POA testnet validators obey the result of the DApp to invites the candidate to become the testnet validator.
+
+Such an election should periodically host.
 
 ## POA header
 
@@ -112,7 +132,7 @@ The first field `signature` is a secp256k1 signature signed by a validator. The 
 
 Since we put the signature into the cellbase transaction's witness, and the cellbase itself is digested by the `transaction_root` in the header. If we directly update the signature, the `transaction_root` and block hash also changed.
 
-To simply solve this issue, an attester needs to zero the signature field of `POAContext`, then re-compute the block hash as signature's message, after signing replace the zero signature with actually signature.
+To solve this issue, an attester needs to zero the signature field of `POAContext`, then re-compute the block hash as signature's message, after signing replace the zero signature with actually signature.
 
 An attester also needs to provide `cellbase transaction` and merkle proof to convince other validators in the [header-first synchronize]. So we also defined the following fields in the `POAContext`:
 
@@ -142,6 +162,15 @@ To solve this issue, we require `POAContext` also provides the update informatio
 So the `voting_txs` field of `POAContext` is introduced. When a block contains voting transactions, the attester must put voting transactions into `POAContext`, and the `merkle_proof` must proof both cellbase transaction and voting transactions are leaves of the `witness_transactions_root`.
 
 A POA block header verifier should update its validator list according to the `voting_txs` field. With this design, we can verify headers and update the validator list without downloading the whole blocks.
+
+### Header verification
+
+We need to do some verification which slightly differs from the mainnet:
+
+`nonce` must set to all zero bytes.
+`compact_target` must set to `553648127`(difficulty 1) or `545259520`(difficulty 2) according to the attester index is whether equals to `N % VALIDATOR_COUNT` or not.
+
+The other fields keep using mainnet verification rules.
 
 ## references
 
