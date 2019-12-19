@@ -46,9 +46,10 @@ However, an in-turned attester may fail to produce a block due to network error 
 
 Validators can use a simple strategy:
 
-1. If `INDEX == n % VALIDATOR_COUNT`, which means the validator itself is the attester for block `n`, the validator wait for `BLOCK_INTERVAL` seconds then attests a new block with difficulty set to `2`.
-2. If `INDEX != n % VALIDATOR_COUNT` which means the validator is not the attester for block `n`, the validator should wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds, and if there are no new block produced, the validator should attest a new block with difficulty set to `1`.
-3. If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
+1. For block height `n` a validator checks `n % VALIDAROR_COUNT`.
+2. If `INDEX == n % VALIDATOR_COUNT`, which means the validator is in it's turn to attests block `n`. The validator should wait for `BLOCK_INTERVAL` seconds then attests the block `n` with difficulty set to `2`.
+3. If `INDEX != n % VALIDATOR_COUNT`, which means the validator is not in it's turn to attests block `n`. The validator should wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds to wait for another attester to produce a new block. If there are no new block produced during the time, the validator should attest a new block with difficulty set to `1`.
+4. If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
 
 Notice the difficulty set to `2` when an in-turn attester produces a block and set to `1` when a not in-turn attester produces a block. This makes the in-turn attester's block total difficulty higher than the not in-turn attester's block; once two validators attest at the same height due to the network error, the other nodes still chooses the higher total difficulty block as the main chain.
 
@@ -153,22 +154,22 @@ A node does the following steps to verify a POA header:
 3. re-comute the block's `transaction_root` and block hash. 
 4. recovery the pubkey, then check the pubkey hash is belongs to a validator.
 
-Now we can verify a POAHeader with fixed validators. However, when a validator list updated, the header-first synchronization may not handle it correctly, think the following situation:
+Now we can verify a POAHeader with fixed validators. However, when validator list updated, the header-first synchronization may couldn't handle it correctly, think the following situation:
 The initial validators list is `[A, B, C, D]`.
 Since block `N`, the validator list updated to `[A, B, D, E]`.
 A header-first synchronization from `N - 1` to `N + 4` wound fails to sync due to the unknown validator `E`.
-To solve this issue, we require `POAContext` also provides the update information of validators to verifiers.
+To solve this issue, we require `POAContext` also provides the updated information of validators to verifiers.
 
-So the `voting_txs` field of `POAContext` is introduced. When a block contains voting transactions, the attester must put voting transactions into `POAContext`, and the `merkle_proof` must proof both cellbase transaction and voting transactions are leaves of the `witness_transactions_root`.
+So the `voting_txs` field of `POAContext` is introduced. When a block contains voting transactions, the attester must put voting transactions into `POAContext`, and the `merkle_proof` must prove both cellbase transaction and voting transactions are leaves of the `witness_transactions_root`.
 
 A POA block header verifier should update its validator list according to the `voting_txs` field. With this design, we can verify headers and update the validator list without downloading the whole blocks.
 
 ### Header verification
 
-We need to do some verification which slightly differs from the mainnet:
+We need to do some additional verification which slightly differs from the mainnet:
 
-`nonce` must set to all zero bytes.
-`compact_target` must set to `553648127`(difficulty 1) or `545259520`(difficulty 2) according to the attester index is whether equals to `N % VALIDATOR_COUNT` or not.
+* `nonce` must set to all zero bytes.
+* `compact_target` must set to `553648127`(difficulty 1) or `545259520`(difficulty 2) according to the attester index is whether equals to `N % VALIDATOR_COUNT` or not.
 
 The other fields keep using mainnet verification rules.
 
