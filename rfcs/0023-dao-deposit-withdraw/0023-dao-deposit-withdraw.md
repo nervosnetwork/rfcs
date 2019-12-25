@@ -43,14 +43,14 @@ For convenience, a cell satisfying the above conditions will be called a `Nervos
 
 ## Withdraw
 
-Users can send a transaction to withdraw deposited CKBytes from Nervos DAO at any time(but a locking period will be applied to determine when exactly the tokens can be withdrawed). The interest gained by a Nervos DAO cell will only be issued in the withdraw phase, this means for a transaction including Nervos DAO withdraw, the sum of capacities from all output cells might exceed the sum of capacities from all input cells. Unlike the deposit, withdraw is a 2-phase process:
+Users can send a transaction to withdraw deposited CKBytes from Nervos DAO at any time(but a locking period will be applied to determine when exactly the tokens can be withdrawed). The compensation gained by a Nervos DAO cell will only be issued in the withdraw phase, this means for a transaction including Nervos DAO withdraw, the sum of capacities from all output cells might exceed the sum of capacities from all input cells. Unlike the deposit, withdraw is a 2-phase process:
 
 - In phase 1, the first transaction transforms a `Nervos DAO deposit cell` into a `Nervos DAO withdrawing cell`.
 - In phase 2, a second transaction will be used to withdraw tokens from Nervos DAO withdrawing cell.
 
 ### Withdraw Phase 1
 
-Phase 1 is used to transform `Nervos DAO deposit cell` into `Nervos DAO withdrawing cell`, the purpose here, is to determine the duration a cell has been deposited into Nervos DAO. Once phase 1 transaction is included in CKB blockchain, the duration betwen `Nervos DAO deposit cell` and `Nervos DAO withdrawing cell` can then be used to calculate interests, as well as remaining lock period of the deposited tokens.
+Phase 1 is used to transform `Nervos DAO deposit cell` into `Nervos DAO withdrawing cell`, the purpose here, is to determine the duration a cell has been deposited into Nervos DAO. Once phase 1 transaction is included in CKB blockchain, the duration betwen `Nervos DAO deposit cell` and `Nervos DAO withdrawing cell` can then be used to calculate compensation, as well as remaining lock period of the deposited tokens.
 
 A phase 1 transaction should satisfying the following conditions:
 
@@ -67,7 +67,7 @@ Once this transaction is included in CKB, the user can start preparing phase 2 t
 
 ### Withdraw Phase 2
 
-Phase 2 transaction is used to withdraw deposited tokens together with interests from Nervos DAO. Notice unlike phase 1 transaction which can be sent at any time the user wish, the assembled phase 2 transaction here, will have a since field set to fulfill lock period requirements, so it might be possible that one can only generate a transaction first, but has to wait for some time before he/she can send the transaction to CKB.
+Phase 2 transaction is used to withdraw deposited tokens together with compensation from Nervos DAO. Notice unlike phase 1 transaction which can be sent at any time the user wish, the assembled phase 2 transaction here, will have a since field set to fulfill lock period requirements, so it might be possible that one can only generate a transaction first, but has to wait for some time before he/she can send the transaction to CKB.
 
 A phase 2 transaction should satisfying the following conditions:
 
@@ -76,9 +76,9 @@ A phase 2 transaction should satisfying the following conditions:
 - For a Nervos DAO withdrawing cell at input index `i`, the user should locate the deposit block header, meaning the block header in which the original Nervos DAO deposit cell is included. With the deposit block header, 2 operations are required:
     - The deposit block header hash should be included in `header_deps` of current transaction
     - The index of the deposit block header hash in `header_deps` should be kept using 64-bit unsigned little endian integer format in the part belonging to input cell's type script of corresponding witness at index `i`. A separate RFC would explain current argument organization in the witness. An example will also show this process in details below.
-- For a Nervos DAO withdrawing cell, the `since` field in the cell input should reflect the Nervos DAO cell's lock period requirement, which is 180 epoches. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc. Notice the calculation of lock period is independent of the calculation of interest. It's totally valid to deposit at epoch 5, use a `withdraw block` at epoch 100, and use a `since` field at 185. Please refer to the [since RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md) on how to represent valid epoch numbers, Nervos DAO type script only accepts absolute epoch numbers as since values now.
-- The interest calculation logic is totally separate from the lock period calculation logic, we will explain the interest calculation logic in the next section.
-- The Nervos DAO type script requires the sum of all input cells' capacities plus interests is larger or equaled to the sum of all output cells' capacities.
+- For a Nervos DAO withdrawing cell, the `since` field in the cell input should reflect the Nervos DAO cell's lock period requirement, which is 180 epoches. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc. Notice the calculation of lock period is independent of the calculation of compensation. It's totally valid to deposit at epoch 5, use a `withdraw block` at epoch 100, and use a `since` field at 185. Please refer to the [since RFC](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md) on how to represent valid epoch numbers, Nervos DAO type script only accepts absolute epoch numbers as since values now.
+- The compensation calculation logic is totally separate from the lock period calculation logic, we will explain the compensation calculation logic in the next section.
+- The Nervos DAO type script requires the sum of all input cells' capacities plus compensation is larger or equaled to the sum of all output cells' capacities.
 - The Nervos DAO type script should be included in the `cell_deps`.
 
 As hinted in the above steps, it's perfectly possible to do multiple withdraws in one transaction. What's more, Nervos DAO doesn't limit the purpose of withdrawed tokens, it's also valid to deposit the newly withdrawed tokens again to Nervos DAO right away in the same transaction. In fact, one transaction can be used to freely mix all the following actions together:
@@ -89,13 +89,13 @@ As hinted in the above steps, it's perfectly possible to do multiple withdraws i
 
 ## Calculation
 
-This section explains the calculation of Nervos DAO interest and relevant fields in the CKB block header.
+This section explains the calculation of Nervos DAO compensation and relevant fields in the CKB block header.
 
 CKB's block header has a special field named `dao` containing auxiliary information for Nervos DAO's use. Specifically, the following data are packed in a 32-byte `dao` field in the following order:
 
 - `C_i` : the total issuance up to and including block `i`.
 - `AR_i`: the current `accumulated rate` at block `i`. `AR_j / AR_i` reflects the CKByte amount if one deposit 1 CKB to Nervos DAO at block `i`, and withdraw at block `j`.
-- `S_i`: the total secondary issuance up to and including block `i`.
+- `S_i`: the total unissued secondary issuance up to and including block `i`, including unclaimed Nervos DAO compensation and treasury funds.
 - `U_i` : the total `occupied capacities` currently in the blockchain up to and including block `i`. Occupied capacity is the sum of capacities used to store all cells.
 
 Each of the 4 values is stored as unsigned 64-bit little endian number in the `dao` field. To maintain enough precision `AR_i`  is stored as the original value multiplied by `10 ** 16` .
@@ -108,7 +108,7 @@ For a single block `i`, it's easy to calculate the following values:
 - `U_{out,i}` : occupied capacities for all output cells in block `i`
 - `C_{in,i}` : total capacities for all input cells in block `i`
 - `C_{out,i}` : total capacities for all output cells in block `i`
-- `I_i` : the sum of all Nervos DAO interested 
+- `I_i` : total withdrawed Nervos DAO compensation in block `i` (not includes withdrawing compensation)
 
 In genesis block, the values are defined as follows:
 
@@ -124,7 +124,7 @@ Then from the genesis block, the values for each succeeding block can be calcula
 - `S_i` : `S_{i-1}` - `I_i` + `s_i` - floor( `s_i` * `U_{i-1}` / `C_{i-1}` )
 - `AR_i` : `AR_{i-1}` + floor( `AR_{i-1}` * `s_i` / `C_{i-1}` )
 
-With those values, it's now possible to calculate the Nervos DAO interest for a cell. Assuming a Nervos DAO cell is deposited at block `m` (also meaning the Nervos DAO deposit cell is included at block `m`), the user chooses to start withdrawing process from block `n` (meaning the Nervos DAO withdrawing cell is included at block `n`), the total capacity for the Nervos DAO cell is `c_t`, the occupied capacity for the Nervos DAO cell is `c_o`. The Nervos DAO interest is calculated with the following formula:
+With those values, it's now possible to calculate the Nervos DAO compensation for a deposited cell. Assuming a Nervos DAO cell is deposited at block `m` (also meaning the Nervos DAO deposit cell is included at block `m`), the user chooses to start withdrawing process from block `n` (meaning the Nervos DAO withdrawing cell is included at block `n`), the total capacity for the Nervos DAO cell is `c_t`, the occupied capacity for the Nervos DAO cell is `c_o`. The Nervos DAO compensation is calculated with the following formula:
 
 ( `c_t` - `c_o` ) * `AR_n` / `AR_m` - ( `c_t` - `c_o` )
 
