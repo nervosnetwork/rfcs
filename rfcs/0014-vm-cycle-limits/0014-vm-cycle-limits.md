@@ -147,7 +147,7 @@ Notice that most numbers used here haven't gone through full testing, right now 
 * Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
 * Multiplication and divisions should be much more expensive than normal instructions.
 * We want each syscall to at least consume some cycles even thought some syscall might return no data, hence we add either 10 or 100 initial cycles to each syscall.
-* Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most norma instructions.
+* Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most normal instructions.
 * We want to encourage using *Load Cell By Field* instead of *Load Cell*, since the former one makes easier implementation and less likely to be attacked, that's why *Load Cell* syscall use a factor of 100, while *Load Cell By Field* only use a factor of 10.
 
 In future a different RFC might revise those numbers and even put those rules in a cell for easier changes.
