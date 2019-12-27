@@ -9,15 +9,13 @@ Created: 2019-08-26
 
 # CKB Transaction Structure
 
-In this article, let's delve into an essential data structure in CKB, the transaction.
+This RFC is about an essential data structure in CKB, the transaction. CKB is under active development. At the time of writing, the corresponding CKB version is v0.25.0.
 
-This article has two parts. The first part covers the core transaction features, and the second part introduces some extensions.
-
-CKB is under active development, I'll update the article when the transaction structure changes in future releases. At the time of writing, the corresponding CKB version is v0.25.0.
+The document contains two parts. The first one covers the core transaction features, and the second one introduces some extensions.
 
 ![](transaction-overview.png)
 
-The diagram above is an overview of the transaction structure. Instead of explaining field by field, I'll introduce various features which the CKB transaction provides and how the fields play their roles in these features.
+The diagram above is an overview of the transaction structure. Instead of explaining field by field, the following paragraphs introduce various features which the CKB transaction provides and how the fields play their roles in these features.
 
 ## Part I: Core Features
 
