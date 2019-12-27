@@ -352,19 +352,22 @@ Another special transaction is the DAO withdraw transaction. It also has a porti
 
 ### Crypto Primitives
 
-**blake256**
+**ckbhash**
 
-CKB uses blake2b as the default hash algorithm. We use **blake256** to denote a function to get the first 256 bits of the blake2b hash with personal "ckb-default-hash".
+CKB uses blake2b as the default hash algorithm. We use **ckbhash** to denote the blake2b hash function with following configuration:
+
+* output digest size: 32
+* personalization: ckb-default-hash
 
 ### Transaction Hash
 
-Transaction hash is `blake256(tx_hash_digest(tx))` where `tx_hash_digest` is a method to serialize all fields in a transaction excluding `witnesses` into binary. The serialization specification is not finalized yet, by now you can get the transaction hash via the RPC `_compute_transaction_hash`.
+Transaction hash is `ckbhash(tx_hash_digest(tx))` where `tx_hash_digest` is a method to serialize all fields in a transaction excluding `witnesses` into binary. The serialization specification is not finalized yet, by now you can get the transaction hash via the RPC `_compute_transaction_hash`.
 
 ### Cell Data Hash
 
-Cell data hash is just `blake256(data)`.
+Cell data hash is just `ckbhash(data)`.
 
 ### Script Hash
 
-Script hash is `blake256(serialize(script))` where `serialize` turns the script structure into a block of binary. The serialization specification is not finalized yet, by now you can get the script hash via the RPC `_compute_script_hash`.
+Script hash is `ckbhash(serialize(script))` where `serialize` turns the script structure into a block of binary. The serialization specification is not finalized yet, by now you can get the script hash via the RPC `_compute_script_hash`.
 
