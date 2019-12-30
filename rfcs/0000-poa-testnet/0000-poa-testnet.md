@@ -32,6 +32,7 @@ We define the following variables:
 * `VALIDATOR_COUNT` - Number of current validators, this value changed due to new validators join or old validator leaves.
 * `ATTEST_INTERVAL` - A validator cannot attest two blocks within `ATTEST_INTERVAL` number. For example, a validator who attest block (6) must wait for at least `ATTEST_INTERVAL` blocks to do next attest: block (6 + `ATTEST_INTERVAL` + 1). Notice when the `VALIDATOR_COUNT` <= `ATTEST_INTERVAL`, the POA testnet will stuck forever due to no validators can attest a new block.
 * `BLOCK_INTERVAL` - the interval of blocks, set to 8 seconds.
+* `BLOCK_TIMEOUT` - timeout for new block generation, set to 10 seconds.
 * `VOTE_THRESHOLD` - The least votes to make a new validator join or to evict an old validator, should be at least `VALIDATOR_COUNT / 2 + 1`.
 
 ### attest a new block
@@ -47,8 +48,8 @@ However, an in-turned attester may fail to produce a block due to network error 
 Validators can use a simple strategy:
 
 1. For block height `n` a validator checks `n % VALIDAROR_COUNT`.
-2. If `INDEX == n % VALIDATOR_COUNT`, which means the validator is in it's turn to attests block `n`. The validator should wait for `BLOCK_INTERVAL` seconds then attests the block `n` with difficulty set to `2`.
-3. If `INDEX != n % VALIDATOR_COUNT`, which means the validator is not in it's turn to attests block `n`. The validator should wait for `BLOCK_INTERVAL + rand(VALIDATOR_COUNT) * 0.5` seconds to wait for another attester to produce a new block. If there are no new block produced during the time, the validator should attest a new block with difficulty set to `1`.
+2. If `INDEX == n % VALIDATOR_COUNT`, which means the validator is in its turn to attests block `n`. The validator should wait for `BLOCK_INTERVAL` seconds then attests the block `n` with difficulty set to `2`.
+3. If `INDEX != n % VALIDATOR_COUNT`, which means the validator is not in its turn to attests block `n`. The validator should wait for `BLOCK_TIMEOUT + rand(VALIDATOR_COUNT) * 0.5` seconds to wait for another attester to produce a new block. If there are no new block produced during the time, the validator should attest a new block with difficulty set to `1`.
 4. If the validator is the attester of the last block, wait for `ATTEST_INTERVAL` blocks then continue this strategy.
 
 Notice the difficulty set to `2` when an in-turn attester produces a block and set to `1` when a not in-turn attester produces a block. This makes the in-turn attester's block total difficulty higher than the not in-turn attester's block; once two validators attest at the same height due to the network error, the other nodes still chooses the higher total difficulty block as the main chain.
