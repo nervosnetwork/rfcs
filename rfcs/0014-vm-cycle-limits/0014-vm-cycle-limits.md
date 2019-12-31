@@ -27,127 +27,77 @@ Note there's no limit on the cycles for an individual transaction or a script. A
 
 Here we will specify the cycles needed by each CKB VM instructions or syscalls. Note right now in the RFC, we define hard rules for each instruction or syscall here, in future this might be moved into consensus rules so we can change them more easily.
 
-Note that right now, the cycles used here aren't carefully tested, what's more, hardcoding cycles here is also a temporary solution. In future we plan to have a different RFC that:
+The cycles consumed for each operation are determined based on the following rules:
 
-1. Use numbers that go through more testing and real benchmarks to be more realistic.
-2. Put cycle rules in a cell so we can change them without needing hardforks.
+1. Cycles for RISC-V instructions are determined based on real hardware that implement RISC-V ISA.
+2. Cycles for syscalls are measured based on real runtime performance metrics obtained while benchmarking current CKB implementation.
+
+### Initial Loading Cycles
+
+For each byte loaded into CKB VM in the initial ELF loading phase, 0.25 cycles will be charged. This is to encourage dapp developers to ship smaller smart contracts as well as preventing DDoS attacks using large binaries. Notice fractions will be rounded up here, so 30.25 cycles will become 31 cycles.
 
 ### Instruction Cycles
 
 All CKB VM instructions consume 1 cycle except the following ones:
 
-| Instruction | Cycles |
-|-------------|--------|
-| JALR        | 3      |
-| JAL         | 3      |
-| J           | 3      |
-| JR          | 3      |
-| BEQ         | 3      |
-| BNE         | 3      |
-| BLT         | 3      |
-| BGE         | 3      |
-| BLTU        | 3      |
-| BGEU        | 3      |
-| BEQZ        | 3      |
-| BNEZ        | 3      |
-| LD          | 2      |
-| SD          | 2      |
-| LDSP        | 2      |
-| SDSP        | 2      |
-| LW          | 3      |
-| LH          | 3      |
-| LB          | 3      |
-| LWU         | 3      |
-| LHU         | 3      |
-| LBU         | 3      |
-| SW          | 3      |
-| SH          | 3      |
-| SB          | 3      |
-| LWSP        | 3      |
-| SWSP        | 3      |
-| MUL         | 5      |
-| MULW        | 5      |
-| MULH        | 5      |
-| MULHU       | 5      |
-| MULHSU      | 5      |
-| DIV         | 16     |
-| DIVW        | 16     |
-| DIVU        | 16     |
-| DIVUW       | 16     |
-| REM         | 16     |
-| REMW        | 16     |
-| REMU        | 16     |
-| REMUW       | 16     |
-| ECALL       | 0      |
-| EBREAK      | 0      |
+| Instruction | Cycles               |
+|-------------|----------------------|
+| JALR        | 3                    |
+| JAL         | 3                    |
+| J           | 3                    |
+| JR          | 3                    |
+| BEQ         | 3                    |
+| BNE         | 3                    |
+| BLT         | 3                    |
+| BGE         | 3                    |
+| BLTU        | 3                    |
+| BGEU        | 3                    |
+| BEQZ        | 3                    |
+| BNEZ        | 3                    |
+| LD          | 2                    |
+| SD          | 2                    |
+| LDSP        | 2                    |
+| SDSP        | 2                    |
+| LW          | 3                    |
+| LH          | 3                    |
+| LB          | 3                    |
+| LWU         | 3                    |
+| LHU         | 3                    |
+| LBU         | 3                    |
+| SW          | 3                    |
+| SH          | 3                    |
+| SB          | 3                    |
+| LWSP        | 3                    |
+| SWSP        | 3                    |
+| MUL         | 5                    |
+| MULW        | 5                    |
+| MULH        | 5                    |
+| MULHU       | 5                    |
+| MULHSU      | 5                    |
+| DIV         | 32                   |
+| DIVW        | 32                   |
+| DIVU        | 32                   |
+| DIVUW       | 32                   |
+| REM         | 32                   |
+| REMW        | 32                   |
+| REMU        | 32                   |
+| REMUW       | 32                   |
+| ECALL       | 500 (see note below) |
+| EBREAK      | 500 (see note below) |
 
 ### Syscall Cycles
 
-Each syscall in CKB has different rules for consuming cycles:
+As shown in the above chart, each syscall will have 500 initial cycle consumptions. This is based on real performance metrics gathered benchmarking CKB implementation, certain bookkeeping logics are required for each syscall here.
 
-#### Load TX Hash
+In addition, for each byte loaded into CKB VM in the syscalls, 0.25 cycles will be charged. Notice fractions will also be rounded up here, so 30.25 cycles will become 31 cycles.
 
-*Load TX Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized transaction hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
+## Guidelines
 
-Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
+In general, the cycle consumption rules above follow certain guidelines:
 
-#### Load Current Script Hash
+* Branches are more expensive than normal instructions.
+* Memory accesses are more expensive than normal instructions. Since CKB VM is a 64-bit system, loading 64-bit value directly will cost less cycle than loading smaller values.
+* Multiplication and divisions are much more expensive than normal instructions.
+* Syscalls include 2 parts: the bookkeeping part at first, and a plain memcpy phase. The first bookkeeping part includes quite complex logic, which should consume much more cycles. The memcpy part is quite cheap on modern hardware, hence less cycles will be charged.
 
-*Load Current Script Hash* syscall first consumes 10 initial cycles, it then measures the size of the serialized script hash(for now, this is 32 bytes): for every single byte in the data, it consumes 10 more cycles.
-
-Note that even though the script only requires part of the serialized TX hash, the syscall still charges based on the full serialized hash size.
-
-#### Load Cell
-
-*Load Cell* syscall first consumes 100 initial cycles, it then measures the size of the serialized cell structure data: for every single byte in the serialized data, it consumes 100 more cycles.
-
-Notice the charged cycles here is 10 times the cycles charged in `Load Cell By Field` syscall, this is because we are discouraging the use of this syscall. One should only use this if they really need the full serialized Cell structure.
-
-Note that even though the script only requires part of the serialized Cell structure data, the syscall still charges based on the full serialized data size.
-
-#### Load Cell By Field
-
-*Load Cell By Field* syscall first consumes 10 initial cycles, it then measures the size of the serialized data from the specified field: for every single byte in the serialized data, it consumes 10 more cycles.
-
-Note that even though the script only requires part of the specified serialized field, the syscall still charges based on the full serialized field size.
-
-#### Load Input
-
-*Load Input* syscall first consumes 100 initial cycles, it then measures the size of the serialized input data: for every single byte in the serialized data, it consumes 100 more cycles.
-
-Notice the charged cycles here is 10 times the cycles charged in `Load Input By Field` syscall, this is because we are discouraging the use of this syscall. One should only use this if they really need the full serialized input.
-
-Note that even though the script only requires part of the serialized input data, the syscall still charges based on the full serialized data size.
-
-#### Load Input By Field
-
-*Load Input By Field* syscall first consumes 10 initial cycles, it then measures the size of the serialized data from the specified field: for every single byte in the serialized data, it consumes 10 more cycles.
-
-Note that even though the script only requires part of the serialized data, the syscall still charges based on the full serialized data size.
-
-#### Load Header
-
-*Load Header* syscall first consumes 10 initial cycles, it then measures the size of the serialized header: for every single byte in the serialized data, it consumes 10 more cycles.
-
-Note that even though the script only requires part of the serialized header data, the syscall still charges based on the full serialized data size.
-
-#### Load Code
-
-*Load Code* syscall first consumes 10 initial cycles, it then measures the size of actual loaded code section, for every single byte in the loaded code, it consumes 10 cycles.
-
-#### Debug
-
-*Debug* syscall first consumes 10 initial cycles, it then consumes 10 more cycles for every single byte in the debug parameter string.
-
-## Final note
-
-Notice that most numbers used here haven't gone through full testing, right now they are picked based on the following guidelines:
-
-* Branches should be more expensive than normal instructions.
-* Memory accesses should be more expensive than normal instructions, but since we are using 64-bit system, accessing 64-bit value should take less time than non 64-bit value.
-* Multiplication and divisions should be much more expensive than normal instructions.
-* We want each syscall to at least consume some cycles even thought some syscall might return no data, hence we add either 10 or 100 initial cycles to each syscall.
-* Syscalls should in general be more expensive than normal instructions to discourage using them unless necessary, hence we are using a scale of 10 or 100 here to make them significantly bigger than most normal instructions.
-* We want to encourage using *Load Cell By Field* instead of *Load Cell*, since the former one makes easier implementation and less likely to be attacked, that's why *Load Cell* syscall use a factor of 100, while *Load Cell By Field* only use a factor of 10.
-
-In future a different RFC might revise those numbers and even put those rules in a cell for easier changes.
+Looking into the literature, the cycle consumption rules here resemble a lot like the performance metrics one can find in modern computer archtecture.
