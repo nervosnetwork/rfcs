@@ -395,7 +395,7 @@ There're couple of important points worth mentioning in this transaction:
     - The closest epoch that is past `47 + 382 / 1605` but still satisfies lock period is `182 + 648 / 1677` epoch, which in the correct format, is `0x68d02880000b6`.
     - Since absolute epoch number is used in the since field, necessary flags are needed to make the value `0x20068d02880000b6`. Please refer to since RFC for more details on the format here.
 
-Using the same calculation as above, the `AR` for the withdraw block `0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073` is `1.0008616347796555`.
+Using the same calculation as above, the `AR` for the withdrawing block `0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073` is `1.0008616347796555`.
 
 Now the maximum capacity that can be withdrawed from the above NervosDAO input cell can be calculated:
 
