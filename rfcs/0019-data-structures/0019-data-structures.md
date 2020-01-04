@@ -68,7 +68,7 @@ More information about Cell can be found in the [whitepaper](https://github.com/
 | :------------ | :----------------------------------- | :----------------------------------------------------------- |
 | `code_hash`   | H256(hash)                           | **The hash of ELF formatted RISC-V binary that contains a CKB script.** For space efficiency consideration, the actual script is attached to current transaction as a dep cell. Depending on the value of `hash_type`, the hash specified here should either match the hash of cell data part in the dep cell, or the hash of type script in the dep cell. The actual binary is loaded into an CKB-VM instance when they are specified upon the transaction verification. |
 | `args`        | [Bytes]                              | **An array of arguments as the script input.** The arguments here are imported into the CKB-VM instance as input arguments for the scripts. Note that for lock scripts, the corresponding CellInput would have another args field which is appended to the array here to form the complete input argument list. |
-| `hash_type`   | String, could be `type` or `code`    | **The interpretation of code hash when looking for matched dep cells.** If this is `code`, `code_hash` should match the blake2b hash of data in a dep cell; if this is `type`, `code_hash` should instead match the type script hash of a dep cell. |
+| `hash_type`   | String, could be `type` or `data`    | **The interpretation of code hash when looking for matched dep cells.** If this is `data`, `code_hash` should match the blake2b hash of data in a dep cell; if this is `type`, `code_hash` should instead match the type script hash of a dep cell. |
 
 
 
