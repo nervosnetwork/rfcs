@@ -190,7 +190,7 @@ In a typical smart contract platform, participants of the network have different
 
 In the Nervos CKB, Store of Assets users want security of their assets; developers want more adoption, reflected in more assets preserved; miners want higher income and token holders want price appreciation of their tokens. Higher token price supports everyone's objective - the network would be more secure, miners get higher income, and token holders get better return.
 
-Aligning all participants' incentives allows the network to best harness network effects to grow its intrinsic value. It also produces a more cohesive community and makes the system less prune to governance challenges.
+Aligning all participants' incentives allows the network to best harness network effects to grow its intrinsic value. It also produces a more cohesive community and makes the system less prone to governance challenges.
 
 ### Bootstrapping Network Effect and Network Growth
 
