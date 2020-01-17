@@ -1,0 +1,22 @@
+* @nervosnetwork/rfc
+/rfcs/0001-positioning/ @nervosnetwork/rfc @knwang
+/rfcs/0002-ckb/ @nervosnetwork/rfc @janx
+/rfcs/0003-ckb-vm/ @nervosnetwork/rfc @xxuejie
+/rfcs/0004-ckb-block-sync/ @nervosnetwork/rfc @doitian
+/rfcs/0005-priviledged-mode/ @nervosnetwork/rfc @xxuejie
+/rfcs/0006-merkle-tree/ @nervosnetwork/rfc @kilb
+/rfcs/0007-scoring-system-and-network-security/ @nervosnetwork/rfc @jjyr
+/rfcs/0008-serialization/ @nervosnetwork/rfc @yangby-cryptape
+/rfcs/0009-vm-syscalls/ @nervosnetwork/rfc @xxuejie
+/rfcs/0010-eaglesong/ @nervosnetwork/rfc @aszepieniec
+/rfcs/0011-transaction-filter-protocol/ @nervosnetwork/rfc @quake
+/rfcs/0012-node-discovery/ @nervosnetwork/rfc @jjyr @TheWaWaR
+/rfcs/0013-get-block-template/ @nervosnetwork/rfc @zhangsoledad
+/rfcs/0014-vm-cycle-limits/ @nervosnetwork/rfc @xxuejie
+/rfcs/0015-ckb-cryptoeconomics/ @nervosnetwork/rfc @knwang @janx
+/rfcs/0017-tx-valid-since/ @nervosnetwork/rfc @jjyr
+/rfcs/0019-data-structures/ @nervosnetwork/rfc @xxuejie
+/rfcs/0020-ckb-consensus-protocol/ @nervosnetwork/rfc @nirenzang
+/rfcs/0021-ckb-address-format/ @nervosnetwork/rfc @CipherWang
+/rfcs/0022-transaction-structure/ @nervosnetwork/rfc @doitian
+/rfcs/0023-dao-deposit-withdraw/ @nervosnetwork/rfc @xxuejie @doitian
