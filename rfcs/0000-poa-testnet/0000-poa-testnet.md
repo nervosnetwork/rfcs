@@ -21,7 +21,7 @@ We expect the new POA testnet to be long term stable, and the testnet should be 
 
 In the purpose we design the POA testnet with the following principles:
 
-* There should be a dynamic group of validators to maintain the POA network, each validator can submit block and vote. With enough votes, the network can allow new validators to join or evict a exists validators.
+* There should be a dynamic group of validators to maintain the POA network, each validator can submit block and vote. With enough votes, the network can allow new validators to join or evict exists validators.
 * The network cannot be halted or concerned by minority malicious validators, malicious validators should be eventually evicted by majority honest validators.
 * The other part of the network should be the same as the mainnet(unless block header may need some extract context to do verification).
 
@@ -29,7 +29,8 @@ In the purpose we design the POA testnet with the following principles:
 
 We define the following variables:
 
-* `VALIDATOR_COUNT` - Number of current validators, this value changed due to new validators join or old validator leaves.
+* `MAX_VALIDATOR_COUNT` - Number of max validators.
+* `VALIDATOR_COUNT` - Number of current validators, this value changed due to new validators join or old validator leaves, but can't be more than `MAX_VALIDATOR_COUNT`.
 * `ATTEST_INTERVAL` - A validator cannot attest two blocks within `ATTEST_INTERVAL` number. For example, a validator who attest block (6) must wait for at least `ATTEST_INTERVAL` blocks to do next attest: block (6 + `ATTEST_INTERVAL` + 1). Notice when the `VALIDATOR_COUNT` <= `ATTEST_INTERVAL`, the POA testnet will stuck forever due to no validators can attest a new block.
 * `BLOCK_INTERVAL` - the interval of blocks, set to 8 seconds.
 * `BLOCK_TIMEOUT` - timeout for new block generation, set to 10 seconds.
@@ -54,11 +55,13 @@ Validators can use a simple strategy:
 
 Notice the difficulty set to `2` when an in-turn attester produces a block and set to `1` when a not in-turn attester produces a block. This makes the in-turn attester's block total difficulty higher than the not in-turn attester's block; once two validators attest at the same height due to the network error, the other nodes still chooses the higher total difficulty block as the main chain.
 
-`ATTEST_INTERVAL` is used to preventing malicious validators censor the POA network. A validator cannot attest two blocks within the `ATTEST_INTERVAL` number.  Consider the situation that malicious validators try to control the whole network: 
+`ATTEST_INTERVAL` is used to preventing malicious validators censor the POA network. A validator cannot attest two blocks within the `ATTEST_INTERVAL` number.  Consider the situation that malicious validators try to control the whole network:
 
 The first malicious validator must wait for `ATTEST_INTERVAL + 1` blocks to produce a block again. When the number of malicious validators is less than `ATTEST_INTERVAL + 1`, there must exist an honest validator who has the chance to submit a block includes majority voting to evict malicious validators.
 
 `ATTEST_INTERVAL` can be set to `VALIDATOR_COUNT / 2` the honest validators could eventually evict malicious validators unless the half of validators corrupted.
+
+One thing is that CKB uses 2-phase commitment, a transaction must be proposed first before committed in a block. This means the honest validators need at least produce two blocks to finally commit the eviction transaction, and these two blocks must be within the proposal window, so we choose a large enough value in the POA testnet: `TX_PROPOSAL_WINDOW` is set to `ProposalWindow(2, MAX_VALIDATOR_COUNT)`.
 
 ### validator list and on-chain governance
 
