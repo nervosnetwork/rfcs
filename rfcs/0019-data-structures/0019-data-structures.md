@@ -291,7 +291,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | `number`            | uint64     | **The block height.**                                        |
 | `parent_hash`       | H256(hash) | **The hash of the parent block.**                            |
 | `nonce`             | uint128    | **The nonce.** Similar to [the nonce in Bitcoin](https://en.bitcoin.it/wiki/Nonce). Represent the solution of the PoW puzzle |
-| `timestamp`         | uint64     | **A [Unix time](http://en.wikipedia.org/wiki/Unix_time) timestamp.** |
+| `timestamp`         | uint64     | **A [Unix time](http://en.wikipedia.org/wiki/Unix_time) timestamp in milliseconds.** |
 | `transactions_root` | H256(hash) | **The hash of concatenated transaction hashes CBMT root and transaction witness hashes CBMT root.** |
 | `proposals_hash`    | H256(hash) | **The hash of concatenated proposal ids.** (all zeros when proposals is empty) |
 | `uncles_hash`       | H256(hash) | **The hash of concatenated hashes of uncle block headers.** （all zeros when uncles is empty) |
