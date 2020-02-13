@@ -13,7 +13,7 @@ Created: 2019-03-11
 
 This RFC suggests adding a new consensus rule to prevent a cell to be spent before a certain block timestamp or a block number.
 
-## Summary 
+## Summary
 
 Transaction input adds a new `u64` (unsigned 64-bit integer) type field `since`, which prevents the transaction to be mined before an absolute or relative time.
 
@@ -94,7 +94,7 @@ end
 
 `since` SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when `metric flag` is `10`, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.
 
-The median block time calculated from the past 11 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
+The median block time calculated from the past 37 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
 
 ``` rust
 pub trait BlockMedianTimeContext {
@@ -319,4 +319,3 @@ where
     }
 }
 ```
-
