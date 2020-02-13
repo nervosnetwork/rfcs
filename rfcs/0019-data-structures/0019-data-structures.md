@@ -277,7 +277,7 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | Name                    | Type            | Description                                                  |
 | ----------------------- | --------------- | ------------------------------------------------------------ |
 | `header`                | `Header`        | **The block header of the block.** This part contains some metadata of the block. See [the Header section](#header) below for the details of this part. |
-| `trasactions`           | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
+| `transactions`           | [`Transaction`] | **An array of committed transactions contained in the block.** Each element of this array has the same structure as [the Transaction structure](#transaction) above. |
 | `proposals`             | [string]        | **An array of hex-encoded short transaction ID of the proposed transactions.** |
 | `uncles`                | [`UncleBlock`]  | **An array of uncle blocks of the block.** See [the UncleBlock section](#uncleblock) below for the details of this part. |
 
