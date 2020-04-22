@@ -32,7 +32,7 @@ CKB uses two major serialization formats, [Molecule][molecule] and [JSON][json].
 |  Type  |                      Header                      |               Body                |
 |--------+--------------------------------------------------+-----------------------------------|
 | array  |                                                  |  item-0 |  item-1 | ... |  item-N |
-| struct |                                                  | filed-0 | field-1 | ... | field-N |
+| struct |                                                  | field-0 | field-1 | ... | field-N |
 | fixvec | items-count                                      |  item-0 |  item-1 | ... |  item-N |
 | dynvec | full-size | offset-0 | offset-1 | ... | offset-N |  item-0 |  item-1 | ... |  item-N |
 | table  | full-size | offset-0 | offset-1 | ... | offset-N | filed-0 | field-1 | ... | field-N |
