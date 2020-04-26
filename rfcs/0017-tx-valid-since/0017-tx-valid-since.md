@@ -13,7 +13,7 @@ Created: 2019-03-11
 
 This RFC suggests adding a new consensus rule to prevent a cell to be spent before a certain block timestamp or a block number.
 
-## Summary 
+## Summary
 
 Transaction input adds a new `u64` (unsigned 64-bit integer) type field `since`, which prevents the transaction to be mined before an absolute or relative time.
 
@@ -24,7 +24,7 @@ The highest 8 bits of `since` is `flags`, the remain `56` bits represent `value`
     * `since` use a epoch based lock-time if `metric_flag` is `01`, `value` can be explained as a epoch number or a relative epoch number.
     * `since` use a time based lock-time if `metric_flag` is `10`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
     * `metric_flag` `11` is invalid.
-* other 6 `flags` bits remain for other use.
+* other 5 `flags` bits remain for other use.
 
 The consensus to validate this field described as follow:
 * iterate inputs, and validate each input by following rules.
@@ -94,27 +94,33 @@ end
 
 `since` SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when `metric flag` is `10`, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.
 
-The median block time calculated from the past 11 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
+The median block time calculated from the past 37 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
 
 ``` rust
 pub trait BlockMedianTimeContext {
     fn median_block_count(&self) -> u64;
-    /// block timestamp
-    fn timestamp(&self, block_number: BlockNumber) -> Option<u64>;
-    /// ancestor timestamps from a block
-    fn ancestor_timestamps(&self, block_number: BlockNumber) -> Vec<u64> {
-        let count = self.median_block_count();
-        (block_number.saturating_sub(count)..=block_number)
-            .filter_map(|n| self.timestamp(n))
-            .collect()
-    }
 
-    /// get block median time
-    fn block_median_time(&self, block_number: BlockNumber) -> Option<u64> {
-        let mut timestamps: Vec<u64> = self.ancestor_timestamps(block_number);
-        timestamps.sort_by(|a, b| a.cmp(b));
+    /// Return timestamp and block_number of the corresponding bloch_hash, and hash of parent block
+    fn timestamp_and_parent(&self, block_hash: &H256) -> (u64, BlockNumber, H256);
+
+    /// Return past block median time, **including the timestamp of the given one**
+    fn block_median_time(&self, block_hash: &H256) -> u64 {
+        let median_time_span = self.median_block_count();
+        let mut timestamps: Vec<u64> = Vec::with_capacity(median_time_span as usize);
+        let mut block_hash = block_hash.to_owned();
+        for _ in 0..median_time_span {
+            let (timestamp, block_number, parent_hash) = self.timestamp_and_parent(&block_hash);
+            timestamps.push(timestamp);
+            block_hash = parent_hash;
+
+            if block_number == 0 {
+                break;
+            }
+        }
+
         // return greater one if count is even.
-        timestamps.get(timestamps.len() / 2).cloned()
+        timestamps.sort();
+        timestamps[timestamps.len() >> 1]
     }
 }
 ```
@@ -135,7 +141,7 @@ enum SinceMetric {
 
 /// RFC 0017
 #[derive(Copy, Clone, Debug)]
-struct Since(u64);
+pub(crate) struct Since(pub(crate) u64);
 
 impl Since {
     pub fn is_absolute(self) -> bool {
@@ -149,7 +155,7 @@ impl Since {
 
     pub fn flags_is_valid(self) -> bool {
         (self.0 & REMAIN_FLAGS_BITS == 0)
-            && ((self.0 & METRIC_TYPE_FLAG_MASK) != (0b0110_0000 << 56))
+            && ((self.0 & METRIC_TYPE_FLAG_MASK) != METRIC_TYPE_FLAG_MASK)
     }
 
     fn extract_metric(self) -> Option<SinceMetric> {
@@ -170,9 +176,10 @@ impl Since {
 pub struct SinceVerifier<'a, M> {
     rtx: &'a ResolvedTransaction<'a>,
     block_median_time_context: &'a M,
-    tip_number: BlockNumber,
-    tip_epoch_number: EpochNumber,
-    median_timestamps_cache: RefCell<LruCache<BlockNumber, Option<u64>>>,
+    block_number: BlockNumber,
+    epoch_number: EpochNumber,
+    parent_hash: &'a H256,
+    median_timestamps_cache: RefCell<LruCache<H256, u64>>,
 }
 
 impl<'a, M> SinceVerifier<'a, M>
@@ -182,50 +189,55 @@ where
     pub fn new(
         rtx: &'a ResolvedTransaction,
         block_median_time_context: &'a M,
-        tip_number: BlockNumber,
-        tip_epoch_number: BlockNumber,
+        block_number: BlockNumber,
+        epoch_number: BlockNumber,
+        parent_hash: &'a H256,
     ) -> Self {
         let median_timestamps_cache = RefCell::new(LruCache::new(rtx.resolved_inputs.len()));
         SinceVerifier {
             rtx,
             block_median_time_context,
-            tip_number,
-            tip_epoch_number,
+            block_number,
+            epoch_number,
+            parent_hash,
             median_timestamps_cache,
         }
     }
 
-    fn block_median_time(&self, n: BlockNumber) -> Option<u64> {
-        let result = self.median_timestamps_cache.borrow().get(&n).cloned();
-        match result {
-            Some(r) => r,
-            None => {
-                let timestamp = self.block_median_time_context.block_median_time(n);
-                self.median_timestamps_cache
-                    .borrow_mut()
-                    .insert(n, timestamp);
-                timestamp
-            }
+    fn parent_median_time(&self, block_hash: &H256) -> u64 {
+        let (_, _, parent_hash) = self
+            .block_median_time_context
+            .timestamp_and_parent(block_hash);
+        self.block_median_time(&parent_hash)
+    }
+
+    fn block_median_time(&self, block_hash: &H256) -> u64 {
+        if let Some(median_time) = self.median_timestamps_cache.borrow().get(block_hash) {
+            return *median_time;
         }
+
+        let median_time = self.block_median_time_context.block_median_time(block_hash);
+        self.median_timestamps_cache
+            .borrow_mut()
+            .insert(block_hash.clone(), median_time);
+        median_time
     }
 
     fn verify_absolute_lock(&self, since: Since) -> Result<(), TransactionError> {
         if since.is_absolute() {
             match since.extract_metric() {
                 Some(SinceMetric::BlockNumber(block_number)) => {
-                    if self.tip_number < block_number {
+                    if self.block_number < block_number {
                         return Err(TransactionError::Immature);
                     }
                 }
                 Some(SinceMetric::EpochNumber(epoch_number)) => {
-                    if self.tip_epoch_number < epoch_number {
+                    if self.epoch_number < epoch_number {
                         return Err(TransactionError::Immature);
                     }
                 }
                 Some(SinceMetric::Timestamp(timestamp)) => {
-                    let tip_timestamp = self
-                        .block_median_time(self.tip_number.saturating_sub(1))
-                        .unwrap_or_else(|| 0);
+                    let tip_timestamp = self.block_median_time(self.parent_hash);
                     if tip_timestamp < timestamp {
                         return Err(TransactionError::Immature);
                     }
@@ -237,36 +249,36 @@ where
         }
         Ok(())
     }
+
     fn verify_relative_lock(
         &self,
         since: Since,
         cell_meta: &CellMeta,
     ) -> Result<(), TransactionError> {
         if since.is_relative() {
-            // cell still in tx_pool
-            let (cell_block_number, cell_epoch_number) = match cell_meta.block_info {
-                Some(ref block_info) => (block_info.number, block_info.epoch),
+            let cell = match cell_meta.block_info {
+                Some(ref block_info) => block_info,
                 None => return Err(TransactionError::Immature),
             };
             match since.extract_metric() {
                 Some(SinceMetric::BlockNumber(block_number)) => {
-                    if self.tip_number < cell_block_number + block_number {
+                    if self.block_number < cell.number + block_number {
                         return Err(TransactionError::Immature);
                     }
                 }
                 Some(SinceMetric::EpochNumber(epoch_number)) => {
-                    if self.tip_epoch_number < cell_epoch_number + epoch_number {
+                    if self.epoch_number < cell.epoch + epoch_number {
                         return Err(TransactionError::Immature);
                     }
                 }
                 Some(SinceMetric::Timestamp(timestamp)) => {
-                    let tip_timestamp = self
-                        .block_median_time(self.tip_number.saturating_sub(1))
-                        .unwrap_or_else(|| 0);
-                    let median_timestamp = self
-                        .block_median_time(cell_block_number.saturating_sub(1))
-                        .unwrap_or_else(|| 0);
-                    if tip_timestamp < median_timestamp + timestamp {
+                    // pass_median_time(current_block) starts with tip block, which is the
+                    // parent of current block.
+                    // pass_median_time(input_cell's block) starts with cell_block_number - 1,
+                    // which is the parent of input_cell's block
+                    let cell_median_timestamp = self.parent_median_time(&cell.hash);
+                    let current_median_time = self.block_median_time(self.parent_hash);
+                    if current_median_time < cell_median_timestamp + timestamp {
                         return Err(TransactionError::Immature);
                     }
                 }
@@ -307,4 +319,3 @@ where
     }
 }
 ```
-

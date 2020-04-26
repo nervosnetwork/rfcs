@@ -310,6 +310,38 @@ This syscall would locate the header associated with an input or a dep OutPoint 
 
 Specifying an invalid source value here would immediately trigger a VM error. Specifying `output` as source field would result in `2` as return value, denoting item missing state. Specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
 
+### Load Code
+[load code]: #load-code
+
+*Load Code* syscall has a signature like following:
+
+```c
+int ckb_code(void* addr, size_t memory_size, size_t content_offset,
+             size_t content_size, size_t index, size_t source)
+{
+  return syscall(2091, addr, memory_size, offset, content_size, index, source);
+}
+```
+
+The arguments used here are:
+
+* `addr`: the starting memory address to load code into
+* `memory_size`: the size of memory buffer used to load code
+* `content_offset`: the offset of data in cell data to start loading code
+* `content_size`: the size of cell data to load as code
+* `index`: an index value denoting the index of cells to read.
+* `source`: a flag denoting the source of cellss to locate, possible values include:
+    + 0: current input, in this case `index` value would be ignored since there's only one current input.
+    + 1: inputs.
+    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
+    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
+
+This syscall first locates a cell in current transaction via `source` and `index`, it then loads the specified cell data part as code into VM, then mark the specified memory location as executable. It can be used to implement dynamic linking in the case of CKB VM.
+
+Note the provided memory buffer might be larger than the specified content size, in this case, more memory pages can be marked as executable as requested.
+
+If the requested memory buffer overlaps with an existing executable memory page, the syscall would signal an error. Specifying an invalid range of memory buffer or an invalid range of cell data will also generate errors.
+
 ### Debug
 [debug]: #debug
 
