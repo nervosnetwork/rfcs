@@ -41,6 +41,7 @@ To translate payload to lock script, one can convert code_hash_index to code_has
 |:---------------:|----------------------|:------------:|-------------------------|
 |      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK)*          |
 |      0x01       | SECP256K1 + multisig |     Type     |  multisig script hash** |
+|      0x02       | anyone_can_pay       |     Type     |  blake160(PK)           |
 
 \* The blake160 here means the leading 20 bytes truncation of Blake2b hash result.
 
