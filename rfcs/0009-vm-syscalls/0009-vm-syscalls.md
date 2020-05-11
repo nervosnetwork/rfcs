@@ -25,7 +25,7 @@ With the exception of `Exit`, all syscalls included here use a partial loading d
 * `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
 * `offset`: an offset specifying from which offset we should start loading the syscall data.
 
-Each syscall might have different ways of preparing syscall return data, when the data is successfully prepared, it is fed into VM via the steps below. For ease of reference, we refer the result as `data`, and the length of `data` as `data_length`.
+Each syscall might have different ways of preparing syscall return data, when the data is successfully prepared, it is fed into VM via the steps below. For ease of reference, we refer to the prepared syscall return data as `data`, and the length of `data` as `data_length`.
 
 1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
 2. `full_size` is calculated as `data_length - offset`.
