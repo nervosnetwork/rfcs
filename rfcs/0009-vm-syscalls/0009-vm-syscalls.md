@@ -17,7 +17,28 @@ This document describes all the RISC-V VM syscalls implemented in CKB so far.
 
 CKB VM syscalls are used to implement communications between the RISC-V based CKB VM, and the main CKB process, allowing scripts running in the VM to read current transaction information as well as general blockchain information from CKB. Leveraging syscalls instead of custom instructions allow us to maintain a standard compliant RISC-V implementation which can embrace the broadest industrial support.
 
-## Specification
+## Partial Loading
+
+With the exception of `Exit`, all syscalls included here use a partial loading design. The following 3 arguments are used in each syscall:
+
+* `addr`: a pointer to a buffer in VM memory space denoting where we would load the syscall data.
+* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
+* `offset`: an offset specifying from which offset we should start loading the syscall data.
+
+Each syscall might have different ways of preparing syscall return data, when the data is successfully prepared, it is fed into VM via the steps below. For ease of reference, we refer to the prepared syscall return data as `data`, and the length of `data` as `data_length`.
+
+1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
+2. `full_size` is calculated as `data_length - offset`.
+3. `real_size` is calculated as the minimal value of `size` and `full_size`
+4. The serialized value starting from `&data[offset]` till `&data[offset + real_size]` is written into VM memory space location starting from `addr`.
+5. `full_size` is written into `len` pointer
+6. `0` is returned from the syscall denoting execution success.
+
+The whole point of this process, is providing VM side a way to do partial reading when the available memory is not enough to support reading the whole data altogether.
+
+One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer with 0 value as `len`, this syscall can be used to fetch the length of the serialized data part without reading any actual data.
+
+## Syscall Specifications
 
 In CKB we use RISC-V's standard syscall solution: each syscall accepts 6 arguments stored in register `A0` through `A5`. Each argument here is of register word size so it can store either regular integers or pointers. The syscall number is stored in `A7`. After all the arguments and syscall number are set, `ecall` instruction is used to trigger syscall execution, CKB VM then transfers controls from the VM to the actual syscall implementation beneath. For example, the following RISC-V assembly would trigger *Exit* syscall with a return code of 10:
 
@@ -71,12 +92,18 @@ Note that even though *Exit* syscall only needs one argument, our C wrapper requ
 
 - [Exit]
 - [Load Transaction Hash]
+- [Load Transaction]
 - [Load Script Hash]
+- [Load Script]
 - [Load Cell]
 - [Load Cell By Field]
+- [Load Cell Data]
+- [Load Cell Data As Code]
 - [Load Input]
 - [Load Input By Field]
 - [Load Header]
+- [Load Header By Field]
+- [Load Witness]
 - [Debug]
 
 ### Exit
@@ -107,24 +134,27 @@ int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`: a pointer to a buffer in VM memory space denoting where we would load the serialized transaction data.
-* `len`: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by `addr`, when returning from the syscall, CKB VM would fill in `len` with the actual length of the buffer. We would explain the exact logic below.
-* `offset`: an offset specifying from which offset we should start loading the serialized transaction data.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
 
-This syscall would calculate the hash of current transaction and copy it to VM memory space.
+This syscall would calculate the hash of current transaction and copy it to VM memory space based on *partial loading* workflow.
 
-The result is fed into VM via the steps below. For ease of reference, we refer the result as `data`, and the length of `data` as `data_length`.
+### Load Transaction
+[load transaction]: #load-transaction
 
-1. A memory read operation is executed to read the value in `len` pointer from VM memory space, we call the read result `size` here.
-2. `full_size` is calculated as `data_length - offset`.
-3. `real_size` is calculated as the minimal value of `size` and `full_size`
-4. The serialized value starting from `&data[offset]` till `&data[offset + real_size]` is written into VM memory space location starting from `addr`.
-5. `full_size` is written into `len` pointer
-6. `0` is returned from the syscall denoting execution success.
+*Load Transaction* syscall has a signature like following:
 
-The whole point of this process, is providing VM side a way to do partial reading when the available memory is not enough to support reading the whole data altogether.
+```c
+int ckb_load_transaction(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2051, addr, len, offset, 0, 0, 0);
+}
+```
 
-One trick here, is that by providing `NULL` as `addr`, and a `uint64_t` pointer with 0 value as `len`, this syscall can be used to fetch the length of the serialized data part without reading any actual data.
+The arguments used here are:
+
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+
+This syscall serializes the full transaction containing running script into the Molecule Encoding [1] format, then copy it to VM memory space based on *partial loading* workflow.
 
 ### Load Script Hash
 [load script hash]: #load-script-hash
@@ -140,11 +170,27 @@ int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
 
-This syscall would calculate the hash of current running script and copy it to VM memory space. This is the only part a script can load on its own cell.
+This syscall would calculate the hash of current running script and copy it to VM memory space based on *partial loading* workflow.
+
+### Load Script
+[load script]: #load-script
+
+*Load Script* syscall has a signature like following:
+
+```c
+int ckb_load_script(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2052, addr, len, offset, 0, 0, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+
+This syscall serializes the current running script into the Molecule Encoding [1] format, then copy it to VM memory space based on *partial loading* workflow.
 
 ### Load Cell
 [load cell]: #load-cell
@@ -160,20 +206,23 @@ int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
-* `index`: an index value denoting the index of cells to read.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
     + 2: output cells.
+    + `0x0100000000000002`: output cells with the same running script as current script
     + 3: dep cells.
 
-This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate a single cell in the current transaction based on `source` and `index` value, serialize the whole cell into the Molecule Encoding [1] format, then use the same step as documented in *Partial Loading* section to feed the serialized value into VM.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
+This syscall might return the following errors:
 
-Note this syscall is only provided for advanced usage that requires hashing the whole cell in a future proof way. In practice this is a very expensive syscall since it requires serializing the whole cell, in the case of a large cell with huge data, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Cell By Field* syscall below.
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 ### Load Cell By Field
 [load cell by field]: #load-cell-by-field
@@ -190,36 +239,111 @@ int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
-* `index`: an index value denoting the index of cells to read.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
     + 2: output cells.
+    + `0x0100000000000002`: output cells with the same running script as current script
     + 3: dep cells.
 * `field`: a flag denoting the field of the cell to read, possible values include:
-    + 0: capacity.
-    + 1: data.
-    + 2: data hash.
-    + 3: lock.
-    + 4: lock hash.
-    + 5: type.
-    + 6: type hash.
+    + 0: capacity in 64-bit unsigned little endian integer value.
+    + 1: data hash.
+    + 2: lock in the Molecule Encoding format.
+    + 3: lock hash.
+    + 4: type in the Molecule Encoding format.
+    + 5: type hash.
+    + 6: occupied capacity in 64-bit unsigned little endian integer value.
 
-This syscall would locate a single cell in current transaction just like *Load Cell* syscall, but what's different, is that this syscall would only extract a single field in the specified cell based on `field`, then serialize the field into binary format with the following rules:
+This syscall would locate a single cell in current transaction just like *Load Cell* syscall, and then fetches the data denoted by the `field` value. The data is then fed into VM memory space using the *partial loading* workflow.
 
-* `capacity`: capacity is serialized into 8 little endian bytes, this is also how Molecule Encoding [1] handles 64-bit unsigned integers.
-* `data`: data field is already in binary format, we can just use it directly, there's no need for further serialization
-* `data hash`: 32 raw bytes are extracted from `H256` structure by serializing data field
-* `lock`: lock script is serialized into the Molecule Encoding [1] format
-* `lock hash`: 32 raw bytes are extracted from `H256` structure and used directly
-* `type`: type script is serialized into the Molecule Encoding [1] format
-* `type hash`: 32 raw bytes are extracted from `H256` structure and used directly
+This syscall might return the following errors:
 
-With the binary result converted from different rules, the syscall then applies the same steps as documented in *Load Transaction Hash* syscall to feed data into CKB VM.
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* An invalid field value would immediately trigger an VM error and halt execution.
+* In some cases certain values are missing(such as requesting type on a cell without type script), the syscall would return `2` as return value then.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, would result in `1` as return value, denoting index is out of bound. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state. Specifying a field that doesn't not exist(such as type on a cell without type script) would result in `2` as return value, denoting the item is missing.
+In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+### Load Cell Data
+[load cell Data]: #load-cell-data
+
+*Load Cell Data* syscall has a signature like following:
+
+```c
+int ckb_load_cell_data(void* addr, uint64_t* len, size_t offset,
+                       size_t index, size_t source)
+{
+  return syscall(2092, addr, len, offset, index, source, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
+    + 2: output cells.
+    + `0x0100000000000002`: output cells with the same running script as current script
+    + 3: dep cells.
+
+This syscall would locale a single cell in the current transaction just like *Load Cell* syscall, then locates its cell data section. The cell data is then fed into VM memory space using the *partial loading* workflow.
+
+This syscall might return the following errors:
+
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+### Load Cell Data As Code
+[load cell Data As Code]: #load-cell-data-as_code
+
+*Load Cell Data* syscall has a signature like following:
+
+```c
+int ckb_load_cell_data_as_code(void* addr, size_t memory_size, size_t content_offset,
+                               size_t content_size, size_t index, size_t source)
+{
+  return syscall(2091, addr, memory_size, content_offset, content_size, index, source);
+}
+```
+
+The arguments used here are:
+
+* `addr`: a pointer to a buffer in VM memory space used to hold loaded code, must be aligned on a 4KB boundary.
+* `memory_size`: the size of memory buffer used to hold code, must be a multiple of 4KB.
+* `content_offset`: start offset of code to load in cell data.
+* `content_size`: size of code content to load in cell data.
+* `index`: an index value denoting the index of entries to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
+    + 2: output cells.
+    + `0x0100000000000002`: output cells with the same running script as current script
+    + 3: dep cells.
+
+This syscall would locale a single cell in the current transaction just like *Load Cell* syscall, then locates its cell data section. But different from *Load Cell Data* syscall, this syscall would load the requested cell data content into VM memory, and marked the loaded memory page as executable. Later CKB VM can then jump to the loaded memory page to execute loaded code. This can be used to implement dynamic linking in CKB VM.
+
+Notice this syscall does not implement *partial loading* workflow.
+
+For now, memory pages marked as executable cannot be reverted to non-executable pages.
+
+This syscall might return the following errors:
+
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* An unaligned `addr` or `memory_size` would immediately trigger an VM error and halt execution.
+* Out of bound`content_offset` or `content_size` values would immediately trigger an VM error and halt execution.
+* `content_size` must not be larger than `memory_size`, otherwise it would immediately trigger an VM error and halt execution.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+For an example using this syscall, please refer to [this script](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/0759a656c20e652e9ad2711fde0ed96ce9f1130b/c/or.c).
 
 ### Load Input
 [load input]: #load-input
@@ -236,20 +360,20 @@ int ckb_load_input(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
-    + 1: inputs.
-    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
-    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
+    + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
 
-This syscall would locate a single input field in the current transaction based on `source` and `index` value, serialize the whole input into the Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate a single cell input in the current transaction based on `source` and `index` value, serialize the whole cell input into the Molecule Encoding [1] format, then use the same step as documented in *Partial Loading* section to feed the serialized value into VM.
 
-Specifying an invalid source value here would immediately trigger a VM error. Specifying a valid source that is not input, such as an output, would result in `2` as return value, denoting the item is missing. Specifying an invalid index value here would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
+This syscall might return the following errors:
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* When `output cells` or `dep cells` is used in `source` field, the syscall would return with `2` as return value, since cell input only exists for input cells.
 
-Note this syscall is only provided for advanced usage that requires hashing the whole input in a future proof way. In practice this might be a very expensive syscall since it requires serializing the whole input, in the case of a large input with huge arguments, this would mean a lot of memory copying. Hence CKB should charge much higher cycles for this syscall and encourage using *Load Input By Field* syscall below.
+In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 ### Load Input By Field
 [load input by field]: #load-input-by-field
@@ -266,22 +390,24 @@ int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
     + 1: inputs.
-    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
-    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
+    + `0x0100000000000001`: input cells with the same running script as current script
 * `field`: a flag denoting the field of the input to read, possible values include:
-    + 0: args.
-    + 1: out_point.
-    + 2: since.
+    + 0: out_point in the Molecule Encoding format.
+    + 1: since in 64-bit unsigned little endian integer value.
 
-This syscall would first locate an input in current transaction via `source` and `index` value, it then extract the field (and serialize it if it's `args` or `out_point` into Molecule format), then use the same steps as documented in *Load Transaction Hash* syscall to feed data into VM.
+This syscall would locate a single cell input in current transaction just like *Load Cell* syscall, and then fetches the data denoted by the `field` value. The data is then fed into VM memory space using the *partial loading* workflow.
 
-Specifying an invalid source value here would immediately trigger a VM error, specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Specifying any invalid field will also trigger VM error immediately. Otherwise the syscall would return `0` denoting success state.
+This syscall might return the following errors:
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* When `output cells` or `dep cells` is used in `source` field, the syscall would return with `2` as return value, since cell input only exists for input cells.
+* An invalid field value would immediately trigger an VM error and halt execution.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 ### Load Header
 [load header]: #load-header
@@ -297,50 +423,94 @@ int ckb_load_header(void* addr, uint64_t* len, size_t offset, size_t index, size
 
 The arguments used here are:
 
-* `addr`: the exact same `addr` pointer as used in *Load Transaction Hash* syscall.
-* `len`: the exact same `len` pointer as used in *Load Transaction Hash* syscall.
-* `offset`: the exact same `offset` value as used in *Load Transaction Hash* syscall.
-* `index`: an index value denoting the index of cells to read.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
-    + 2: output cells.
-    + 3: dep cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
+    + 4: header deps.
 
-This syscall would locate the header associated with an input or a dep OutPoint based on `source` and `index` value, serialize the whole header into Molecule Encoding [1] format, then use the same step as documented in *Load Transaction Hash* syscall to feed the serialized value into VM.
+This syscall would locate the header associated either with an input cell, or a header dep based on `source` and `index` value, serialize the whole header into Molecule Encoding [1] format, then use the same step as documented in *Partial Loading* section to feed the serialized value into VM.
 
-Specifying an invalid source value here would immediately trigger a VM error. Specifying `output` as source field would result in `2` as return value, denoting item missing state. Specifying an invalid index value here, however, would result in `1` as return value, denoting the index used is out of bound. Otherwise the syscall would return `0` denoting success state.
+Note when you are loading the header associated with an input cell, the header hash should still be included in `header deps` section of current transaction.
 
-### Load Code
-[load code]: #load-code
+This syscall might return the following errors:
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* This syscall would return with `2` as return value if requesting a header for an input cell, but the `header deps` section is missing the header hash for the input cell.
 
-*Load Code* syscall has a signature like following:
+In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+### Load Header By Field
+[load header by field]: #load-header-by-field
+
+*Load Header By Field* syscall has a signature like following:
 
 ```c
-int ckb_code(void* addr, size_t memory_size, size_t content_offset,
-             size_t content_size, size_t index, size_t source)
+int ckb_load_header_by_field(void* addr, uint64_t* len, size_t offset,
+                             size_t index, size_t source, size_t field)
 {
-  return syscall(2091, addr, memory_size, offset, content_size, index, source);
+  return syscall(2082, addr, len, offset, index, source, field);
 }
 ```
 
 The arguments used here are:
 
-* `addr`: the starting memory address to load code into
-* `memory_size`: the size of memory buffer used to load code
-* `content_offset`: the offset of data in cell data to start loading code
-* `content_size`: the size of cell data to load as code
-* `index`: an index value denoting the index of cells to read.
-* `source`: a flag denoting the source of cellss to locate, possible values include:
-    + 0: current input, in this case `index` value would be ignored since there's only one current input.
-    + 1: inputs.
-    + 2: outputs, note this is here to maintain compatibility of `source` flag, when this value is used in *Load Input By Field* syscall, the syscall would always return `2` since output doesn't have any input fields.
-    + 3: deps, when this value is used, the syscall will also always return `2` since dep doesn't have input fields.
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
+    + 4: header deps.
+* `field`: a flag denoting the field of the header to read, possible values include:
+    + 0: current epoch number in 64-bit unsigned little endian integer value.
+    + 1: block number for the start of current epoch in 64-bit unsigned little endian integer value.
+    + 2: epoch length in 64-bit unsigned little endian integer value.
 
-This syscall first locates a cell in current transaction via `source` and `index`, it then loads the specified cell data part as code into VM, then mark the specified memory location as executable. It can be used to implement dynamic linking in the case of CKB VM.
+This syscall would locate the header associated either with an input cell, or a header dep based on `source` and `index` value, and then fetches the data denoted by the `field` value. The data is then fed into VM memory space using the *partial loading* workflow.
 
-Note the provided memory buffer might be larger than the specified content size, in this case, more memory pages can be marked as executable as requested.
+Note when you are loading the header associated with an input cell, the header hash should still be included in `header deps` section of current transaction.
 
-If the requested memory buffer overlaps with an existing executable memory page, the syscall would signal an error. Specifying an invalid range of memory buffer or an invalid range of cell data will also generate errors.
+This syscall might return the following errors:
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+* This syscall would return with `2` as return value if requesting a header for an input cell, but the `header deps` section is missing the header hash for the input cell.
+* An invalid field value would immediately trigger an VM error and halt execution.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+### Load Witness
+[load witness]: #load-witness
+
+*Load Witness* syscall has a signature like following:
+
+```c
+int ckb_load_witness(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
+{
+  return syscall(2074, addr, len, offset, index, source, 0);
+}
+```
+
+The arguments used here are:
+
+* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `index`: an index value denoting the index of entries to read.
+* `source`: a flag denoting the source of cells to locate, possible values include:
+    + 1: input cells.
+    + `0x0100000000000001`: input cells with the same running script as current script
+    + 2: output cells.
+    + `0x0100000000000002`: output cells with the same running script as current script
+
+This syscall locates a witness entry in current transaction based on `source` and `index` value, then use the same step as documented in *Partial Loading* section to feed the serialized value into VM.
+
+The `source` field here, is only used a hint helper for script side. As long as one provides a possible `source` listed above, the corresponding witness entry denoted by `index` will be returned.
+
+This syscall might return the following errors:
+
+* An invalid source value would immediately trigger an VM error and halt execution.
+* The syscall would return with `1` as return value if the index value is out of bound.
+
+In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 ### Debug
 [debug]: #debug
