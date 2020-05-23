@@ -90,7 +90,7 @@ anyone_can_pay script is for **lock script**:
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | `0x6a3982f9d018be7e7228f9e0b765f28ceff6d36e634490856d2b186acf78e79b` |
-| `tx_hash`   | `0x69c70d65832cdfd97fe78d32eb25f840232f6b8cb6445464f11dad891b11fd83` |
+| `tx_hash`   | `0x36e89e90f980d5a8b774dd42482c55f1368444272e22bd8f10ae7b5348178054` |
 | `index`     | `0`                                                                  |
 
 ## System Scripts
@@ -130,5 +130,5 @@ Simple UDT script is for **type script**:
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | `0x48dbf59b4c7ee1547238021b4869bceedf4eea6b43772e5d66ef8865b6ae7212` |
-| `tx_hash`   | `0x0e7153f243ba4c980bfd7cd77a90568bb70fd393cb572b211a2f884de63d103d` |
+| `tx_hash`   | `0xc1b2ae129fad7465aaa9acc9785f842ba3e6e8b8051d899defa89f5508a77958` |
 | `index`     | `0`                                                                  |
