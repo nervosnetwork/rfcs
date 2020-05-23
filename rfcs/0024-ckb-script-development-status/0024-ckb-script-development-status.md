@@ -17,19 +17,19 @@ This document shows a series of Nervos CKB system scripts information, including
 
 Nervos Foundation providers a series of Nervos CKB system scripts, including:
 
-- [Default Locks](#Default-Locks):
+- [Default Locks](#default-Locks):
 
-  - [_SECP256K1/blake160_](#SECP256K1/blake160)
-  - [_SECP256K1/multisig_](#SECP256K1/multisig)
+  - [_SECP256K1/blake160_](#secp256k1blake160)
+  - [_SECP256K1/multisig_](#secp256k1multisig)
   - [_anyone_can_pay_](#anyone_can_pay)
 
-- [System Scripts](#System-Scripts)
+- [System Scripts](#system-scripts)
 
-  - [_Nervos DAO_](#Nervos-DAO)
+  - [_Nervos DAO_](#nervos-dao)
 
-- [Fundamental Apps](#Fundamental-Apps)
+- [Fundamental Apps](#fundamental-apps)
 
-  - [_Simple UDT_](#Simple-UDT)
+  - [_Simple UDT_](#simple-udt)
 
 To construct transactions with system scripts, the _code_hash_ and _out_point_ of system scripts in mainnet Lina and testnet Aggron are needed.
 
@@ -37,11 +37,7 @@ To construct transactions with system scripts, the _code_hash_ and _out_point_ o
 
 ### SECP256K1/blake160
 
-SECP256K1/blake160 is a popular script to signature and validate transaction in CKB.
-
-Document: https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2ph
-
-Source Code: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c
+[SECP256K1/blake160](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2ph) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c) is a popular script to signature and validate transaction in CKB.
 
 SECP256K1/blake160 script is for **lock script**:
 
@@ -63,11 +59,7 @@ SECP256K1/blake160 script is for **lock script**:
 
 ### SECP256K1/multisig
 
-SECP256K1/multisig is a script which allows a group of users to sign a single transaction.
-
-Document: https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig
-
-Source Code: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c
+[SECP256K1/multisig](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c) is a script which allows a group of users to sign a single transaction.
 
 SECP256K1/multisig script is for **lock script**:
 
@@ -89,11 +81,7 @@ SECP256K1/multisig script is for **lock script**:
 
 ### anyone_can_pay
 
-anyone_can_pay is is a script that can accept any amount of payment.
-
-Document: https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438
-
-Source Code: https://github.com/nervosnetwork/ckb-anyone-can-pay
+[anyone_can_pay](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) [Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay) is is a script that can accept any amount of payment.
 
 anyone_can_pay script is for **lock script**:
 
@@ -109,11 +97,7 @@ anyone_can_pay script is for **lock script**:
 
 ### Nervos DAO
 
-Nervos DAO is a script and One function of Nervos DAO is to provide an dilution counter-measure for CKByte holders. By deposit in Nervos DAO, holders get proportional secondary rewards, which guarantee their holding are only affected by hardcapped primary issuance as in Bitcoin.
-
-Document: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md
-
-Source Code: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/dao.c
+[Nervos DAO](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/dao.c) is a script and One function of Nervos DAO is to provide an dilution counter-measure for CKByte holders. By deposit in Nervos DAO, holders get proportional secondary rewards, which guarantee their holding are only affected by hardcapped primary issuance as in Bitcoin.
 
 Nervos DAO script is for **type script**:
 
@@ -137,11 +121,7 @@ Nervos DAO script is for **type script**:
 
 ### Simple UDT
 
-Simple UDT provides a way to issue custom tokens on Nervos CKB.
-
-Document: https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333
-
-Source Code: https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c
+[Simple UDT](https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333) [Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c) provides a way to issue custom tokens on Nervos CKB.
 
 Simple UDT script is for **type script**:
 
