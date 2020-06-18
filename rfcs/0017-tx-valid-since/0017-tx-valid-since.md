@@ -47,7 +47,7 @@ This provides the ability to implement time-based fund lock scripts:
 
 ``` ruby
 # absolute time lock
-# cell only can be spent when block number greater than 10000.
+# The cell can't be spent unless block number is greater than 10000.
 def unlock?
   input = CKB.load_current_input
   # fail if it is relative lock
@@ -60,7 +60,7 @@ end
 
 ``` ruby
 # relative time lock
-# cell only can be spent after 3 days after block that produced this cell get confirmed
+# The cell can't be spent unless 3 days(blockchain time) later since the cell gets confirmed on-chain.
 def unlock?
   input = CKB.load_current_input
   # fail if it is absolute lock
@@ -76,7 +76,7 @@ end
 
 ``` ruby
 # relative time lock with epoch number
-# cell only can be spent in next epoch
+# The cell can't be spent in the next epoch
 def unlock?
   input = CKB.load_current_input
   # fail if it is absolute lock
@@ -88,6 +88,26 @@ def unlock?
   # enforce only can unlock in next or further epochs
   epoch_number >= 1
 end
+```
+
+## Examples
+
+``` txt
+# Absolute time lock
+
+0x0000_0000_0000_3039 # The tx failed verification unless the block number is greater than #12345
+
+0x4000_0000_5e83_d980 # The tx failed verification unless current blockchain date is later than 2020-04-01
+
+0x2000_0000_0000_0400 # The tx failed verification unless the epoch number is greater than 1024
+
+# Relative time lock
+
+0x8000_0000_0000_0064 # The tx failed verification unless it is 100 blocks later since the input cell get confirmed on-chain
+
+0xc000_0000_0012_7500 # The tx failed verification unless it is 14 days(blockchain time) later since the input cell get confirmed on-chain
+
+0xa000_0000_0000_0018 # The tx failed verification unless it is 24 epochs later since the input cell get confirmed on-chain
 ```
 
 ## Detailed Specification
