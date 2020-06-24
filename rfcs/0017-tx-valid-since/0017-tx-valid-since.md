@@ -84,7 +84,7 @@ def unlock?
   # fail if metric_flag is not epoch information
   return false (input.since & 0x6000_0000_0000_0000) != (0b0010_0000 << 56)
   # extract lower 56 bits
-  epoch= since & 0x00ffffffffffffff
+  epoch = since & 0x00ffffffffffffff
   # extract epoch information
   epoch_number = epoch & 0xffffff
   # enforce only can unlock in next or further epochs
