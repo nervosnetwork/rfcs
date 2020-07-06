@@ -15,7 +15,9 @@ System scripts are the smart contracts built and deployed by the CKB core team. 
 
 ## Motivation
 
-Nervos Foundation providers a series of Nervos CKB system scripts, including:
+System scripts are used frequently in dapps, wallets, and other application development. A list of system scripts provides a handy reference to developers.
+
+## List of System Scripts
 
 - [Default Locks](#default-Locks):
 
