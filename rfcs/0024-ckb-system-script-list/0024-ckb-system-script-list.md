@@ -109,7 +109,7 @@ anyone_can_pay script is for **lock script**:
 
 ### Nervos DAO
 
-[Nervos DAO](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/dao.c) is the script implements Nervos DAO.
+[Nervos DAO](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md) ([Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/dao.c)) is the script implements Nervos DAO.
 
 Nervos DAO script is for **type script**:
 
