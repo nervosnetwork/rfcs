@@ -105,7 +105,7 @@ anyone_can_pay script is for **lock script**:
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
-## System Scripts
+## Types
 
 ### Nervos DAO
 
