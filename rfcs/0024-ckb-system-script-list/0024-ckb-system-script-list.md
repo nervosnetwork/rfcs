@@ -137,7 +137,7 @@ Nervos DAO script is for **type script**:
 
 ### Simple UDT
 
-[Simple UDT](https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333) [Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c) implements the minimum standard for user defined tokens on Nervos CKB.
+[Simple UDT](https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333) ([Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c)) implements the minimum standard for user defined tokens on Nervos CKB.
 
 Simple UDT script is for **type script**:
 
