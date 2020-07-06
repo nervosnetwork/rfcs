@@ -23,7 +23,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
 
   - [SECP256K1/blake160](#secp256k1blake160)
   - [SECP256K1/multisig](#secp256k1multisig)
-  - [_anyone_can_pay_](#anyone_can_pay)
+  - [anyone_can_pay](#anyone_can_pay)
 
 - [Types](#Types)
 
