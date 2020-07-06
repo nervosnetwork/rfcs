@@ -17,6 +17,28 @@ The document contains two parts. The first one covers the core transaction featu
 
 The diagram above is an overview of the transaction structure. Instead of explaining field by field, the following paragraphs introduce various features which the CKB transaction provides and how the fields play their roles in these features.
 
+## TOC
+
+* [Part I: Core Features](#part-i-core-features)
+  + [Value Storage](#value-storage)
+  + [Cell Data](#cell-data)
+  + [Code Locating](#code-locating)
+  + [Lock Script](#lock-script)
+  + [Type Script](#type-script)
+  + [Recap of The Transaction Structure in Part I](#recap-of-the-transaction-structure-in-part-i)
+* [Part II: Extensions](#part-ii-extensions)
+  + [Dep Group](#dep-group)
+  + [Upgradable Script](#upgradable-script)
+  + [Type ID](#type-id)
+  + [Header Deps](#header-deps)
+  + [Other Fields](#other-fields)
+  + [Exceptions](#exceptions)
+* [Appendix A: Compute Various Hash](#appendix-a-compute-various-hash)
+  + [Crypto Primitives](#crypto-primitives)
+  + [Transaction Hash](#transaction-hash)
+  + [Cell Data Hash](#cell-data-hash)
+  + [Script Hash](#script-hash)
+
 ## Part I: Core Features
 
 ### Value Storage
