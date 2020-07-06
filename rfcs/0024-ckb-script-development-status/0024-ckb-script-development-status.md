@@ -25,7 +25,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
   - [_SECP256K1/multisig_](#secp256k1multisig)
   - [_anyone_can_pay_](#anyone_can_pay)
 
-- [System Scripts](#system-scripts)
+- [Types](#Types)
 
   - [_Nervos DAO_](#nervos-dao)
 
