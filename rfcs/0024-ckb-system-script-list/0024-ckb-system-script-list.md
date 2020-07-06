@@ -65,7 +65,7 @@ SECP256K1/blake160 script is for **lock script**:
 
 ### SECP256K1/multisig
 
-[SECP256K1/multisig](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c) is a script which allows a group of users to sign a single transaction.
+[SECP256K1/multisig](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#multisig) ([Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c)) is a script which allows a group of users to sign a single transaction.
 
 SECP256K1/multisig script is for **lock script**:
 
