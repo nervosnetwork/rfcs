@@ -1,7 +1,7 @@
 ---
 Number: "0024"
-Category: Standards Track
-Status: Proposal
+Category: Informational
+Status: Draft
 Author: Dylan Duan
 Organization: Nervos Foundation
 Created: 2020-05-21
