@@ -39,7 +39,7 @@ To construct transactions with system scripts, the _code_hash_, _hash_type_, _ou
 
 ### SECP256K1/blake160
 
-[SECP256K1/blake160](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2ph) [Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c) is the default lock script to verify CKB transaction signature.
+[SECP256K1/blake160](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2ph) ([Source Code](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c)) is the default lock script to verify CKB transaction signature.
 
 SECP256K1/blake160 script is for **lock script**:
 
