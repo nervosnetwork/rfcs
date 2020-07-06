@@ -27,7 +27,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
 
 - [Types](#Types)
 
-  - [_Nervos DAO_](#nervos-dao)
+  - [Nervos DAO](#nervos-dao)
 
 - [Standards](#Standards)
 
