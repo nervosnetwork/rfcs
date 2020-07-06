@@ -133,7 +133,7 @@ Nervos DAO script is for **type script**:
 | `index`     | `0x2`                                                                |
 | `dep_type`  | `code`                                                               |
 
-## Fundamental Apps
+## Standards
 
 ### Simple UDT
 
