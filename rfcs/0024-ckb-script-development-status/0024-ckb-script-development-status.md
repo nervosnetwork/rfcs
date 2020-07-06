@@ -91,7 +91,7 @@ SECP256K1/multisig script is for **lock script**:
 
 ### anyone_can_pay
 
-[anyone_can_pay](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) [Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay) is is a script that can accept any amount of payment.
+[anyone_can_pay](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) [Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay) allows a recipient to provide cell capacity in asset transfer.
 
 anyone_can_pay script is for **lock script**:
 
