@@ -19,7 +19,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
 
 ## List of System Scripts
 
-- [Default Locks](#default-Locks):
+- [Locks](#Locks):
 
   - [_SECP256K1/blake160_](#secp256k1blake160)
   - [_SECP256K1/multisig_](#secp256k1multisig)
