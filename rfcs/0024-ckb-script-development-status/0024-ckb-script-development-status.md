@@ -7,7 +7,7 @@ Organization: Nervos Foundation
 Created: 2020-05-21
 ---
 
-# CKB Script Development Status
+# CKB System Script List
 
 ## Abstract
 
