@@ -29,7 +29,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
 
   - [_Nervos DAO_](#nervos-dao)
 
-- [Fundamental Apps](#fundamental-apps)
+- [Standards](#Standards)
 
   - [_Simple UDT_](#simple-udt)
 
