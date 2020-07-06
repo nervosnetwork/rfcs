@@ -21,7 +21,7 @@ The highest 8 bits of `since` is `flags`, the remain `56` bits represent `value`
 * `flags & (1 << 7)` represent `relative_flag`.
 * `flags & (1 << 6)` and `flags & (1 << 5)` together represent `metric_flag`.
     * `since` use a block based lock-time if `metric_flag` is `00`, `value` can be explained as a block number or a relative block number.
-    * `since` use a epoch based lock-time if `metric_flag` is `01`, `value` can be explained as epoch information or relative epoch information.
+    * `since` use an epoch based lock-time if `metric_flag` is `01`, `value` can be explained as an absolute epoch or relative epoch.
     * `since` use a time based lock-time if `metric_flag` is `10`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
     * `metric_flag` `11` is invalid.
 * other 5 `flags` bits remain for other use.
@@ -31,7 +31,7 @@ The consensus to validate this field described as follow:
 * ignore this validate rule if all 64 bits of `since` are 0.
 * check `metric_flag` flag:
     * the lower 56 bits of `since` represent block number if `metric_flag` is `00`.
-    * the lower 56 bits of `since` represent epoch information if `metric_flag` is `01`.
+    * the lower 56 bits of `since` represent epoch if `metric_flag` is `01`.
     * the lower 56 bits of `since` represent block timestamp if `metric_flag` is `10`.
 * check `relative_flag`:
     * consider field as absolute lock time if `relative_flag` is `0`:
