@@ -35,7 +35,7 @@ System scripts are used frequently in dapps, wallets, and other application deve
 
 To construct transactions with system scripts, the _code_hash_, _hash_type_, _out_point_ and _dep_type_ of system scripts in mainnet Lina and testnet Aggron are needed.
 
-## Default Locks
+## Locks
 
 ### SECP256K1/blake160
 
