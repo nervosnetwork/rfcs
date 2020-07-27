@@ -11,11 +11,14 @@ Created: 2019-01-20
 
 ## Abstract
 
-*CKB Address Format* is an application level cell **lock script** display recommendation. The lock script consists of three key parameters, including *code_hash*, *hash_type* and *args*. CKB address packages lock script into a single line, verifiable, and human read friendly format.
+*CKB Address Format* is recommended to handle the encodings for both **lock script** and **type script** in application level. CKB address can package a script into a single line format, which is verifiable and human-readable.
 
 ## Data Structure
 
-### Payload Format Types
+Both **lock script** and **type script** consist of three key properties, including *code_hash*, *hash_type* and *args*. Following the payload formatting rules outlined below, a script data structure can be encoded as a CKB address, which can be parsed for its original script reversely.
+
+### Lock script
+#### Payload Format Types
 
 To generate a CKB address, we firstly encode lock script to bytes array, name *payload*. And secondly, we wrap the payload into final address format.
 
@@ -27,7 +30,7 @@ There are several methods to convert lock script into payload bytes array. We us
 |  0x02       | full version with hash_type = "Data"           |
 |  0x04       | full version with hash_type = "Type"           |
 
-### Short Payload Format
+#### Short Payload Format
 
 Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
 
@@ -59,15 +62,41 @@ For example, Alice, Bob, and Cipher collectively control a multisig locked cell.
 0 | 1 | 2 | 3 | Pk_Cipher_h | Pk_Alice_h | Pk_Bob_h
 ```
 
-### Full Payload Format
+#### Full Payload Format
 
-Full payload format directly encodes all data field of lock script.
+Full payload format directly encodes all data fields of lock script.
 
 ```c
 payload = 0x02/0x04 | code_hash | args
 ```
 
 The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for "Type". 
+
+### Type script
+#### Payload Format Types
+
+The rule of CKB address generation for type script is almost the same as lock script. The encoding only needs to take care of the full address formatting, as `Short Payload Format` is not applicable for type script at the moment.
+
+In the encoding rule, similarly we use 1 byte to identify the payload format but based from `0x80`. Since both lock script and type script have the same enum values for `hash_type`, which are "Data" and "Type", it is intended for the last hex character to reflect the same `hash_type` mapping for type script as lock script does.
+
+| format type |                   description                  |
+|:-----------:|------------------------------------------------|
+|  0x82       | full version with hash_type = "Data"           |
+|  0x84       | full version with hash_type = "Type"           |
+
+#### Full Payload Format
+
+Full payload format encodes all data fields of type script.
+
+```c
+payload = 0x82/0x84 | code_hash | args
+```
+
+### Format Types Allocation
+
+As detailed in the `Payload Format Types` sections, so far the format type flags `0x0#` are reserved for lock script, while the flags `0x8#` are for type script. This allocation rule of format types can be referenced to derive either a lock script or type script from a CKB address. 
+
+For example, if the byte value for format type is smaller than `0x80`, then it should follow the format rule of lock script to decode the payload. Otherwise, the CKB address represents a type script.
 
 ## Wrap to Address
 
