@@ -75,7 +75,7 @@ SECP256K1/multisig script is for **lock script**:
 | ----------- | --------------------------------------------------------------------- |
 | `code_hash` | `0x5c5069eb0857efc65e1bca0c07df34c31663b3622fd3876c876320fc9634e2a8`  |
 | `hash_type` | `type`                                                                |
-| `tx_hash`   | `0x71a7ba8fc963 49fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c` |
+| `tx_hash`   | `0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c` |
 | `index`     | `0x1`                                                                 |
 | `dep_type`  | `dep_group`                                                           |
 
