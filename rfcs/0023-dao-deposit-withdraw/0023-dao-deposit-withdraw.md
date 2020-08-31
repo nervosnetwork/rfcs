@@ -152,7 +152,7 @@ And the following OutPoint refers to cell containing NervosDAO script:
       "dep_type": "code"
     }
 
-The following transaction deposits 100 CKB into Nervos DAO:
+The following transaction deposits 200 CKB into Nervos DAO:
 
     {
       "version": "0x0",

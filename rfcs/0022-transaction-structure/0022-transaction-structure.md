@@ -17,6 +17,28 @@ The document contains two parts. The first one covers the core transaction featu
 
 The diagram above is an overview of the transaction structure. Instead of explaining field by field, the following paragraphs introduce various features which the CKB transaction provides and how the fields play their roles in these features.
 
+## TOC
+
+* [Part I: Core Features](#part-i-core-features)
+  + [Value Storage](#value-storage)
+  + [Cell Data](#cell-data)
+  + [Code Locating](#code-locating)
+  + [Lock Script](#lock-script)
+  + [Type Script](#type-script)
+  + [Recap of The Transaction Structure in Part I](#recap-of-the-transaction-structure-in-part-i)
+* [Part II: Extensions](#part-ii-extensions)
+  + [Dep Group](#dep-group)
+  + [Upgradable Script](#upgradable-script)
+  + [Type ID](#type-id)
+  + [Header Deps](#header-deps)
+  + [Other Fields](#other-fields)
+  + [Exceptions](#exceptions)
+* [Appendix A: Compute Various Hash](#appendix-a-compute-various-hash)
+  + [Crypto Primitives](#crypto-primitives)
+  + [Transaction Hash](#transaction-hash)
+  + [Cell Data Hash](#cell-data-hash)
+  + [Script Hash](#script-hash)
+
 ## Part I: Core Features
 
 ### Value Storage
@@ -361,7 +383,10 @@ CKB uses blake2b as the default hash algorithm. We use **ckbhash** to denote the
 
 ### Transaction Hash
 
-Transaction hash is `ckbhash(tx_hash_digest(tx))` where `tx_hash_digest` is a method to serialize all fields in a transaction excluding `witnesses` into binary. The serialization specification is not finalized yet, by now you can get the transaction hash via the RPC `_compute_transaction_hash`.
+Transaction hash is `ckbhash(molecule_encode(tx_excluding_witness))` where
+
+* `molecule_encode` serializes a structure into binary using [molecule](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md).
+* `tx_excluding_witness` is the transaction structure excluding the witness field.  See the definition `RawTransaction` in the [schema file](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L55-L62).
 
 ### Cell Data Hash
 
@@ -369,5 +394,5 @@ Cell data hash is just `ckbhash(data)`.
 
 ### Script Hash
 
-Script hash is `ckbhash(serialize(script))` where `serialize` turns the script structure into a block of binary. The serialization specification is not finalized yet, by now you can get the script hash via the RPC `_compute_script_hash`.
+Script hash is `ckbhash(molecule_encode(script))` where `molecule_encode` turns the script structure into a block of binary via molecule. See the definition `Script` in the [schema file](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L28-L32).
 
