@@ -71,13 +71,13 @@ SECP256K1/multisig script is for **lock script**:
 
 - Lina
 
-| parameter   | value                                                                 |
-| ----------- | --------------------------------------------------------------------- |
-| `code_hash` | `0x5c5069eb0857efc65e1bca0c07df34c31663b3622fd3876c876320fc9634e2a8`  |
-| `hash_type` | `type`                                                                |
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0x5c5069eb0857efc65e1bca0c07df34c31663b3622fd3876c876320fc9634e2a8` |
+| `hash_type` | `type`                                                               |
 | `tx_hash`   | `0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c` |
-| `index`     | `0x1`                                                                 |
-| `dep_type`  | `dep_group`                                                           |
+| `index`     | `0x1`                                                                |
+| `dep_type`  | `dep_group`                                                          |
 
 - Aggron
 
@@ -94,6 +94,16 @@ SECP256K1/multisig script is for **lock script**:
 [anyone_can_pay](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) ([Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay)) allows a recipient to provide cell capacity in asset transfer.
 
 anyone_can_pay script is for **lock script**:
+
+- Lina
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0x0fb343953ee78c9986b091defb6252154e0bb51044fd2879fde5b27314506111` |
+| `hash_type` | `data`                                                               |
+| `tx_hash`   | `0xa05f28c9b867f8c5682039c10d8e864cf661685252aa74a008d255c33813bb81` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `dep_group`                                                          |
 
 - Aggron
 
@@ -140,6 +150,16 @@ Nervos DAO script is for **type script**:
 [Simple UDT](https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333) ([Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c)) implements the minimum standard for user defined tokens on Nervos CKB.
 
 Simple UDT script is for **type script**:
+
+- Lina
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0x5e7a36a77e68eecc013dfa2fe6a23f3b6c344b04005808694ae6dd45eea4cfd5` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0xc7813f6a415144643970c2e88e0bb6ca6a8edc5dd7c1022746f628284a9936d5` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `code`                                                               |
 
 - Aggron
 
