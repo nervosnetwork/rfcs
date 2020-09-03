@@ -7,7 +7,7 @@ Organization: Nervos Foundation
 Created: 2020-09-03
 ---
 
-# Anyone-can-pay lock
+# Anyone-Can-Pay Lock
 
 This RFC describes a new lock script for CKB that can accept any amount of payment. Previously, one can only transfer to another user at least 61 CKBytes when using the default lock, possibly more when using other lock scripts or type scripts. This is becoming a bigger problem when UDT support lands in CKB: a naive UDT transfer operation will not only require UDTs, but CKByte to keep the UDTs in a cell as well.
 
