@@ -15,7 +15,7 @@ This RFC defines the Simple User Defined Tokens(Simple UDT or SUDT) specificatio
 
 ### SUDT Cell
 
-A SUDT cell in Simple SUDT specification looks like following:
+A SUDT cell in Simple UDT specification looks like following:
 
 ```
 data:
