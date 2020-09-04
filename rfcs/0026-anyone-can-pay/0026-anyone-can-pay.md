@@ -23,7 +23,7 @@ The anyone-can-pay lock is built upon the default secp256k1-blake2b-sighash-all 
 <20 byte blake160 public key hash> + <1 byte CKByte minimum> + <1 byte UDT minimum>
 ```
 
-The additions of CKByte & UDT minimums enforces the minimal amount one can transfer to the anyone-can-pay lock. This provides a mitigation against DDoSing on cell level: if a cell is setup using anyone-can-pay lock, an attacker can keep creating transactions that transfer only 1 shannon or 1 UDT to the cell, make it difficult for the cell owner to claim the tokens stored in the cell. By providing a minimal transfer amount, a user can raise the attacking cost, hence protecting his/her own cells against DDoS attacks. This mechanism won't prevent all kinds of DDoS of course, but it serves as a quick solution to mitigate cheaper ones.
+The additions of CKByte & UDT minimums enforce the minimal amount that one can transfer to the anyone-can-pay lock. This provides a mitigation against DDoSing on the cell level: if a cell is setup using the anyone-can-pay lock, an attacker can keep creating transactions that transfer only 1 shannon or 1 UDT to the cell, making it difficult for the cell owner to claim the tokens stored in the cell. By providing a minimal transfer amount, a user can raise the attacking cost, hence protecting his/her own cells against DDoS attacks. This mechanism won't prevent all kinds of DDoS of course, but it serves as a quick solution to mitigate cheaper ones.
 
 The value stored in CKByte & UDT minimum are interpreted in the following way: if `x` is stored in the field, the minimal transfer amount will be `10^x`, for example:
 
