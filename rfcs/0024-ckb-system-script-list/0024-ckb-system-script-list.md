@@ -91,7 +91,7 @@ SECP256K1/multisig script is for **lock script**:
 
 ### anyone_can_pay
 
-[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay)) allows a recipient to provide cell capacity in asset transfer.
+[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay/tree/deac6801a95596d74e2da8f2f1a6727309d36100)) allows a recipient to provide cell capacity in asset transfer.
 
 anyone_can_pay script is for **lock script**:
 
@@ -147,7 +147,7 @@ Nervos DAO script is for **type script**:
 
 ### Simple UDT
 
-[Simple UDT](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0025-simple-udt/0025-simple-udt.md) ([Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/master/c/simple_udt.c)) implements the minimum standard for user defined tokens on Nervos CKB.
+[Simple UDT](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0025-simple-udt/0025-simple-udt.md) ([Source Code](https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/175b8b0933340f9a7b41d34106869473d575b17a/c/simple_udt.c)) implements the minimum standard for user defined tokens on Nervos CKB.
 
 Simple UDT script is for **type script**:
 
