@@ -9,7 +9,7 @@ Created: 2020-09-03
 
 # Anyone-Can-Pay Lock
 
-This RFC describes a new lock script for CKB that can accept any amount of payment. Previously, one can only transfer to another user at least 61 CKBytes when using the default lock, possibly more when using other lock scripts or type scripts. This is becoming a bigger problem when UDT support lands in CKB: a naive UDT transfer operation will not only require UDTs, but CKByte to keep the UDTs in a cell as well.
+This RFC describes a new lock script for CKB that can accept any amount of [Simple UDT](../0025-simple-udt/0025-simple-udt.md) or CKB payment. Previously, one can only transfer to another user at least 61 CKBytes when using the default lock, possibly more when using other lock scripts or type scripts. This is becoming a bigger problem when UDT support lands in CKB: a naive UDT transfer operation will not only require UDTs, but CKByte to keep the UDTs in a cell as well.
 
 Here we try to solve the problem by introducing a new anyone-can-pay lock script, which can be unlocked not only by the validation of a signature, but also by accepting any amount of payment. This way, a user should be able to send any amount of CKBytes or UDTs to a cell using anyone-can-pay lock instead of always creating a new cell. It thus provides a solution to both problems above.
 
@@ -30,7 +30,7 @@ The value stored in CKByte & UDT minimum are interpreted in the following way: i
 * If 3 is stored in CKByte minimum, it means the minimal amount that can be accepted by the cell is 1000 shannons
 * If 4 is stored in UDT base unit minimum, it means the minimal amount that can be accepted by the cell is 10000 UDT base units.
 
-Note the minimum fields are completely optional. If a minimum is not provided, we will treat the minimum value as 0, meaning no minimum is enforced on the transfer operation.
+Note the minimum fields are completely optional. If a minimum is not provided, we will treat the minimum value as 0, meaning no minimum is enforced on the transfer operation. It is worth mentioning that different minimums also lead to different lock scripts used by the cell.
 
 ## UDT Interpretation
 
