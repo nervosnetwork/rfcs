@@ -218,7 +218,7 @@ Inputs:
         Capacity: 1000 CKBytes
         Lock:
             code_hash: anyone-can-pay lock
-            args: <public key hash A> <CKBytes minimum: 9> <UDT minimum: 5>
+            args: <public key hash A> <CKByte minimum: 9> <UDT minimum: 5>
         Type:
             code_hash: simple udt lock
             args: <owner lock C>
