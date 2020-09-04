@@ -105,6 +105,28 @@ anyone_can_pay script is for **lock script**:
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
+**Note:**
+
+The `dep_type` of `anyone_can_pay` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `anyone_can_pay` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x3
+}
+```
+
+and the `out_point` of `anyone_can_pay` whose `dep_type` is `code` is
+
+```
+{
+  tx_hash: 0xd032647ee7b5e7e28e73688d80ffc5fba306ee216ca43be4a762ec7e989a3daa,
+  index: 0x0
+}
+```
+
 - Aggron
 
 | parameter   | value                                                                |
