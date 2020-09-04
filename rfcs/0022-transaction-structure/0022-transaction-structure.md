@@ -275,7 +275,7 @@ There's a reason we choose cell type script hash to support upgradable script. I
 
 Type ID is such a kind of type script. As the name suggests, it ensures the uniqueness of the type script.
 
-This feature involves several type scripts, so I have to use different terms to differential them:
+This feature involves several type scripts, so I have to use different terms to differentiate them:
 
 - The Type ID code cell is the cell which stores the code to verify that a type id is unique.
 - The Type ID code cell has a type script as well. We don't care the actual content for now, let's assume the type script hash is TI.
