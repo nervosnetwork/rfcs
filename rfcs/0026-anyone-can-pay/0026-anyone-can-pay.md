@@ -234,7 +234,7 @@ Outputs:
             code_hash: simple udt lock
             args: <owner lock C>
         Data:
-            Amount: 199999 UDT
+            Amount: 200000 UDT
     Anyone-can-pay Cell:
         Capacity: 1010 CKBytes
         Lock:
