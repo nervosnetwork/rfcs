@@ -131,7 +131,7 @@ Inputs:
         Capacity: 1000 CKBytes
         Lock:
             code_hash: anyone-can-pay lock
-            args: <public key hash A> <CKBytes minimum: 2>
+            args: <public key hash A> <CKByte minimum: 2>
 Outputs:
     Deposit Change Cell:
         Capacity: 479.99 CKBytes
