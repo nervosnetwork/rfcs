@@ -53,6 +53,28 @@ SECP256K1/blake160 script is for **lock script**:
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
+**Note:**
+
+The `dep_type` of `SECP256K1/blake160` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `secp256k1_blake160_sighash_all` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x3
+}
+```
+
+and the `out_point` of `secp256k1_blake160_sighash_all` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x1
+}
+```
+
 - Aggron
 
 | parameter   | value                                                                |
@@ -62,6 +84,28 @@ SECP256K1/blake160 script is for **lock script**:
 | `tx_hash`   | `0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37` |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `SECP256K1/blake160` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `secp256k1_blake160_sighash_all` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x3
+}
+```
+
+and the `out_point` of `secp256k1_blake160_sighash_all` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x1
+}
+```
 
 ### SECP256K1/multisig
 
@@ -79,6 +123,28 @@ SECP256K1/multisig script is for **lock script**:
 | `index`     | `0x1`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
+**Note:**
+
+The `dep_type` of `SECP256K1/multisig` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `secp256k1_blake160_multisig_all` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x3
+}
+```
+
+and the `out_point` of `secp256k1_blake160_multisig_all` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x4
+}
+```
+
 - Aggron
 
 | parameter   | value                                                                |
@@ -88,6 +154,28 @@ SECP256K1/multisig script is for **lock script**:
 | `tx_hash`   | `0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37` |
 | `index`     | `0x1`                                                                |
 | `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `SECP256K1/blake160` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `secp256k1_blake160_multisig_all` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x3
+}
+```
+
+and the `out_point` of `secp256k1_blake160_multisig_all` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x4
+}
+```
 
 ### anyone_can_pay
 
@@ -136,6 +224,28 @@ and the `out_point` of `anyone_can_pay` whose `dep_type` is `code` is
 | `tx_hash`   | `0x4f32b3e39bd1b6350d326fdfafdfe05e5221865c3098ae323096f0bfc69e0a8c` |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `anyone_can_pay` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `anyone_can_pay` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x3
+}
+```
+
+and the `out_point` of `anyone_can_pay` is
+
+```
+{
+  tx_hash: 0x6db4d0597fb256cbf7fcb9082201405b0b7a95b04ec357b8a1f1be4ab88ad833,
+  index: 0x0
+}
+```
 
 ## Types
 
