@@ -235,10 +235,10 @@ The lower 56 bits of the epoch field are split into 3 parts (listed in the order
 
 ![](epoch.png)
 
-Assume there's a block, which number is 11555 and in epoch 50. The epoch 50 starts from block 11000 and have 1000 blocks. The epoch field for this particular block will then be 9326559282, which is calculated in the following way:
+Assume there's a block, which number is 11555 and in epoch 50. The epoch 50 starts from block 11000 and have 1000 blocks. The epoch field for this particular block will then be 1,099,520,939,130,930, which is calculated in the following way:
 
 ```
-50 | ((11555 - 11000) << 24) | (1000 << 16)
+50 | ((11555 - 11000) << 24) | (1000 << 40)
 ```
 
 The genesis epoch number is 0 and the genesis block relative index in the epoch is also 0. So the genesis block epoch field only depends on the genesis epoch length, which is hardcoded in the consensus specification.
