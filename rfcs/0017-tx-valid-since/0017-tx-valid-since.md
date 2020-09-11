@@ -225,7 +225,7 @@ where
                 median_timestamps_cache,
             }
         }
-                                                                                                                            fn parent_median_time(&self, block_hash: &Byte32) -> u64 {
+        fn parent_median_time(&self, block_hash: &Byte32) -> u64 {
             let (_, _, parent_hash) = self
                 .block_median_time_context
                 .timestamp_and_parent(block_hash);
