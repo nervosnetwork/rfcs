@@ -58,7 +58,7 @@ The anyone-can-pay lock will work following the rules below:
 
     2.f. It loops through all pairs of input & output cells, if there is a pair in which the input cell has more CKBytes than the output cell; or if the pair of cells both have type script and cell data part, but the input cell has more UDT than the output cell, it returns with an error state.
 
-    2.g. If CKByte minimum or UDT minimum is set, it loops through all pairs of input & output cells. If it could not find a pair of input & output cells in which the output amount is equal to or more than the input amount plus the set minimum, it returns with an error state. Note only one minimum needs to be matched if both CKByte minimum and UDT minimum are set.
+    2.g. If CKByte minimum or UDT minimum is set, it loops through all pairs of input & output cells. If it could find a pair of input & output cells in which the output amount is less than the input amount plus the set minimum, it returns with an error state. Note only one minimum needs to be matched if both CKByte minimum and UDT minimum are set.
 
 The reason of limiting one input cell and one output cell for each lock/type script combination, is that the lock script should prevent attackers from merging or splitting cells:
 
@@ -265,6 +265,6 @@ $ git submodule update --init
 $ make all-via-docker
 ```
 
-Now you can compare the simple udt script generated at `spec/cells/anyone_can_pay` with the one deployed to CKB, they should be identical.
+Now you can compare the anyone-can-pay lock script generated at `spec/cells/anyone_can_pay` with the one deployed to CKB, they should be identical.
 
 A draft of this specification has already been released, reviewed, and discussed in the community at [here](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) for quite some time.
