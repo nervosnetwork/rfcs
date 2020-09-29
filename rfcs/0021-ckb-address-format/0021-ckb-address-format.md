@@ -37,11 +37,11 @@ payload = 0x01 | code_hash_index | args
 
 To translate payload to lock script, one can convert code_hash_index to code_hash and hash_type with the following *popular code_hash table*. And args as the args.
 
-| code_hash_index |        code_hash     |   hash_type  |          args           |
-|:---------------:|----------------------|:------------:|-------------------------|
-|      0x00       | SECP256K1 + blake160 |     Type     |  blake160(PK)*          |
-|      0x01       | SECP256K1 + multisig |     Type     |  multisig script hash** |
-|      0x02       | anyone_can_pay       |     Type     |  blake160(PK)           |
+| code_hash_index |        code_hash     |     hash_type        |          args           |
+|:---------------:|----------------------|:--------------------:|-------------------------|
+|      0x00       | SECP256K1 + blake160 |     Type             |  blake160(PK)*          |
+|      0x01       | SECP256K1 + multisig |     Type             |  multisig script hash** |
+|      0x02       | anyone_can_pay       |     Data/Type***     |  blake160(PK)           |
 
 \* The blake160 here means the leading 20 bytes truncation of Blake2b hash result.
 
@@ -58,6 +58,8 @@ For example, Alice, Bob, and Cipher collectively control a multisig locked cell.
 ```
 0 | 1 | 2 | 3 | Pk_Cipher_h | Pk_Alice_h | Pk_Bob_h
 ```
+
+\*\*\* The anyone_can_pay script is referenced by **`data` hash_type** on Lina and **`type` hash_type** on Aggron, which is indicated in [0024-ckb-system-script-list](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#anyone_can_pay). 
 
 ### Full Payload Format
 
