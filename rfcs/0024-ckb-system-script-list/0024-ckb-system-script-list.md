@@ -187,9 +187,9 @@ anyone_can_pay script is for **lock script**:
 
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
-| `code_hash` | `0x0fb343953ee78c9986b091defb6252154e0bb51044fd2879fde5b27314506111` |
-| `hash_type` | `data`                                                               |
-| `tx_hash`   | `0xa05f28c9b867f8c5682039c10d8e864cf661685252aa74a008d255c33813bb81` |
+| `code_hash` | `0xd369597ff47f29fbc0d47d2e3775370d1250b85140c670e4718af712983a2354` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0x4153a2014952d7cac45f285ce9a7c5c0c0e1b21f2d378b82ac1433cb11c25c4d` |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
@@ -210,7 +210,7 @@ and the `out_point` of `anyone_can_pay` whose `dep_type` is `code` is
 
 ```
 {
-  tx_hash: 0xd032647ee7b5e7e28e73688d80ffc5fba306ee216ca43be4a762ec7e989a3daa,
+  tx_hash: 0x58eb58e2e3dd9852099a19424cf6e63b5238afe92e3085561b8feafced6d6876,
   index: 0x0
 }
 ```
