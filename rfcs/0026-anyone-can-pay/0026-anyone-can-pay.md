@@ -253,7 +253,7 @@ Here CKByte minimum is set to 9, which means in each transaction, one must at le
 
 ## Notes
 
-An implementation of the anyone-can-pay lock spec above has been deployed to Lina CKB mainnet at [here](https://explorer.nervos.org/transaction/0xd032647ee7b5e7e28e73688d80ffc5fba306ee216ca43be4a762ec7e989a3daa). A cell in the dep group format containing both the anyone-can-pay lock, and the required secp256k1 data cell, is also deployed at [here](https://explorer.nervos.org/transaction/0xa05f28c9b867f8c5682039c10d8e864cf661685252aa74a008d255c33813bb81).
+An implementation of the anyone-can-pay lock spec above has been deployed to Lina CKB mainnet at [here](https://explorer.nervos.org/transaction/0x58eb58e2e3dd9852099a19424cf6e63b5238afe92e3085561b8feafced6d6876). A cell in the dep group format containing both the anyone-can-pay lock, and the required secp256k1 data cell, is also deployed at [here](https://explorer.nervos.org/transaction/0x4153a2014952d7cac45f285ce9a7c5c0c0e1b21f2d378b82ac1433cb11c25c4d).
 
 Reproducible build is supported to verify the deploy script. To bulid the deployed anyone-can-pay lock script above, one can use the following steps:
 
