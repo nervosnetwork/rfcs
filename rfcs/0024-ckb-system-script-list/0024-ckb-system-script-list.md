@@ -179,7 +179,7 @@ and the `out_point` of `secp256k1_blake160_multisig_all` is
 
 ### anyone_can_pay
 
-[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay/tree/deac6801a95596d74e2da8f2f1a6727309d36100)) allows a recipient to provide cell capacity in asset transfer.
+[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-production-scripts/tree/c4ed39df33a14d7a2e612ad058b5297ba4272265)) allows a recipient to provide cell capacity in asset transfer.
 
 anyone_can_pay script is for **lock script**:
 
@@ -219,9 +219,9 @@ and the `out_point` of `anyone_can_pay` whose `dep_type` is `code` is
 
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
-| `code_hash` | `0x86a1c6987a4acbe1a887cca4c9dd2ac9fcb07405bbeda51b861b18bbf7492c4b` |
+| `code_hash` | `0x3419a1c09eb2567f6552ee7a8ecffd64155cffe0f1796e6e61ec088d740c1356` |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | `0x4f32b3e39bd1b6350d326fdfafdfe05e5221865c3098ae323096f0bfc69e0a8c` |
+| `tx_hash`   | `0xec26b0f85ed839ece5f11c4c4e837ec359f5adc4420410f6453b1f6b60fb96a6` |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
@@ -242,7 +242,7 @@ and the `out_point` of `anyone_can_pay` is
 
 ```
 {
-  tx_hash: 0x6db4d0597fb256cbf7fcb9082201405b0b7a95b04ec357b8a1f1be4ab88ad833,
+  tx_hash: 0xce29e27734b3eb6f8b6a814cef217753ac2ccb4e4762ecc8b07d05634d8ba374,
   index: 0x0
 }
 ```
