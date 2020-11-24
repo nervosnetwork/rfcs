@@ -77,6 +77,9 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [22](rfcs/0022-transaction-structure) | [CKB Transaction Structure](rfcs/0022-transaction-structure/0022-transaction-structure.md) | Ian Yang | Informational | Draft
 | [23](rfcs/0023-dao-deposit-withdraw) | [Deposit and Withdraw in Nervos DAO](rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md) | Jan Xie, Xuejie Xiao, Ian Yang | Standards Track | Proposal
 | [24](rfcs/0024-ckb-system-script-list) | [CKB System Script List](rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md) | Dylan Duan | Informational | Draft
+| [25](rfcs/0025-simple-udt) | [Simple UDT](rfcs/0025-simple-udt/0025-simple-udt.md) | Xuejie Xiao | Standards Track | Proposal
+| [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
+| [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
 
 ## License
 

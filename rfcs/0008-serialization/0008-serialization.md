@@ -190,7 +190,7 @@ Serializing an `option` depends on whether it is empty or not:
 ##### Examples
 
 If we define `option BytesVecOpt (BytesVec);`
-- the serialized bytes of `Option` is ` ` (empty).
+- the serialized bytes of `None` is ` ` (empty).
 - the serialized bytes of `Some([])` is `04 00 00 00`.
 - the serialized bytes of `Some([0x])` is
   ```
