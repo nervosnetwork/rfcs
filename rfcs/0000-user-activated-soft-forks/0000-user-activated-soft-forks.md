@@ -70,7 +70,30 @@ During the **MUST_SIGNAL** and **LOCKED_IN** phases, blocks that fail to signal 
 
 ### State transitions
 
-TODO(img)
+<details>
+<summary>
+
+![](soft-forks-deployment-state-chart.jpeg)
+
+</summary>
+
+```
+%% https://mermaid-js.github.io/mermaid-live-editor/
+stateDiagram-v2
+    DEFINED --> DEFINED
+    DEFINED --> STARTED: epoch >= start_epoch
+    STARTED --> MUST_SIGNAL: epoch + 1 >= timeout_epoch\nAND lock_in_on_timeout
+    STARTED --> LOCKED_IN: epoch < timeout_epoch\nAND threshold reached
+    MUST_SIGNAL --> LOCKED_IN: always
+    LOCKED_IN --> ACTIVE: always
+    STARTED --> STARTED
+    ACTIVE --> ACTIVE
+
+    STARTED --> FAILED: epoch.number >= timeout_epoch\nAND NOT lock_in_on_timeout
+    FAILED --> FAILED
+```
+
+</details>
 
 Note that when `lock_in_on_timeout` is true, the **LOCKED_IN** state will be reached no later than at the epoch of `timeout_epoch`, and ACTIVE will be reached no later than at a height of `timeout_epoch + 1`.
 
@@ -172,13 +195,13 @@ The template request Object is extended to include a new item:
 
 | Key | Required | Type | Description |
 | --- | -------- | ---- | ----------- |
-| rules | No | Array of Strings | list of supported softfork deployments, by name |
+| `rules` | No | Array of Strings | list of supported softfork deployments, by name |
 
 The template Object is also extended:
 
 | Key | Required | Type | Description |
 | --- | -------- | ---- | ----------- |
-| rules | Yes | Array of Strings | list of softfork deployments, by name, that are active state |
+| `rules` | Yes | Array of Strings | list of softfork deployments, by name, that are active state |
 | `version_bits_available` | Yes | Object | set of pending, supported softfork deployments; each uses the softfork name as the key, and the softfork bit as its value |
 | `version_bits_required` | No | Number | bit mask of softfork deployment version bits the server requires enabled in submissions |
 
