@@ -134,7 +134,7 @@ int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 
 This syscall would calculate the hash of current transaction and copy it to VM memory space based on *partial loading* workflow.
 
@@ -152,7 +152,7 @@ int ckb_load_transaction(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 
 This syscall serializes the full transaction containing running script into the Molecule Encoding [1] format, then copy it to VM memory space based on *partial loading* workflow.
 
@@ -170,7 +170,7 @@ int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 
 This syscall would calculate the hash of current running script and copy it to VM memory space based on *partial loading* workflow.
 
@@ -188,7 +188,7 @@ int ckb_load_script(void* addr, uint64_t* len, size_t offset)
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 
 This syscall serializes the current running script into the Molecule Encoding [1] format, then copy it to VM memory space based on *partial loading* workflow.
 
@@ -206,7 +206,7 @@ int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -239,7 +239,7 @@ int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -282,7 +282,7 @@ int ckb_load_cell_data(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -360,7 +360,7 @@ int ckb_load_input(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
     + 1: input cells.
@@ -390,7 +390,7 @@ int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of inputs to read.
 * `source`: a flag denoting the source of inputs to locate, possible values include:
     + 1: inputs.
@@ -423,7 +423,7 @@ int ckb_load_header(void* addr, uint64_t* len, size_t offset, size_t index, size
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -456,7 +456,7 @@ int ckb_load_header_by_field(void* addr, uint64_t* len, size_t offset,
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
@@ -493,7 +493,7 @@ int ckb_load_witness(void* addr, uint64_t* len, size_t offset, size_t index, siz
 
 The arguments used here are:
 
-* `addr`, `len` and `offset` follow the usage descripted in *Parital Loading* section.
+* `addr`, `len` and `offset` follow the usage descripted in *Partial Loading* section.
 * `index`: an index value denoting the index of entries to read.
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
