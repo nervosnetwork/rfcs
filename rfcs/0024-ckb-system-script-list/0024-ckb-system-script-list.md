@@ -179,7 +179,7 @@ and the `out_point` of `secp256k1_blake160_multisig_all` is
 
 ### anyone_can_pay
 
-[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-production-scripts/blob/c4ed39df33a14d7a2e612ad058b5297ba4272265/c/anyone_can_pay.c)) allows a recipient to provide cell capacity in asset transfer.
+[anyone_can_pay](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) ([Source Code](https://github.com/nervosnetwork/ckb-anyone-can-pay/tree/deac6801a95596d74e2da8f2f1a6727309d36100)) allows a recipient to provide cell capacity in asset transfer.
 
 anyone_can_pay script is for **lock script**:
 
