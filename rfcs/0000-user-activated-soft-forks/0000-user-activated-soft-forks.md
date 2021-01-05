@@ -1,4 +1,4 @@
----
+--
 Number: "0000"
 Category: Informational
 Status: Draft
@@ -37,13 +37,13 @@ The following guidelines are suggested for selecting these parameters for a soft
 
 * `name` should be selected such that no two softforks concurrent or otherwise, ever use the same name.
 * `bit` should be selected such that no two concurrent softforks use the same bit.
-* `start_epoch` should be set to some epoch number in the future, approximately 30 days (or 180 epochs) after a software release date including the soft fork.  This allows for some release delays, while preventing triggers as a result of parties running pre-release software, and ensures a reasonable number of full nodes have upgraded prior to activation.
+* `start_epoch` should be set to some epoch number in the future, approximately 30 days (or 180 epochs) after a software release date including the soft fork.  This allows for some release delays, while preventing triggers as a result of parties running pre-release software, and ensures a reasonable number of full nodes have upgraded prior to activation. It should be rounded up to the next epoch number which is multiple of 84.
 * `timeout_epoch` should be 1 year, or 2190 epochs after `start_epoch`.
 * `lock_in_on_timeout` should be set to true for any softfork that is expected or found to have political opposition from a non-negligible percent of miners. (It can be set after the initial deployment, but cannot be cleared once set.)
 
 A later deployment using the same bit is possible as long as the `start_epoch` is after the previous one's `timeout_epoch` or activation, but it is discouraged until necessary, and even then recommended to have a pause in between to detect buggy software.
 
-`timeout_epoch` must be at least 180 epochs after `start_epoch`.
+The `start_epoch` and `timeout_epoch` must be an exact multiple of 84 (at about a 14 days period), and `timeout_epoch` must be at least 168 epochs after `start_epoch`.
 
 ### States
 
@@ -82,7 +82,7 @@ During the **MUST_SIGNAL** and **LOCKED_IN** phases, blocks that fail to signal 
 stateDiagram-v2
     DEFINED --> DEFINED
     DEFINED --> STARTED: epoch >= start_epoch
-    STARTED --> MUST_SIGNAL: epoch + 1 >= timeout_epoch\nAND lock_in_on_timeout
+    STARTED --> MUST_SIGNAL: epoch + 84 >= timeout_epoch\nAND lock_in_on_timeout
     STARTED --> LOCKED_IN: epoch < timeout_epoch\nAND threshold reached
     MUST_SIGNAL --> LOCKED_IN: always
     LOCKED_IN --> ACTIVE: always
@@ -95,7 +95,7 @@ stateDiagram-v2
 
 </details>
 
-Note that when `lock_in_on_timeout` is true, the **LOCKED_IN** state will be reached no later than at the epoch of `timeout_epoch`, and ACTIVE will be reached no later than at a height of `timeout_epoch + 1`.
+Note that when `lock_in_on_timeout` is true, the **LOCKED_IN** state will be reached no later than at the epoch of `timeout_epoch`, and ACTIVE will be reached no later than at a height of `timeout_epoch + 84`.
 
 It should be noted that the states are maintained along block chain branches, but may need recomputation when a reorganization happens.
 
@@ -106,9 +106,15 @@ The genesis epoch has state DEFINED for each deployment, by definition.
             return DEFINED;
         }
 
-The next state depends only on the state and blocks of the previous epoch:
+Every 84 epochs constitute a tally period. All epochs within a tally period have the same state. This means that if `floor(epoch1.number / 84) = floor(epoch2.number / 84)`, they are guaranteed to have the same state for every deployment.
 
-        switch (GetStateForEpoch(GetEpochByNumber(epoch.number - 1))) {
+        if ((epoch.number % 84) != 0) {
+            return GetStateForEpoch(GetEpochByNumber(epoch.number - 1));
+        }
+
+The next state depends only on the state and blocks in the last tally period.
+
+        switch (GetStateForEpoch(GetEpochByNumber(epoch.number - 84))) {
 
 We remain in the initial state until we reach the start epoch.
 
@@ -118,27 +124,37 @@ We remain in the initial state until we reach the start epoch.
             }
             return DEFINED;
 
-After an epoch in the STARTED state, we tally the bits set, and transition to **LOCKED_IN** if a sufficient number of blocks in the past period set the deployment bit in their version numbers. The threshold is ≥ 95% of blocks in the epoch, or ≥75% for testnet.
+After every 84 epochs, a tally period, in the STARTED state, we tally the bits set, and transition to **LOCKED_IN** if a sufficient number of blocks in the past period set the deployment bit in their version numbers. The threshold is 1710/1800 (95%), or 1350/1800 (75%) for testnet.
 
 If the threshold hasn't been met, `lock_in_on_timeout` is true, and we are at the last period before the timeout, then we transition to **MUST_SIGNAL**.
 
 If the threshold hasn't been met and we reach the timeout, we transition directly to **FAILED**.
 
-Note that a block's state never depends on the `version` of the blocks in the same epoch; only on that of the previous epoch.
+In CKB, epochs have different lengths. The tally algorithm must normalize the length.
+
+* Count the blocks in each epoch which have set the deployment bit. Say the number is `P`, then the effective blocks number `P'` is `floor(P * 1800 / L)` where L is the epoch length.
+* The total effective blocks number of all the epochs in the tally period must be at least 1710 * 84 for mainnet, or 1350 * 84 for testnet.
+
+Note that a block's state never depends on the `version` of the blocks in the same tally period; only on that of the previous period.
 
         case STARTED:
             count = 0;
-            prev_epoch = GetEpochByNumber(epoch.number - 1);
-            block = GetBlockByNumber(prev_epoch.start_block_number + prev_epoch.length - 1);
-            for (; block.epoch_number == prev_epoch.number; block = block.parent) {
-                assert(block.version & 0xE0000000 == 0);
-                if ((block.version >> bit) & 1 == 1) {
-                    ++count;
+            tally_epoch = GetEpochByNumber(epoch.number - 1);
+            for (; tally_epoch.number >= epoch.number - 84; tally_epoch = GetEpochByNumber(tally_epoch.number - 1)) {
+                epoch_count = 0;
+                block = GetBlockByNumber(tally_epoch.start_block_number + tally_epoch.length - 1);
+                for (; block.epoch_number == tally_epoch.number; block = block.parent) {
+                    assert(block.version & 0xE0000000 == 0);
+                    if ((block.version >> bit) & 1 == 1) {
+                        ++epoch_count;
+                    }
                 }
+                count += floor(epoch_count * 1800.0 / tally_epoch.length);
             }
-            if (count >= threshold * prev_epoch.length) {
+            // threshold = 1710 * 84 or 1350 * 84
+            if (count >= threshold) {
                 return LOCKED_IN;
-            } else if (lock_in_on_timeout && epoch.number + 1 >= timeout_epoch) {
+            } else if (lock_in_on_timeout && epoch.number + 84 >= timeout_epoch) {
                 return MUST_SIGNAL;
             } else if (epoch.number >= timeout_epoch) {
                 return FAILED;
@@ -150,7 +166,7 @@ If we have finished a period of **MUST_SIGNAL**, we transition directly to **LOC
         case MUST_SIGNAL:
             return LOCKED_IN;
 
-After an epoch of **LOCKED_IN**, we automatically transition to **ACTIVE**.
+After a period of **LOCKED_IN**, we automatically transition to **ACTIVE**.
 
         case LOCKED_IN:
             return ACTIVE;
