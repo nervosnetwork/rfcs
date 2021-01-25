@@ -142,7 +142,7 @@ Outputs:
         Capacity: 1020 CKBytes
         Lock:
             code_hash: anyone-can-pay lock
-            args: <public key hash A>
+            args: <public key hash A> <CKByte minimum: 2>
 Witnesses:
     <valid signature for public key hash B>
 ```
@@ -239,7 +239,7 @@ Outputs:
         Capacity: 1010 CKBytes
         Lock:
             code_hash: anyone-can-pay lock
-            args: <public key hash A>
+            args: <public key hash A> <CKByte minimum: 9> <UDT minimum: 5>
         Type:
             code_hash: simple udt lock
             args: <owner lock C>
