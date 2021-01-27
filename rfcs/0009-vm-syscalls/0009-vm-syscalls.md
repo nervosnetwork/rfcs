@@ -428,11 +428,12 @@ The arguments used here are:
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
     + `0x0100000000000001`: input cells with the same running script as current script
+    + 3: dep cells.
     + 4: header deps.
 
-This syscall would locate the header associated either with an input cell, or a header dep based on `source` and `index` value, serialize the whole header into Molecule Encoding [1] format, then use the same step as documented in [Partial Loading](#partial-loading) section to feed the serialized value into VM.
+This syscall would locate the header associated either with an input cell, a dep cell, or a header dep based on `source` and `index` value, serialize the whole header into Molecule Encoding [1] format, then use the same step as documented in [Partial Loading](#partial-loading) section to feed the serialized value into VM.
 
-Note when you are loading the header associated with an input cell, the header hash should still be included in `header deps` section of current transaction.
+Note when you are loading the header associated with an input cell or a dep cell, the header hash should still be included in `header deps` section of current transaction.
 
 This syscall might return the following errors:
 * An invalid source value would immediately trigger an VM error and halt execution.
@@ -440,6 +441,11 @@ This syscall might return the following errors:
 * This syscall would return with `2` as return value if requesting a header for an input cell, but the `header deps` section is missing the header hash for the input cell.
 
 In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+#### Loading Header Immature Rule
+[loading header immature Rule]: #loading-header-immature-error
+
+**Attention** that the script can only load the header of a block which is 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction loading its header can only be included in the first block of epoch 8 and later blocks.
 
 ### Load Header By Field
 [load header by field]: #load-header-by-field
@@ -461,15 +467,16 @@ The arguments used here are:
 * `source`: a flag denoting the source of cells to locate, possible values include:
     + 1: input cells.
     + `0x0100000000000001`: input cells with the same running script as current script
+    + 3: dep cells.
     + 4: header deps.
 * `field`: a flag denoting the field of the header to read, possible values include:
     + 0: current epoch number in 64-bit unsigned little endian integer value.
     + 1: block number for the start of current epoch in 64-bit unsigned little endian integer value.
     + 2: epoch length in 64-bit unsigned little endian integer value.
 
-This syscall would locate the header associated either with an input cell, or a header dep based on `source` and `index` value, and then fetches the data denoted by the `field` value. The data is then fed into VM memory space using the *partial loading* workflow.
+This syscall would locate the header associated either with an input cell, a dep cell, or a header dep based on `source` and `index` value, and then fetches the data denoted by the `field` value. The data is then fed into VM memory space using the *partial loading* workflow.
 
-Note when you are loading the header associated with an input cell, the header hash should still be included in `header deps` section of current transaction.
+Note when you are loading the header associated with an input cell or a dep cell, the header hash should still be included in `header deps` section of current transaction.
 
 This syscall might return the following errors:
 * An invalid source value would immediately trigger an VM error and halt execution.
@@ -478,6 +485,8 @@ This syscall might return the following errors:
 * An invalid field value would immediately trigger an VM error and halt execution.
 
 In case of errors, `addr` and `index` will not contain meaningful data to use.
+
+*Attention** that this syscall also follows [loading header immature rule][].
 
 ### Load Witness
 [load witness]: #load-witness
