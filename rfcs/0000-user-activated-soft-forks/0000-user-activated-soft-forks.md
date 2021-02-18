@@ -124,7 +124,7 @@ We remain in the initial state until we reach the start epoch.
             }
             return DEFINED;
 
-After every 84 epochs, a tally period, in the STARTED state, we tally the bits set, and transition to **LOCKED_IN** if a sufficient number of blocks in the past period set the deployment bit in their version numbers. The threshold is 1710/1800 (95%), or 1350/1800 (75%) for testnet.
+After every 84 epochs, a tally period, in the STARTED state, we tally the bits set, and transition to **LOCKED_IN** if a sufficient number of blocks in the past period set the deployment bit in their version numbers. The threshold is 1620/1800 (90%), or 1350/1800 (75%) for testnet.
 
 If the threshold hasn't been met, `lock_in_on_timeout` is true, and we are at the last period before the timeout, then we transition to **MUST_SIGNAL**.
 
@@ -133,7 +133,7 @@ If the threshold hasn't been met and we reach the timeout, we transition directl
 In CKB, epochs have different lengths. The tally algorithm must normalize the length.
 
 * Count the blocks in each epoch which have set the deployment bit. Say the number is `P`, then the effective blocks number `P'` is `floor(P * 1800 / L)` where L is the epoch length.
-* The total effective blocks number of all the epochs in the tally period must be at least 1710 * 84 for mainnet, or 1350 * 84 for testnet.
+* The total effective blocks number of all the epochs in the tally period must be at least 1620 * 84 for mainnet, or 1350 * 84 for testnet.
 
 Note that a block's state never depends on the `version` of the blocks in the same tally period; only on that of the previous period.
 
@@ -151,7 +151,7 @@ Note that a block's state never depends on the `version` of the blocks in the sa
                 }
                 count += floor(epoch_count * 1800.0 / tally_epoch.length);
             }
-            // threshold = 1710 * 84 or 1350 * 84
+            // threshold = 1620 * 84 or 1350 * 84
             if (count >= threshold) {
                 return LOCKED_IN;
             } else if (lock_in_on_timeout && epoch.number + 84 >= timeout_epoch) {
