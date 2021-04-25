@@ -95,7 +95,7 @@ When the metric flag is `01` (Epoch number with fraction):
 
     * `E` is the epoch number part, the three bytes from the lowest bit 0 to 23.
     * `I` is the block index in the epoch part, the two bytes from the bit 24 to 39.
-    * `L` is the epoch length part, the two bytes from the bit 40 to 55. There's an **exception** here, `L` is at least 1. In other words, if the two bytes are all zeros, `L` will be 1.
+    * `L` is the epoch length part, the two bytes from the bit 40 to 55. There's an **exception** here, `L` is at least 1. If `L` is zero, the whole rational number is considered as `E + 0 / 1`.
 
 **Specially**, when the relative flag is `0` (absolute), the `value` is normalized first. But when the relative flag is `1` (relative), the `value` is interpreted as it is and is added to the creation time directly.
 
