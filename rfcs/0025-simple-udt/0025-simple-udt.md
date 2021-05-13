@@ -37,7 +37,7 @@ User shall use any lock script as they wish in the SUDT Cell.
 
 ### Owner lock script
 
-Owner lock shall be used for governance purposes, such as issurance, mint, burn as well as other operations. The SUDT specification does not enforce specific rules on the behavior of owner lock script. It is expected that owner lock script should at least provide enough security to ensure only token owners can perform governance operations.
+Owner lock shall be used for governance purposes, such as issuance, mint, burn as well as other operations. The SUDT specification does not enforce specific rules on the behavior of owner lock script. It is expected that owner lock script should at least provide enough security to ensure only token owners can perform governance operations.
 
 ## Operations
 
