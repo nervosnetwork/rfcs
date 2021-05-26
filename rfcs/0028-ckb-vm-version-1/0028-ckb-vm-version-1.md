@@ -46,51 +46,21 @@ This bug occurred during elf loading. CKB-VM incorrectly set the freeze flag on 
 
 It mainly occurs on the external variables with dynamic link.
 
+### 1.7 Update crate goblib
+
+goblin is a cross-platform trifecta of binary parsing and loading fun. ckb-vm uses it to load RISC-V programs. But in the past period of time goblin fixed many bugs and produced destructive upgrades, we decided to upgrade goblin: this will cause the binary that could not be loaded before can now be normal Load, or vice versa.
+
+https://github.com/m4b/goblin/blob/master/CHANGELOG.md#040---2021-4-11
+
 ## 2 Behavior changes that do not affect execution results
 
-### 2.1 Dependency update
-
-| Crate  |     version0     |     version1     |
-| ------ | ---------------- | ---------------- |
-| memmap | memmap = "0.7.0" | mapr = "0.8.0"   |
-| goblin | goblin = "0.2.3" | goblin = "0.4.0" |
-| bytes  | bytes = "0.5.4"  | bytes = "1"      |
-
-### 2.2 Skip writing 0 to the memory when argc is 0 during stack initialization
+### 2.1 Skip writing 0 to the memory when argc is 0 during stack initialization
 
 For ckb scripts, argc is always 0 and the memory is initialized to 0, so memory writing can be safely skipped. It should be noted that when "chaos_mode" enabled and "argv" is empty, reading "argc" will return an unexpected data. This situation is not very common and it never happened on mainnet.
 
-### Redesign inner instruction format
+### 2.2 Redesign inner instruction format
 
-For fast decoding and cache friendly, RISC-V instruction is decoded into 64 bit unsigned integer in the following format:
-
-```text
-+-----+-----+-----+-----+-----+-----+-----+-----+
-|           | rs2 | rs1 | flg | op2 | rd  | op  | R-type
-+-----+-----+-----+-----+-----+-----+-----+-----+
-|     | rs3 | rs2 | rs1 | flg | op2 | rd  | op  | R4-type
-+-----------+-----------------------------------+
-|    immediate    | rs1 | flg | op2 | rd  | op  | I-type
-+-----------------------------------------------+
-|    immediate    | rs1 | flg | op2 | rs2 | op  | S-type/B-type
-+-----------------+-----------------------------+
-|       immediate       | flg | op2 | rd  | op  | U-type/J-type
-+-----+-----+-----+-----+-----+-----+-----+-----+
-```
-
-flg here means a combination of flags, Its format is as follows:
-
-```text
-+---+---+---+---+---+---+---+---+
-| 7 | 6 | 5 | 4 | length >> 1   |
-+---+---+---+---+---+---+---+---+
-```
-
-This way each op and register index are in full byte, accessing them will be much faster than the original compact form. Hence we will have a fast path where the interpreter loop reads instruction directly in this format, and a slow path where a full featured decoder decodes RISC-V instruction into the internal form here(much like how traces/micro-ops work.)
-
-About op and op2:
-
-When the op value is 0-239, it expresses a first-level instruction under fast path, at this time the value of op2 is ignored. When the op value is 240-255, op and op2 are combined to express a second-level instruction under slow path.
+For fast decoding and cache friendly, RISC-V instruction is decoded into 64 bit unsigned integer. This format is only used inside ckb-vm and not the original RISC-V instruction format.
 
 ## 3 New features
 
