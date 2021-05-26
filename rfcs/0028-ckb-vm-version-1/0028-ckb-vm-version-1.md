@@ -50,8 +50,6 @@ It mainly occurs on the external variables with dynamic link.
 
 goblin is a cross-platform trifecta of binary parsing and loading fun. ckb-vm uses it to load RISC-V programs. But in the past period of time goblin fixed many bugs and produced destructive upgrades, we decided to upgrade goblin: this will cause the binary that could not be loaded before can now be normal Load, or vice versa.
 
-https://github.com/m4b/goblin/blob/master/CHANGELOG.md#040---2021-4-11
-
 ## 2 Behavior changes that do not affect execution results
 
 ### 2.1 Skip writing 0 to the memory when argc is 0 during stack initialization
