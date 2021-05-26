@@ -132,13 +132,13 @@ The cycle consumption of the merged instruction is the maximum value of cycles o
 |            Opcode            |    Origin    | Cycles |
 | ---------------------------- | ------------ | ------ |
 | WIDE_MUL                     | mulh + mul   | 5 + 0  |
-| WIDE_MULU                    | mulhu + mulu | 5 + 0  |
+| WIDE_MULU                    | mulhu + mul  | 5 + 0  |
+| WIDE_MULSU                   | mulhsu + mul | 5 + 0  |
 | WIDE_DIV                     | div + rem    | 32 + 0 |
 | WIDE_DIVU                    | divu + remu  | 32 + 0 |
 | FAR_JUMP_REL                 | auipc + jalr | 0 + 3  |
 | FAR_JUMP_ABS                 | lui + jalr   | 0 + 3  |
 | LD_SIGN_EXTENDED_32_CONSTANT | lui + addiw  | 1 + 0  |
-| LD_ZERO_EXTENDED_32_CONSTANT | lui + addiwu | 1 + 0  |
 
 # Reference
 
