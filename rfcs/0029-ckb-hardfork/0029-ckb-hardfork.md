@@ -41,7 +41,7 @@ int ckb_vm_version()
 *Current Cycles* syscall has a signature like following:
 
 ```c
-int ckb_current_cycles()
+uint64_t ckb_current_cycles()
 {
   return syscall(2042, 0, 0, 0, 0, 0, 0);
 }
