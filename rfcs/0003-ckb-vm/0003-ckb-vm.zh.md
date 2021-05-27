@@ -342,9 +342,9 @@ int main(int argc, char* argv[])
 
 ### 更新
 
-对 CKB-VM 的代码更新不会影响旧有交易的执行结果. 我们在 CKB 硬分叉版本中发布了 CKB-VM version 1 [1].
+任何 CKB-VM 的新版本均不会影响旧有交易的执行结果. 我们在 CKB 硬分叉版本中发布了 CKB-VM version 1 [1].
 
-# Reference
+# 参考
 
 * [1]: [CKB-VM version 1][1]
 
