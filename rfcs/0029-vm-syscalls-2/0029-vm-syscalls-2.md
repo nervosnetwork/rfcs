@@ -7,19 +7,15 @@ Organization: Nervos Foundation
 Created: 2021-05-25
 ---
 
-# CKB Hardfork
+# VM Syscalls 2
 
 ## Abstract
 
-This document describes the first hard fork of ckb.
+This document describes the addition of the syscalls during the ckb's first hard fork.
 
-- [VM Syscalls]
-  - [VM Version]
-  - [Current Cycles]
-  - [Exec]
-
-## VM Syscalls
-[vm syscalls]: #vm-syscalls
+- [VM Version]
+- [Current Cycles]
+- [Exec]
 
 ### VM Version
 [vm version]: #vm-version
