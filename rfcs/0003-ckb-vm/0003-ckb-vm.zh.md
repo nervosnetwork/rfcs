@@ -348,4 +348,4 @@ int main(int argc, char* argv[])
 
 * [1]: [CKB-VM version 1][1]
 
-[1]: ../0028-ckb-vm-version-1/0028-ckb-vm-version-1.md
+[1]: ../0000-ckb-vm-version-1/0000-ckb-vm-version-1.md

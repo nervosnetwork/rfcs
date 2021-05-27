@@ -80,8 +80,6 @@ The maintainers of RFCs will review the proposal, ask if there's any objections,
 | [25](rfcs/0025-simple-udt) | [Simple UDT](rfcs/0025-simple-udt/0025-simple-udt.md) | Xuejie Xiao | Standards Track | Proposal
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
 | [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
-| [28](rfcs/0028-ckb-vm-version-1) | [VM version 1](rfcs/0028-ckb-vm-version-1/0028-ckb-vm-version-1.md) | Wanbiao Ye | Standards Track | Proposal
-| [29](rfcs/0029-vm-syscalls-2) | [VM Syscalls 2](rfcs/0029-vm-syscalls-2/0029-vm-syscalls-2.md) | Wanbiao Ye | Standards Track | Proposal
 
 ## License
 

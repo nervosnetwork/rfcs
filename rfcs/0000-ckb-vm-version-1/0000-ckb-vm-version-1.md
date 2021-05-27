@@ -1,7 +1,7 @@
 ---
-Number: "0028"
-Category: Standards Track
-Status: Proposal
+Number: "0000"
+Category: Informational
+Status: Draft
 Author: Wanbiao Ye
 Organization: Nervos Foundation
 Created: 2021-05-25
