@@ -339,3 +339,13 @@ int main(int argc, char* argv[])
 ```
 
 这里所有的 UDT 函数均通过动态链接的方式引用其他 Cell 里的内容，不占用当前 Cell 的空间。
+
+### 更新
+
+对 CKB-VM 的代码更新不会影响旧有交易的执行结果. 我们在 CKB 硬分叉版本中发布了 CKB-VM version 1 [1].
+
+# Reference
+
+* [1]: [CKB-VM version 1][1]
+
+[1]: ../0028-ckb-vm-version-1/0028-ckb-vm-version-1.md
