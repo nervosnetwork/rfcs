@@ -61,21 +61,25 @@ Exec runs an executable file from specified cell data in the context of an alrea
 *Exec* syscall has a signature like following:
 
 ```c
-int ckb_exec(size_t index, size_t source, int argc, char* argv[])
+int ckb_exec(size_t index, size_t source, size_t place, size_t bounds, int argc, char* argv[])
 {
-  return syscall(2043, index, source, argc, argv, 0, 0);
+  return syscall(2043, index, source, place, bounds, argc, argv);
 }
 ```
 
 The arguments used here are:
 
 * `index`: an index value denoting the index of entries to read.
-* `source`: a flag denoting the source of cells to locate, possible values include:
+* `source`: a flag denoting the source of cells or witnesses to locate, possible values include:
     + 1: input cells.
     + `0x0100000000000001`: input cells with the same running script as current script
     + 2: output cells.
     + `0x0100000000000002`: output cells with the same running script as current script
     + 3: dep cells.
+* `place`: A value of 0 or 1:
+    + 0: read from cell data
+    + 1: read from witness
+* `bounds`: high 32 bits means `offset`, low 32 bits means `length`. if `length` equals to zero, it read to end instead of reading 0 bytes.
 * `argc`: argc contains the number of arguments passed to the program
 * `argv`: argv is a one-dimensional array of strings
 
