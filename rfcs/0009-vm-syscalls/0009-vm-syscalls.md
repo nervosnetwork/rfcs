@@ -541,4 +541,4 @@ This syscall accepts a null terminated string and prints it out as debug log in 
 * [2]: [VM Syscalls 2][2]
 
 [1]: ../0008-serialization/0008-serialization.md
-[2]: ../0000-vm-syscalls-2/0000-vm-syscalls-2.md
+[2]: ../0237-vm-syscalls-2/0237-vm-syscalls-2.md
