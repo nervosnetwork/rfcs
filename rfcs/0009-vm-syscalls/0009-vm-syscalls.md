@@ -11,7 +11,7 @@ Created: 2018-12-14
 
 ## Abstract
 
-This document describes all the RISC-V VM syscalls implemented in CKB Lina. Note that 3 new syscalls have been added to CKB Hardfork [2].
+This document describes all the RISC-V VM syscalls implemented in CKB Lina. Note that 3 new syscalls have been added to ckb2021 [2].
 
 ## Introduction
 

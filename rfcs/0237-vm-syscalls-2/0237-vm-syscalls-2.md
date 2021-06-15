@@ -11,7 +11,7 @@ Created: 2021-05-25
 
 ## Abstract
 
-This document describes the addition of the syscalls during the ckb's first hard fork.
+This document describes the addition of the syscalls during the ckb2021. These syscalls are only available since ckb-vm version 1 and ckb2021 [2].
 
 - [VM Version]
 - [Current Cycles]
@@ -83,5 +83,7 @@ The arguments used here are:
 # Reference
 
 * [1]: [Vm Cycle Limits][1]
+* [2]: [CKB VM version selection][2]
 
 [1]: ../0014-vm-cycle-limits/0014-vm-cycle-limits.md
+[2]: ../0232-ckb-vm-version-selection/0232-ckb-vm-version-selection.md
