@@ -445,7 +445,11 @@ In case of errors, `addr` and `index` will not contain meaningful data to use.
 #### Loading Header Immature Rule
 [loading header immature Rule]: #loading-header-immature-error
 
-**Attention** that the script can only load the header of a block which is 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction loading its header can only be included in the first block of epoch 8 and later blocks.
+Attention that all the blocks referenced in header deps must be 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction with its header as a header dep can only be included in the first block of epoch 8 and later blocks.
+
+This rule will be removed since ckb2021 as proposed in [RFC36].
+
+[RFC36]: ../0036-remove-header-deps-immature-rule/0036-remove-header-deps-immature-rule.md
 
 ### Load Header By Field
 [load header by field]: #load-header-by-field
