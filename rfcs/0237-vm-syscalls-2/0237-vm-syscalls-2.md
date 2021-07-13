@@ -29,7 +29,12 @@ int ckb_vm_version()
 }
 ```
 
-*VM version* syscall returns current running VM version, so far 2 values will be returned: 0 for Lina CKB-VM version, 1 for the new hardfork version. This syscall consumes 500 cycles.
+*VM version* syscall returns current running VM version, so far 2 values will be returned:
+
+- Error for Lina CKB-VM version
+- 1 for the new hardfork CKB-VM version.
+
+This syscall consumes 500 cycles.
 
 ### Current Cycles
 [current cycles]: #current-cycles
