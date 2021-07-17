@@ -64,49 +64,7 @@ For the sake of fast decoding and cache convenience, RISC-V instruction is decod
 
 ### 3.1 B extension
 
-We have added the RISC-V B extension (v0.92) [1]. This extension aims at covering the four major categories of bit manipulation: counting, extracting, inserting and swapping. The execution of B instructions has been divided into two directions, a slow path and a fast path.  The slow path always generates a context switching overhead. For all B instructions, 1 cycle will be consumed, excluding the followings:
-
-| Instruction |        Cycles        |
-| ----------- | -------------------- |
-| GREV        | CONTEXT_SWITCH + 20  |
-| GREVI       | CONTEXT_SWITCH + 20  |
-| GREVW       | CONTEXT_SWITCH + 18  |
-| GREVIW      | CONTEXT_SWITCH + 18  |
-| SHFL        | CONTEXT_SWITCH + 20  |
-| UNSHFL      | CONTEXT_SWITCH + 20  |
-| SHFLI       | CONTEXT_SWITCH + 20  |
-| UNSHFLI     | CONTEXT_SWITCH + 20  |
-| SHFLW       | CONTEXT_SWITCH + 18  |
-| UNSHFLW     | CONTEXT_SWITCH + 18  |
-| GORC        | CONTEXT_SWITCH + 20  |
-| GORCI       | CONTEXT_SWITCH + 20  |
-| GORCW       | CONTEXT_SWITCH + 18  |
-| GORCIW      | CONTEXT_SWITCH + 18  |
-| BFP         | CONTEXT_SWITCH + 15  |
-| BFPW        | CONTEXT_SWITCH + 15  |
-| BDEP        | CONTEXT_SWITCH + 350 |
-| BEXT        | CONTEXT_SWITCH + 270 |
-| BDEPW       | CONTEXT_SWITCH + 180 |
-| BEXTW       | CONTEXT_SWITCH + 140 |
-| CLMUL       | CONTEXT_SWITCH + 320 |
-| CLMULR      | CONTEXT_SWITCH + 380 |
-| CLMULH      | CONTEXT_SWITCH + 400 |
-| CLMULW      | CONTEXT_SWITCH + 60  |
-| CLMULRW     | CONTEXT_SWITCH + 60  |
-| CLMULHW     | CONTEXT_SWITCH + 60  |
-| CRC32B      | CONTEXT_SWITCH + 15  |
-| CRC32H      | CONTEXT_SWITCH + 30  |
-| CRC32W      | CONTEXT_SWITCH + 45  |
-| CRC32D      | CONTEXT_SWITCH + 60  |
-| CRC32CB     | CONTEXT_SWITCH + 15  |
-| CRC32CH     | CONTEXT_SWITCH + 30  |
-| CRC32CW     | CONTEXT_SWITCH + 45  |
-| CRC32CD     | CONTEXT_SWITCH + 60  |
-| BMATFLIP    | CONTEXT_SWITCH + 40  |
-| BMATOR      | CONTEXT_SWITCH + 500 |
-| BMATXOR     | CONTEXT_SWITCH + 800 |
-
-Where CONTEXT_SWITCH = 500.
+We have added the RISC-V B extension (v1.0.0) [1]. This extension aims at covering the four major categories of bit manipulation: counting, extracting, inserting and swapping. For all B instructions, 1 cycle will be consumed.
 
 ### 3.2 Chaos memory mode
 
@@ -128,20 +86,23 @@ Macro-Operation Fusion (also Macro-Op Fusion, MOP Fusion, or Macrofusion) is a h
 
 The cycle consumption of the merged instructions is the maximum cycle value of the two instructions before the merge. We have verified that the use of MOPs can lead to significant improvements in some encryption algorithms.
 
-
-|            Opcode            |    Origin    | Cycles |
-| ---------------------------- | ------------ | ------ |
-| WIDE_MUL                     | mulh + mul   | 5 + 0  |
-| WIDE_MULU                    | mulhu + mul  | 5 + 0  |
-| WIDE_MULSU                   | mulhsu + mul | 5 + 0  |
-| WIDE_DIV                     | div + rem    | 32 + 0 |
-| WIDE_DIVU                    | divu + remu  | 32 + 0 |
-| FAR_JUMP_REL                 | auipc + jalr | 0 + 3  |
-| FAR_JUMP_ABS                 | lui + jalr   | 0 + 3  |
-| LD_SIGN_EXTENDED_32_CONSTANT | lui + addiw  | 1 + 0  |
+|            Opcode            |            Origin            |      Cycles       |
+| ---------------------------- | ---------------------------- | ----------------- |
+| ADC [2]                      | add + sltu + add + sltu + or | 1 + 0 + 0 + 0 + 0 |
+| SBB                          | sub + sltu + sub + sltu + or | 1 + 0 + 0 + 0 + 0 |
+| WIDE_MUL                     | mulh + mul                   | 5 + 0             |
+| WIDE_MULU                    | mulhu + mul                  | 5 + 0             |
+| WIDE_MULSU                   | mulhsu + mul                 | 5 + 0             |
+| WIDE_DIV                     | div + rem                    | 32 + 0            |
+| WIDE_DIVU                    | divu + remu                  | 32 + 0            |
+| FAR_JUMP_REL                 | auipc + jalr                 | 0 + 3             |
+| FAR_JUMP_ABS                 | lui + jalr                   | 0 + 3             |
+| LD_SIGN_EXTENDED_32_CONSTANT | lui + addiw                  | 1 + 0             |
 
 # Reference
 
 * [1]: [B extension][1]
+* [2]: [Macro-op-fusion: Pattern design of ADC and SBB][2]
 
 [1]: https://github.com/riscv/riscv-bitmanip
+[2]: https://github.com/nervosnetwork/ckb-vm/issues/169
