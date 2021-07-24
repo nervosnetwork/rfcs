@@ -7,7 +7,7 @@ Organization: Nervos Foundation
 Created: 2021-04-26
 ---
 
-# CMB VM Version Selection
+# CKB VM Version Selection
 
 ## Abstract
 
