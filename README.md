@@ -27,7 +27,7 @@ Before submiting a RFC pull request, you should proposal the idea or document to
 
 After discussion, please create a pull request to propose your RFC:
 
-> Copy `0000-template` as `rfcs/0000-feature-name`, where `feature-name` is the descriptive name of the RFC. Don't assign an number yet.
+> Copy `0000-template` as `rfcs/0000-feature-name`, where `feature-name` is the descriptive name of the RFC. Don't assign a number yet. Reserve the RFC number in [this issue](https://github.com/nervosnetwork/rfcs/issues/246).
 
 Nervos RFCs should be written in English, but translated versions can be provided to help understanding. English version is the canonical version, check english version when there's ambiguity.
 
