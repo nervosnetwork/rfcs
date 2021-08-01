@@ -6,7 +6,7 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  discussion:
+  pr-summary:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,22 +20,22 @@ jobs:
       run: cd .github/scripts/ && bundle install
 
     - name: run ruby script
-      id: today
+      id: summary
       run: |
-        today="$(cd .github/scripts/ && bundle exec ruby today.rb)"
-        today="${today//$'%'/%25}"
-        today="${today//$'\n'/%0A}"
-        today="${today//$'\r'/%0D}"
-        echo "::set-output name=today::$today"
+        summary="$(cd .github/scripts/ && bundle exec ruby pr-summary.rb)"
+        summary="${summary//$'%'/%25}"
+        summary="${summary//$'\n'/%0A}"
+        summary="${summary//$'\r'/%0D}"
+        echo "::set-output name=summary::$summary"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Get current date
+    - name: get current date
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
 
     - uses: octokit/graphql-action@v2.x
-      if: ${{ steps.today.outputs.today != '' }}
+      if: ${{ steps.summary.outputs.summary != '' }}
       with:
         query: |
           mutation createDiscussionWithBody($body: String!) {
@@ -50,7 +50,7 @@ jobs:
               }
             }
           }
-        body: ${{ toJSON(steps.today.outputs.today) }}
+        body: ${{ toJSON(steps.summary.outputs.summary) }}
 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
