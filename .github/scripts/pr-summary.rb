@@ -71,6 +71,9 @@ end
 def pr_review_state(pr)
   states = pr.latest_reviews.nodes.group_by(&:state)
   components = []
+  if states.include?('APPROVED')
+    components << "#{states['APPROVED'].size} approved"
+  end
   if states.include?('CHANGES_REQUESTED')
     components << "#{states['CHANGES_REQUESTED'].size} requested changes"
   end
