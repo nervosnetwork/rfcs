@@ -35,9 +35,18 @@ After ckb2021 is activated, CKB nodes must choose the CKB VM version for each sc
 | 1           | type script hash | 1          |
 | 2           | data hash        | 1          |
 
-See following sections about VM versions.
+The VM version 0 deployed with the Lina and Aggron genesis block is version 0.
+
+The VM version 1 will be deployed along ckb2021. The [rfc33] highlights the changes in this version, and [rfc34] lists the new syscalls only available since version 1.
+
+[rfc33]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md
+[rfc34]: ../0034-vm-syscalls-2/0034-vm-syscalls-2.md
 
 The transaction is considered invalid if any `hash_type` is not in the allowed values 0, 1, and 2.
+
+See more information about code locating using `hash_type` in [rfc22].
+
+[rfc22]: ../0022-transaction-structure/0022-transaction-structure.md
 
 Because the VM selection algorithm depends on which epoch the transaction belongs to, it is not deterministic for transactions still in the memory pool. The CKB node must run two versions of transaction relay protocols, one for the current CKB version C and another for the next fork version N.
 
@@ -48,6 +57,8 @@ The relay protocol C will be dropped after the fork succeeds. See [rfc35] for de
 
 [rfc35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
 
+Attention that, [rfc33], [rfc34], and [rfc35] must be activated together with this one starting at the same epoch.
+
 When a new block is appended to the chain and the fork is activated, or a block is rolled back and the fork is deactivated, the CKB node must rerun the verification on all the transactions in the pool.
 
 In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is returned in the JSON RPC as an enum. Now it has three allowed values:
@@ -55,15 +66,6 @@ In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is
 * 0: "data"
 * 1: "type"
 * 2: "data1"
-
-### CKB VM Versions
-
-The VM version 0 deployed with the Lina and Aggron genesis block is version 0.
-
-The VM version 1 will be deployed along ckb2021. The [rfc33] highlights the changes in this version, and [rfc34] lists the new syscalls only available since version 1.
-
-[rfc33]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md
-[rfc34]: ../0034-vm-syscalls-2/0034-vm-syscalls-2.md
 
 ## Rationale
 
