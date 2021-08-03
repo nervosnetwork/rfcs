@@ -50,7 +50,7 @@ The relay protocol C will be dropped after the fork succeeds. See [rfc35] for de
 
 When a new block is appended to the chain and the fork is activated, or a block is rolled back and the fork is deactivated, the CKB node must rerun the verification on all the transactions in the pool.
 
-In the [Rust implementation of CKB](https://github.com/nervosnetwork/ckb) provided by Nervos Foundation, the `hash_type` is returned as an enum. Now it has three allowed values:
+In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is returned in the JSON RPC as an enum. Now it has three allowed values:
 
 * 0: "data"
 * 1: "type"
