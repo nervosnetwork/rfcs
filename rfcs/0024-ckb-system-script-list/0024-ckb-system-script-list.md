@@ -247,6 +247,76 @@ and the `out_point` of `anyone_can_pay` is
 }
 ```
 
+### cheque
+
+[cheque](https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209) ([Source Code](https://github.com/nervosnetwork/ckb-cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8)) allows a sender to temporarily provide cell capacity in asset transfer.
+
+cheque script is for **lock script**:
+
+- Lina
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0xe4d4ecc6e5f9a059bf2f7a82cca292083aebc0c421566a52484fe2ec51a9fb0c` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0x04632cc459459cf5c9d384b43dee3e36f542a464bdd4127be7d6618ac6f8d268` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `cheque` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `cheque` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x3
+}
+```
+
+and the `out_point` of `cheque` whose `dep_type` is `code` is
+
+```
+{
+  tx_hash: 0x0a34aeea122d9795e06e185746a92e88bca0ad41b0e5842a960e5fd1d43760a6,
+  index: 0x0
+}
+```
+
+- Aggron
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0x60d5f39efce409c587cb9ea359cefdead650ca128f0bd9cb3855348f98c70d5b` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0x7f96858be0a9d584b4a9ea190e0420835156a6010a5fde15ffcdc9d9c721ccab` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `cheque` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `cheque` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x3
+}
+```
+
+and the `out_point` of `cheque` is
+
+```
+{
+  tx_hash: 0x1b16769dc508c8349803fe65558f49aa8cf04ca495fbead42513e69e46608b6c,
+  index: 0x0
+}
+```
+
 ## Types
 
 ### Nervos DAO
