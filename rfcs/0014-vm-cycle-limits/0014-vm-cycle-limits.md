@@ -100,4 +100,4 @@ In general, the cycle consumption rules above follow certain guidelines:
 * Multiplication and divisions are much more expensive than normal instructions.
 * Syscalls include 2 parts: the bookkeeping part at first, and a plain memcpy phase. The first bookkeeping part includes quite complex logic, which should consume much more cycles. The memcpy part is quite cheap on modern hardware, hence less cycles will be charged.
 
-Looking into the literature, the cycle consumption rules here resemble a lot like the performance metrics one can find in modern computer archtecture.
+Looking into the literature, the cycle consumption rules here resemble a lot like the performance metrics one can find in modern computer architecture.

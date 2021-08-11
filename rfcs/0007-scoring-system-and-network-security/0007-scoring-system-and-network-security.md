@@ -151,7 +151,7 @@ end
 # step 2
 def find_anchor_peer
   last_connected_peers = peer_store.sort_by{|peer| -peer.last_connected_at}.take(max_outbound)
-  # return the higest scored peer info
+  # return the highest scored peer info
   last_connected_peers.sort_by(&:score).last
 end
 
@@ -270,7 +270,7 @@ CKB refers to Bitcoin's eviction test and steps are as follows:
 4. Find out the group which contains the most peers.
 5. Evict the lowest scored peer from the group found in step 4 if it is not empty. Otherwise, reject the connection from the new peer.
 
-We protect some peers from eviction based on characteristics that an attacker is hard to simulate or manipulate, to enhence the security of the network.
+We protect some peers from eviction based on characteristics that an attacker is hard to simulate or manipulate, to enhance the security of the network.
 
 ### Feeler Connection
 

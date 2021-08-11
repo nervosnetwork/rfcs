@@ -147,7 +147,7 @@ Witnesses:
     <valid signature for public key hash B>
 ```
 
-Here the transaction doesnt contain signature for the anyone-can-pay cell, yet the anyone-can-pay lock succeeds the validation when it detects that someone deposits 20 CKBytes into itself. Note this use case does not involve in UDT at all, anyone-can-pay lock is used to overcome the 61 CKBytes requirement of plain transfer.
+Here the transaction does not contain signature for the anyone-can-pay cell, yet the anyone-can-pay lock succeeds the validation when it detects that someone deposits 20 CKBytes into itself. Note this use case does not involve in UDT at all, anyone-can-pay lock is used to overcome the 61 CKBytes requirement of plain transfer.
 
 ### Unlock via UDT Payment
 
@@ -198,7 +198,7 @@ Witnesses:
     <valid signature for public key hash B>
 ```
 
-Here we are depositing 1 UDT to the anyone-can-pay cell. Because theres no extra arguments in the anyone-can-pay lock script except a public key hash, the cell enforces no minimum on the CKByte or UDT one can transfer, a transfer of 1 UDT will be accepted here.
+Here we are depositing 1 UDT to the anyone-can-pay cell. Because there are no extra arguments in the anyone-can-pay lock script except a public key hash, the cell enforces no minimum on the CKByte or UDT one can transfer, a transfer of 1 UDT will be accepted here.
 
 ### Unlock via CKByte Payment With Minimums
 
@@ -319,7 +319,7 @@ and the `out_point` of `anyone_can_pay` is
 }
 ```
 
-Reproducible build is supported to verify the deploy script. To bulid the deployed anyone-can-pay lock script above, one can use the following steps:
+Reproducible build is supported to verify the deploy script. To build the deployed anyone-can-pay lock script above, one can use the following steps:
 
 ```bash
 $ git clone https://github.com/nervosnetwork/ckb-production-scripts

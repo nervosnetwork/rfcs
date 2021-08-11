@@ -9,7 +9,7 @@ Created: 2020-09-03
 
 # Simple UDT
 
-This RFC defines the Simple User Defined Tokens(Simple UDT or SUDT) specification. Simple UDT provides a way for dapp developers to issue custom tokens on Nervos CKB. The simple part in Simple UDT means we are defining a minimal standard that contains whats absolutely needed, more sophisticated actions are left to CKBs flexibility to achieve.
+This RFC defines the Simple User Defined Tokens(Simple UDT or SUDT) specification. Simple UDT provides a way for dapp developers to issue custom tokens on Nervos CKB. The simple part in Simple UDT means we are defining a minimal standard that contains what is absolutely needed, more sophisticated actions are left to CKBs flexibility to achieve.
 
 ## Data Structure
 
@@ -77,7 +77,7 @@ Transfer operation must satisfy the following rule:
 
 ## Governance Operations
 
-This section describes governance operations that should be supported by Simple UDT Implementation. All goverance operations must satisfy the following rule:
+This section describes governance operations that should be supported by Simple UDT Implementation. All governance operations must satisfy the following rule:
 
 * **Simple UDT Rule 5**: in a governance operation, at least one input cell in the transaction should use owner lock specified by the SUDT as its cell lock.
 
@@ -126,7 +126,7 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 | `dep_type`  | `code`                                                               |
 
 
-Reproducible build is supported to verify the deploy script. To bulid the deployed Simple UDT script above, one can use the following steps:
+Reproducible build is supported to verify the deploy script. To build the deployed Simple UDT script above, one can use the following steps:
 
 ```bash
 $ git clone https://github.com/nervosnetwork/ckb-production-scripts
