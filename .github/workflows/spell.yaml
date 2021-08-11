@@ -1,0 +1,26 @@
+name: Spelling Check
+
+on: [push, pull_request]
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - uses: actions/cache@v2
+      name: Configure pip caching
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-spellcheck
+        restore-keys: |
+          ${{ runner.os }}-pip-spellcheck
+    - name: Install dependencies
+      run: |
+        pip install codespell
+    - name: Check spelling
+      run: |
+        codespell LICENSE *.md -I spell-ignore.txt
+        find 0000-template/ rfcs/ -name '*.md' | xargs codespell -I spell-ignore.txt
