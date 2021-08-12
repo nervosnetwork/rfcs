@@ -78,6 +78,80 @@ There are many other solutions to select VM versions. The current solution is th
 
 For cell scripts which reference codes via data hash, they will use the same VM before and after the fork. For those referenced by type hash, they will use the different VM versions. The dApps developers must ensure the compatibility of their scripts and upgrade them if necessary.
 
+## Test Vectors
+
+### Transaction Hash
+
+This is a transaction containing `data1` hash type.
+
+<details><summary>JSON</summary>
+
+```json
+{
+    "version": "0x0",
+    "cell_deps": [
+    {
+        "out_point": {
+        "tx_hash": "0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708",
+        "index": "0x0"
+        },
+        "dep_type": "dep_group"
+    }
+    ],
+    "header_deps": [],
+    "inputs": [
+    {
+        "since": "0x0",
+        "previous_output": {
+        "tx_hash": "0xa563884b3686078ec7e7677a5f86449b15cf2693f3c1241766c6996f206cc541",
+        "index": "0x7"
+        }
+    }
+    ],
+    "outputs": [
+    {
+        "capacity": "0x2540be400",
+        "lock": {
+        "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+        "hash_type": "data",
+        "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+        },
+        "type": null
+    },
+    {
+        "capacity": "0x2540be400",
+        "lock": {
+        "code_hash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+        "hash_type": "type",
+        "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+        },
+        "type": null
+    },
+    {
+        "capacity": "0x2540be400",
+        "lock": {
+        "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+        "hash_type": "data1",
+        "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+        },
+        "type": null
+    }
+    ],
+    "outputs_data": [
+    "0x",
+    "0x",
+    "0x"
+    ],
+    "witnesses": [
+    "0x550000001000000055000000550000004100000070b823564f7d1f814cc135ddd56fd8e8931b3a7040eaf1fb828adae29736a3cb0bc7f65021135b293d10a22da61fcc64f7cb660bf2c3276ad63630dad0b6099001"
+    ]
+}
+```
+
+</details>
+
+The Transaction Hash is `0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d16ee62543f5c`.
+
 ## Acknowledgments
 
 The authors would like to thank Jan (@janx) and Xuejie (@xxuejie) for their comments and insightful suggestions. The members in the CKB Dev team also helped by participating the discussion and review. Boyu (@yangby-cryptape) is the major author of the code changes, and his experiments and feedbacks are essential to complete this document.
