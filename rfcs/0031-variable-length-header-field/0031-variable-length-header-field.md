@@ -106,6 +106,239 @@ Pay attention that the `extension` field will occupy the block size.
 2. [Using Molecule Table in New Block Headers](./2-using-molecule-table-in-new-block-headers.md)
 3. [Appending a Hash At the End](./3-appending-a-hash-at-the-end.md)
 
+## Test Vectors
+
+### Block Hash
+
+<details><summary>Block Template</summary>
+
+```json
+{
+  "version": "0x0",
+  "compact_target": "0x20010000",
+  "current_time": "0x17af3f66555",
+  "number": "0x3",
+  "epoch": "0x3e80003000000",
+  "parent_hash": "0xebf229020f333100942279dc33303ae0dfcbe720d8d11818687e6654c157294c",
+  "cycles_limit": "0x2540be400",
+  "bytes_limit": "0x91c08",
+  "uncles_count_limit": "0x2",
+  "uncles": [],
+  "transactions": [
+    {
+      "hash": "0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d16ee62543f5c",
+      "required": false,
+      "cycles": "0x19f2d1",
+      "depends": null,
+      "data": {
+        "version": "0x0",
+        "cell_deps": [
+          {
+            "out_point": {
+              "tx_hash": "0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708",
+              "index": "0x0"
+            },
+            "dep_type": "dep_group"
+          }
+        ],
+        "header_deps": [],
+        "inputs": [
+          {
+            "since": "0x0",
+            "previous_output": {
+              "tx_hash": "0xa563884b3686078ec7e7677a5f86449b15cf2693f3c1241766c6996f206cc541",
+              "index": "0x7"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "capacity": "0x2540be400",
+            "lock": {
+              "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+              "hash_type": "data",
+              "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+            },
+            "type": null
+          },
+          {
+            "capacity": "0x2540be400",
+            "lock": {
+              "code_hash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+              "hash_type": "type",
+              "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+            },
+            "type": null
+          },
+          {
+            "capacity": "0x2540be400",
+            "lock": {
+              "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+              "hash_type": "data1",
+              "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+            },
+            "type": null
+          }
+        ],
+        "outputs_data": [
+          "0x",
+          "0x",
+          "0x"
+        ],
+        "witnesses": [
+          "0x550000001000000055000000550000004100000070b823564f7d1f814cc135ddd56fd8e8931b3a7040eaf1fb828adae29736a3cb0bc7f65021135b293d10a22da61fcc64f7cb660bf2c3276ad63630dad0b6099001"
+        ]
+      }
+    }
+  ],
+  "proposals": [],
+  "cellbase": {
+    "hash": "0x185d1c46fe3c4a0a1a5ae47203df2aeebbb97ac353abcf2c6a3fc2548ecd4eda",
+    "cycles": null,
+    "data": {
+      "version": "0x0",
+      "cell_deps": [],
+      "header_deps": [],
+      "inputs": [
+        {
+          "since": "0x3",
+          "previous_output": {
+            "tx_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "index": "0xffffffff"
+          }
+        }
+      ],
+      "outputs": [],
+      "outputs_data": [],
+      "witnesses": [
+        "0x590000000c00000055000000490000001000000030000000310000009bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce80114000000c8328aabcd9b9e8e64fbc566c4385c3bdeb219d700000000"
+      ]
+    }
+  },
+  "work_id": "0x2",
+  "dao": "0x105cabf31c1fa12eacfa6990f2862300bdaf44b932000000008d5fff03fbfe06",
+  "extension": "0x626c6f636b202333"
+}
+```
+
+</details>
+
+<details><summary>Block</summary>
+
+```json
+{
+  "header": {
+    "version": "0x0",
+    "compact_target": "0x20010000",
+    "timestamp": "0x17af3f66555",
+    "number": "0x3",
+    "epoch": "0x3e80003000000",
+    "parent_hash": "0xebf229020f333100942279dc33303ae0dfcbe720d8d11818687e6654c157294c",
+    "transactions_root": "0x0bbf9d8946932c9c33a46c8d13b9ecfcf850ccc1728fc9c9c5d14710ad9428ad",
+    "proposals_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "extra_hash": "0xfbbfbaaa0afac7730f4a6102b376986f1f288f3eccb18e0d16d58422aab28aad",
+    "dao": "0x105cabf31c1fa12eacfa6990f2862300bdaf44b932000000008d5fff03fbfe06",
+    "nonce": "0x6e43a02f3ed8bb00dea7f78c12fe94f5"
+  },
+  "uncles": [],
+  "transactions": [
+    {
+      "version": "0x0",
+      "cell_deps": [],
+      "header_deps": [],
+      "inputs": [
+        {
+          "since": "0x3",
+          "previous_output": {
+            "tx_hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "index": "0xffffffff"
+          }
+        }
+      ],
+      "outputs": [],
+      "outputs_data": [],
+      "witnesses": [
+        "0x590000000c00000055000000490000001000000030000000310000009bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce80114000000c8328aabcd9b9e8e64fbc566c4385c3bdeb219d700000000"
+      ]
+    },
+    {
+      "version": "0x0",
+      "cell_deps": [
+        {
+          "out_point": {
+            "tx_hash": "0xace5ea83c478bb866edf122ff862085789158f5cbff155b7bb5f13058555b708",
+            "index": "0x0"
+          },
+          "dep_type": "dep_group"
+        }
+      ],
+      "header_deps": [],
+      "inputs": [
+        {
+          "since": "0x0",
+          "previous_output": {
+            "tx_hash": "0xa563884b3686078ec7e7677a5f86449b15cf2693f3c1241766c6996f206cc541",
+            "index": "0x7"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "capacity": "0x2540be400",
+          "lock": {
+            "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+            "hash_type": "data",
+            "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+          },
+          "type": null
+        },
+        {
+          "capacity": "0x2540be400",
+          "lock": {
+            "code_hash": "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8",
+            "hash_type": "type",
+            "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+          },
+          "type": null
+        },
+        {
+          "capacity": "0x2540be400",
+          "lock": {
+            "code_hash": "0x709f3fda12f561cfacf92273c57a98fede188a3f1a59b1f888d113f9cce08649",
+            "hash_type": "data1",
+            "args": "0xc8328aabcd9b9e8e64fbc566c4385c3bdeb219d7"
+          },
+          "type": null
+        }
+      ],
+      "outputs_data": [
+        "0x",
+        "0x",
+        "0x"
+      ],
+      "witnesses": [
+        "0x550000001000000055000000550000004100000070b823564f7d1f814cc135ddd56fd8e8931b3a7040eaf1fb828adae29736a3cb0bc7f65021135b293d10a22da61fcc64f7cb660bf2c3276ad63630dad0b6099001"
+      ]
+    }
+  ],
+  "proposals": [],
+  "extension": "0x626c6f636b202333"
+}
+```
+
+</details>
+
+The hashes:
+
+```
+Block Hash:
+0xb93dad02d24e9d30c49023d08f84dd8ec34118c1bfec9ed432b75619964686c3
+
+Transaction Hashes:
+0x185d1c46fe3c4a0a1a5ae47203df2aeebbb97ac353abcf2c6a3fc2548ecd4eda
+0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d16ee62543f5c
+```
+
 ## Appendix
 
 ### ckbhash
