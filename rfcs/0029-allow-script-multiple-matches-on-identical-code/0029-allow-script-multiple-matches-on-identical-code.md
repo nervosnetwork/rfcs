@@ -60,7 +60,7 @@ Multiple matches of type hash which all resolve to the same code.
 
 ```
 #  hash(Cell B.data) equals to hash(Cell A.data)
-# and hash(Cell B.type) equals to hash(Cell B.type)
+# and hash(Cell B.type) equals to hash(Cell A.type)
 cell_deps:
   - out_point: ...
     # Expands to
