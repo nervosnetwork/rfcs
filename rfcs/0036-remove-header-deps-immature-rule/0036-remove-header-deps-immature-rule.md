@@ -11,7 +11,9 @@ Created: 2021-02-07
 
 ## Abstract
 
-This document proposes removing the loading header immature rule.
+This document proposes removing the *[Loading Header Immature Rule]*.
+
+[Loading Header Immature Rule]: ../0009-vm-syscalls/0009-vm-syscalls.md#loading-header-immature-error
 
 In the consensus ckb2019, the header dep must reference the block which is 4 epochs ago. After this RFC is activated, the transaction can use any existing blocks in the chain as the header dep.
 
@@ -19,9 +21,9 @@ In the consensus ckb2019, the header dep must reference the block which is 4 epo
 
 Header dep is a useful feature for dApps developers because script can use it to read the header of a block in the chain, or verify that an input cell or dep cell is in a specific block in the chain.
 
-The immature rule prevents the usage of header deps in many scenarios because the script must reference the block about 16 hours ago.
+The *Loading Header Immature Rule* prevents the usage of header deps in many scenarios because the script must reference the block about 16 hours ago.
 
-The intention of the immature rule is like the cellbase immature rule, a transaction with header deps and all its descendants can be invalidated after a chain reorganization [^1], because the referenced block may be rollbacked.
+The intention of the immature rule is like the cellbase immature rule, a transaction with header deps and all its descendants can be invalidated after a chain reorganization [^1], because the referenced block may be rolled back.
 
 [^1]: Chain reorganization happens when the node found a better chain with more accumulated proved work and it has to rollback blocks to switch to the new chain.
 
