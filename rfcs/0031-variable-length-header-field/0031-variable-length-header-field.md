@@ -95,6 +95,8 @@ For blocks before the activation epoch A, `extension` must be absent. After acti
 
 Pay attention that the `extension` field will occupy the block size. See section [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) in RFC20 for details.
 
+The uncle blocks packaged in `uncles` will not add the `extension` field.
+
 ### RPC Changes
 
 * The `uncles_hash` is renamed to `extra_hash`.
