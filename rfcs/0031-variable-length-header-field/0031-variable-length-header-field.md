@@ -93,7 +93,7 @@ table CompactBlock {
 
 For blocks before the activation epoch A, `extension` must be absent. After activation, the node must verify that `extension` is absent or a binary with 1 to 96 bytes, and `uncles` and `extension` match the `extra_hash` in the header.
 
-Pay attention that the `extension` field will occupy the block size.
+Pay attention that the `extension` field will occupy the block size. See section [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) in RFC20 for details.
 
 ### RPC Changes
 
