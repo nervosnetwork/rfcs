@@ -23,7 +23,7 @@ Header dep is a useful feature for dApps developers because script can use it to
 
 The *Loading Header Immature Rule* prevents the usage of header deps in many scenarios because the script must reference the block about 16 hours ago.
 
-The intention of the immature rule is like the cellbase immature rule, a transaction with header deps and all its descendants can be invalidated after a chain reorganization [^1], because the referenced block may be rolled back.
+The intention of the immature rule is like the cellbase immature rule, a transaction with header deps and all its descendants can be invalidated after a chain reorganization [^1], because the referenced block may be rolled back. Removing the rule lets dApps developers to trade off between responsive header reference and reliable transaction finality.
 
 [^1]: Chain reorganization happens when the node found a better chain with more accumulated proved work and it has to rollback blocks to switch to the new chain.
 
