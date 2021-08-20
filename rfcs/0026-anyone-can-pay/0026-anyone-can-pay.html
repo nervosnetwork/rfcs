@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0026 Anyone-Can-Pay Lock - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html" class="active">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0026&quot;
+Category: Standards Track
+Status: Proposal
+Author: Xuejie Xiao
+Organization: Nervos Foundation
+Created: 2020-09-03
+</code></pre>
+<h1 id="anyone-can-pay-lock"><a class="header" href="#anyone-can-pay-lock">Anyone-Can-Pay Lock</a></h1>
+<p>This RFC describes a new lock script for CKB that can accept any amount of <a href="../0025-simple-udt/0025-simple-udt.html">Simple UDT</a> or CKB payment. Previously, one can only transfer to another user at least 61 CKBytes when using the default lock, possibly more when using other lock scripts or type scripts. This is becoming a bigger problem when UDT support lands in CKB: a naive UDT transfer operation will not only require UDTs, but CKByte to keep the UDTs in a cell as well.</p>
+<p>Here we try to solve the problem by introducing a new anyone-can-pay lock script, which can be unlocked not only by the validation of a signature, but also by accepting any amount of payment. This way, a user should be able to send any amount of CKBytes or UDTs to a cell using anyone-can-pay lock instead of always creating a new cell. It thus provides a solution to both problems above.</p>
+<h2 id="script-structure"><a class="header" href="#script-structure">Script Structure</a></h2>
+<p>The anyone-can-pay lock is built upon the default secp256k1-blake2b-sighash-all lock with additions to the script args part. The new anyone-can-pay lock can accept any of the following script args format:</p>
+<pre><code>&lt;20 byte blake160 public key hash&gt;
+&lt;20 byte blake160 public key hash&gt; &lt;1 byte CKByte minimum&gt;
+&lt;20 byte blake160 public key hash&gt; &lt;1 byte CKByte minimum&gt; &lt;1 byte UDT minimum&gt;
+</code></pre>
+<p>The additions of CKByte &amp; UDT minimums enforce the minimal amount that one can transfer to the anyone-can-pay lock. This provides a mitigation against DDoSing on the cell level: if a cell is setup using the anyone-can-pay lock, an attacker can keep creating transactions that transfer only 1 shannon or 1 UDT to the cell, making it difficult for the cell owner to claim the tokens stored in the cell. By providing a minimal transfer amount, a user can raise the attacking cost, hence protecting his/her own cells against DDoS attacks. This mechanism won't prevent all kinds of DDoS of course, but it serves as a quick solution to mitigate cheaper ones.</p>
+<p>The value stored in CKByte &amp; UDT minimum are interpreted in the following way: if <code>x</code> is stored in the field, the minimal transfer amount will be <code>10^x</code>, for example:</p>
+<ul>
+<li>If 3 is stored in CKByte minimum, it means the minimal amount that can be accepted by the cell is 1000 shannons</li>
+<li>If 4 is stored in UDT base unit minimum, it means the minimal amount that can be accepted by the cell is 10000 UDT base units.</li>
+</ul>
+<p>Note the minimum fields are completely optional. If a minimum is not provided, we will treat the minimum value as 0, meaning no minimum is enforced on the transfer operation. It is worth mentioning that different minimums also lead to different lock scripts used by the cell.</p>
+<h2 id="udt-interpretation"><a class="header" href="#udt-interpretation">UDT Interpretation</a></h2>
+<p>The anyone-can-pay lock assumes that the locked cell follows the <a href="https://talk.nervos.org/t/rfc-simple-udt-draft-spec/4333">Simple UDT specification</a>, thus the cell 1) has a type script; 2) has at least 16 bytes in the cell data part. Its up to the user to ensure one only uses anyone-can-pay lock with a type script implementing Simple UDT specification.</p>
+<h2 id="unlock-rules"><a class="header" href="#unlock-rules">Unlock Rules</a></h2>
+<p>The anyone-can-pay lock will work following the rules below:</p>
+<ol>
+<li>
+<p>If a signature is provided, it works exactly as the default secp256k1-blake2b-sighash-all lock, if a signature is provide in witness and can be validated, the lock returns with a success state.</p>
+<p>1.a. If the provided signature fails validation, the lock returns with an error state</p>
+</li>
+<li>
+<p>If a signature is not provided, the lock continues with the added anyone-can-pay logic below:</p>
+<p>2.a. It loops through all input cells using the current anyone-can-pay lock script(notice here the lock script we refer to include public key hash, meaning if a transaction contains 2 cells using the same anyone-can-pay lock code, but different public key hash, they will be treated as different lock script, and each will perform the script unlock rule checking independently), if 2 input cells are using the same type script, or are both missing type scripts, the lock returns with an error state</p>
+<p>2.b. It loops through all output cells using the current anyone-can-pay lock script, if 2 output cells are using the same type script, or are both missing type scripts, the lock returns with an error state</p>
+<p>2.c. It loops through all input cells and output cells using the current anyone-can-pay lock script, if there is a cell that is missing type script, but has cell data set, it returns with an error state.</p>
+<p>2.d. It loops through all input cells and output cells using the current anyone-can-pay lock script, if there is a cell that has type script, but a cell data part with less than 16 bytes of data, it returns with an error state.</p>
+<p>2.e. It then pairs input cells and output cells with matching type scripts(input cell without type script will match with output cell without type script). If there is an input cell without matching output cell, or if there is an output cell without matching input cell, it returns with an error state.</p>
+<p>2.f. It loops through all pairs of input &amp; output cells, if there is a pair in which the input cell has more CKBytes than the output cell; or if the pair of cells both have type script and cell data part, but the input cell has more UDT than the output cell, it returns with an error state.</p>
+<p>2.g. If CKByte minimum or UDT minimum is set, it loops through all pairs of input &amp; output cells. If it could find a pair of input &amp; output cells in which the output amount is less than the input amount plus the set minimum, it returns with an error state. Note only one minimum needs to be matched if both CKByte minimum and UDT minimum are set.</p>
+</li>
+</ol>
+<p>The reason of limiting one input cell and one output cell for each lock/type script combination, is that the lock script should prevent attackers from merging or splitting cells:</p>
+<ul>
+<li>Allowing merging anyone-can-pay cells can result in less cells being available, resulting in usability problems. For example, an exchange might create hundreds of anyone-can-pay cells to perform sharding so deposit transactions are less likely to conflict with each other.</li>
+<li>Allowing splitting anyone-can-pay cells has 2 problems: 1) it increases CKByte usage on chain, putting unwanted pressure on miners; 2) it might result in fee increase when later the owner wants to claim tokens in anyone-can-pay cells, since more input cells than expect would result in both transaction size increase, and validation cycle increase</li>
+</ul>
+<p>Giving those considerations, anyone-can-pay lock script here forbids merging or splitting anyone-can-pay cells from non-owners, as allowing more than one input/output anyone-can-pay cell in each lock/type combination would only complicate lock validation rules without significant gains.</p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>Here we describe useful transaction examples involving anyone-can-pay lock.</p>
+<h3 id="create-an-anyone-can-pay-cell"><a class="header" href="#create-an-anyone-can-pay-cell">Create an Anyone-can-pay Cell</a></h3>
+<pre><code>Inputs:
+    Normal Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash A&gt;
+Outputs:
+    Anyone-can-pay Cell:
+        Capacity: 999.99 CKBytes
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash B&gt; &lt;CKByte minimum: 9&gt; &lt;UDT minimum: 5&gt;
+        Data:
+            Amount: 0 UDT
+Witnesses:
+    &lt;valid signature for public key hash A&gt;
+</code></pre>
+<p>Note here we assume 0.01 CKByte is paid as the transaction fee, in production one should calculate the fee based on factors including transaction size, running cycles as well as network status. 0.01 CKByte will be used in all examples as fees for simplicity. The new anyone-can-pay cell created by this transaction impose a minimum transfer value of 10^9 shannons (10 CKBytes) and 10^5 UDT base units respectively.</p>
+<h3 id="unlock-via-signature"><a class="header" href="#unlock-via-signature">Unlock via Signature</a></h3>
+<pre><code>Inputs:
+    Anyone-can-pay Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt; &lt;CKByte minimum: 2&gt;
+Outputs:
+    Normal Cell:
+        Capacity: 999.99 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+Witnesses:
+    &lt;valid signature for public key hash A&gt;
+</code></pre>
+<p>When a signature is provided, the cell can be unlocked in anyway the owner wants, anyone-can-pay lock here just behaves as a normal cell. In this example an anyone-can-pay cell is converted back to a normal cell.</p>
+<h3 id="unlock-via-ckb-payment-on-cells-with-no-type-script"><a class="header" href="#unlock-via-ckb-payment-on-cells-with-no-type-script">Unlock via CKB Payment on Cells with No Type Script</a></h3>
+<pre><code>Inputs:
+    Deposit Normal Cell:
+        Capacity: 500 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+    Anyone-can-pay Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt; &lt;CKByte minimum: 2&gt;
+Outputs:
+    Deposit Change Cell:
+        Capacity: 479.99 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+    Anyone-can-pay Cell:
+        Capacity: 1020 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt; &lt;CKByte minimum: 2&gt;
+Witnesses:
+    &lt;valid signature for public key hash B&gt;
+</code></pre>
+<p>Here the transaction doesnt contain signature for the anyone-can-pay cell, yet the anyone-can-pay lock succeeds the validation when it detects that someone deposits 20 CKBytes into itself. Note this use case does not involve in UDT at all, anyone-can-pay lock is used to overcome the 61 CKBytes requirement of plain transfer.</p>
+<h3 id="unlock-via-udt-payment"><a class="header" href="#unlock-via-udt-payment">Unlock via UDT Payment</a></h3>
+<pre><code>Inputs:
+    Deposit Normal Cell:
+        Capacity: 500 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 200000 UDT
+    Anyone-can-pay Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 3000 UDT
+Outputs:
+    Deposit Change Cell:
+        Capacity: 499.99 CKB
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 199999 UDT
+    Anyone-can-pay Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 3001 UDT
+Witnesses:
+    &lt;valid signature for public key hash B&gt;
+</code></pre>
+<p>Here we are depositing 1 UDT to the anyone-can-pay cell. Because theres no extra arguments in the anyone-can-pay lock script except a public key hash, the cell enforces no minimum on the CKByte or UDT one can transfer, a transfer of 1 UDT will be accepted here.</p>
+<h3 id="unlock-via-ckbyte-payment-with-minimums"><a class="header" href="#unlock-via-ckbyte-payment-with-minimums">Unlock via CKByte Payment With Minimums</a></h3>
+<pre><code>Inputs:
+    Deposit Normal Cell:
+        Capacity: 500 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 200000 UDT
+    Anyone-can-pay Cell:
+        Capacity: 1000 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt; &lt;CKByte minimum: 9&gt; &lt;UDT minimum: 5&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 3000 UDT
+Outputs:
+    Deposit Change Cell:
+        Capacity: 489.99 CKBytes
+        Lock:
+            code_hash: secp256k1_blake2b lock
+            args: &lt;public key hash B&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 200000 UDT
+    Anyone-can-pay Cell:
+        Capacity: 1010 CKBytes
+        Lock:
+            code_hash: anyone-can-pay lock
+            args: &lt;public key hash A&gt; &lt;CKByte minimum: 9&gt; &lt;UDT minimum: 5&gt;
+        Type:
+            code_hash: simple udt lock
+            args: &lt;owner lock C&gt;
+        Data:
+            Amount: 3000 UDT
+Witnesses:
+    &lt;valid signature for public key hash B&gt;
+</code></pre>
+<p>Here CKByte minimum is set to 9, which means in each transaction, one must at least transfers <code>10^9</code> shannons, or 10 CKBytes into the anyone-can-pay cell. Note that even though UDT minimum is set to 5, meaning one should at least transfer 100000 UDT base units to the anyone-can-pay cell, satisfying the CKByte minimal transfer minimum alone already satisfy the validation rules, allowing CKB to accept the transaction. Likewise, a different transaction might only send 100000 UDT base units to the anyone-can-pay cell without sending any CKBytes, this will also satisfy the validation rules of anyone-can-pay cell here.</p>
+<h2 id="notes"><a class="header" href="#notes">Notes</a></h2>
+<p>An implementation of the anyone-can-pay lock spec above has been deployed to Lina CKB mainnet at <a href="https://explorer.nervos.org/transaction/0x58eb58e2e3dd9852099a19424cf6e63b5238afe92e3085561b8feafced6d6876">here</a>. A cell in the dep group format containing both the anyone-can-pay lock, and the required secp256k1 data cell, is also deployed at <a href="https://explorer.nervos.org/transaction/0x4153a2014952d7cac45f285ce9a7c5c0c0e1b21f2d378b82ac1433cb11c25c4d">here</a>.</p>
+<p>Reproducible build is supported to verify the deploy script. To bulid the deployed anyone-can-pay lock script above, one can use the following steps:</p>
+<pre><code class="language-bash">$ git clone https://github.com/nervosnetwork/ckb-anyone-can-pay
+$ cd ckb-anyone-can-pay
+$ git checkout deac6801a95596d74e2da8f2f1a6727309d36100
+$ git submodule update --init
+$ make all-via-docker
+</code></pre>
+<p>Now you can compare the anyone-can-pay lock script generated at <code>spec/cells/anyone_can_pay</code> with the one deployed to CKB, they should be identical.</p>
+<p>A draft of this specification has already been released, reviewed, and discussed in the community at <a href="https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438">here</a> for quite some time.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0025-simple-udt/0025-simple-udt.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0027-block-structure/0027-block-structure.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0025-simple-udt/0025-simple-udt.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0027-block-structure/0027-block-structure.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

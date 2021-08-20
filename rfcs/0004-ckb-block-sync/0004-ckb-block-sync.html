@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0004 CKB Block Synchronization Protocol - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html" class="active">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0004&quot;
+Category: Standards Track
+Status: Proposal
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2018-07-25
+</code></pre>
+<h1 id="ckb-block-synchronization-protocol"><a class="header" href="#ckb-block-synchronization-protocol">CKB Block Synchronization Protocol</a></h1>
+<p>Glossary of Terms</p>
+<ul>
+<li>Chain: a list of blocks starting with genesis block and consisted of successive blocks.</li>
+<li>Best Chain: a chain with the most accumulated PoW, and starting with a common genesis block which nodes agree with the consensus.</li>
+<li>Best Header Chain: a chain with the most PoW and consisted only of blocks in the status of Connected, Downloaded or Accepted. Please refer to block status part for more details.</li>
+<li>Tip: the latest block of a chain and Tip can be used to determine a specific chain. </li>
+<li>Best Chain Tip: the tip of Best Chain.</li>
+</ul>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>Block synchronization <strong>must</strong> be performed in stages with <a href="https://bitcoin.org/en/glossary/headers-first-sync">Bitcoin Headers First</a> style. Block is downloaded in parts in each stage and is validated using the obtained parts.</p>
+<ol>
+<li>Connecting Header: Get block header, and validate format and PoW.</li>
+<li>Downloading Block: Get and validate the complete block. Transactions in ancestor blocks are not required.</li>
+<li>Accepting Block: Validate the block in the context of the chain. </li>
+</ol>
+<p>The purpose of stage execution is trying to preclude most of the attacks with the least cost. For example, in the first step, header connecting only accounts for 5% workload while there would be 95% possibility to say the block is valid. </p>
+<p>According to the execution stages, there is 5 status of blocks:</p>
+<ol>
+<li>Unknown: the status of a block is unknown before header connecting.</li>
+<li>Invalid: A block and all of its descendant blocks are marked as 'Invalid' if any above steps failed.</li>
+<li>Connected: A block succeeds in stage Connecting Header, and all its ancestor blocks are in a status of connected, downloaded or accepted.</li>
+<li>Downloaded: A block succeeds in stage Downloading Block, and all its ancestor blocks are in a status of downloaded or accepted.</li>
+<li>Accept: A block succeeds in stage Accepting Block, and all its ancestor blocks are in the status of accepted.</li>
+</ol>
+<p>Block status is propagated from the previous block to the later ones. Using the list index number above, the status number of a block is always less than or equal to its parent block. Here are conditions, if a block is invalid, all of its descendant blocks must be invalid. The cost of every step for synchronization is higher than the previous one and every step may fail. In this scenario, work will be wasted if a child block enters a later status before its parent block, and parent block is approved to be Invalid later.</p>
+<p>Initially, Genesis block is in status Accepted and the rest is in status Unknown.</p>
+<p>Below figures are used to indicate blocks in different status later on. </p>
+<p><img src="images/block-status.jpg" alt="" title="Block Status" /></p>
+<p>Genesis block of the nodes synchronizing <strong>must be</strong> the same, and all blocks can be constructed as a tree with the genesis block being the root. Blocks will be removed if they cannot connect to the root eventually. </p>
+<p>Every participating node forms its local status tree where the chain consisting of Accepted blocks with the most PoW is considered as Best Chain. The chain that consists of blocks in the status of connected, downloaded or accepted with the most PoW is Best Header Chain. </p>
+<p>The graph below is an example of Status Tree formed by Alice and blocks signed with name Alice is this node's current Best Chain Tip. </p>
+<p><img src="images/status-tree.jpg" alt="" title="Status Tree by Alice" /></p>
+<h2 id="connecting-header"><a class="header" href="#connecting-header">Connecting Header</a></h2>
+<p>Synchronizing headers first helps to validate PoW with the least cost. Since it costs the same work to construct PoW whether the included transactions are valid or not, attackers may use other more efficient ways. It means it's highly possible to regard the whole block as valid when the PoW is valid. This is why headers synchronization first would avoid resource-wasting on invalid blocks.</p>
+<p>Because of the low cost, Headers synchronization can be processed in parallel with all peers and construct a highly reliable global graph. In this way, block downloading can be scheduled in the most efficient way to avoid wasting resource on lower PoW branch.</p>
+<p>The goal of connecting header is demonstrated using the following example. When Alice connects to Bob, Alice asks Bob to send all block headers in Bob's Best Chain but not in Alice's <strong>Best Header Chain</strong> and then validate them to decide the blocks status are either Connected or Invalid. </p>
+<p>When Alice connects header, keeping Best Header Chain Tip updated could help to decrease numbers of receiving headers already existed.</p>
+<p><img src="images/seq-connect-headers.jpg" alt="" /></p>
+<p>The graph above instructs the process of connecting headers. After a round of connecting headers, nodes are supposed to keep up-to-date using new block notification.</p>
+<p>Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backward with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The list of hashes of the sampled blocks is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator. </p>
+<p><img src="images/locator.jpg" alt="" /></p>
+<p>Bob can get the latest common block between these two chains according to Locator and his own Best Chain. Because the genesis block is identical, there must be such kind of block. Bob will send all block headers from the common block to his Best Chain Tip to Alice. </p>
+<p><img src="images/connect-header-conditions.jpg" alt="" /></p>
+<p>In the figure above, blocks with undimmed color should be sent from Bob to Alice, and golden bordered one is the latest common block. There are three possible cases in the process:</p>
+<ol>
+<li>If Bob's Best Chain Tip is in Alice's Best Header Chain, the latest common block will be Bob's Best Chain Tip and there are no block headers for Bob to send.</li>
+<li>If Alice's Best Header Chain Tip is in Bob's Best Chain but is not the Tip, the latest common block will be Alice's Best Header Chain Tip.</li>
+<li>If Alice's Best Header Chain and Bob's Best Chain fork, the latest common block will be the one before the fork occurs.</li>
+</ol>
+<p>If there are too many blocks to send, pagination is required. Bob sends the first page, Alice will ask Bob for the next page if she finds out that there are more block headers. A simple pagination solution is to limit the maximum number of block headers returned each time, 2000 for example. If the number of block headers returned is equal to 2000, it means there may be other blocks could be returned. If the last block of a certain page is the ancestor of Best Chain Tip or Best Header Chain Tip, it can be optimized to get next page starting with the corresponding tip.</p>
+<p>Alice could observe Bob's present Best Chain Tip, which is the last block received during each round of synchronization. If Alice's Best Header Chain Tip is exactly Bob's Best Chain Tip, Alice couldn't observe Bob's present Best Chain because Bob has no block headers to send. Therefore, it should start building from the parent block of Best Header Chain Tip when sending the first request in each round.</p>
+<p>In the following cases, a new round of connection block header synchronization must be performed. </p>
+<ul>
+<li>Received a new block notification from the others, but the parent block status of the new block is Unknown.</li>
+</ul>
+<p>The following exceptions may occur when connecting a block header: </p>
+<ul>
+<li>Alice observed that Bob's Best Chain Tip has not been updated for a long time, or its timestamp is old. In this case, Bob does not provide valuable data. When the number of connections reaches a limit, this peer could be disconnected first.</li>
+<li>Alice observed that the status of Bob's Best Chain Tip is Invalid. This can be found in any page without waiting for the end of a round of Connect Head. There, Bob is on an invalid branch, Alice can stop synchronizing with Bob and add Bob to the blacklist.</li>
+<li>There are two possibilities if the block headers Alice received are all on her own Best Header Chain. One is that Bob sends them deliberately. The other is that Best Chain changes when Alice wants to Connect Head. In this case, those block headers can only be ignored because they are difficult to distinguish. However, the proportion of received blocks already in Best Header Chain would be recorded. If the proportion is above a certain threshold value, Bob may be added to the blacklist.</li>
+</ul>
+<p>Upon receiving the block header message, the format should be verified first.</p>
+<ul>
+<li>The blocks in the message are continuous.</li>
+<li>The status of all blocks and the parent block of the first block are not Invalid in the local Status Tree. </li>
+<li>The status of the parent block of the first block is not Unknown in the local Status Tree, which means Orphan Block will not be processed in synchronizing.</li>
+</ul>
+<p>In this stage, verification includes checking if block header satisfies the consensus rules and if Pow is valid or not. Since Orphan Blocks are not processed, difficulty adjustment can be verified as well. </p>
+<p><img src="images/connect-header-status.jpg" alt="" /></p>
+<p>The figure above is the Status Tree of Alice after synchronized with Bob, Charlie, Davis, Elsa. The observed Best Chain Tip of each peer is also annotated in the figure.</p>
+<p>If the Unknown status block is considered not on the Status Tree, new blocks in the status of Connected or Invalid will be extended to the leaves of the Status Tree during Connecting Header. As a result, Connecting Header stage explores and extends the status tree.</p>
+<h2 id="downloading-block"><a class="header" href="#downloading-block">Downloading Block</a></h2>
+<p>After Connecting Header is completed, the branch of some observed Best Chain Tip ends with one or more Connected block, a.k.a., Connected Chain. Downloading Block stage should start to request complete blocks from peers and perform verification.</p>
+<p>With the status tree, synchronization can be scheduled to avoid useless work. An effective optimization is to download the block only if the Best Chain of the observed peer is better than the local Best Chain's. And priority can be ordered that the connected chain with more accumulated PoW should be processed first. Only when a branch is approved to be invalid, or the download times out, the branch with lower PoW can be tried.</p>
+<p>When downloading a branch, earlier blocks should be downloaded firstly due to the dependency of blocks; and should be downloaded concurrently from different peers to utilize full bandwidth. A sliding window can be applied to solve the problem.</p>
+<p>Assume that the number of the first Connected status block to be downloaded is M and the length of the sliding window is N, then only the blocks numbered M to M+N-1 can be downloaded. After the block M is downloaded and verified, the sliding window moves to the next Connected block. If verification of block M fails, then the remaining blocks of this branch are all Invalid, and there is no need to continue downloading. If the window does not move towards the right for a long time, it is considered as time out. The node should try again later, or waits until the branch has new connected blocks.</p>
+<p><img src="images/sliding-window.jpg" alt="" /></p>
+<p>The figure above is an example of an 8 length sliding window. In the beginning, the downloadable block range from 3 to 10. After block 3 is downloaded,  the window will move to block 5 because block 4 has already been downloaded in advance (as the figure above illustrated).</p>
+<p>The Best Chains of peers are already known in stage Connecting Header, it is assumed that the peer has a block if it is in the peer's Best Chain and that peer is a full node. During the downloading, blocks in the sliding window can be split into several small stripes and those stripes could be scheduled among peers who have the blocks.</p>
+<p>The downloaded transactions in a block may be mismatched with the Merkle Hash Root in the header, or the list contains duplicated txid. It doesn't mean that the block is invalid since it can only approve the downloaded block is incorrect. The block content provider could be added to the blacklist, but the block status should not be marked as invalid. Otherwise, the malicious nodes may pollute the nodes' Status Tree by sending the wrong block contents.</p>
+<p>Verification of transaction lists and block header matching is required in this stage, but any validation that relies on the transaction contents in the ancestor block is not required, which will be placed in the next stage.</p>
+<p>Several validations can be checked in this phase, for example, Merkle Hash validation, transaction txid cannot be repeated, transaction list cannot be empty, inputs and outputs cannot be blank at the same time, or only the first transaction can be generation transaction, etc.</p>
+<p>Downloading Block will update the status of blocks in the best Connected Chain, from Connected to Downloaded or Invalid.</p>
+<h2 id="accepting-block"><a class="header" href="#accepting-block">Accepting Block</a></h2>
+<p>In the previous stage, there will be some chains which ended with one or more Downloaded status, hereinafter referred to as Downloaded Chain. If those chains' cumulative work is more than Best Chain Tip's, the complete validation in the chain context should be performed in this stage. If there are more than one chains satisfied, the chain with the most work should be performed first.</p>
+<p>All the verification must be completed in this stage, including all rules that depend on historical transactions.</p>
+<p>Because it involves UTXO (unspent transaction outputs) indexes, the cost of verification is huge in this phase. One set of UTXO indexes is sufficient in this simple solution. First rollback local Best Chain Tip necessarily. After that, verify blocks in the candidate best Downloaded Chain and add them to Best Chain one by one. If there is an invalid block during verification, the remain blocks in Downloaded Chain are also considered as Invalid. If so, Best Chain Tip would even have lower work than the previous Tip. It can be resolved in several different ways:</p>
+<ul>
+<li>If the work of Best Chain before rollback is more than present Tip, then restore the previous Best Chain.</li>
+<li>If the work of other Downloaded Chains is more than Best Chain that before rollback, try rollback and relocate to that chain.</li>
+</ul>
+<p>The process of Accepting Block will change the status of blocks in the Downloaded chain, from Downloaded to Accepted or Invalid. The verified Downloaded Chain which has the most work will become the new local Best Chain.</p>
+<h2 id="new-block-announcement"><a class="header" href="#new-block-announcement">New block announcement</a></h2>
+<p>When the local Best Chain Tip changes, the node should push an announcement to peers. The best header with most cumulative work sent to each peer should be recorded, to avoid sending duplicate blocks in the announcement and sending blocks only peer doesn't know. This does not only record headers sent for new blocks, but also the ones sent as the responses in stage Connecting Header.</p>
+<p>It is assumed that the peers already know the Best Sent Header and its ancestors, so these blocks can be excluded when sending new block announcements.</p>
+<p><img src="images/best-sent-header.jpg" alt="" title="Best Sent Header" /></p>
+<p>From the above example, Alice's Best Chain Tip is annotated with her name. The best header sent to Bob is annotated as &quot;Best Sent To Bob&quot;. The undimmed blocks are the ones Alice should send to Bob as new blocks announcement. Following is the detailed description for each step:</p>
+<ol>
+<li>In the beginning, Alice only has Best Chain Tip to send</li>
+<li>Another new block is added to the best chain before Alice has a chance to send the headers. In this case, the last two blocks of Best Chain need to be sent.</li>
+<li>Alice sends the last two blocks to Bob and updates Best Sent to Bob.</li>
+<li>Alice's Best Chain relocates to another fork. Only blocks after the last common block should be sent to Bob.</li>
+</ol>
+<p>How to send the announcement is determined by connection negotiated parameters and the number of new blocks to be announced:</p>
+<ul>
+<li>If there is only one block and the peer prefers Compact Block <sup class="footnote-reference"><a href="#1">1</a></sup>, then use Compact Block.</li>
+<li>In other cases, just send block header list with an upper limit on the number of blocks to send. For example, if the limit is 8 and there are 8 or more blocks need to be announced, only the latest 7 blocks will be announced.</li>
+</ul>
+<p>When receiving a new block announcement, there may be a situation the parent block's status is Unknown, also called Orphan Block. If so, a new round of Connecting Header is required immediately. When a Compact Block is received, and its parent block is the local Best Chain Tip, then the full block may be recovered from the transaction pool. If the recovery succeeds, the work of these three stages can be compacted into one. Otherwise, it falls back to a header-only announcement.</p>
+<h2 id="synchronization-status"><a class="header" href="#synchronization-status">Synchronization Status</a></h2>
+<h3 id="configuration"><a class="header" href="#configuration">Configuration</a></h3>
+<ul>
+<li><code>GENESIS_HASH</code>: hash of genesis block</li>
+<li><code>MAX_HEADERS_RESULTS</code>: the max number of block headers can be sent in a single message</li>
+<li><code>MAX_BLOCKS_TO_ANNOUNCE</code>: the max number of new blocks to be announced</li>
+<li><code>BLOCK_DOWNLOAD_WINDOW</code>: the size of the download window</li>
+</ul>
+<h3 id="storage"><a class="header" href="#storage">Storage</a></h3>
+<ul>
+<li>Block Status Tree</li>
+<li>Best Chain Tip, decide whether to download blocks and accept blocks</li>
+<li>Best Header Chain Tip, used in Connecting Header to construct the Locator of the first request in each round.</li>
+</ul>
+<p>Each connection peer should store:</p>
+<ul>
+<li>Observed Best Chain Tip</li>
+<li>The block header hash with the most work sent last time —— Best Sent Header</li>
+</ul>
+<h3 id="message-definition"><a class="header" href="#message-definition">Message Definition</a></h3>
+<p>Only related message and fields are listed here. See completed definition and documentation in the reference implementation.</p>
+<p>The message passing is completely asynchronous. For example, sending <code>getheaders</code> does not block other requests. Also, there is no need to guarantee the order relationship between the requests and the responses. For example, node A sends <code>getheaders</code> and <code>getdata</code> to B, and B can replies <code>block</code> firstly, and then <code>headers</code> to A.</p>
+<p>Compact Block <sup class="footnote-reference"><a href="#1">1</a></sup> messages <code>cmpctblock</code> and <code>getblocktxn</code> will be described in related Compact Block documentation.</p>
+<h3 id="getheaders"><a class="header" href="#getheaders">getheaders</a></h3>
+<p>It is used to request a block header from a peer in stage Connecting Header. The first-page request, and subsequent pages request can share the same getheaders message format. The difference between them is that the first page requests generate a Locator from the parent block of the local Best Header Chain Tip, and the subsequent page request generates the Locator using the last block in the last received page.</p>
+<ul>
+<li><code>locator</code>: Sampled hashes of the already known blocks</li>
+</ul>
+<h3 id="headers"><a class="header" href="#headers">headers</a></h3>
+<p>It is used to reply <code>getheaders</code> and announce new blocks. There is no difference in processing logic, but if an Orphan Block is founded when the number of block headers is less than <code>MAX_BLOCKS_TO_ANNOUNCE</code>, a new round of Connecting Header is required. If the number of block <code>headers</code> received equals is equal to <code>MAX_HEADERS_RESULTS</code>, it indicates that there are more blocks to request.</p>
+<ul>
+<li><code>headers</code>：block headers list</li>
+</ul>
+<h3 id="getdata"><a class="header" href="#getdata">getdata</a></h3>
+<p>It is used in Downloading Block stage.</p>
+<ul>
+<li><code>inventory</code>:  object lists for download, with following fields in each list element:
+<ul>
+<li><code>type</code>: type of the object, only &quot;block&quot; here</li>
+<li><code>hash</code>: hash of the object as identity</li>
+</ul>
+</li>
+</ul>
+<h3 id="block"><a class="header" href="#block">block</a></h3>
+<p>It is used to reply block downloading request of <code>getdata</code> </p>
+<ul>
+<li><code>header</code> block header</li>
+<li><code>transactions</code> transaction list</li>
+</ul>
+<div class="footnote-definition" id="1"><sup class="footnote-definition-label">1</sup>
+<p>Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to Compact Block RFC (TODO: link to RFC) and related Bitcoin <a href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">BIP</a> for details.</p>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

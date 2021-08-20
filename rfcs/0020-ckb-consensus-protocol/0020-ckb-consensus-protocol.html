@@ -1,0 +1,390 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0020 CKB Consensus Protocol - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html" class="active">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0020&quot;
+Category: Informational
+Status: Draft
+Author: Ren Zhang
+Organization: Nervos Foundation
+Created: 2019-6-19
+</code></pre>
+<h1 id="ckb-consensus-protocol"><a class="header" href="#ckb-consensus-protocol">CKB Consensus Protocol</a></h1>
+<ul>
+<li><a href="#Abstract">Abstract</a></li>
+<li><a href="#Motivation">Motivation</a></li>
+<li><a href="#Technical-Overview">Technical Overview</a>
+<ul>
+<li><a href="#Eliminating-the-Bottleneck-in-Block-Propagation">Eliminating the Bottleneck in Block Propagation</a></li>
+<li><a href="#Utilizing-the-Shortened-Latency-for-Higher-Throughput">Utilizing the Shortened Latency for Higher Throughput</a></li>
+<li><a href="#Mitigating-Selfish-Mining-Attacks">Mitigating Selfish Mining Attacks</a></li>
+</ul>
+</li>
+<li><a href="#Specification">Specification</a>
+<ul>
+<li><a href="#Two-Step-Transaction-Confirmation">Two-Step Transaction Confirmation</a></li>
+<li><a href="#Dynamic-Difficulty-Adjustment-Mechanism">Dynamic Difficulty Adjustment Mechanism</a></li>
+</ul>
+</li>
+</ul>
+<p><a name="Abstract"></a></p>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>Bitcoin's Nakamoto Consensus (NC) is well-received due to its simplicity and low communication overhead. However, NC suffers from two kinds of drawback: first, its transaction processing throughput is far from satisfactory; second, it is vulnerable to a selfish mining attack, where attackers can gain more block rewards by deviating from the protocol's prescribed behavior.</p>
+<p>The CKB consensus protocol is a variant of NC that raises its performance limit and selfish mining resistance while keeping its merits. By identifying and eliminating the bottleneck in NC's block propagation latency, our protocol supports very short block interval without sacrificing security. The shortened block interval not only raises the throughput, but also lowers the transaction confirmation latency. By incorporating all valid blocks in the difficulty adjustment, selfish mining is no longer profitable in our protocol.</p>
+<p><a name="Motivation"></a></p>
+<h2 id="motivation"><a class="header" href="#motivation">Motivation</a></h2>
+<p>Although a number of non-NC consensus mechanisms have been proposed, NC has the following threefold advantage comparing with its alternatives. First, its security is carefully scrutinized and well-understood [<a href="https://www.cs.cornell.edu/%7Eie53/publications/btcProcFC.pdf">1</a>, <a href="https://eprint.iacr.org/2014/765.pdf">2</a>, <a href="https://fc16.ifca.ai/preproceedings/30_Sapirshtein.pdf">3</a>, <a href="https://eprint.iacr.org/2016/454.pdf">4</a>, <a href="https://eprint.iacr.org/2016/1048.pdf">5</a>, <a href="https://eprint.iacr.org/2018/800.pdf">6</a>, <a href="https://eprint.iacr.org/2018/129.pdf">7</a>, <a href="https://arxiv.org/abs/1607.02420">8</a>], whereas alternative protocols often open new attack vectors, either unintentionally [<a href="http://fc19.ifca.ai/preproceedings/180-preproceedings.pdf">1</a>, <a href="https://www.esat.kuleuven.be/cosic/publications/article-3005.pdf">2</a>] or by relying on security assumptions that are difficult to realize in practice [<a href="https://arxiv.org/abs/1711.03936">1</a>, <a href="https://arxiv.org/abs/1809.06528">2</a>]. Second, NC minimizes the consensus protocol's communication overhead. In the best-case scenario, propagating a 1MB block in Bitcoin is equivalent to broadcasting a compact block message of roughly 13KB [<a href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">1</a>, <a href="https://www.youtube.com/watch?v=EHIuuKCm53o">2</a>]; valid blocks are immediately accepted by all honest nodes. In contrast, alternative protocols often demand a non-negligible communication overhead to certify that certain nodes witness a block. For example, <a href="https://algorandcom.cdn.prismic.io/algorandcom%2Fa26acb80-b80c-46ff-a1ab-a8121f74f3a3_p51-gilad.pdf">Algorand</a> demands that each block be accompanied by 300KB of block certificate. Third, NC's chain-based topology ensures that a transaction global order is determined at block generation, which is compatible with all smart contract programming models. Protocols adopting other topologies either <a href="https://allquantor.at/blockchainbib/pdf/sompolinsky2016spectre.pdf">abandon the global order</a> or establish it after a long confirmation delay [<a href="https://eprint.iacr.org/2018/104.pdf">1</a>, <a href="https://eprint.iacr.org/2017/300.pdf">2</a>], limiting their efficiency or functionality.</p>
+<p>Despite NC's merits, a scalability barrier hinders it from processing more than a few transactions per second. Two parameters collectively cap the system's throughput: the maximum block size and the expected block interval. For example, Bitcoin enforces a roughly 4MB block size upper bound and targets a 10-minute block interval and  with its <strong>difficulty adjustment mechanism</strong>, translating to roughly ten transactions per second (TPS). Increasing the block size or reducing the block interval leads to longer block propagation latency or more frequent block generation events, respectively; both approaches raise the fraction of blocks generated during other blocks' propagation, thus raising the fraction of competing blocks. As at most one block among the competing ones contributes to transaction confirmation, the nodes' bandwidth on propagating other <strong>orphaned blocks</strong> is wasted, limiting the system's effective throughput. Moreover, raising the orphan rate downgrades the protocol's security by lowering the difficulty of double-spending attacks [<a href="https://fc15.ifca.ai/preproceedings/paper_30.pdf">1</a>, <a href="https://fc15.ifca.ai/preproceedings/paper_101.pdf">2</a>].</p>
+<p>Moreover, the security of NC is undermined by a <a href="https://www.cs.cornell.edu/%7Eie53/publications/btcProcFC.pdf"><strong>selfish mining attack</strong></a>, which allows attackers to gain unfair block rewards by deliberately orphaning blocks mined by other miners. Researchers observe that the unfair profit roots in NC's difficulty adjustment mechanism, which neglects orphaned blocks when estimating the network's computing power. Through this mechanism, the increased orphan rate caused by selfish mining leads to lower mining difficulty, enabling the attacker's higher time-averaged block reward [<a href="https://eprint.iacr.org/2016/555.pdf">1</a>, <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-100.md">2</a>, <a href="https://arxiv.org/abs/1805.08281">3</a>].</p>
+<p>In this RFC, we present the CKB consensus protocol, a consensus protocol that raises NC's performance limit and selfish mining resistance while keeping all NC's merits. Our protocol supports very short block interval by reducing the block propagation latency. The shortened block interval not only raises the blockchain's throughput, but also minimizes the transaction confirmation latency without decreasing the level of confidence, as the orphan rate remains low. Selfish mining is no longer profitable as we incorporate all blocks, including uncles, in the difficulty adjustment when estimating the network's computing power, so that the new difficulty is independent of the orphan rate.</p>
+<p><a name="Technical-Overview"></a></p>
+<h2 id="technical-overview"><a class="header" href="#technical-overview">Technical Overview</a></h2>
+<p>Our consensus protocol makes three changes to NC.</p>
+<p><a name="#Eliminating-the-Bottleneck-in-Block-Propagation"></a></p>
+<h3 id="eliminating-the-bottleneck-in-block-propagation"><a class="header" href="#eliminating-the-bottleneck-in-block-propagation">Eliminating the Bottleneck in Block Propagation</a></h3>
+<p><a href="https://www.youtube.com/watch?v=EHIuuKCm53o">Bitcoin's developers identify</a> that when the block interval decreases, the bottleneck in block propagation latency is transferring <strong>fresh transactions</strong>, which are newly broadcast transactions that have not finished propagating to the network when embedded in the latest block. Nodes that have not received these transactions must request them before forwarding the block to their neighbors. The resulted delay not only limits the blockchain's performance, but can also be exploited in a <strong>de facto selfish mining attack</strong>, where attackers deliberately embed fresh transactions in their blocks, hoping that the longer propagation latency gives them an advantage in finding the next block to gain more rewards.</p>
+<p>Departing from this observation, our protocol eliminates the bottleneck by decoupling NC's transaction confirmation into two separate steps: <strong>propose</strong> and <strong>commit</strong>. A transaction is proposed if its truncated hash, named <code>txpid</code>, is embedded in the <strong>proposal zone</strong> of a blockchain block or its <strong>uncles</strong>---orphaned blocks that are referred to by the blockchain block. Newly proposed transactions affect neither the block validity nor the block propagation, as a node can start transferring the block to its neighbors before receiving these transactions. The transaction is committed if it appears in the <strong>commitment zone</strong> in a window starting several blocks after its proposal. This two-step confirmation rule eliminates the block propagation bottleneck, as committed transactions in a new block are already received and verified by all nodes when they are proposed. The new rule also effectively mitigates de facto selfish mining by limiting the attack time window.</p>
+<p><a name="Utilizing-the-Shortened-Latency-for-Higher-Throughput"></a></p>
+<h3 id="utilizing-the-shortened-latency-for-higher-throughput"><a class="header" href="#utilizing-the-shortened-latency-for-higher-throughput">Utilizing the Shortened Latency for Higher Throughput</a></h3>
+<p>Our protocol prescribes that blockchain blocks refer to all orphaned blocks as uncles. This information allows us to estimate the current block propagation latency and dynamically adjust the expected block interval, increasing the throughput when the latency improves. Accordingly, our difficulty adjustment targets a fixed orphan rate to utilize the shortened latency without compromising security. The protocol hard-codes the upper and lower bounds of the interval to defend against DoS attacks and avoid overloading the nodes. In addition, the block reward is adjusted proportionally to the expected block interval within an epoch, so that the expected time-averaged reward is independent of the block interval.</p>
+<p><a name="Mitigating-Selfish-Mining-Attacks"></a></p>
+<h3 id="mitigating-selfish-mining-attacks"><a class="header" href="#mitigating-selfish-mining-attacks">Mitigating Selfish Mining Attacks</a></h3>
+<p>Our protocol incorporate all blocks, including uncles, in the difficulty adjustment when estimating the network's computing power, so that the new difficulty is independent of the orphan rate, following the suggestion of <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-100.md">Vitalik</a>, <a href="https://arxiv.org/abs/1805.08281">Grunspan and Perez-Marco</a>.</p>
+<p>In addition, we prove that selfish mining is no longer profitable in our protocol. This prove is non-trivial as Vitalik, Grunspan and Perez-Marco's informal arguments do not rule out the possibility that the attacker adapts to the modified mechanism and still gets unfair block reward. For example, the attacker may temporarily turn off some mining gears in the first epoch, causing the modified difficulty adjustment algorithm to underestimate the network's computing power, and starts selfish mining in the second epoch for a higher overall time-averaged reward. We prove that in our protocol, selfish mining is not profitable regardless of how the attacker divides its mining power among honest mining, selfish mining and idle, and how many epochs the attack involves. The detailed proof will be released later.</p>
+<p><a name="Specification"></a></p>
+<h2 id="specification"><a class="header" href="#specification">Specification</a></h2>
+<p><a name="Two-Step-Transaction-Confirmation"></a></p>
+<h3 id="two-step-transaction-confirmation"><a class="header" href="#two-step-transaction-confirmation">Two-Step Transaction Confirmation</a></h3>
+<p>In our protocol, we use a two-step transaction confirmation to eliminate the aforementioned block propagation bottleneck, regardless of how short the block interval is. We start by defining the two steps and the block structure, and then introduce the new block propagation protocol. </p>
+<h4 id="definitions"><a class="header" href="#definitions">Definitions</a></h4>
+<blockquote>
+<p><strong>Definition 1:</strong> A transaction’s proposal id <code>txpid</code> is defined as the first <em>l</em> bits of the transaction hash <code>txid</code>.</p>
+</blockquote>
+<p>In our protocol, <code>txpid</code> does not need to be as globally unique as <code>txid</code>, as a <code>txpid</code> is used to identify a transaction among several neighboring blocks. Since we embed <code>txpid</code>s in both blocks and compact blocks, sending only the truncated <code>txid</code>s could reduce the bandwidth consumption. </p>
+<p>When multiple transactions share the same <code>txpid</code>s, all of them are considered proposed. In practice, we can set <em>l</em> to be large enough so that the computational effort of finding a collision is non-trivial.</p>
+<blockquote>
+<p><strong>Definition 2:</strong> A block <em>B</em><sub>1</sub> is considered to be the <em>uncle</em> of another block <em>B</em><sub>2</sub> if all of the following conditions are met:
+​	(1) <em>B</em><sub>1</sub> and <em>B</em><sub>2</sub> are in the same epoch, sharing the same difficulty;
+​	(2) height(<em>B</em><sub>2</sub>) &gt; height(<em>B</em><sub>1</sub>);
+​	(3) <em>B</em><sub>2</sub> is the first block in its chain to refer to <em>B</em><sub>1</sub>. </p>
+</blockquote>
+<p>Our uncle definition is different from <a href="https://github.com/ethereum/wiki/wiki/White-Paper#modified-ghost-implementation">that of Ethereum</a>, in that we do not consider how far away the two blocks' first common ancestor is, as long as the two blocks are in the same epoch.</p>
+<blockquote>
+<p><strong>Definition 3:</strong> A transaction is <em>proposed</em> at height <em>h</em><sub>p</sub> if its <code>txpid</code> is in the proposal zone of the main chain block with height <em>h</em><sub>p</sub> and this block’s uncles. </p>
+</blockquote>
+<p>It is possible that a proposed transaction is previously proposed, in conflict with other transactions, or even malformed. These incidents do not affect the block’s validity, as the proposal zone is used to facilitate transaction synchronization.</p>
+<blockquote>
+<p><strong>Definition 4:</strong> A non-coinbase transaction is <em>committed</em> at height <em>h</em><sub>c</sub> if all of the following conditions are met: 
+​	(1) the transaction is proposed at height <em>h</em><sub>p</sub> of the same chain, and <em>w<sub>close</sub>  ≤  h<sub>c</sub> − h</em><sub>p</sub>  ≤  <em>w<sub>far</sub></em>
+​	(2) the transaction is in the commitment zone of the main chain block with height <em>h</em><sub>c</sub>; 
+​	(3) the transaction is not in conflict with any previously-committed transactions in the main chain. 
+The coinbase transaction is committed at height <em>h</em><sub>c</sub> if it satisfies (2).</p>
+</blockquote>
+<p><em>w<sub>close</sub></em> and <em>w<sub>far</sub></em> define the closest and farthest on-chain distance between a transaction’s proposal and commitment. We require <em>w<sub>close</sub></em>  to be large enough so that <em>w<sub>close</sub></em> block intervals are long enough for a transaction to be propagated to the network. </p>
+<p>These two parameters are also set according to the maximum number of transactions in the proposed transaction pool of a node’s memory. As the total number of proposed transactions is limited, they can be stored in the memory so that there is no need to fetch a newly committed transaction from the hard disk in most occasions. </p>
+<p>A transaction is considered embedded in the blockchain when it is committed. Therefore, a receiver that requires σ confirmations needs to wait for at least <em>w<sub>close</sub></em> +σ blocks after the transaction is broadcast to have confidence in the transaction. </p>
+<p>In practice, this <em>w<sub>close</sub></em> - block extra delay is compensated by our protocol’s shortened block interval, so that the usability is not affected.</p>
+<h4 id="block-and-compact-block-structure"><a class="header" href="#block-and-compact-block-structure">Block and Compact Block Structure</a></h4>
+<p>A block in our protocol includes the following fields:</p>
+<table><thead><tr><th align="left">Name</th><th align="left">Description</th></tr></thead><tbody>
+<tr><td align="left">header</td><td align="left">block metadata</td></tr>
+<tr><td align="left">commitment zone</td><td align="left">transactions committed in this block</td></tr>
+<tr><td align="left">proposal zone</td><td align="left"><code>txpid</code>s proposed in this block</td></tr>
+<tr><td align="left">uncle headers</td><td align="left">headers of uncle blocks</td></tr>
+<tr><td align="left">uncles’ proposal zones</td><td align="left"><code>txpid</code>s proposed in the uncles</td></tr>
+</tbody></table>
+<p>Similar to NC, in our protocol, a compact block replaces a block’s commitment zone with the transactions’ <code>shortid</code>s, a salt and a list of prefilled transactions. All other fields remain unchanged in <a href="https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki">the compact block</a>.</p>
+<p>Additional block structure rules:</p>
+<ul>
+<li>The total size of the first four fields should be no larger than the hard-coded <strong>block size limit</strong>. The main purpose of implementing a block size limit is to avoid overloading public nodes' bandwidth. The uncle blocks’ proposal zones do not count in the limit as they are usually already synchronized when the block is mined. </li>
+<li>The number of <code>txpid</code>s in a proposal zone also has a hard-coded upper bound.</li>
+</ul>
+<p>Two heuristic requirements may help practitioners choose the parameters. First, the upper bound number of <code>txpid</code>s in a proposal zone should be no smaller than the maximum number of committed transactions in a block, so that even if <em>w<sub>close</sub>=w<sub>far</sub></em>, this bound is not the protocol's throughput bottleneck. Second, ideally the compact block should be no bigger than 80KB. According to <a href="https://fc16.ifca.ai/bitcoin/papers/CDE+16.pdf">a 2016 study by Croman et al.</a>, messages no larger than 80KB have similar propagation latency in the Bitcoin network; larger messages propagate slower as the network throughput becomes the bottleneck. This number may change as the network condition improves.</p>
+<h4 id="block-propagation-protocol"><a class="header" href="#block-propagation-protocol">Block Propagation Protocol</a></h4>
+<p>In line with [<a href="https://www.cs.cornell.edu/%7Eie53/publications/btcProcFC.pdf">1</a>, <a href="https://arxiv.org/abs/1312.7013">2</a>, <a href="https://eprint.iacr.org/2014/007.pdf">3</a>], nodes should broadcast all blocks with valid proofs-of-work, including orphans, as they may be referred to in the main chain as uncles. Valid proofs-of-work cannot be utilized to pollute the network, as constructing them is time-consuming. </p>
+<p>Our protocol’s block propagation protocol removes the extra round trip of fresh transactions in most occasions. When the round trip is inevitable, our protocol ensures that it only lasts for one hop in the propagation. This is achieved by the following three rules: </p>
+<ol>
+<li>
+<p>If some committed transactions are previously unknown to the sending node, they will be embedded in the prefilled transaction list and sent along with the compact block. This only happens in a de facto selfish mining attack, as otherwise transactions are synchronized when they are proposed. This modification removes the extra round trip if the sender and the receiver share the same list of proposed, but-not-broadcast transactions. </p>
+</li>
+<li>
+<p>If certain committed transactions are still missing, the receiver queries the sender with a short timeout. Triggering this mechanism requires not only a successful de facto selfish mining attack, but also an attack on transaction propagation to cause inconsistent proposed transaction pools among the nodes. Failing to send these transactions in time leads to the receiver disconnecting and blacklisting the sender. Blocks with incomplete commitment zones will not be propagated further.</p>
+</li>
+<li>
+<p>As long as the commitment zone is complete and valid, a node can start forwarding the compact block before receiving all newly-proposed transactions. In our protocol, a node requests the newly-proposed transactions from the upstream peer and sends compact blocks to other peers simultaneously. This modification does not downgrade the security as transactions in the proposal zone do not affect the block’s validity.</p>
+</li>
+</ol>
+<p>The first two rules ensure that the extra round trip caused by a de facto selfish mining attack never lasts for more than one hop.</p>
+<p><a name="Dynamic-Difficulty-Adjustment-Mechanism"></a></p>
+<h3 id="dynamic-difficulty-adjustment-mechanism"><a class="header" href="#dynamic-difficulty-adjustment-mechanism">Dynamic Difficulty Adjustment Mechanism</a></h3>
+<p>We modify the Nakamoto Consensus difficulty adjustment mechanism, so that: (1) Selfish mining is no longer profitable; (2) Throughput is dynamically adjusted based on the network’s bandwidth and latency. To achieve (1), our protocol incorporates all blocks, instead of only the main chain, in calculating the <strong>adjusted hash rate estimation</strong> of the last epoch, which determines the amount of computing effort required in the next epoch for each reward unit. To achieve (2), our protocol calculates the number of main chain blocks in the next epoch with the last epoch’s orphan rate. The block reward and target are then computed by combining these results. </p>
+<p>Additional constraints are introduced to maximize the protocol’s compatibility:</p>
+<ol>
+<li>
+<p>All epochs have the same expected length <em>L<sub>ideal</sub></em>, and the maximum block reward issued in an epoch R(<em>i</em>) depends only on the epoch number <em>i</em>, so that the dynamic block interval does not complicate the reward issuance policy. </p>
+</li>
+<li>
+<p>Several upper and lower bounds are applied to the hash rate estimation and the number of main chain blocks, so that our protocol does not harm the decentralization or attack-resistance of the network.</p>
+</li>
+</ol>
+<h4 id="notations"><a class="header" href="#notations">Notations</a></h4>
+<p>Similar to Nakamoto Consensus , our protocol’s difficulty adjustment algorithm is executed at the end of every epoch. It takes four inputs:</p>
+<table><thead><tr><th align="left">Name</th><th align="left">Description</th></tr></thead><tbody>
+<tr><td align="left"><em>T</em><sub><em>i</em></sub></td><td align="left">Last epoch’s target</td></tr>
+<tr><td align="left"><em>L</em><sub><em>i</em></sub></td><td align="left">Last epoch’s duration: the timestamp difference between epoch <em>i</em> and epoch (<em>i</em> − 1)’s last blocks</td></tr>
+<tr><td align="left"><em>C</em><sub><em>i</em>,m</sub></td><td align="left">Last epoch’s main chain block count</td></tr>
+<tr><td align="left"><em>C</em><sub><em>i</em>,o</sub></td><td align="left">Last epoch’s orphan block count:  the number of uncles embedded in epoch <em>i</em>’s main chain</td></tr>
+</tbody></table>
+<p>Among these inputs, <em>T<sub>i</sub></em> and <em>C</em><sub><em>i</em>,m</sub> are determined by the last iteration of difficulty adjustment; <em>L</em><sub><em>i</em></sub> and <em>C</em><sub><em>i</em>,o</sub> are measured after the epoch ends. The orphan rate <em>o</em><sub><em>i</em></sub> is calculated as <em>C</em><sub><em>i</em>,o</sub> / <em>C</em><sub><em>i</em>,m</sub>. We do not include <em>C</em><sub><em>i</em>,o</sub> in the denominator to simplify the equation. As some orphans at the end of the epoch might be excluded from the main chain by an attack, <em>o</em><sub><em>i</em></sub> is a lower bound of the actual number. However, <a href="https://eprint.iacr.org/2014/765.pdf">the proportion of deliberately excluded orphans is negligible</a> as long as the epoch is long enough, as the difficulty of orphaning a chain grows exponentially with the chain length. </p>
+<p>The algorithm outputs three values:</p>
+<table><thead><tr><th align="left">Name</th><th align="left">Description</th></tr></thead><tbody>
+<tr><td align="left"><em>T</em><sub><em>i</em>+1</sub></td><td align="left">Next epoch’s target</td></tr>
+<tr><td align="left"><em>C</em><sub>i+1,m</sub></td><td align="left">Next epoch’s main chain block count</td></tr>
+<tr><td align="left"><em>r</em><sub><em>i</em>+1</sub></td><td align="left">Next epoch’s block reward</td></tr>
+</tbody></table>
+<p>If the network hash rate and block propagation latency remains constant, <em>o</em><sub><em>i</em>+1</sub> should reach the ideal value <em>o</em><sub>ideal</sub>, unless <em>C</em><sub><em>i</em>+1,m</sub> is equal to its upper bound <em>C</em><sub>m</sub><sup>max</sup>  or its lower bound <em>C</em><sub>m</sub><sup>min</sup> . Epoch <em>i</em> + 1 ends when it reaches <em>C</em><sub><em>i</em>+1,m</sub> main chain blocks, regardless of how many uncles are embedded.</p>
+<h4 id="computing-the-adjusted-hash-rate-estimation"><a class="header" href="#computing-the-adjusted-hash-rate-estimation">Computing the Adjusted Hash Rate Estimation</a></h4>
+<p>The adjusted hash rate estimation, denoted as <em>HPS<sub>i</sub></em> is computed by applying a dampening factor τ to the last epoch’s actual hash rate <img src="images/1559068235154.png" alt="1559068235154" />. The actual hash rate is calculated as follows:</p>
+<p><img src="images/1559064934639.png" alt="1559064934639" /></p>
+<p>where:</p>
+<ul>
+<li>HSpace is the size of the entire hash space, e.g., 2^256 in Bitcoin,</li>
+<li>HSpace/<em>T<sub>i</sub></em> is the expected number of hash operations to find a valid block, and </li>
+<li><em>C</em><sub><em>i</em>,m</sub> + <em>C</em><sub><em>i</em>,o</sub> is the total number of blocks in epoch <em>i</em></li>
+</ul>
+<p><img src="images/1559068266162.png" alt="1559068266162" /> is computed by dividing the expected total hash operations with the duration <em>L<sub>i</sub></em></p>
+<p>Now we apply the dampening filter:</p>
+<p><img src="images/1559064108898.png" alt="1559064108898" /></p>
+<p>where <em>HPS</em><sub><em>i</em>−1</sub> denotes the adjusted hash rate estimation output by the last iteration of the difficulty adjustment algorithm. The dampening factor ensures that the adjusted hash rate estimation does not change more than a factor of τ between two consecutive epochs. This adjustment is equivalent to the Nakamoto Consensus application of a dampening filter. Bounding the adjustment speed prevents the attacker from arbitrarily biasing the difficulty and forging a blockchain, even if some victims’ network is temporarily controlled by the attacker.</p>
+<h4 id="modeling-block-propagation"><a class="header" href="#modeling-block-propagation">Modeling Block Propagation</a></h4>
+<p>It is difficult, if not impossible, to model the detailed block propagation procedure, given that the network topology changes constantly over time. Luckily, for our purpose, it is adequate to express the influence of block propagation with two parameters, which will be used to compute <em>C</em><sub><em>i</em>+1,m</sub>  later.</p>
+<p>We assume all blocks follow a similar propagation model, in line with [<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.395.8058&amp;rep=rep1&amp;type=pdf">1</a>, <a href="https://fc16.ifca.ai/bitcoin/papers/CDE+16.pdf">2</a>]. In the last epoch, it takes <em>d</em> seconds for a block to be propagated to the entire network, and during this process, the average fraction of mining power working on the block’s parent is <em>p</em>. Therefore, during this <em>d</em> seconds, <em>HPS</em><sub><em>i</em> </sub> × <em>dp</em> hash operations work on the parent, thus not contributing to extending the blockchain, while the rest <em>HPS</em><sub><em>i</em></sub> × <em>d</em>(1 − <em>p</em>) hashes work on the new block. Consequently, in the last epoch, the total number of hashes that do not extend the blockchain is <em>HPS</em><sub><em>i</em></sub>  × <em>dp</em> × <em>C</em><sub><em>i</em>,m</sub>. If some of these hashes lead to a block, one of the competing blocks will be orphaned. The number of hash operations working on observed orphaned blocks is HSpace/<em>T</em><sub><em>i</em></sub> × <em>C</em><sub><em>i</em>,o</sub>. If we ignore the rare event that more than two competing blocks are found at the same height, we have:</p>
+<p><img src="images/1559064685714.png" alt="1559064685714" /></p>
+<p>namely</p>
+<p><img src="images/1559064995366.png" alt="1559064995366" /></p>
+<p>If we join this equation with Equation (2), we can solve for <em>dp</em>:</p>
+<p><img src="images/1559065017925.png" alt="1559065017925" /></p>
+<p>where <em>o<sub>i</sub></em> is last epoch’s orphan rate.</p>
+<h4 id="computing-the-next-epochs-main-chain-block-number"><a class="header" href="#computing-the-next-epochs-main-chain-block-number">Computing the Next Epoch’s Main Chain Block Number</a></h4>
+<p>If the next epoch’s block propagation proceeds identically to the last epoch, the value <em>dp</em> should remain unchanged. In order to achieve the ideal orphan rate <em>o</em><sub>ideal</sub> and the ideal epoch duration <em>L</em><sub>ideal</sub>, following the same reasoning with Equation (4). We should have:</p>
+<p><img src="images/1559065197341.png" alt="1559065197341" /></p>
+<p>where <img src="images/1559065416713.png" alt="1559065416713" />is the number of main chain blocks in the next epoch, if our only goal is to achieve <em>o</em><sub>ideal</sub> and <em>L</em><sub>ideal</sub> . </p>
+<p>By joining Equation (4) and (5), we can solve for <img src="images/1559065416713.png" alt="1559065488436" />:</p>
+<p><img src="images/1559065517956.png" alt="1559065517956" /></p>
+<p>Now we can apply the upper and lower bounds to<img src="images/1559065416713.png" alt="1559065488436" /> and get <em>C</em><sub><em>i</em>+1,m</sub>:</p>
+<p><img src="images/1559065670251.png" alt="1559065670251" /></p>
+<p>Applying a lower bound ensures that an attacker cannot mine orphaned blocks deliberately to arbitrarily increase the block interval; applying an upper bound ensures that our protocol does not confirm more transactions than the capacity of most nodes.</p>
+<h4 id="determining-the-target-difficulty"><a class="header" href="#determining-the-target-difficulty">Determining the Target Difficulty</a></h4>
+<p>First, we introduce an adjusted orphan rate estimation <img src="images/1559065968791.png" alt="1559065968791" />, which will be used to compute the target:</p>
+<p><img src="images/1559065997745.png" alt="1559065997745" /></p>
+<p>Using <img src="images/1559065968791.png" alt="1559065968791" /> instead of <em>o</em><sub>ideal</sub> prevents some undesirable situations when the main chain block number reaches the upper or lower bound. Now we can compute <em>T</em><sub><em>i</em>+1</sub>:</p>
+<p><img src="images/1559066101731.png" alt="1559066101731" /></p>
+<p>where <img src="images/1559066131427.png" alt="1559066131427" /> is the total hashes, <img src="images/1559066158164.png" alt="1559066158164" />is the total number of blocks. </p>
+<p>The denominator in Equation (7) is the number of hashes required to find a block.</p>
+<p>Note that if none of the edge cases are triggered, such as <img src="images/1559066233715.png" alt="1559066233715" /><img src="images/1559066249700.png" alt="1559066249700" /> or <img src="images/1559066329440.png" alt="1559066329440" />  , we can combine Equations (2), (6), and (7) and get:</p>
+<p><img src="images/1559066373372.png" alt="1559066373372" /></p>
+<p>This result is consistent with our intuition. On one hand, if the last epoch’s orphan rate <em>o</em><sub><em>i</em></sub> is larger than the ideal value <em>o</em><sub>ideal</sub>, the target lowers, thus increasing the difficulty of finding a block and raising the block interval if the total hash rate is unchanged. Therefore, the orphan rate is lowered as it is more unlikely to find a block during another block’s propagation. On the other hand, the target increases if the last epoch’s orphan rate is lower than the ideal value, decreasing the block interval and raising the system’s throughput.</p>
+<h4 id="computing-the-reward-for-each-block"><a class="header" href="#computing-the-reward-for-each-block">Computing the Reward for Each Block</a></h4>
+<p>Now we can compute the reward for each block:</p>
+<p><img src="images/1559066526598.png" alt="1559066526598" /></p>
+<p>The two cases differ only in the edge cases. The first case guarantees that the total reward issued in epoch <em>i</em> + 1 will not exceed R(<em>i</em> + 1).</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0019-data-structures/0019-data-structures.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0019-data-structures/0019-data-structures.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

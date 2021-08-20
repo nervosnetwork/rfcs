@@ -1,0 +1,472 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0022 CKB Transaction Structure - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html" class="active">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0022-transaction-structure/0022-transaction-structure.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0022&quot;
+Category: Informational
+Status: Draft
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2019-08-26
+</code></pre>
+<h1 id="ckb-transaction-structure"><a class="header" href="#ckb-transaction-structure">CKB Transaction Structure</a></h1>
+<p>This RFC is about an essential data structure in CKB, the transaction. CKB is under active development. At the time of writing, the corresponding CKB version is v0.25.0.</p>
+<p>The document contains two parts. The first one covers the core transaction features, and the second one introduces some extensions.</p>
+<p><img src="transaction-overview.png" alt="" /></p>
+<p>The diagram above is an overview of the transaction structure. Instead of explaining field by field, the following paragraphs introduce various features which the CKB transaction provides and how the fields play their roles in these features.</p>
+<h2 id="toc"><a class="header" href="#toc">TOC</a></h2>
+<ul>
+<li><a href="#part-i-core-features">Part I: Core Features</a>
+<ul>
+<li><a href="#value-storage">Value Storage</a></li>
+<li><a href="#cell-data">Cell Data</a></li>
+<li><a href="#code-locating">Code Locating</a></li>
+<li><a href="#lock-script">Lock Script</a></li>
+<li><a href="#type-script">Type Script</a></li>
+<li><a href="#recap-of-the-transaction-structure-in-part-i">Recap of The Transaction Structure in Part I</a></li>
+</ul>
+</li>
+<li><a href="#part-ii-extensions">Part II: Extensions</a>
+<ul>
+<li><a href="#dep-group">Dep Group</a></li>
+<li><a href="#upgradable-script">Upgradable Script</a></li>
+<li><a href="#type-id">Type ID</a></li>
+<li><a href="#header-deps">Header Deps</a></li>
+<li><a href="#other-fields">Other Fields</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li><a href="#appendix-a-compute-various-hash">Appendix A: Compute Various Hash</a>
+<ul>
+<li><a href="#crypto-primitives">Crypto Primitives</a></li>
+<li><a href="#transaction-hash">Transaction Hash</a></li>
+<li><a href="#cell-data-hash">Cell Data Hash</a></li>
+<li><a href="#script-hash">Script Hash</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="part-i-core-features"><a class="header" href="#part-i-core-features">Part I: Core Features</a></h2>
+<h3 id="value-storage"><a class="header" href="#value-storage">Value Storage</a></h3>
+<p>CKB adopts UTXO model. A transaction destroys some outputs created in previous transactions and creates some new outputs. We call the transaction output a cell in CKB. Thus the name cell and transaction output are interchangeable.</p>
+<p>The following diagram shows the fields used in this layer.</p>
+<p><img src="value-storage.png" alt="" /></p>
+<p>The transaction destroys the cells in <code>inputs</code> and creates the cells in <code>outputs</code>. </p>
+<p>The CKB chain packages transactions into blocks. We can use block number to refer to a block in the chain, which is an increasing non-negative integer starting from 0, the genesis block. The transactions in a block are also ordered. We say a block is older if it has a smaller block number, a transaction is older if either it is in an older block, or its position in a block is before another transaction. In the following example, Block i is older than Block i + 1. Transaction tx1 is older than tx2 and is older than tx3.</p>
+<p><img src="older-block-and-transaction.png" alt="Block i is older than Block i + 1. Transaction tx1 is older than tx2 and is older than tx3." /></p>
+<p>A live cell is the one that appears as an output but not as an input in all the older transactions. A dead cell has already been used as an input in any older transaction. A transaction can only use live cells as inputs.</p>
+<p>We can compute the transaction hash from all transaction fields except <code>witnesses</code>. See Appendix A how to calculate the transaction hash.</p>
+<p>The transaction hash is considered unique. Since cell is always created by a transaction, and every new cell has its position in the transaction outputs array, we can refer to a cell by transaction hash and outputs index. The structure <code>OutPoint</code> is just such reference type. The transaction uses <code>OutPoint</code> in inputs to reference the previously created cells instead of embedding them.</p>
+<p><img src="out-point.png" alt="" /></p>
+<p>The cell stores the CKB Token in the field <code>capacity</code>. A transaction cannot mint capacities from the air, so a transaction must meet the following rule:</p>
+<pre><code class="language-json">sum(cell's capacity for each cell in inputs)
+≥ sum(cell's capacity for each cell in outputs)
+</code></pre>
+<p>Miners can collect the difference as a fee.</p>
+<pre><code class="language-json">fee = sum(cell's capacity for each cell in inputs)
+    - sum(cell's capacity for each cell in outputs)
+</code></pre>
+<p>If you are familiar with Bitcoin, you'll find out that the Value Storage layer is similar to Bitcoin, but lacking the locking script to protect the transaction output ownership. CKB does have that feature, but before that, I have to introduce Cell Data and Code Locating layer, which are the dependencies of any scripting feature in CKB.</p>
+<h3 id="cell-data"><a class="header" href="#cell-data">Cell Data</a></h3>
+<p>Instead of holding only the token value, CKB cell can store arbitrary data as well.</p>
+<p><img src="cell-data.png" alt="" /></p>
+<p>The field <code>outputs_data</code> is a parallel array of outputs. The data of the i-th cell in <code>outputs</code> is the i-th item in <code>outputs_data</code>.</p>
+<p><img src="outputs-data.png" alt="" /></p>
+<p>The <code>capacity</code> in the cell is not only just the amount of the stored tokens, but it is also a limit on how many data the cell can store. That's where the name comes from, It is the storage capacity of the cell.</p>
+<p>The capacity is not only used to store data but it also has to cover all the fields in the cell, including <code>data</code>,  <code>lock</code>, <code>type</code>, and <code>capacity</code> itself.</p>
+<p>The specification to compute occupied capacity will have its RFC in the future, which is still a <a href="https://github.com/nervosnetwork/rfcs/issues/118">draft</a> now.</p>
+<p>The transaction must create an output cell which occupied capacity is less than the cell capacity.</p>
+<pre><code class="language-json">occupied(cell) ≤ cell's capacity
+</code></pre>
+<h3 id="code-locating"><a class="header" href="#code-locating">Code Locating</a></h3>
+<p>The cell has two fields which type is <code>Script</code>. The CKB VM will run the <code>lock</code>  scripts of all the cells in inputs, and run the <code>type</code> scripts of all the cells in both inputs and outputs.</p>
+<p>We differentiate the terms script and code.</p>
+<ul>
+<li>A script is the script structure.</li>
+<li>The code is the RISC-V binary.</li>
+<li>A code cell is cell which data is code.</li>
+</ul>
+<p>The script does not include the code directly. See the script structure below. Let's ignore the hash type <code>Type</code> and the field <code>args</code> now.</p>
+<p><img src="script.png" alt="" /></p>
+<p>When a CKB VM needs to run a script, it must find its code first. The fields <code>code_hash</code> and <code>hash_type</code> are used to locate the code.</p>
+<p>In CKB, the script code is compiled into RISC-V binary. The binary is stored as the data in a cell. When <code>hash_type</code> is &quot;Data&quot;,  the script locates a cell which data hash equals the script's <code>code_hash</code>. The cell data hash, as the name suggests, is computed from the cell data (see Appendix A). The scope is limited in the transaction, script can only find a matched cell from <code>cell_deps</code>.</p>
+<p><img src="cell-deps.png" alt="" /></p>
+<p>The following diagram shows how CKB finds a matched script code.</p>
+<p><img src="code-locating.png" alt="" /></p>
+<p>If you want to use a script in CKB, follow the code locating rules:</p>
+<ul>
+<li>Compile your code into RISC-V binary. You can find some examples in the <a href="https://github.com/nervosnetwork/ckb-system-scripts">repository</a> which builds the code for system cells.</li>
+<li>Create a cell which stores the binary as data in a transaction, and send the transaction to the chain.</li>
+<li>Construct a script structure, which <code>hash_type</code> is &quot;Data&quot;, and <code>code_hash</code> is just the hash of the built binary.</li>
+<li>Use the script as the type or the lock script in a cell.</li>
+<li>If the script has to run in a transaction, include the code cell's out point in the <code>cell_deps</code>.</li>
+</ul>
+<p>The cells in <code>cell_deps</code> must be live, just like <code>inputs</code>. Unlike <code>inputs</code>, a cell only used in <code>cell_deps</code> is not considered dead.</p>
+<p>The following two chapters will talk about how the script is used in a transaction to lock the cells and establish contracts on cells.</p>
+<h3 id="lock-script"><a class="header" href="#lock-script">Lock Script</a></h3>
+<p>Every cell has a lock script. The lock script must run when the cell is used as an input in a transaction. When the script only appears in the outputs, it is not required to reveal the corresponding code in <code>cell_deps</code>. A transaction is valid only when all the lock scripts in the inputs exit normally. Since the script runs on inputs, it acts as the lock to control who can unlock and destroy the cell, as well as spend the capacity stored in the cell.</p>
+<p><img src="lock-script.png" alt="" /></p>
+<p>Following is an example lock script code which always exits normally. Anyone can destroy the cell if it uses the code as the lock script.</p>
+<pre><code class="language-c">int main(int argc, char *argv[]) {
+  return 0;
+}
+</code></pre>
+<p>The most popular way to lock a digital asset is the digital signature created by asymmetric cryptography.</p>
+<p>The signature algorithm has two requirements:</p>
+<ul>
+<li>The cell must contain the information of the public key, so only the real private key can create a valid signature.</li>
+<li>The transaction must contain the signatures, which usually signs the whole transaction as the message.</li>
+</ul>
+<p>In CKB, the public key fingerprint can be stored in the <code>args</code> field in the script structure, and the signature can be stored in the <code>witnesses</code> fields in transaction. I use &quot;can&quot; because it is just a convention and the recommended way, and is used in the default <a href="https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c">secp256k1 lock script</a>. The script code is able to read any part of a transaction, so the lock script can choose a different convention, for example, storing the public key information in the cell data. However, if all the lock scripts  follow the recommended convention, it can simplify the apps which create transactions, such as a wallet.</p>
+<p><img src="lock-script-cont.png" alt="" /></p>
+<p>Now let's see how the script code is located and loaded, and how the code accesses inputs, script args, and witnesses.</p>
+<p>First, pay attention that, CKB does not run the lock script input by input. It first groups the inputs by lock script and runs the same script only once. CKB runs a script in 3 steps: script grouping, code locating and running.</p>
+<p><img src="lock-script-grouping.png" alt="" /></p>
+<p>The diagram above shows the first two steps.</p>
+<ol>
+<li>First, CKB groups inputs by lock script. In the example transaction, there are two different lock scripts used in inputs. Although they locate to the same code, they have different args. Let's focus on g1. It has two inputs with index 0 and 2. The script and the input indices will be used in step 3 later.</li>
+<li>Then CKB locates the code from cell deps. It resolves to the cell with data hash <code>Hs</code> and will use its data as the code.</li>
+</ol>
+<p>Now CKB can load the script code binary and run the code starting from the entry function. The script can read itself via syscall <code>ckb_load_script</code>.</p>
+<pre><code class="language-c">ckb_load_script(addr, len, offset)
+</code></pre>
+<p>Various CKB syscalls are designed to read data from the transaction. These syscalls have an argument to specify where to read the data. For example, to load the first witness:</p>
+<pre><code class="language-c">ckb_load_witness(addr, len, offset, 0, CKB_SOURCE_INPUT);
+</code></pre>
+<p>The first three arguments control where to store the read data and how many bytes to read. Let's ignore them in the following paragraphs.</p>
+<p>The fifth argument is the data source. <code>CKB_SOURCE_INPUT</code> means reading from transaction inputs, and the fourth argument <code>0</code> is the index into the inputs array. <code>CKB_SOURCE_INPUT</code> is also used to read <code>witnesses</code>.</p>
+<p>Remember that we have saved the indices of the input when grouping inputs by the lock script. This info is used to create the virtual witnesses and inputs array for the group. The code can read input or witness using the index in the virtual array via a special source <code>CKB_SOURCE_GROUP_INPUT</code>. Reading a witness using <code>CKB_SOURCE_GROUP_INPUT</code> just reads the witnesses which has the same position with the specified input.</p>
+<p><img src="group-input.png" alt="" /></p>
+<p>All the syscalls that read data related to the input, can use <code>CKB_SOURCE_GROUP_INPUT</code> and the index in the virtual inputs array, such as <code>ckb_load_cell_*</code> syscalls family.</p>
+<h3 id="type-script"><a class="header" href="#type-script">Type Script</a></h3>
+<p>Type script is very similar to lock script, with two differences:</p>
+<ul>
+<li>Type script is optional.</li>
+<li>In a transaction, CKB must run the type scripts in both inputs and outputs.</li>
+</ul>
+<p>Although we can only keep only one type of script in the cell, we don't want to mess the different responsibilities in a single script.</p>
+<p>The lock script is only executed for inputs, so its primary responsibility is protecting the cells. Only the owner is allowed to use the cell as input and spend the token stored along with it.</p>
+<p>The type script is intended to establish some contracts on the cells. When you get a cell with a specified type, you can ensure that the cell has passed the verification in the specific code. And the code is also executed when the cell is destroyed. A typical scenario of type script is user-defined token. The type script must run on outputs, so the token issuance must be authorized.</p>
+<p>Running type script on inputs is very important for contracts, for example, a contract to let user mortgage some amount of CKB tokens to rent an asset offline. If the type script does not run on inputs, the user can get back the CKB tokens without authority from the contract by merely destroying the cells and transfer the capacity to a new cell without type script.</p>
+<p>The steps to run type script is also similar to lock script. Except that</p>
+<ol>
+<li>Cells without a type script are ignored.</li>
+<li>The script group contains both inputs and outputs.</li>
+</ol>
+<p><img src="type-script-grouping.png" alt="" /></p>
+<p>Like <code>CKB_SOURCE_GROUP_INPUT</code>, there's a special data source <code>CKB_SOURCE_GROUP_OUTPUT</code> to use the index into the virtual outputs array in the script group.</p>
+<h3 id="recap-of-the-transaction-structure-in-part-i"><a class="header" href="#recap-of-the-transaction-structure-in-part-i">Recap of The Transaction Structure in Part I</a></h3>
+<p><img src="transaction-p1.png" alt="" /></p>
+<h2 id="part-ii-extensions"><a class="header" href="#part-ii-extensions">Part II: Extensions</a></h2>
+<p>In part I, I have introduced the core features which the transaction provides. The features introduced in this part are some extensions that CKB can work without them, but these extensions will make the cell model better.</p>
+<p>The diagram below is the overview of the new fields covered in this part.</p>
+<p><img src="transaction-p2.png" alt="" /></p>
+<h3 id="dep-group"><a class="header" href="#dep-group">Dep Group</a></h3>
+<p>Dep Group is a cell which bundles several cells as its members. When a dep group cell is used in <code>cell_deps</code>, it has the same effect as adding all its members into <code>cell_deps</code>.</p>
+<p>Dep Group stores the serialized list of <code>OutPoint</code> in cell data. Each <code>OutPoint</code> points to one of the group members.</p>
+<p>The structure <code>CellDep</code> has a field <code>dep_type</code> to differentiate the normal cells which provide the code directly, and the dep groups which is expanded to its members inside <code>cell_deps</code>.</p>
+<p><img src="cell-dep-structure.png" alt="" /></p>
+<p>The dep group is expanded before locating and running code, in which only the expanded <code>cell_deps</code> are visible.</p>
+<p><img src="dep-group-expansion.png" alt="Example of Dep Group Expansion" /></p>
+<p>In v0.19.0, the lock script secp256k1 is split into code cell and data cell. The code cell loads the data cell via <code>cell_deps</code>. So if a transaction needs to unlock a cell locked by secp256k1, it must add both cells in <code>cell_deps</code>. With dep group, the transaction only needs the dep group.</p>
+<p>There are two reasons why we split the secp256k1 cell.</p>
+<ul>
+<li>The code cell is small, which allows us to update it when the block size limit is low.</li>
+<li>The data cell can be shared. For example, we have implemented another lock script which uses ripemd160 to verify the public key hash. This script reuses the data cell.</li>
+</ul>
+<h3 id="upgradable-script"><a class="header" href="#upgradable-script">Upgradable Script</a></h3>
+<p>In the chapter Lock Script in Part I, I have described how a script locates its code via cell data hash. Once a cell is created, its associated script code cannot change, since it is known infeasible to find a different piece of code that has the same hash.</p>
+<p>Script has another option for <code>hash_type</code>, <em>Type</em>.</p>
+<p><img src="script-p2.png" alt="" /></p>
+<p>When the script uses the hash type Type, it matches the cell which type script hash equals the <code>code_hash</code>. The type script hash is computed from the cell <code>type</code> field (see Appendix A).</p>
+<p><img src="code-locating-via-type.png" alt="" /></p>
+<p>Now it is possible to upgrade code if the cell uses a script which locates code via type script hash by creating a new cell with the same type script. The new cell has the updated code. The transaction which adds the new cell in <code>dep_cells</code> will use the new version.</p>
+<p>However, this only solves one problem that the script can refer to different versions of code. It is not safe if an adversary can create a cell with the same type script but using the forged code as the data. The adversary can bypass the script verification by using the fake cell as a dep. The following chapter will describe a script to solve the second problem.</p>
+<p>Because the code referenced by type script hash can change, you must trust the script author to use such kind of type scripts. Although which version is used depends on which cell is added in the transaction in <code>dep_cells</code>, user can always inspect the code before signing the transaction. But if the script is used to unlock a cell, even the signature checking can be skipped.</p>
+<h3 id="type-id"><a class="header" href="#type-id">Type ID</a></h3>
+<p>There's a reason we choose cell type script hash to support upgradable script. If the adversary wants to create a cell with a specific type script, the transaction must be verified by the type script code.</p>
+<p>Type ID is such a kind of type script. As the name suggests, it ensures the uniqueness of the type script.</p>
+<p>This feature involves several type scripts, so I have to use different terms to differentiate them:</p>
+<ul>
+<li>The Type ID code cell is the cell which stores the code to verify that a type id is unique.</li>
+<li>The Type ID code cell has a type script as well. We don't care the actual content for now, let's assume the type script hash is TI.</li>
+<li>A Type ID is a type script which <code>hash_type</code> is &quot;Type&quot;, and <code>code_hash</code> is TI.</li>
+</ul>
+<p><img src="type-id.png" alt="" /></p>
+<p>In the chapter Type Script in Part I, we know that type script groups inputs and outputs first. In other words, if the type script is a type ID, the inputs and outputs in the group all have the same type ID.</p>
+<p>The Type ID code verifies that, in any type id group, there is at most one input and at most one output. But a transaction is allowed to have multiple type id groups. Depends on the numbers of inputs and outputs, the type id groups are categorized into three different types:</p>
+<ul>
+<li>Type ID Creation Group has only one output.</li>
+<li>Type ID Deletion Group has only one input.</li>
+<li>Type ID Transfer Group has one input and one output.</li>
+</ul>
+<p><img src="type-id-group.png" alt="" /></p>
+<p>The transaction in the diagram above has all the three kinds of type id group. </p>
+<ul>
+<li>G1 is a Type ID Transfer Group which transfers the type id from cell1 to cell4.</li>
+<li>G2 is a Type ID Deletion Group which deletes the type id along with cell2.</li>
+<li>G3 is a Type ID Creation Group which creates a new type id for cell3.</li>
+</ul>
+<p>In the Type ID Creation Group, the only argument in <code>args</code> is the hash of this transaction first <code>CellInput</code> structure and the output index of the cell in the group. For example, in the group g3, id3 is a hash on <code>tx.inputs[0]</code> and 0 (cell3's index in <code>tx.outputs</code>).</p>
+<p>There are two ways to create a new cell with a specific type id.</p>
+<ol>
+<li>Create a transaction where the hash of <code>tx.inputs[0]</code> and any index equal to a specific value. Since a cell can only be used as an input once in the chain, <code>tx.inputs[0]</code> must different in each transaction, so this problem is equivalent to find out a hash collision, which probability is negligible.</li>
+<li>Destroy the old cell in the same transaction.</li>
+</ol>
+<p>We assume that method 2 is the only way to create a cell which equals to an existing type id. And this way requires the authorization of the original owner.</p>
+<p>The Type ID code can be implemented via only CKB VM code, but we choose to implement it in the CKB node as a special system script. Because if we want to be able to upgrade Type ID code itself later, it has to use itself as the type script via type script hash, which is a recursive dependency.</p>
+<p><img src="type-id-recursive-dependency.png" alt="TI is a hash of the content which contains TI itself." /></p>
+<p>The Type ID code cell uses a special type script hash, which is just the ascii codes in hex of the text <code>TYPE_ID</code>.</p>
+<pre><code>0x00000000000000000000000000000000000000000000000000545950455f4944
+</code></pre>
+<h3 id="header-deps"><a class="header" href="#header-deps">Header Deps</a></h3>
+<p>Header Deps allows the script to read block headers. This feature has some limitation to ensure the transaction is determined.</p>
+<p>We say a transaction is determined that if all the scripts in the transaction have the determined results.</p>
+<p>Header Deps allows the scripts to read a block header which hashes are listed in <code>header_deps</code>. There's another precondition that the transaction can only be added to the chain if all the block listed in <code>header_deps</code> are already in the chain (uncles excluded).</p>
+<p>There are two ways to load a header in a script using syscall <code>ckb_load_header</code>:</p>
+<ul>
+<li>Via header deps index.</li>
+<li>Via an input or a cell dep. The syscall will return the block in which the cell is created if that block is listed in <code>header_deps</code>.</li>
+</ul>
+<p>The second way to load a header has another benefit that the script knows the cell is in the loaded block. DAO withdraw transaction uses it to get the block number where the capacity was deposited.</p>
+<p><img src="header-deps.png" alt="" /></p>
+<p>Here are some examples of loading header In the diagram above.</p>
+<pre><code class="language-c">// Load the first block in header_deps, the block Hi
+load_header(..., 0, CKB_SOURCE_HEADER_DEP);
+
+// Load the second block in header_deps, the block Hj
+load_header(..., 1, CKB_SOURCE_HEADER_DEP);
+
+// Load the block in which the first input is created, the block Hi
+load_header(..., 0, CKB_SOURCE_INPUT);
+
+// Load the block in which the second input is created.
+// Since the block creating cell2 is not in header_deps, this call loads nothing.
+load_header(..., 1, CKB_SOURCE_INPUT);
+</code></pre>
+<h3 id="other-fields"><a class="header" href="#other-fields">Other Fields</a></h3>
+<p>The field <code>since</code> prevents a transaction been mined before a specific time. It already has its own <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md">RFC</a>.</p>
+<p>The field <code>version</code> is reserved for future usage. It must equal 0 in current version.</p>
+<h3 id="exceptions"><a class="header" href="#exceptions">Exceptions</a></h3>
+<p>There are two special transactions in the system.</p>
+<p>The first one is the cellbase, which is the first transaction in every block. The cellbase transaction has only one dummy input. In the dummy input, the <code>previous_outpoint</code> does not refer to any cell but set to a special value. The <code>since</code> must be set to the block number.</p>
+<p>The outputs of the cellbase are the reward and transaction fees for an older block in the chain.</p>
+<p>Cellbase is special because the output capacities do not come from inputs.</p>
+<p>Another special transaction is the DAO withdraw transaction. It also has a portion of output capacities that do not come from inputs. This portion is the interest by locking the cells in the DAO. CKB recognizes the DAO withdraw transaction by check whether there's any input uses DAO as the type script.</p>
+<h2 id="appendix-a-compute-various-hash"><a class="header" href="#appendix-a-compute-various-hash">Appendix A: Compute Various Hash</a></h2>
+<h3 id="crypto-primitives"><a class="header" href="#crypto-primitives">Crypto Primitives</a></h3>
+<p><strong>ckbhash</strong></p>
+<p>CKB uses blake2b as the default hash algorithm. We use <strong>ckbhash</strong> to denote the blake2b hash function with following configuration:</p>
+<ul>
+<li>output digest size: 32</li>
+<li>personalization: ckb-default-hash</li>
+</ul>
+<h3 id="transaction-hash"><a class="header" href="#transaction-hash">Transaction Hash</a></h3>
+<p>Transaction hash is <code>ckbhash(molecule_encode(tx_excluding_witness))</code> where</p>
+<ul>
+<li><code>molecule_encode</code> serializes a structure into binary using <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md">molecule</a>.</li>
+<li><code>tx_excluding_witness</code> is the transaction structure excluding the witness field.  See the definition <code>RawTransaction</code> in the <a href="https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L55-L62">schema file</a>.</li>
+</ul>
+<h3 id="cell-data-hash"><a class="header" href="#cell-data-hash">Cell Data Hash</a></h3>
+<p>Cell data hash is just <code>ckbhash(data)</code>.</p>
+<h3 id="script-hash"><a class="header" href="#script-hash">Script Hash</a></h3>
+<p>Script hash is <code>ckbhash(molecule_encode(script))</code> where <code>molecule_encode</code> turns the script structure into a block of binary via molecule. See the definition <code>Script</code> in the <a href="https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L28-L32">schema file</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

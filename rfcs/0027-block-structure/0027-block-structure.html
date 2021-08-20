@@ -1,0 +1,493 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0027 CKB Block Structure - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html" class="active">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0027-block-structure/0027-block-structure.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0027&quot;
+Category: Informational
+Status: Draft
+Author: Ian Yang
+Organization: Nervos Foundation
+Created: 2020-04-30
+</code></pre>
+<h1 id="ckb-block-structure"><a class="header" href="#ckb-block-structure">CKB Block Structure</a></h1>
+<p>In CKB, Block is a container of transactions. It carries the information required by consensus so the participants can verify and recognize the canonical chain.</p>
+<p>The snippet below lists the molecule schema definitions related to block. The following paragraphs will explain these structures field by field.</p>
+<pre><code>array ProposalShortId [byte; 10];
+
+vector UncleBlockVec &lt;UncleBlock&gt;;
+vector TransactionVec &lt;Transaction&gt;;
+vector ProposalShortIdVec &lt;ProposalShortId&gt;;
+
+table Block {
+    header:                 Header,
+    uncles:                 UncleBlockVec,
+    transactions:           TransactionVec,
+    proposals:              ProposalShortIdVec,
+}
+
+struct Header {
+    raw:                    RawHeader,
+    nonce:                  Uint128,
+}
+
+struct RawHeader {
+    version:                Uint32,
+    compact_target:         Uint32,
+    timestamp:              Uint64,
+    number:                 Uint64,
+    epoch:                  Uint64,
+    parent_hash:            Byte32,
+    transactions_root:      Byte32,
+    proposals_hash:         Byte32,
+    uncles_hash:            Byte32,
+    dao:                    Byte32,
+}
+
+table UncleBlock {
+    header:                 Header,
+    proposals:              ProposalShortIdVec,
+}
+</code></pre>
+<p>※ <a href="https://github.com/nervosnetwork/ckb/blob/v0.34.1/util/types/schemas/blockchain.mol">blockchain.mol in ckb v0.34.1</a></p>
+<p><img src="ckb_block_structure.png" alt="" /></p>
+<h2 id="block"><a class="header" href="#block">Block</a></h2>
+<p>A Block can be split into two parts, header, and body. The field <code>header</code> is the header part. The remaining fields, <code>uncles</code>, <code>transactions</code>, and <code>proposals</code> are the body part.</p>
+<pre><code>table Block {
+    header:                 Header,
+    uncles:                 UncleBlockVec,
+    transactions:           TransactionVec,
+    proposals:              ProposalShortIdVec,
+}
+</code></pre>
+<p>The header contains commitments on the body fields to ensure data integrity. CKB client can download and verify the header first, then download the much larger body part. Since PoW verification only requires header and uncles count in an epoch, this design can avoid wasting the bandwidth to download garbage data.</p>
+<h2 id="header"><a class="header" href="#header">Header</a></h2>
+<p>To ease PoW computation, the header is split into <code>raw</code> and <code>nonce</code>. </p>
+<pre><code>struct Header {
+    raw:                    RawHeader,
+    nonce:                  Uint128,
+}
+</code></pre>
+<p>The header must meet the last inequality in the following snippet:</p>
+<pre><code>pow_hash := ckbhash(molecule_serialize(raw))
+pow_message := pow_hash || to_le(nounce)
+pow_output := eaglesong(pow_message)
+// for testnet, there is another round of hash
+// pow_output = ckbhash(pow_output)
+
+from_be(pow_output) &lt;= compact_to_target(raw.compact_target)
+</code></pre>
+<p>※ <a href="https://github.com/nervosnetwork/ckb/blob/v0.34.1/pow/src/eaglesong.rs">eaglesong in ckb v0.34.1</a></p>
+<p>Functions used in the pseudocode:</p>
+<ul>
+<li><code>:=</code>: assignment</li>
+<li><code>||</code>: binary concatenation.</li>
+<li><code>ckbhash</code>: Blake2b hash with CKB specific configuration, see Appendix.</li>
+<li><code>to_le</code>: Convert unsigned integer to bytes in little-endian. The bytes count is the same with the integer width.</li>
+<li><code>from_be</code>: Convert bytes encoded in big-endian to an unsigned integer.</li>
+<li><code>molecule_serialize</code>: Serialize a structure into binary using its schema.</li>
+<li><code>eaglesong</code>: See RFC <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0010-eaglesong/0010-eaglesong.md">Eaglesong (Proof-of-Work Function for Nervos CKB)</a>.</li>
+<li><code>compact_to_target</code>: <code>raw.compact_target</code> encodes the difficulty target in a compact form. This function restores the target from the compact form.</li>
+</ul>
+<p>The block is referenced by the header hash, for example, in <code>raw.parent_hash</code>.</p>
+<pre><code>header_hash := ckb_hash(molecule_serialize(header))
+</code></pre>
+<p>※ <a href="https://github.com/nervosnetwork/ckb/blob/v0.34.1/util/types/src/extension/calc_hash.rs#L103">HeaderReader::calc_header_hash in util/types/src/extension/calc_hash.rs</a></p>
+<p>Notice that Header and RawHeader are all fixed-size structures. The serialization of them is just the simple binary concatenation of the fields in order.</p>
+<h2 id="rawheader"><a class="header" href="#rawheader">RawHeader</a></h2>
+<p>RawHeader is the payload of the block header.</p>
+<h3 id="version-uint32"><a class="header" href="#version-uint32"><code>version (Uint32)</code></a></h3>
+<p>It must equal to 0 now and is reserved for future upgrades.</p>
+<h3 id="compact_target-uint32"><a class="header" href="#compact_target-uint32"><code>compact_target (Uint32)</code></a></h3>
+<p>The header <code>compact_target</code> is the encoded form of the target threshold as it appears in the block header.</p>
+<p>It is similar to <code>nBits</code> in bitcoin, the original <code>nBits</code> implementation inherits properties from a signed data class, allowing the target threshold to be negative if the high bit of the significant is set. This is useless—the header hash is treated as an unsigned number, so it can never be equal to or lower than a negative target threshold.</p>
+<p>In CKB, the &quot;compact&quot; format is a representation of a whole number N using an unsigned 32bit number similar to a floating-point format. </p>
+<ul>
+<li>The most significant 8 bits are the unsigned exponent of base 256.</li>
+<li>This exponent can be thought of as &quot;number of bytes of N&quot; in which the first 3 bytes are the mantissa. </li>
+<li>The lower 24 bits are the mantissa. </li>
+</ul>
+<pre><code>N = mantissa * 256^(exponent-3)
+</code></pre>
+<p><img src="compact_target.png" alt="" /></p>
+<p>Python 3 Example and test vectors:</p>
+<pre><code class="language-python">import unittest
+
+def compact_to_target(compact):
+    exponent = compact &gt;&gt; 24
+    mantissa = compact &amp; 0x00ffffff
+    rtn = 0
+    if (exponent &lt;= 3):
+        mantissa &gt;&gt;= (8 * (3 - exponent))
+        rtn = mantissa
+    else:
+        rtn = mantissa
+        rtn &lt;&lt;= (8 * (exponent - 3))
+    overflow = mantissa != 0 and (exponent &gt; 32)
+    return rtn, overflow
+
+
+def target_to_compact(target):
+    bits = (target).bit_length()
+    exponent = ((bits + 7) // 8)
+    compact = target &lt;&lt; (
+        8 * (3 - exponent)) if exponent &lt;= 3 else (target &gt;&gt; (8 * (exponent - 3)))
+    compact = (compact | (exponent &lt;&lt; 24))
+    return compact
+
+
+class TestCompactTarget(unittest.TestCase):
+
+    def test_compact_target1(self):
+        compact = target_to_compact(0x2)
+        self.assertEqual('0x1020000', hex(compact))
+        target, overflow = compact_to_target(0x1020000)
+        self.assertTupleEqual((2, False), (target, overflow))
+
+    def test_compact_target2(self):
+        compact = target_to_compact(0xfe)
+        self.assertEqual('0x1fe0000', hex(compact))
+        target, overflow = compact_to_target(0x1fedcba)
+        self.assertTupleEqual((0xfe, False), (target, overflow))
+
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<p>See details in the source code <a href="https://github.com/nervosnetwork/ckb/blob/develop/util/types/src/utilities/difficulty.rs">difficulty.rs</a>.</p>
+<p>The <code>compact_target</code> does not change in an epoch. In a new epoch, the difficulty is adjusted according to all the headers and the total uncles count in the previous epoch. See <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#Dynamic-Difficulty-Adjustment-Mechanism">Dynamic Difficulty Adjustment Mechanism</a> in the consensus protocol RFC.</p>
+<p>The genesis block <code>compact_target</code> is hardcoded in the consensus specification.</p>
+<h3 id="timestamp-uint64"><a class="header" href="#timestamp-uint64"><code>timestamp (Uint64)</code></a></h3>
+<p>The time when the block is created encoded as Unix Timestamp, in milliseconds. For example</p>
+<pre><code>1588233578000 is Thu, 30 Apr 2020 07:59:38 +0000
+</code></pre>
+<p>There's a consensus rule to verify that the block timestamp must be larger than the median timestamp of the previous 37 blocks.</p>
+<p>The Nervos Network CKB client rejects blocks in which timestamp is more than 15 seconds in the future, however, this is not a consensus rule.</p>
+<p><img src="timestamp.png" alt="" /></p>
+<p>The genesis block <code>timestamp</code> is hardcoded in the consensus specification.</p>
+<h3 id="number-uint64"><a class="header" href="#number-uint64"><code>number (Uint64)</code></a></h3>
+<p>A sequential number which encodes the genesis block as 0 and the child block number is the parent block number plus 1.</p>
+<p><img src="number.png" alt="" /></p>
+<pre><code>genesis_header.number := 0
+header.number := parent_header.number + 1
+</code></pre>
+<h3 id="epoch-uint64"><a class="header" href="#epoch-uint64"><code>epoch (Uint64)</code></a></h3>
+<p>This field encodes the epoch number and the fraction position of this block in the epoch.</p>
+<p>The lower 56 bits of the epoch field are split into 3 parts (listed in the order from higher bits to lower bits):</p>
+<ul>
+<li>The highest 16 bits represent the epoch length</li>
+<li>The next 16 bits represent the current block index in the epoch, starting from 0.</li>
+<li>The lowest 24 bits represent the current epoch number.</li>
+</ul>
+<p><img src="epoch.png" alt="" /></p>
+<p>Assume there's a block, which number is 11555 and in epoch 50. The epoch 50 starts from block 11000 and have 1000 blocks. The epoch field for this particular block will then be 1,099,520,939,130,930, which is calculated in the following way:</p>
+<pre><code>50 | ((11555 - 11000) &lt;&lt; 24) | (1000 &lt;&lt; 40)
+</code></pre>
+<p>The genesis epoch number is 0 and the genesis block relative index in the epoch is also 0. So the genesis block epoch field only depends on the genesis epoch length, which is hardcoded in the consensus specification.</p>
+<h3 id="parent_hash-byte32"><a class="header" href="#parent_hash-byte32"><code>parent_hash (Byte32)</code></a></h3>
+<p>The header hash of the parent block. The genesis block <code>parent_hash</code> is hardcoded in the consensus specification.</p>
+<h3 id="transaction_root-byte32"><a class="header" href="#transaction_root-byte32"><code>transaction_root (Byte32)</code></a></h3>
+<p>This is the commitment to all the transactions in the block.</p>
+<p>It is a hash on two Merkle Tree roots</p>
+<pre><code>ckbhash(T || W)
+</code></pre>
+<p>The function <code>ckbhash</code> is the default digest algorithm in CKB, see Appendix.</p>
+<p><code>T</code> is the root of a CKB Merkle Tree, which items are the transaction hashes of all the transactions in the block.</p>
+<p><code>W</code> is also the root of a CKB Merkle Tree, but the items are the transaction witness hashes of all the transactions in the block.</p>
+<p><img src="transactions_root.png" alt="" /></p>
+<p>See Appendix for the references of CKB Merkle Tree and two different transaction hashes.</p>
+<h3 id="proposals_hash-byte32"><a class="header" href="#proposals_hash-byte32"><code>proposals_hash (Byte32)</code></a></h3>
+<p>Field <code>proposals_hash</code> is the hash on <code>proposals</code> in the block body.</p>
+<p>It is all zeros when <code>proposals</code> is empty, or <code>ckbhash</code> on all the bytes concatenated together.</p>
+<pre><code>proposals_hash = 0 when proposals are empty, otherwise
+
+proposals_hash = ckb_hash(P1 || P2 || ... || Pn)
+  where Pi is the i-th ProposalShortId in proposals
+</code></pre>
+<h3 id="uncles_hash-byte32"><a class="header" href="#uncles_hash-byte32"><code>uncles_hash (Byte32)</code></a></h3>
+<p>Field <code>uncles_hash</code> is the hash on <code>uncles</code> in the block body.</p>
+<p>It is all zeros when <code>uncles</code> is empty, or <code>ckbhash</code> on all the uncle header hashes concatenated together.</p>
+<pre><code>uncles_hash = 0 when uncles is empty, otherwise
+
+uncles_hash = ckb_hash(U1 || U2 || ... || Un)
+  where Ui is the header_hash of the i-th uncle in uncles
+</code></pre>
+<p>Recall that header hash is the hash of the whole serialized header.</p>
+<pre><code>header_hash := ckb_hash(molecule_serialize(header))
+</code></pre>
+<h3 id="dao-byte32"><a class="header" href="#dao-byte32"><code>dao (Byte32)</code></a></h3>
+<p>The dao field compacts 4 64-bits unsigned integers in little-endian.</p>
+<ul>
+<li><code>C_i</code>, bytes 0 to 7</li>
+<li><code>AR_i</code>, bytes 8 to 15</li>
+<li><code>S_i</code>, bytes 16 to 23</li>
+<li><code>U_i</code>, bytes 24 to 31</li>
+</ul>
+<p>See RFC <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md#calculation">Deposit and Withdraw in Nervos DAO</a>.</p>
+<h2 id="transactions"><a class="header" href="#transactions">Transactions</a></h2>
+<p>The field <code>block.transactions</code> is the ordered list of transactions in the block. The first transaction must be the cellbase. See the transaction informational RFC.</p>
+<h2 id="uncles"><a class="header" href="#uncles">Uncles</a></h2>
+<p>The field <code>block.uncles</code> is the ordered list of uncle blocks.</p>
+<p>A block B1 is considered to be the uncle of another block B2 if all the following conditions are met:</p>
+<ol>
+<li>They are in the same epoch, sharing the same difficulty;</li>
+<li>B2 block number is larger than B1;</li>
+<li>B1's parent is either B2's ancestor or an uncle embedded in B2 or any of B2's ancestors.</li>
+<li>B2 is the first block in its chain to refer to B1.</li>
+</ol>
+<p>The chain stores only the uncle block header and proposal IDs. The header ensures the block is covered by PoW and can pass the consensus rules on uncle blocks. Proposal IDs are there because a block can commit transactions proposed in an uncle.</p>
+<h2 id="proposals"><a class="header" href="#proposals">Proposals</a></h2>
+<p>Transaction proposal ID is the first 10 bytes of the Transaction Hash.</p>
+<p>Unlike Bitcoin, CKB requires to propose the transaction proposal IDs before committing the transaction into the chain.</p>
+<p>A transaction is said proposed in block B if its proposal ID appears in B's or B's uncles' <code>proposals</code> field. A transaction is commit if it is included in the block <code>transactions</code> field.</p>
+<p>Two protocol parameters <em>close</em> and <em>far</em> define the closest and farthest on-chain distance between a transaction's proposal and commitment.</p>
+<p>A non-cellbase transaction commit in block which number is <em>c</em> must have been proposed in block with number <em>p</em>, where</p>
+<pre><code>close &lt;= c - p &lt;= far
+</code></pre>
+<p>In CKB Lina the mainnet, <em>close</em> is 2 and <em>far</em> is 10. Thus</p>
+<pre><code>2 &lt;= c - p &lt;= 10
+</code></pre>
+<p><img src="proposals.png" alt="" /></p>
+<h2 id="appendix"><a class="header" href="#appendix">Appendix</a></h2>
+<h3 id="molecule"><a class="header" href="#molecule">Molecule</a></h3>
+<p>Molecule is a serialization framework.</p>
+<ul>
+<li><a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md">Specification</a></li>
+<li><a href="https://github.com/nervosnetwork/molecule">Rust/C Code Generator</a></li>
+</ul>
+<p>The molecule schema used in CKB can be found in <a href="https://github.com/nervosnetwork/ckb/tree/develop/util/types/schemas">util/types/schemas</a></p>
+<h3 id="ckbhash"><a class="header" href="#ckbhash">ckbhash</a></h3>
+<p>CKB uses <a href="https://blake2.net/blake2.pdf">blake2b</a> as the default hash algorithm with following configurations:</p>
+<ul>
+<li>output digest size: 32</li>
+<li>personalization: ckb-default-hash</li>
+</ul>
+<p>Python 3 Example and test vectors:</p>
+<pre><code class="language-python">import hashlib
+import unittest
+
+def ckbhash():
+    return hashlib.blake2b(digest_size=32, person=b'ckb-default-hash')
+
+class TestCKBBlake2b(unittest.TestCase):
+
+    def test_empty_message(self):
+        hasher = ckbhash()
+        hasher.update(b'')
+        self.assertEqual('44f4c69744d5f8c55d642062949dcae49bc4e7ef43d388c5a12f42b5633d163e', hasher.hexdigest())
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<h2 id="ckb-merkle-tree"><a class="header" href="#ckb-merkle-tree">CKB Merkle Tree</a></h2>
+<p>CKB Merkle Tree is a <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0006-merkle-tree/0006-merkle-tree.md">CBMT</a> using following merge function:</p>
+<pre><code>ckbhash(left || right)
+</code></pre>
+<ul>
+<li>ckbhash is the hash function.</li>
+<li><code>||</code> denotes binary concatenation.</li>
+</ul>
+<h2 id="transaction-hash"><a class="header" href="#transaction-hash">Transaction Hash</a></h2>
+<p>The transaction is serialized via Molecule in CKB. Its schema is:</p>
+<pre><code>table Transaction {
+    raw:            RawTransaction,
+    witnesses:      BytesVec,
+}
+</code></pre>
+<p>The transaction hash is the <code>ckbhash</code> on the serialized <code>raw</code>.</p>
+<h2 id="transaction-witness-hash"><a class="header" href="#transaction-witness-hash">Transaction Witness Hash</a></h2>
+<p>The transaction is serialized via Molecule in CKB.</p>
+<p>The transaction witness hash is the <code>ckbhash</code> on the whole serialized transaction.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

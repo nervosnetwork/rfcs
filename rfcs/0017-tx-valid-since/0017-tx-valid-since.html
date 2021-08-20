@@ -1,0 +1,540 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0017 Transaction valid since - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html" class="active">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0017&quot;
+Category: Standards Track
+Status: Proposal
+Author: Jinyang Jiang
+Organization: Nervos Foundation
+Created: 2019-03-11
+</code></pre>
+<h1 id="transaction-valid-since"><a class="header" href="#transaction-valid-since">Transaction valid since</a></h1>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>This RFC suggests adding a new consensus rule to prevent a cell to be spent before a certain block timestamp or a block number.</p>
+<h2 id="summary"><a class="header" href="#summary">Summary</a></h2>
+<p>Transaction input adds a new <code>u64</code> (unsigned 64-bit integer) type field <code>since</code>, which prevents the transaction to be mined before an absolute or relative time.</p>
+<p>The highest 8 bits of <code>since</code> is <code>flags</code>, the remain <code>56</code> bits represent <code>value</code>, <code>flags</code> allow us to determine behaviours:</p>
+<ul>
+<li><code>flags &amp; (1 &lt;&lt; 7)</code> represent <code>relative_flag</code>.</li>
+<li><code>flags &amp; (1 &lt;&lt; 6)</code> and <code>flags &amp; (1 &lt;&lt; 5)</code> together represent <code>metric_flag</code>.
+<ul>
+<li><code>since</code> use a block based lock-time if <code>metric_flag</code> is <code>00</code>, <code>value</code> can be explained as a block number or a relative block number.</li>
+<li><code>since</code> use an epoch based lock-time if <code>metric_flag</code> is <code>01</code>, <code>value</code> can be explained as an absolute epoch or relative epoch.</li>
+<li><code>since</code> use a time based lock-time if <code>metric_flag</code> is <code>10</code>, <code>value</code> can be explained as a block timestamp(unix time) or a relative seconds.</li>
+<li><code>metric_flag</code> <code>11</code> is invalid.</li>
+</ul>
+</li>
+<li>other 5 <code>flags</code> bits remain for other use.</li>
+</ul>
+<p>The consensus to validate this field described as follow:</p>
+<ul>
+<li>iterate inputs, and validate each input by following rules.</li>
+<li>ignore this validate rule if all 64 bits of <code>since</code> are 0.</li>
+<li>check <code>metric_flag</code> flag:
+<ul>
+<li>the lower 56 bits of <code>since</code> represent block number if <code>metric_flag</code> is <code>00</code>.</li>
+<li>the lower 56 bits of <code>since</code> represent epoch if <code>metric_flag</code> is <code>01</code>.</li>
+<li>the lower 56 bits of <code>since</code> represent block timestamp if <code>metric_flag</code> is <code>10</code>.</li>
+</ul>
+</li>
+<li>check <code>relative_flag</code>:
+<ul>
+<li>consider field as absolute lock time if <code>relative_flag</code> is <code>0</code>:
+<ul>
+<li>fail the validation if tip's block number or epoch or block timestamp is less than <code>since</code> field.</li>
+</ul>
+</li>
+<li>consider field as relative lock time if <code>relative_flag</code> is <code>1</code>:
+<ul>
+<li>find the block which produced the input cell, get the block timestamp or block number or epoch based on <code>metric_flag</code> flag.</li>
+<li>fail the validation if tip's number or epoch or timestamp minus block's number or epoch or timestamp is less than <code>since</code> field.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Otherwise, the validation SHOULD continue.</li>
+</ul>
+<p>A cell lock script can check the <code>since</code> field of an input and return invalid when <code>since</code> not satisfied condition, to indirectly prevent cell to be spent.</p>
+<p>This provides the ability to implement time-based fund lock scripts:</p>
+<pre><code class="language-ruby"># absolute time lock
+# The cell can't be spent unless block number is greater than 10000.
+def unlock?
+  input = CKB.load_current_input
+  # fail if it is relative lock
+  return false if input.since[63] == 1
+  # fail if metric_flag is not block_number
+  return false (input.since &amp; 0x6000_0000_0000_0000) != (0b0000_0000 &lt;&lt; 56)
+  input.since &gt; 10000
+end
+</code></pre>
+<pre><code class="language-ruby"># relative time lock
+# The cell can't be spent unless 3 days(blockchain time) later since the cell gets confirmed on-chain.
+def unlock?
+  input = CKB.load_current_input
+  # fail if it is absolute lock
+  return false if input.since[63].zero?
+  # fail if metric_flag is not timestamp
+  return false (input.since &amp; 0x6000_0000_0000_0000) != (0b0100_0000 &lt;&lt; 56)
+  # extract lower 56 bits and convert to seconds
+  time = since &amp; 0x00ffffffffffffff
+  # check time must greater than 3 days
+  time &gt; 3 * 24 * 3600
+end
+</code></pre>
+<pre><code class="language-ruby"># relative time lock with epoch
+# The cell can't be spent in the next epoch
+def unlock?
+  input = CKB.load_current_input
+  # fail if it is absolute lock
+  return false if input.since[63].zero?
+  # fail if metric_flag is not epoch information
+  return false (input.since &amp; 0x6000_0000_0000_0000) != (0b0010_0000 &lt;&lt; 56)
+  # extract lower 56 bits
+  epoch = since &amp; 0x00ffffffffffffff
+  # extract epoch information
+  epoch_number = epoch &amp; 0xffffff
+  # enforce only can unlock in next or further epochs
+  epoch_number &gt;= 1
+end
+</code></pre>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<pre><code class="language-txt"># Absolute time lock
+
+0x0000_0000_0000_3039 # The tx failed verification unless the block number is greater than #12345
+
+0x4000_0000_5e83_d980 # The tx failed verification unless current blockchain date is later than 2020-04-01
+
+0x2000_0000_0000_0400 # The tx failed verification unless the epoch number is greater than 1024
+
+# Relative time lock
+
+0x8000_0000_0000_0064 # The tx failed verification unless it is 100 blocks later since the input cell get confirmed on-chain
+
+0xc000_0000_0012_7500 # The tx failed verification unless it is 14 days(blockchain time) later since the input cell get confirmed on-chain
+
+0xa000_0000_0000_0018 # The tx failed verification unless it is 24 epochs later since the input cell get confirmed on-chain
+</code></pre>
+<h2 id="detailed-specification"><a class="header" href="#detailed-specification">Detailed Specification</a></h2>
+<p><code>since</code> SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when <code>metric flag</code> is <code>10</code>, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.</p>
+<p>The median block time calculated from the past 37 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub trait BlockMedianTimeContext {
+    fn median_block_count(&amp;self) -&gt; u64;
+
+    /// Return timestamp and block_number of the corresponding bloch_hash, and hash of parent block
+    fn timestamp_and_parent(&amp;self, block_hash: &amp;H256) -&gt; (u64, BlockNumber, H256);
+
+    /// Return past block median time, **including the timestamp of the given one**
+    fn block_median_time(&amp;self, block_hash: &amp;H256) -&gt; u64 {
+        let median_time_span = self.median_block_count();
+        let mut timestamps: Vec&lt;u64&gt; = Vec::with_capacity(median_time_span as usize);
+        let mut block_hash = block_hash.to_owned();
+        for _ in 0..median_time_span {
+            let (timestamp, block_number, parent_hash) = self.timestamp_and_parent(&amp;block_hash);
+            timestamps.push(timestamp);
+            block_hash = parent_hash;
+
+            if block_number == 0 {
+                break;
+            }
+        }
+
+        // return greater one if count is even.
+        timestamps.sort();
+        timestamps[timestamps.len() &gt;&gt; 1]
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>Validation of transaction <code>since</code> defined as follow code:</p>
+<pre><pre class="playground"><code class="language-rust">
+<span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>const LOCK_TYPE_FLAG: u64 = 1 &lt;&lt; 63;
+const METRIC_TYPE_FLAG_MASK: u64 = 0x6000_0000_0000_0000;
+const VALUE_MASK: u64 = 0x00ff_ffff_ffff_ffff;
+const REMAIN_FLAGS_BITS: u64 = 0x1f00_0000_0000_0000;
+
+enum SinceMetric {
+    BlockNumber(u64),
+    EpochNumberWithFraction(EpochNumberWithFraction),
+    Timestamp(u64),
+}
+
+/// RFC 0017
+#[derive(Copy, Clone, Debug)]
+pub(crate) struct Since(pub(crate) u64);
+
+impl Since {
+    pub fn is_absolute(self) -&gt; bool {
+        self.0 &amp; LOCK_TYPE_FLAG == 0
+    }
+
+    #[inline]
+    pub fn is_relative(self) -&gt; bool {
+        !self.is_absolute()
+    }
+
+    pub fn flags_is_valid(self) -&gt; bool {
+        (self.0 &amp; REMAIN_FLAGS_BITS == 0)
+            &amp;&amp; ((self.0 &amp; METRIC_TYPE_FLAG_MASK) != METRIC_TYPE_FLAG_MASK)
+    }
+
+    fn extract_metric(self) -&gt; Option&lt;SinceMetric&gt; {
+        let value = self.0 &amp; VALUE_MASK;
+        match self.0 &amp; METRIC_TYPE_FLAG_MASK {
+            //0b0000_0000
+            0x0000_0000_0000_0000 =&gt; Some(SinceMetric::BlockNumber(value)),
+            //0b0010_0000
+            0x2000_0000_0000_0000 =&gt; Some(SinceMetric::EpochNumberWithFraction(EpochNumberWithFraction::from_full_value(value))),
+            //0b0100_0000
+            0x4000_0000_0000_0000 =&gt; Some(SinceMetric::Timestamp(value * 1000)),
+            _ =&gt; None,
+        }
+    }
+}
+
+/// https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md#detailed-specification
+pub struct SinceVerifier&lt;'a, M&gt; {
+    rtx: &amp;'a ResolvedTransaction,
+    block_median_time_context: &amp;'a M,
+    block_number: BlockNumber,
+    epoch_number_with_fraction: EpochNumberWithFraction,
+    parent_hash: Byte32,
+    median_timestamps_cache: RefCell&lt;LruCache&lt;Byte32, u64&gt;&gt;,
+}
+
+impl&lt;'a, M&gt; SinceVerifier&lt;'a, M&gt;
+where
+    M: BlockMedianTimeContext,
+    {
+        pub fn new(
+            rtx: &amp;'a ResolvedTransaction,
+            block_median_time_context: &amp;'a M,
+            block_number: BlockNumber,
+            epoch_number_with_fraction: EpochNumberWithFraction,
+            parent_hash: Byte32,
+        ) -&gt; Self {
+            let median_timestamps_cache = RefCell::new(LruCache::new(rtx.resolved_inputs.len()));
+            SinceVerifier {
+                rtx,
+                block_median_time_context,
+                block_number,
+                epoch_number_with_fraction,
+                parent_hash,
+                median_timestamps_cache,
+            }
+        }
+        fn parent_median_time(&amp;self, block_hash: &amp;Byte32) -&gt; u64 {
+            let (_, _, parent_hash) = self
+                .block_median_time_context
+                .timestamp_and_parent(block_hash);
+            self.block_median_time(&amp;parent_hash)
+        }
+        
+        fn block_median_time(&amp;self, block_hash: &amp;Byte32) -&gt; u64 {
+            if let Some(median_time) = self.median_timestamps_cache.borrow().get(block_hash) {
+                return *median_time;
+            }
+            let median_time = self.block_median_time_context.block_median_time(block_hash);
+            self.median_timestamps_cache
+                .borrow_mut()
+                .insert(block_hash.clone(), median_time);
+            median_time
+        }
+        
+        fn verify_absolute_lock(&amp;self, since: Since) -&gt; Result&lt;(), Error&gt; {
+            if since.is_absolute() {
+                match since.extract_metric() {
+                    Some(SinceMetric::BlockNumber(block_number)) =&gt; {
+                        if self.block_number &lt; block_number {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    Some(SinceMetric::EpochNumberWithFraction(epoch_number_with_fraction)) =&gt; {
+                        if self.epoch_number_with_fraction &lt; epoch_number_with_fraction {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    Some(SinceMetric::Timestamp(timestamp)) =&gt; {
+                        let tip_timestamp = self.block_median_time(&amp;self.parent_hash);
+                        if tip_timestamp &lt; timestamp {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    None =&gt; {
+                        return Err(TransactionError::InvalidSince).into());
+                    }
+                }
+            }
+            Ok(())
+        }
+        
+        fn verify_relative_lock(&amp;self, since: Since, cell_meta: &amp;CellMeta) -&gt; Result&lt;(), Error&gt; {
+            if since.is_relative() {
+                let info = match cell_meta.transaction_info {
+                    Some(ref transaction_info) =&gt; Ok(transaction_info),
+                    None =&gt; Err(TransactionError::Immature),
+                }?;
+                match since.extract_metric() {
+                    Some(SinceMetric::BlockNumber(block_number)) =&gt; {
+                        if self.block_number &lt; info.block_number + block_number {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    Some(SinceMetric::EpochNumberWithFraction(epoch_number_with_fraction)) =&gt; {
+                        let a = self.epoch_number_with_fraction.to_rational();
+                        let b =
+                            info.block_epoch.to_rational() + epoch_number_with_fraction.to_rational();
+                        if a &lt; b {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    Some(SinceMetric::Timestamp(timestamp)) =&gt; {
+                        // pass_median_time(current_block) starts with tip block, which is the
+                        // parent of current block.
+                        // pass_median_time(input_cell's block) starts with cell_block_number - 1,
+                        // which is the parent of input_cell's block
+                        let cell_median_timestamp = self.parent_median_time(&amp;info.block_hash);
+                        let current_median_time = self.block_median_time(&amp;self.parent_hash);
+                        if current_median_time &lt; cell_median_timestamp + timestamp {
+                            return Err(TransactionError::Immature).into());
+                        }
+                    }
+                    None =&gt; {
+                        return Err(TransactionError::InvalidSince).into());
+                    }
+                }
+            }
+            Ok(())
+        }
+        
+        pub fn verify(&amp;self) -&gt; Result&lt;(), Error&gt; {
+            for (cell_meta, input) in self
+                .rtx
+                .resolved_inputs
+                .iter()
+                .zip(self.rtx.transaction.inputs()) {
+                // ignore empty since
+                let since: u64 = input.since().unpack();
+                if since == 0 {
+                    continue;
+                }
+                let since = Since(since);
+                // check remain flags
+                if !since.flags_is_valid() {
+                    return Err(TransactionError::InvalidSince).into());
+                }
+                
+                // verify time lock
+                self.verify_absolute_lock(since)?;
+                self.verify_relative_lock(since, cell_meta)?;
+            }
+            Ok(())
+        }
+    }
+<span class="boring">}
+</span></code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0019-data-structures/0019-data-structures.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0019-data-structures/0019-data-structures.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

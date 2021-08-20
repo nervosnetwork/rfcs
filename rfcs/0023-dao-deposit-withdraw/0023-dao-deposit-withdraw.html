@@ -1,0 +1,581 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0023 Deposit and Withdraw in Nervos DAO - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html" class="active">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0023&quot;
+Category: Standards Track
+Status: Proposal
+Author: Jan Xie, Xuejie Xiao, Ian Yang
+Organization: Nervos Foundation
+Created: 2019-10-30
+</code></pre>
+<h1 id="deposit-and-withdraw-in-nervos-dao"><a class="header" href="#deposit-and-withdraw-in-nervos-dao">Deposit and Withdraw in Nervos DAO</a></h1>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>This document describes deposit and withdraw transaction in Nervos DAO.</p>
+<p>Note: a <code>Common Gotchas</code> page is maintained at <a href="https://github.com/nervosnetwork/ckb/wiki/Common-Gotchas#nervos-dao">here</a>, including common and very important points you should be aware to use Nervos DAO well without losing CKBs. Please pay attention to this page even if you might want to skip some parts of this RFC.</p>
+<h2 id="motivation"><a class="header" href="#motivation">Motivation</a></h2>
+<p>Nervos DAO is a smart contract, with which users can interact the same way as any smart contract on CKB. One function of Nervos DAO is to provide an dilution counter-measure for CKByte holders. By deposit in Nervos DAO, holders get proportional secondary rewards, which guarantee their holding are only affected by hardcapped primary issuance as in Bitcoin.</p>
+<p>Holders can deposit their CKBytes into Nervos DAO at any time. Nervos DAO deposit is a time deposit with a minimum deposit period (counted in blocks). Holders can only withdraw after a full deposit period. If the holder does not withdraw at the end of the deposit period, those CKBytes should enter a new deposit period automatically, so holders' interaction with CKB could be minimized.</p>
+<h2 id="background"><a class="header" href="#background">Background</a></h2>
+<p>CKB's token issuance curve consists of two components:</p>
+<ul>
+<li>Primary issuance: Hardcapped issuance for miners, using the same issuance curve as Bitcoin, half at every 4 years.</li>
+<li>Secondary issuance: Constant issuance, the same amount of CKBytes will be issued at every epoch, which means secondary issuance rate approaches zero gradually over time. <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md">Because epoch length is dynamically adjusted</a>, secondary issuance at every block is a variable. </li>
+</ul>
+<p>If there's only primary issuance but no secondary issuance in CKB, the total supply of CKBytes would have a hardcap and the issuance curve would be the exact same as Bitcoin. To counter the dilution effect caused by secondary issuance, CKBytes locked in Nervos DAO will get the proportion of secondary issuance equals to the locked CKByte's percentage in circulation.</p>
+<p>For more information of Nervos DAO and CKB's economic model, please check <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md">Nervos RFC #0015</a>.</p>
+<h2 id="deposit"><a class="header" href="#deposit">Deposit</a></h2>
+<p>Users can send a transaction to deposit CKBytes into Nervos DAO at any time. CKB includes a special Nervos DAO type script in the genesis block. To deposit to Nervos DAO, one simply needs to create any transaction containing new output cell with the following requirements:</p>
+<ul>
+<li>The type script of the created output cell must be set to the Nervos DAO script.</li>
+<li>The output cell must have 8 byte length cell data, filled with all zeros.</li>
+</ul>
+<p>For convenience, a cell satisfying the above conditions will be called a <code>Nervos DAO deposit cell</code>. To obey CKB's script validation logic, one also needs to include a reference to Nervos DAO type script in the <code>cell_deps</code> part of the enclosing transaction. Notice there's no limit on the number of deposits completed in one transaction, more than one Nervos DAO deposit cell can be created in a single valid transaction.</p>
+<h2 id="withdraw"><a class="header" href="#withdraw">Withdraw</a></h2>
+<p>Users can send a transaction to withdraw deposited CKBytes from Nervos DAO at any time(but a locking period will be applied to determine when exactly the tokens can be withdrawed). The compensation gained by a Nervos DAO cell will only be issued in the withdraw phase, this means for a transaction including Nervos DAO withdraw, the sum of capacities from all output cells might exceed the sum of capacities from all input cells. Unlike the deposit, withdraw is a 2-phase process:</p>
+<ul>
+<li>In phase 1, the first transaction transforms a <code>Nervos DAO deposit cell</code> into a <code>Nervos DAO withdrawing cell</code>.</li>
+<li>In phase 2, a second transaction will be used to withdraw tokens from Nervos DAO withdrawing cell.</li>
+</ul>
+<h3 id="withdraw-phase-1"><a class="header" href="#withdraw-phase-1">Withdraw Phase 1</a></h3>
+<p>Phase 1 is used to transform <code>Nervos DAO deposit cell</code> into <code>Nervos DAO withdrawing cell</code>, the purpose here, is to determine the duration a cell has been deposited into Nervos DAO. Once phase 1 transaction is included in CKB blockchain, the duration betwen <code>Nervos DAO deposit cell</code> and <code>Nervos DAO withdrawing cell</code> can then be used to calculate compensation, as well as remaining lock period of the deposited tokens.</p>
+<p>A phase 1 transaction should satisfying the following conditions:</p>
+<ul>
+<li>One or more Nervos DAO deposit cells should be included in the transaction as inputs.</li>
+<li>For each Nervos DAO deposit cell, the transaction should also include reference to its associated including block in <code>header_deps</code>, which will be used by Nervos DAO type script as the starting point of deposit.</li>
+<li>For a Nervos DAO deposit cell at input index <code>i</code>, a Nervos DAO withdrawing cell should be created at output index <code>i</code> with the following requirements:
+<ul>
+<li>The withdrawing cell should have the same lock script as the deposit cell</li>
+<li>The withdrawing cell should have the same Nervos DAO type script as the deposit cell</li>
+<li>The withdrawing cell should have the same capacity as the deposit cell</li>
+<li>The withdrawing cell should also have 8 byte length cell data, but instead of 8 zero, the cell data part should store the block number of the deposit cell's including block. The number should be packed in 64-bit unsigned little endian integer format.</li>
+</ul>
+</li>
+<li>The Nervos DAO type script should be included in the <code>cell_deps</code> of withdraw transaction.</li>
+</ul>
+<p>Once this transaction is included in CKB, the user can start preparing phase 2 transaction.</p>
+<h3 id="withdraw-phase-2"><a class="header" href="#withdraw-phase-2">Withdraw Phase 2</a></h3>
+<p>Phase 2 transaction is used to withdraw deposited tokens together with compensation from Nervos DAO. Notice unlike phase 1 transaction which can be sent at any time the user wish, the assembled phase 2 transaction here, will have a since field set to fulfill lock period requirements, so it might be possible that one can only generate a transaction first, but has to wait for some time before he/she can send the transaction to CKB.</p>
+<p>A phase 2 transaction should satisfying the following conditions:</p>
+<ul>
+<li>One or more Nervos DAO withdrawing cells should be included in the transaction as inputs.</li>
+<li>For each Nervos DAO withdrawing cell, the transaction should also include the reference to its associated including block in <code>header_deps</code>, which will be used by Nervos DAO type script as the end point of deposit.</li>
+<li>For a Nervos DAO withdrawing cell at input index <code>i</code>, the user should locate the deposit block header, meaning the block header in which the original Nervos DAO deposit cell is included. With the deposit block header, 2 operations are required:
+<ul>
+<li>The deposit block header hash should be included in <code>header_deps</code> of current transaction</li>
+<li>The index of the deposit block header hash in <code>header_deps</code> should be kept using 64-bit unsigned little endian integer format in the part belonging to input cell's type script of corresponding witness at index <code>i</code>. A separate RFC would explain current argument organization in the witness. An example will also show this process in details below.</li>
+</ul>
+</li>
+<li>For a Nervos DAO withdrawing cell, the <code>since</code> field in the cell input should reflect the Nervos DAO cell's lock period requirement, which is 180 epoches. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc. Notice the calculation of lock period is independent of the calculation of compensation. It's totally valid to deposit at epoch 5, use a <code>withdraw block</code> at epoch 100, and use a <code>since</code> field at 185. Please refer to the <a href="https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md">since RFC</a> on how to represent valid epoch numbers, Nervos DAO type script only accepts absolute epoch numbers as since values now.</li>
+<li>The compensation calculation logic is totally separate from the lock period calculation logic, we will explain the compensation calculation logic in the next section.</li>
+<li>The Nervos DAO type script requires the sum of all input cells' capacities plus compensation is larger or equaled to the sum of all output cells' capacities.</li>
+<li>The Nervos DAO type script should be included in the <code>cell_deps</code>.</li>
+</ul>
+<p>As hinted in the above steps, it's perfectly possible to do multiple withdraws in one transaction. What's more, Nervos DAO doesn't limit the purpose of withdrawed tokens, it's also valid to deposit the newly withdrawed tokens again to Nervos DAO right away in the same transaction. In fact, one transaction can be used to freely mix all the following actions together:</p>
+<ol>
+<li>Deposit tokens into Nervos DAO.</li>
+<li>Transform some Nervos DAO deposit cells to Nervos DAO withdrawing cells.</li>
+<li>Withdraw from other Nervos DAO withdrawing cells.</li>
+</ol>
+<h2 id="calculation"><a class="header" href="#calculation">Calculation</a></h2>
+<p>This section explains the calculation of Nervos DAO compensation and relevant fields in the CKB block header.</p>
+<p>CKB's block header has a special field named <code>dao</code> containing auxiliary information for Nervos DAO's use. Specifically, the following data are packed in a 32-byte <code>dao</code> field in the following order:</p>
+<ul>
+<li><code>C_i</code> : the total issuance up to and including block <code>i</code>.</li>
+<li><code>AR_i</code>: the current <code>accumulated rate</code> at block <code>i</code>. <code>AR_j / AR_i</code> reflects the CKByte amount if one deposit 1 CKB to Nervos DAO at block <code>i</code>, and withdraw at block <code>j</code>.</li>
+<li><code>S_i</code>: the total unissued secondary issuance up to and including block <code>i</code>, including unclaimed Nervos DAO compensation and treasury funds.</li>
+<li><code>U_i</code> : the total <code>occupied capacities</code> currently in the blockchain up to and including block <code>i</code>. Occupied capacity is the sum of capacities used to store all cells.</li>
+</ul>
+<p>Each of the 4 values is stored as unsigned 64-bit little endian number in the <code>dao</code> field. To maintain enough precision <code>AR_i</code>  is stored as the original value multiplied by <code>10 ** 16</code> .</p>
+<p>For a single block <code>i</code>, it's easy to calculate the following values:</p>
+<ul>
+<li><code>p_i</code>: primary issuance for block <code>i</code></li>
+<li><code>s_i</code>: secondary issuance for block <code>i</code></li>
+<li><code>U_{in,i}</code> : occupied capacities for all input cells in block <code>i</code></li>
+<li><code>U_{out,i}</code> : occupied capacities for all output cells in block <code>i</code></li>
+<li><code>C_{in,i}</code> : total capacities for all input cells in block <code>i</code></li>
+<li><code>C_{out,i}</code> : total capacities for all output cells in block <code>i</code></li>
+<li><code>I_i</code> : total withdrawed Nervos DAO compensation in block <code>i</code> (not includes withdrawing compensation)</li>
+</ul>
+<p>In genesis block, the values are defined as follows:</p>
+<ul>
+<li><code>C_0</code> : <code>C_{out,0}</code> - <code>C_{in,0}</code> + <code>p_0</code> + <code>s_0</code></li>
+<li><code>U_0</code> : <code>U_{out,0}</code> - <code>U_{in,0}</code></li>
+<li><code>S_0</code> : <code>s_0</code></li>
+<li><code>AR_0</code> : <code>10 ^ 16</code></li>
+</ul>
+<p>Then from the genesis block, the values for each succeeding block can be calculated in an induction way:</p>
+<ul>
+<li><code>C_i</code> : <code>C_{i-1}</code> + <code>p_i</code> + <code>s_i</code></li>
+<li><code>U_i</code> : <code>U_{i-1}</code> + <code>U_{out,i}</code> - <code>U_{in,i}</code></li>
+<li><code>S_i</code> : <code>S_{i-1}</code> - <code>I_i</code> + <code>s_i</code> - floor( <code>s_i</code> * <code>U_{i-1}</code> / <code>C_{i-1}</code> )</li>
+<li><code>AR_i</code> : <code>AR_{i-1}</code> + floor( <code>AR_{i-1}</code> * <code>s_i</code> / <code>C_{i-1}</code> )</li>
+</ul>
+<p>With those values, it's now possible to calculate the Nervos DAO compensation for a deposited cell. Assuming a Nervos DAO cell is deposited at block <code>m</code> (also meaning the Nervos DAO deposit cell is included at block <code>m</code>), the user chooses to start withdrawing process from block <code>n</code> (meaning the Nervos DAO withdrawing cell is included at block <code>n</code>), the total capacity for the Nervos DAO cell is <code>c_t</code>, the occupied capacity for the Nervos DAO cell is <code>c_o</code>. The Nervos DAO compensation is calculated with the following formula:</p>
+<p>( <code>c_t</code> - <code>c_o</code> ) * <code>AR_n</code> / <code>AR_m</code> - ( <code>c_t</code> - <code>c_o</code> )</p>
+<p>Meaning that the maximum total withdraw capacity one can get from this Nervos DAO input cell is:</p>
+<p>( <code>c_t</code> - <code>c_o</code> ) * <code>AR_n</code> / <code>AR_m</code> + <code>c_o</code></p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>The following type script represents the Nervos DAO script on CKB mainnet:</p>
+<pre><code>{
+  &quot;code_hash&quot;: &quot;0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e&quot;,
+  &quot;args&quot;: &quot;0x&quot;,
+  &quot;hash_type&quot;: &quot;type&quot;
+}
+</code></pre>
+<p>And the following OutPoint refers to cell containing NervosDAO script:</p>
+<pre><code>{
+  &quot;out_point&quot;: {
+    &quot;tx_hash&quot;: &quot;0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c&quot;,
+    &quot;index&quot;: &quot;0x2&quot;
+  },
+  &quot;dep_type&quot;: &quot;code&quot;
+}
+</code></pre>
+<p>The following transaction deposits 200 CKB into Nervos DAO:</p>
+<pre><code>{
+  &quot;version&quot;: &quot;0x0&quot;,
+  &quot;cell_deps&quot;: [
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c&quot;,
+        &quot;index&quot;: &quot;0x0&quot;
+      },
+      &quot;dep_type&quot;: &quot;dep_group&quot;
+    },
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c&quot;,
+        &quot;index&quot;: &quot;0x2&quot;
+      },
+      &quot;dep_type&quot;: &quot;code&quot;
+    }
+  ],
+  &quot;header_deps&quot;: [],
+  &quot;inputs&quot;: [
+    {
+      &quot;previous_output&quot;: {
+        &quot;tx_hash&quot;: &quot;0xeb4644164c4dc64f195bb3b0c6e4f417e11519b1931e5f7177ff8008d96dbe83&quot;,
+        &quot;index&quot;: &quot;0x1&quot;
+      },
+      &quot;since&quot;: &quot;0x0&quot;
+    }
+  ],
+  &quot;outputs&quot;: [
+    {
+      &quot;capacity&quot;: &quot;0x2e90edd000&quot;,
+      &quot;lock&quot;: {
+        &quot;code_hash&quot;: &quot;0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8&quot;,
+        &quot;args&quot;: &quot;0xe5f99902495d04d9dcb013aefc96093d365b77dc&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      },
+      &quot;type&quot;: {
+        &quot;code_hash&quot;: &quot;0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e&quot;,
+        &quot;args&quot;: &quot;0x&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      }
+    },
+    {
+      &quot;capacity&quot;: &quot;0x101db898cb1&quot;,
+      &quot;lock&quot;: {
+        &quot;code_hash&quot;: &quot;0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8&quot;,
+        &quot;args&quot;: &quot;0x9776eaa16af9cd8b6a2d169ae95671b0bcb8b0c4&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      },
+      &quot;type&quot;: null
+    }
+  ],
+  &quot;outputs_data&quot;: [
+    &quot;0x0000000000000000&quot;,
+    &quot;0x&quot;
+  ],
+  &quot;witnesses&quot;: [
+    &quot;0x5500000010000000550000005500000041000000c22c72efb85da607ac48b220ad5b7132dc7abe50c3337c9a51e75102e8efaa5557e8b0567f9e0d9753016ebd52be3091bd55d4b87d7d4845f0d56ccf06e6ffe400&quot;
+  ],
+  &quot;hash&quot;: &quot;0x81c400a761b0b5f1d8b00d8939e5a729d21d25a08e14e54f0661cb4f6fc6fb81&quot;
+}
+</code></pre>
+<p>This transaction is actually committed in the following block:</p>
+<pre><code>{
+  &quot;compact_target&quot;: &quot;0x1a2158d9&quot;,
+  &quot;hash&quot;: &quot;0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc&quot;,
+  &quot;number&quot;: &quot;0x105f&quot;,
+  &quot;parent_hash&quot;: &quot;0x36990fe91a0ee3755fd6faaa2563349425b56319f06aa70d2846af47e3132262&quot;,
+  &quot;nonce&quot;: &quot;0x19759fb43000000000000000b28a9573&quot;,
+  &quot;timestamp&quot;: &quot;0x16e80172dbf&quot;,
+  &quot;transactions_root&quot;: &quot;0x66866dcfd5426b2bfeecb3cf4ff829d353364b847126b2e8d2ce8f8aecd28fb8&quot;,
+  &quot;proposals_hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;uncles_hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;version&quot;: &quot;0x0&quot;,
+  &quot;epoch&quot;: &quot;0x68d0288000002&quot;,
+  &quot;dao&quot;: &quot;0x8268d571c743a32ee1e547ea57872300989ceafa3e710000005d6a650b53ff06&quot;
+}
+</code></pre>
+<p>As mentioned above, <code>dao</code> field here contains 4 fields, <code>AR</code> is the second field in the list, extracting the little endian integer from offset <code>8</code> through offset <code>16</code>, the current deposit <code>AR</code> is <code>10000435847357921</code>, which is <code>1.0000435847357921</code> considering <code>AR</code> is stored with the original value multiplied by <code>10 ** 16</code> .</p>
+<p>The following transaction, can then be used to start phase 1 of withdrawing process, which transforms Nervos DAO deposit cell to Nervos DAO withdrawing cell:</p>
+<pre><code>{
+  &quot;version&quot;: &quot;0x0&quot;,
+  &quot;cell_deps&quot;: [
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c&quot;,
+        &quot;index&quot;: &quot;0x0&quot;
+      },
+      &quot;dep_type&quot;: &quot;dep_group&quot;
+    },
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c&quot;,
+        &quot;index&quot;: &quot;0x2&quot;
+      },
+      &quot;dep_type&quot;: &quot;code&quot;
+    }
+  ],
+  &quot;header_deps&quot;: [
+    &quot;0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc&quot;
+  ],
+  &quot;inputs&quot;: [
+    {
+      &quot;previous_output&quot;: {
+        &quot;tx_hash&quot;: &quot;0x81c400a761b0b5f1d8b00d8939e5a729d21d25a08e14e54f0661cb4f6fc6fb81&quot;,
+        &quot;index&quot;: &quot;0x0&quot;
+      },
+      &quot;since&quot;: &quot;0x0&quot;
+    },
+    {
+      &quot;previous_output&quot;: {
+        &quot;tx_hash&quot;: &quot;0x043639b6aedcd0d897583e3d056e5a9c4875538533733818aca31fbeabfd5fba&quot;,
+        &quot;index&quot;: &quot;0x1&quot;
+      },
+      &quot;since&quot;: &quot;0x0&quot;
+    }
+  ],
+  &quot;outputs&quot;: [
+    {
+      &quot;capacity&quot;: &quot;0x2e90edd000&quot;,
+      &quot;lock&quot;: {
+        &quot;code_hash&quot;: &quot;0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8&quot;,
+        &quot;args&quot;: &quot;0xe5f99902495d04d9dcb013aefc96093d365b77dc&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      },
+      &quot;type&quot;: {
+        &quot;code_hash&quot;: &quot;0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e&quot;,
+        &quot;args&quot;: &quot;0x&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      }
+    },
+    {
+      &quot;capacity&quot;: &quot;0x179411d65&quot;,
+      &quot;lock&quot;: {
+        &quot;code_hash&quot;: &quot;0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8&quot;,
+        &quot;args&quot;: &quot;0x5df75f10330a05ec9f862dec9bb37b5e11171475&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      },
+      &quot;type&quot;: null
+    }
+  ],
+  &quot;outputs_data&quot;: [
+    &quot;0x5f10000000000000&quot;,
+    &quot;0x&quot;
+  ],
+  &quot;witnesses&quot;: [
+    &quot;0x5500000010000000550000005500000041000000d952a9b844fc441529dd310e49907cc5eba009dcf0fcd7a5fb1394017c29b90b7c68e1d0db52c67d444accec4c04670d197630656837b33d07f0cbdd1f33907d01&quot;,
+    &quot;0x5500000010000000550000005500000041000000d8e77676d57742b9b1e3a47e53f023ade294af5ca501f33406e992af01b1d0dd4a4f22d478c9497b184b04ea56c4ce71fccd9f0d4c25f503324edff5f2b26f0d00&quot;
+  ],
+  &quot;hash&quot;: &quot;0x9ab05d622dc6d9816f70094242740cca594e677009b88c3f2b367d8b32f928fd&quot;
+}
+</code></pre>
+<p>There're couple of important points worth mentioning in this transaction:</p>
+<ul>
+<li>The input Nervos DAO deposit cell is included in <code>0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc</code> block, hence it is included in <code>header_deps</code>.</li>
+<li>The including block number is <code>4191</code>, which is <code>0x5f10000000000000</code> packed in 64-bit unsigned little endian integer number also in HEX format.</li>
+<li>Looking at the above 2 transactions together, the output cell in this transaction has the same type and capacity as previous Nervos DAO deposit cell, while uses a different cell data.</li>
+</ul>
+<p>Assume this transaction is included in the following block:</p>
+<pre><code>{
+  &quot;compact_target&quot;: &quot;0x1a2dfb48&quot;,
+  &quot;hash&quot;: &quot;0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073&quot;,
+  &quot;number&quot;: &quot;0x11ea4&quot;,
+  &quot;parent_hash&quot;: &quot;0x36f16c9a1abea1cb44bc1d923feb9f62ff45b9327188dca954968dfdecc03bd0&quot;,
+  &quot;nonce&quot;: &quot;0x74e39f370400000000000000bb4b3299&quot;,
+  &quot;timestamp&quot;: &quot;0x16ea78c300f&quot;,
+  &quot;transactions_root&quot;: &quot;0x4efccc5beeeae3847aa65f2e987947957d68f13687af069f52be361d0648feb8&quot;,
+  &quot;proposals_hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;uncles_hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,
+  &quot;version&quot;: &quot;0x0&quot;,
+  &quot;epoch&quot;: &quot;0x645017e00002f&quot;,
+  &quot;dao&quot;: &quot;0x77a7c6ea619acb2e4b841a96c88e2300b6b274a096c1080000ea07db0efaff06&quot;
+}
+</code></pre>
+<p>The following phase 2 transaction can finally be used to withdraw tokens from Nervos DAO:</p>
+<pre><code>{
+  &quot;version&quot;: &quot;0x0&quot;,
+  &quot;cell_deps&quot;: [
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0x71a7ba8fc96349fea0ed3a5c47992e3b4084b031a42264a018e0072e8172e46c&quot;,
+        &quot;index&quot;: &quot;0x0&quot;
+      },
+      &quot;dep_type&quot;: &quot;dep_group&quot;
+    },
+    {
+      &quot;out_point&quot;: {
+        &quot;tx_hash&quot;: &quot;0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c&quot;,
+        &quot;index&quot;: &quot;0x2&quot;
+      },
+      &quot;dep_type&quot;: &quot;code&quot;
+    }
+  ],
+  &quot;header_deps&quot;: [
+    &quot;0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc&quot;,
+    &quot;0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073&quot;
+  ],
+  &quot;inputs&quot;: [
+    {
+      &quot;previous_output&quot;: {
+        &quot;tx_hash&quot;: &quot;0x9ab05d622dc6d9816f70094242740cca594e677009b88c3f2b367d8b32f928fd&quot;,
+        &quot;index&quot;: &quot;0x0&quot;
+      },
+      &quot;since&quot;: &quot;0x20068d02880000b6&quot;
+    }
+  ],
+  &quot;outputs&quot;: [
+    {
+      &quot;capacity&quot;: &quot;0x2e9a2ed603&quot;,
+      &quot;lock&quot;: {
+        &quot;code_hash&quot;: &quot;0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8&quot;,
+        &quot;args&quot;: &quot;0x89e1914565e6fcc74e36d6c7bec4bdfa222b3a25&quot;,
+        &quot;hash_type&quot;: &quot;type&quot;
+      },
+      &quot;type&quot;: null
+    }
+  ],
+  &quot;outputs_data&quot;: [
+    &quot;0x&quot;
+  ],
+  &quot;witnesses&quot;: [
+    &quot;0x61000000100000005500000061000000410000006114fee94f91ed089a32df9c3b0cda0ca1e1e97879d0aae253d0785fc6f7019b20cccbc7ea338ea96e64172f4a810ef531ab5ca1570a9742f0fb23378e260d9f01080000000000000000000000&quot;
+  ],
+  &quot;hash&quot;: &quot;0x1c375948bae003ef1a9e86e6b049199480987d7dcf96bdfa2a914ecd4dadd42b&quot;
+}
+</code></pre>
+<p>There're couple of important points worth mentioning in this transaction:</p>
+<ul>
+<li>The <code>header_deps</code> in this transaction contains 2 headers: <code>0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc</code> contains block header hash in which the original Nervos DAO deposit cell is included, while <code>0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073</code> is the block in which the Nervos DAO withdrawing cell is included.</li>
+<li>Since <code>0x37ef8cf2407044d74a71f927a7e3dcd3be7fc5e7af0925c0b685ae3bedeec3bc</code> is at index 0 in <code>header_deps</code>. The number <code>0</code> will be packed in 64-bit little endian unsigned integer, which is <code>0000000000000000</code>, and appended to the end of the witness corresponding with the Nervos DAO input cell.</li>
+<li>The Nervos DAO input cell has a <code>since</code> field of <code>0x20068d02880000b6</code>, this is calculated as follows:
+<ul>
+<li>The deposit block header has an epoch value of <code>0x68d0288000002</code>, which means the <code>2 + 648 / 1677</code> epoch</li>
+<li>The block header in which withdrawing cell is included has an epoch value of <code>0x645017e00002f</code>, which means the <code>47 + 382 / 1605</code> epoch</li>
+<li>The closest epoch that is past <code>47 + 382 / 1605</code> but still satisfies lock period is <code>182 + 648 / 1677</code> epoch, which in the correct format, is <code>0x68d02880000b6</code>.</li>
+<li>Since absolute epoch number is used in the since field, necessary flags are needed to make the value <code>0x20068d02880000b6</code>. Please refer to since RFC for more details on the format here.</li>
+</ul>
+</li>
+</ul>
+<p>Using the same calculation as above, the <code>AR</code> for the withdrawing block <code>0xba6eaa7e0acd0dc78072c5597ed464812391161f0560c35992ae0c96cd1d6073</code> is <code>1.0008616347796555</code>.</p>
+<p>Now the maximum capacity that can be withdrawed from the above NervosDAO input cell can be calculated:</p>
+<p><code>total_capacity</code> = 200000000000
+<code>occupied_capacity</code> = 10200000000 (8 bytes for capacity, 53 bytes for lock script, 33 bytes for type script and another 8 bytes for cell data part are needed cost, the sum of those is 102 bytes, which is exactly 10200000000 shannons)
+<code>counted_capacity</code> = 200000000000 - 10200000000 = 189800000000
+<code>maximum_withdraw_capacity</code> = 189800000000 * 10008616347796555 / 10000435847357921 + 10200000000 = 200155259131</p>
+<p>200155259131 is hence the maximum capacity that can be withdrawed. The transaction has one output containing 0x2e9a2ed603 = 200155256323, it also pays a transaction fee of 2808 shannons. It's now trivial to test 200155259131 = 200155256323 + 2808, which validates the math here.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

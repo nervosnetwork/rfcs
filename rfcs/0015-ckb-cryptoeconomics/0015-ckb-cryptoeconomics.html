@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0015 Crypto-Economics of the Nervos Common Knowledge Base - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html" class="active">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0015&quot;
+Category: Informational
+Status: Draft
+Author: Kevin Wang, Jan Xie, Jiasun Li, David Zou
+Organization: Nervos Foundation
+Created: 2019-03-08
+</code></pre>
+<h1 id="crypto-economics-of-the-nervos-common-knowledge-base"><a class="header" href="#crypto-economics-of-the-nervos-common-knowledge-base">Crypto-Economics of the Nervos Common Knowledge Base</a></h1>
+<h2 id="1-the-objectives-of-a-token-economics-design"><a class="header" href="#1-the-objectives-of-a-token-economics-design">1. The Objectives of a Token Economics Design</a></h2>
+<p>Public permission-less blockchains are open and distributed systems with diverse groups of participants. A well-designed crypto-economics model is to provide incentives so that participants' pursuit of own economic interests leads to desired emergent behaviors in alignment with the protocol, to contribute to the blockchain network's success.</p>
+<p>More specifically, the design of a crypto-economic system must provide answers to the following questions:</p>
+<ul>
+<li>How can the economic model ensure the security of the protocol?</li>
+<li>How can the economic model ensure long term sustainability of the protocol?</li>
+<li>How can the economic model align the objectives of different actors to grow the value of the protocol network?</li>
+</ul>
+<h2 id="2-the-crypto-economics-design-of-bitcoin"><a class="header" href="#2-the-crypto-economics-design-of-bitcoin">2. The Crypto-economics Design of Bitcoin</a></h2>
+<p>The Bitcoin protocol uses its native currency to incentivize miners to validate and produce blocks. The Nakamoto Consensus considers the longest chain as the valid chain, which encourages block producing miners to propagate new blocks as soon as they produce them and validate blocks as soon as they receive them. This ensures that the whole network achieves consensus on the global state.</p>
+<p>The native tokens of the Bitcoin network function both as a utility token and an asset. When bitcoins function as a utility, they represent a &quot;Medium of Exchange&quot; (MoE) and can be used to pay transaction fees; when they function as an asset, they represent a &quot;Store of Value&quot; (SoV) and can be used to preserve value over time. The two use cases are not mutually exclusive. They are both important for the network to function. However, it's important to study the economic motives of the users of both use cases as a guide to analyze the sustainability of the Bitcoin network.</p>
+<p>The Bitcoin protocol constrains the network's transaction throughput by using a fixed block size limit. Users bid with fees on the limited throughput to have their transactions processed. With this auction like mechanism, transaction fees are determined by the transaction demand - the more demand there is on the network, the higher the transaction fee a user has to pay to beat the competition and have their transaction included in the block.</p>
+<h3 id="bitcoin-as-a-medium-of-exchange-network"><a class="header" href="#bitcoin-as-a-medium-of-exchange-network">Bitcoin as a Medium of Exchange Network</a></h3>
+<p>The Medium of Exchange use case views the Bitcoin network primarily as a peer to peer value transfer network. MoE users don't have to hold bitcoins to benefit from the network - it's the transactions in themselves that provide value. In fact, there are specialized Bitcoin payment services to provide access to liquidity and allow senders and receivers to acquire and dispose of Bitcoins just in time to perform the value transfer, without having to hold the cryptocurrency. MoE users are not concerned with price or the movement of price but care about the fiat equivalent cost of the transaction fees.</p>
+<p>It's challenging for Bitcoin to become a dominant MoE network. If the protocol calibrates its block time and the block size limit, thereby fixing the supply of transactions, the success of the network will necessarily increase the cost of transactions and reduce its competitiveness among other similar purposed blockchains as well as its own forks; If the protocol aims to keep the transaction cost low and increase the supply of transactions with faster block time or bigger blocks, it could compromise both security and decentralization through higher fork rate and increased cost of consensus participation.</p>
+<h3 id="bitcoin-as-a-store-of-value-network"><a class="header" href="#bitcoin-as-a-store-of-value-network">Bitcoin as a Store of Value Network</a></h3>
+<p>Store of Value users view the Bitcoin network as a protocol to provide security to its native cryptocurrency as an asset that can preserve value over time. They see the Medium of Exchange use case as the necessary function to go in and out of this asset. A store of value user, especially the ones who hold the cryptocurrency for a long time, doesn't care much about the transaction cost, as they can amortize it over time. They do care about the value of a Bitcoin, which depends on the network's security and decentralization - if the network becomes less secure and can be attacked easily, it'll stop being perceived as a store of value and the tokens will lose value; if the network becomes centralized, Bitcoin as an asset no longer has independent value, but has to assume counter-party risk.</p>
+<p>For Bitcoin to succeed as an SoV network, it must continue to keep its monetary policy stable and its network secure and decentralized. However, Bitcoin's monetary policy has a hard cap, and after all the coins are mined, the network can only pay for the miners with transaction fees. It's still an open question whether this model could be sustainable, especially considering Store of Value networks themselves tend not to produce many transactions.</p>
+<h3 id="who-compensates-the-miners-over-the-long-run"><a class="header" href="#who-compensates-the-miners-over-the-long-run">Who Compensates the Miners Over the Long Run?</a></h3>
+<p>Security and decentralization are two essential properties of a blockchain network, and they come with a high cost that must be paid to the operators of the network. Bitcoin's current model has network security entirely paid with transaction fees after all the coins are mined. However, the MoE users have very limited time exposure to the network's security risk, therefore won't be willing to pay for it;  the SoV users have prolonged exposure to the network's security risk and are willing to pay for it, but they produce nearly no transactions.</p>
+<p>Bitcoin's consensus mechanism incentivizes miners to recognize the longest chain as the network's canonical state. Miner's ongoing supply of hashing power doesn't only provide security for the current block, but the immutability of all the blocks before it on the canonical chain. Relying on the SoV users to make one time payments for the ongoing security protection they receive from miners is not sustainable.</p>
+<p>In an SoV network, relying on inflation to fund network security is more incentive compatible with the users. An inflation based block reward mechanism represents indirect payments from the beneficiaries of the network's ongoing security to the providers of such security, in proportion to the duration that they enjoy the service.</p>
+<h2 id="3-preservational-and-transactional-smart-contract-platforms"><a class="header" href="#3-preservational-and-transactional-smart-contract-platforms">3. Preservational and Transactional Smart Contract Platforms</a></h2>
+<p>Smart contract platforms like Ethereum come with Turing-complete programmability and can support a much wider variety of use cases. The native tokens are typically used to price and pay for the cost of decentralized computation. Like the Bitcoin network, smart contract platforms also have the dual functions of preserving value and performing transactions. They differ from the payment networks in that the value they preserve is not only their own native tokens but also the internal states of decentralized applications, for example, crypto-assets ownership in ERC20 smart contracts.</p>
+<p>Another significant difference is that transactions on smart contract platforms are much more &quot;portable&quot;. It's much easier to take advantage of the more advanced scripting capability of smart contract platforms to develop interoperability protocols to move transactions to a more cost-effective transactional blockchain and then securely settle back to the main &quot;system of record&quot; blockchains.</p>
+<p>The economic models of smart contract platforms face similar polarization tendency of payment networks. With their superior interoperable capabilities, smart contract platforms are going to be even more specialized into transactional platforms and preservation platforms.  Economically, this bifurcation comes from the fact that the two use cases have different ways of utilizing system resources - transactions consume instantaneous but renewable computation and bandwidth resources, and preservation requires long term occupation of the global state. An economic model optimized for one is unlikely to be optimal for the other.</p>
+<p>Competitive transactional platforms need to prioritize for low transaction cost. Transactional users are willing to accept less-optimal security, because of their only moment-in-time, limited exposure to security risk. They're willing to accept the possibility of censored transactions, as long as there are options to take their transactions elsewhere. A transactional platform that invests in either security or censorship resistance will have higher cost of transactions, reflected either with higher transaction fees or high capital cost for stakes in a &quot;stake for access&quot; model, making the network less competitive. This is especially true when a well-designed inter-blockchain protocol can allow trust-less state transfers and fraud repudiation of transactions. We already see examples of transactional users prioritizing cost over security in centralized crypto-asset exchanges and not-so-decentralized blockchains - despite their flaws, they're still popular because of their transactional efficiency.</p>
+<p>Competitive preservation platforms need to be sustainably secure and censorship-resistant. It requires an economic model designed not around transactions that happen moment-in-time, but around the ongoing occupation of the global state, and have users pay for the network infrastructure metered in their consumption of this critical resource.</p>
+<h2 id="4-store-of-assets"><a class="header" href="#4-store-of-assets">4. Store of Assets</a></h2>
+<p>One of the most important use cases for smart contract platforms is to issue tokens to represent ownership of assets. These crypto-assets can have their own communities and markets, and their values are independent of the value of their platform tokens. On the other hand, these assets depend on the platform to process transactions and provide security. Payment networks like Bitcoin can be seen as single asset platforms, where smart contract platforms are multi-asset platforms. Similar to the concept of &quot;Store of Value&quot; in the context of Bitcoin, we call the utility that smart contract platforms preserve the value of its crypto-assets &quot;Store of Assets&quot;.</p>
+<p>Preservation focused smart contract platforms must have a Store of Assets token economics design. The level of platform security has to grow along with the asset value it preserves. Otherwise, as asset value grows, it will be increasingly profitable to &quot;double-spend&quot; assets by attacking the consensus process of the platform.</p>
+<p>None of the current smart contract platforms are designed as Store of Assets platforms. Their token economics are designed either to facilitate transactions (for example, Ethereum's native tokens are to pay for the decentralized computation) or to fulfill staking requirements. In either case, the growth in asset value doesn't necessarily raise miner's income to provide more security.</p>
+<p>Every multi-asset platform is an ecosystem of independent projects. The security of the platform can be seen as &quot;public goods&quot; that benefit all projects. To make the ecosystem sustainable from a security point of view, there has to be a clear mechanism that the platform captures the economic success of the ecosystem to raise its own level of security. In other words, a Store of Assets platform has to be able to translate the demand of crypto-assets to the revenue of its miners, often through raising the value of the native tokens with which the miners are compensated. Otherwise, the platform's level of security becomes the ceiling of assets' value. When the value of an asset rises such that typical transactions can no longer be sufficiently protected by the platform, the liquidity would dry up and the demand of the asset would fade.</p>
+<p>Decentralized multi-assets smart contract platforms have to be Store of Assets to be sustainable.</p>
+<h2 id="5-decentralization-and-the-need-for-bounded-state"><a class="header" href="#5-decentralization-and-the-need-for-bounded-state">5. Decentralization and the Need for Bounded State</a></h2>
+<p>Like other long term store of value systems, a Store of Assets platform has to be neutral and free of risks of censorship and confiscation. These are the properties that made gold the world's favorite the store of value for thousands of years. For open, permission-less blockchain networks, censorship resistance comes down to having the broadest consensus scope with a low barrier for consensus and full node participation. Compared to payment networks, running a full node for a smart contract system is more resource intensive. Therefore a Store of Assets platform must take measures to protect the operating cost of full nodes to keep the network sufficiently decentralized.</p>
+<p>Both Bitcoin and Ethereum throttle transaction throughput to ensure participation is not limited to only &quot;super computers&quot; - Bitcoin throttles on bandwidth and Ethereum throttles on computation. However, they haven't taken effective measures to contain the ever growing global state necessary for consensus participation and independent transaction validation.  This is especially a centralization force for high throughput smart contract platforms, where the global state grows even faster.</p>
+<p>In Bitcoin, the global state is the UTXO set, and its growth rate is effectively capped with the block size limit. Users are encouraged to create UTXOs efficiently, since every new UTXO adds overhead to the transaction where it's created, making the transaction more expensive. However, once a UTXO is created, it doesn't cost anything to have it occupy the global state forever.</p>
+<p>In Ethereum, the global state is represented with the EVM's state trie, the data structure that contains the balances and internal states of all accounts. When new accounts or new contract values are created, the size of the global state expands. Ethereum charges fixed amounts of Gas for inserting new values into its state storage and offers fixed amounts of Gas as transaction refund when values are removed. Ethereum's approach is a step in the right direction, but still has several issues:</p>
+<ul>
+<li>Neither the size nor the growth rate of the global state is bounded, this gives very little certainty in the cost of full node participation.</li>
+<li>The system raises one-time revenue for expanding the state storage, but miners and full nodes have to bear the cost of storage over time.</li>
+<li>There's no obvious reason why the cost of expanding storage should be priced in fixed Gas amounts, which is designed as measurement to price units of computation.</li>
+<li>The &quot;pay once, occupy forever&quot; state storage model gives very little incentive for users to voluntarily clear state, and do so sooner than later.</li>
+</ul>
+<p>The Ethereum community is actively working on this problem, and the leading solution is to charge smart contract &quot;state rent&quot; - contracts have to periodically pay fees based on the size of its state. If the rent is not paid, the contract goes to &quot;hibernation&quot; and is not accessible before the payment is current again. We see several difficult-to-solve problems with this approach:</p>
+<ul>
+<li>Many contracts, especially popular ERC20 contracts, represent decentralized communities and express asset ownership of many users. It's a difficult problem to coordinate all the users to pay for state rent in a fair and efficient way.</li>
+<li>Even if a contract is current on its rent payment, it still may not be fully functional because some of its dependent contracts may be behind on their payments.</li>
+<li>The user experience for contracts with state rent is sub-optimal</li>
+</ul>
+<p>We believe a well-designed mechanism to regulate the state storage has to be able to achieve the following goals:</p>
+<ul>
+<li>The growth of the global state has to be bounded to give predictability for full node participation. Ideally, the cost is well within the range of non-professional participants to keep the network maximally decentralized. Keeping this barrier low allows participants of the decentralized network to verify history and state independently, without having to trust a third party or service. This is fundamentally the reason why public blockchains are valuable.</li>
+<li>With bounded growth of the global state, the price for expanding it and the rewards for reducing it should be determined by the market. In particular, it's desirable to have the cost of expanding state storage higher when it's mostly full, and lower when it's mostly empty.</li>
+<li>The system has to be able to continuously raise revenue from its state users to pay miners for providing this resource. This serves both purposes of balancing miner's economics and providing incentives for users to clear unnecessary states sooner than later.</li>
+</ul>
+<p>Just like how Bitcoin throttles and forces pricing on bandwidth and Ethereum throttles and forces pricing on computation, to keep a blockchain network long term decentralized and sustainable, we have to come up with a way to constrain and price the global state. This is especially important for preservation focused, Store of Assets networks, where usage of the network is not about transactions that mostly happen off-chain, but ongoing occupation of the global state.</p>
+<h2 id="6-the-economic-model-of-the-nervos-common-knowledge-base"><a class="header" href="#6-the-economic-model-of-the-nervos-common-knowledge-base">6. The Economic Model of the Nervos Common Knowledge Base</a></h2>
+<p>The Nervos Common Knowledge Base (Nervos CKB for short) is a preservation focused, &quot;Store of Assets&quot; blockchain. Architecturally, it's designed to best support on-chain state and off-chain computation; economically, it's designed to provide sustainable security and decentralization.  Nervos CKB is the base layer of the overall Nervos Network.</p>
+<h3 id="native-tokens"><a class="header" href="#native-tokens">Native Tokens</a></h3>
+<p>The native token for the Nervos CKB is the &quot;Common Knowledge Byte&quot;, or &quot;CK Byte&quot; for short. The CK Bytes represent cell capacity in bytes, and they give owners the ability to occupy a piece of the blockchain's overall global state. For example, if Alice owns 1000 CK Bytes, she can create a cell with 1000 bytes in capacity, or multiple cells that add up to 1000 bytes in capacity. She can use the 1000 bytes to store assets, application state, or other types of common knowledge.</p>
+<p>A cell's occupied capacity could be equal to or less than its specified capacity. For example, for a 1000 byte cell, 4 bytes would be used to specify its own capacity, 64 bytes for the lock script and 128 bytes for storing state. Then the cell's current occupied capacity is 196 bytes, but with room to grow up to 1000 bytes.</p>
+<p>The smallest unit of the native token is &quot;CK Shannon&quot;: <code>1 CK Byte = 100_000_000 CK Shannons</code>.
+&quot;CK Shannon&quot; is the indivisible unit.
+&quot;CK Shannon&quot; is designed for the scenes that people want to transfer value less than one &quot;CK Byte&quot;.</p>
+<h3 id="token-issuance"><a class="header" href="#token-issuance">Token Issuance</a></h3>
+<p>There are two types of native token issuance. The &quot;base issuance&quot; has a finite total supply with a Bitcoin like issuance schedule - the number of base issuance halves approximately every 4 years until all the base issuance tokens are mined out. All base issuance tokens are rewarded to the miners as incentives to protect the network.</p>
+<p>The &quot;secondary issuance&quot; is designed to collect state rent, and has issuance amount that is constant over time. After base issuance stops, there will only be secondary issuance.</p>
+<h3 id="collecting-state-rent-with-secondary-issuance-and-the-nervosdao"><a class="header" href="#collecting-state-rent-with-secondary-issuance-and-the-nervosdao">Collecting State Rent with Secondary Issuance and the NervosDAO</a></h3>
+<p>Since the native tokens represent right to expand the global state, the issuance policy of the native tokens bounds the state growth. As state storage is bounded and becomes a scarce resource like bandwidth in Bitcoin and computation throughput in Ethereum, they can be market priced and traded. State rent adds the necessary time dimension to the fee structure of state storage occupation. Instead of mandating periodic rent payments, we use a two-step approach as a &quot;targeted inflation&quot; scheme to collect this rent:</p>
+<ul>
+<li>On top of the base issuance, we add the secondary issuance which can be seen as &quot;inflation tax&quot; to all existing token holders. For users who use their CK Bytes to store state, this recurring inflation tax is how they pay state rent to the miners.</li>
+<li>However, we would have also collected rent from the CK Bytes that are not used to store state, and we need to return to them what we collected. We allow those users to deposit and lock their native tokens into a special contract called the NervosDAO. The NervosDAO receives part of the &quot;secondary issuance&quot; to make up for the otherwise unfair dilution.</li>
+</ul>
+<p>Let's suppose at the time of a secondary issuance event, 60% of all CK Bytes are used to store state, 35% of all CK Bytes are deposited and locked in the NervosDAO, and 5% of all CK Bytes are kept liquid. Then 60% of the secondary issuance goes to the miners, 35% of the issuance goes to the NervosDAO to be distributed to the locked tokens proportionally. The use of the rest of the secondary issuance - in this example, 5% of the that issuance - is determined by the community through the governance mechanism. Before the community can reach agreement, this part of the secondary issuance is going to be burned.</p>
+<p>For long term token holders, as long as they lock their tokens in the NervosDAO, the inflationary effect of secondary issuance is only nominal. For them it's as if the secondary issuance doesn't exist, and they're holding hard-capped tokens like Bitcoin.</p>
+<h3 id="miner-compensation"><a class="header" href="#miner-compensation">Miner Compensation</a></h3>
+<p>Miners are compensated with both block rewards and transaction fees. They receive all the base issuance, and part of the secondary issuance. In the long term when base issuance stops, miners still receive state rent income that's independent of transactions but tied to the adoption of the common knowledge base.</p>
+<h3 id="paying-for-transaction-fees"><a class="header" href="#paying-for-transaction-fees">Paying for Transaction Fees</a></h3>
+<p>A decentralized blockchain network's transaction capacity is always limited. Transaction fees serve the dual purposes of establishing a market for the limited transaction capacity and as protection against spams. In Bitcoin, transaction fees are expressed with the difference between the outputs and inputs; In Ethereum, the user specify the per computation unit price they're willing to pay with <code>gasprice</code>, and use <code>gaslimit</code> to establish a budget for the entire transaction.</p>
+<p>To ensure decentralization, the Nervos CKB restricts both computation and bandwidth throughput, effectively making it an auction for users to use those system resources. When submitting a transaction, the user can leave the total input cell capacities exceeding the total output cell capacities, leaving the difference as transaction fees expressed in the native tokens, payable to the miner that creates the block containing the transaction.</p>
+<p>The number of units of computation (called &quot;cycles&quot;) are added to the peer-to-peer messages between the full nodes. When producing blocks, miners order transactions based on both transaction fees and the number of computation cycles necessary for transaction validation, maximizing its per-computation-cycle income within the computation and bandwidth throughput restrictions.</p>
+<p>In the Nervos CKB, the transaction fees can be paid with the native tokens, user defined tokens or a combination of both.</p>
+<h3 id="paying-for-transaction-fees-with-user-defined-tokens"><a class="header" href="#paying-for-transaction-fees-with-user-defined-tokens">Paying for Transaction Fees with User Defined Tokens</a></h3>
+<p>Users are also free to use other tokens (for example, stable coins) to pay transactions fees, a concept known as &quot;Economic Abstraction&quot;. Note that even without explicit protocol support, it's always possible to have users make arrangements with miners to pay transaction fees in other tokens outside of the protocol. This is often seen as a threat for many platforms - if the platform's native tokens are purely to facilitate transactions, this would take away its intrinsic value and cause a collapse.</p>
+<p>With the Nervos CKB, economic abstraction is possible because the payment methods are not hard-coded in transactions. We embrace economic abstraction and the benefits it brings. Since the intrinsic value of the native tokens is based not on transaction payment, economic abstraction doesn't pose a threat to the stability of our economic model. We do expect, however, the native tokens themselves are going to be the payment method of choice for vast majority of users and use cases - the native tokens are going to be the most widely held tokens in the Nervos ecosystem, and everyone who owns assets necessarily owns the Nervos natives tokens as state storage capacity that the assets occupy.</p>
+<p>For more a more detailed analysis on transaction payments, please see Appendix 1.</p>
+<h2 id="7-an-economic-model-designed-for-preservation"><a class="header" href="#7-an-economic-model-designed-for-preservation">7. An Economic Model Designed for Preservation</a></h2>
+<p>The economic model of the Nervos CKB is designed specifically to preserve assets and other types of common knowledge. Let's bring back the 3 high level design goals and examine our design in this context:</p>
+<ul>
+<li>How can the economic model ensure the security of the protocol?</li>
+<li>How can the economic model ensure long term sustainability of the protocol?</li>
+<li>How can the economic model align the objectives of different actors to grow the value of the protocol network?</li>
+</ul>
+<h3 id="security-and-sustainability-of-the-protocol"><a class="header" href="#security-and-sustainability-of-the-protocol">Security and Sustainability of the Protocol</a></h3>
+<p>The main design choices we made to ensure security of the Nervos CKB as a &quot;Store of Assets&quot; protocol are:</p>
+<ul>
+<li>Our native tokens represent claim to capacity in the state storage. This means the demand to holding assets on the platform directly puts demand on owning the native tokens. This creates an effective value capture mechanism into the native tokens from the assets they preserve. We claim that this is the only sustainable way that a &quot;Store of Assets&quot; platform can grow its security budget over time, instead of entirely basing it on speculation and altruism.</li>
+<li>The secondary issuance makes sure miner compensation is predictable and based on preservation demand instead of transactional demand. It also eliminates potential incentive incompatibility of the Nakamoto Consensus nodes after block reward stops. This is also important in a future when most transactions move to the layer 2, leaving a starved layer 1.</li>
+<li>The NervosDAO serves as the counter-force to the inflationary effects of secondary issuance, to ensure long term token holders are not diluted by this issuance.</li>
+</ul>
+<p>For a purpose of keeping the network decentralized and censorship resistant, we believe it's important to limit the resource requirements of consensus and full nodes. We protect the operating cost of nodes by regulating the throughput of computation and bandwidth, similar to how it's accomplished with Bitcoin and Ethereum. We regulate the state storage with a combination of a &quot;cap and trade&quot; pricing scheme and opportunity cost based cost model for storage users.</p>
+<h3 id="aligning-the-interests-of-network-participants"><a class="header" href="#aligning-the-interests-of-network-participants">Aligning the Interests of Network Participants</a></h3>
+<p>In a typical smart contract platform, participants of the network have different interests - users want cheaper transactions, developers want adoption of their applications, miners want higher income, and holders want appreciation of their tokens. Those interests are not well aligned, and oftentimes in conflict - for example, more adoption won't give cheaper transactions (they'll be more expensive as more demand is put on the blockchain); cheaper transactions won't give more income to the miners; higher token price won't help with transaction cost (the opposite could happen if users don't adjust their local transaction fee setting). Decentralized computation platforms provide value through processing transactions. The price of their tokens doesn't materially change the intrinsic value of the network. For example, Ether's price doubling doesn't increase or decrease Ethereum's intrinsic value as a decentralized computation platform, because the introduction of Gas in the first place is to de-couple the price of computations from the price actions of Ether the cryptocurrency. This makes token holders of Ethereum only take the role of a speculator, instead of active contributors that can increase the value of the network.</p>
+<p>In the Nervos CKB, Store of Assets users want security of their assets; developers want more adoption, reflected in more assets preserved; miners want higher income and token holders want price appreciation of their tokens. Higher token price supports everyone's objective - the network would be more secure, miners get higher income, and token holders get better return.</p>
+<p>Aligning all participants' incentives allows the network to best harness network effects to grow its intrinsic value. It also produces a more cohesive community and makes the system less prone to governance challenges.</p>
+<h3 id="bootstrapping-network-effect-and-network-growth"><a class="header" href="#bootstrapping-network-effect-and-network-growth">Bootstrapping Network Effect and Network Growth</a></h3>
+<p>As the network grows to secure more assets and common knowledge, more native tokens of the Nervos CKB are going to become occupied. This accrues value to the native tokens by reducing circulating supply and providing positive support to the market price of the tokens. The higher price and increased share of secondary issuance motivate miners to expand operations and make the network more secure, increasing the intrinsic value of the network and the native tokens, attracting more and higher value preservation usage.</p>
+<p>The pro-cyclical loop of the network's adoption and network's intrinsic value provides a powerful growth engine for the network. Combined with how the network's value accrues to the native tokens and gets captured by long term holders, it makes the network's native token an excellent candidate for store of value. Compared to Bitcoin as a monetary store of value, the Nervos CKB is similarly designed to be secure and long term decentralized. We believe Nervos CKB has a more balanced and sustainable economic model than Bitcoin, and also comes with the intrinsic utility of securing crypto-assets and common knowledge.</p>
+<h3 id="developers-cost-in-a-first-class-asset-platform"><a class="header" href="#developers-cost-in-a-first-class-asset-platform">Developer's Cost in a &quot;First Class Asset&quot; Platform</a></h3>
+<p>In Ethereum, the top-level abstraction is its accounts. Assets are expressed as state owned by smart contract accounts. In the Nervos CKB, assets are the first class abstraction with cells, where ownership is expressed with the lock script of a transaction output, a concept known as &quot;<a href="https://medium.com/nervosnetwork/first-class-asset-ff4feaf370c4">First Class Assets</a>&quot;. In other words, just like Bitcoin, assets in the Common Knowledge Base are owned by users directly instead of being kept custody in a smart contract.</p>
+<p>The &quot;First Class Asset&quot; design allows the state storage cost of owning assets put not on developers, but on individual users. For example, a developer could create a User Defined Token with 400 bytes of code as validation rules, and every record of asset ownership would take 64 bytes. Even if the assets were to have 10,000 owners, the developer would still only need to use 400 CK Bytes.</p>
+<p>For developers, we expect the capital cost of building projects on the CKB is moderate even in a scenario that the price of the native tokens were to go up degrees of magnitude higher. For users, the cost of the 64 CK Bytes to own an asset on the Nervos CKB would also be trivial for a long time even in the most aggressive adoption assumption of the platform.</p>
+<p>In the future where those cost were to become meaningfully expensive, it's always possible for developers to rely on lending to bootstrap their projects and for users to move their assets off the Common Knowledge Base on to other transaction blockchains in the Nervos Network if they're willing to take the corresponding trade-offs. Please see the &quot;Nervos Network&quot; section for more details.</p>
+<h3 id="lending"><a class="header" href="#lending">Lending</a></h3>
+<p>Nervos CKB will support native token lending to improve the liquidity of the CK Bytes thanks to the programming ability provided by CKB-VM and the Cell model. Since the utility of the native token is realized through possession instead of transactions, it's possible to have risk-free un-collateralized lending for CK Bytes locked for known duration of time.  Entrepreneurs can borrow the CK Bytes they need with much lower capital cost for a period such as 6 months to work on prototypes and prove their business model. Long term users can lend out their tokens to earn extra income.</p>
+<p>The effective interest rate of lending is determined by the market supply and demand, but the current state of token utilization also plays a big role. Higher utilization of the available global state means fewer tokens can be made available for lending. This makes the lending interest higher and makes it more attractive to release state and lock tokens in the NervosDAO to earn income. It serves the purpose to help reduce the global state: lower utilization of the available state means more tokens can be lent out. It makes the lending interest rate lower to encourage adoption.</p>
+<h3 id="nervos-network"><a class="header" href="#nervos-network">Nervos Network</a></h3>
+<p>The Nervos CKB is the base layer of the Nervos Network with the highest security, decentralization, transaction cost and state storage cost. Just like how Bitcoin and Ethereum could scale off-chain with lightning network and plasma solutions, Nervos CKB also embraces off-chain scaling solutions and allow users to preserve and transact assets off-chain. When using off-chain solutions, users and developers can choose their own trade-offs between cost, security, latency and liveness properties.</p>
+<p>Owning and transacting assets on the Nervos CKB come with the highest capital and transaction cost, but is also the most secure. It's best suited for high value assets and long term asset preservation; Layer 2 solutions can provide scaling for both transaction throughput and state storage, but they would come with either weakened security assumptions or mandate extra steps of repudiation. They also often require participants to be online within a time window. If both are acceptable (likely for owning and transacting low value assets for short duration), the Nervos CKB can be used as security anchor to other transaction blockchains, to effectively magnify both its transaction and state storage capacities.</p>
+<p>If operators of transaction blockchains don't want to introduce extra security assumptions, they can mandate that high value assets be issued on the CKB and low value assets be issued on transactional blockchains. Then they can use CK Bytes on the CKB to store periodic block commits, challenges and proofs from the transactional blockchains - critical common knowledge for secure off-chain transaction repudiation. If a transaction chain doesn't mind introducing an extra layer of security assumption with a committee-based consensus protocol, they could also have their validators bond CK Bytes on the CKB to explicitly adjust security parameters.</p>
+<h2 id="8-applications-of-the-token-economics-model"><a class="header" href="#8-applications-of-the-token-economics-model">8. Applications of the Token Economics Model</a></h2>
+<p>The economic model of the Nervos CKB provides building blocks that application developers can use directly as part of their own economic model. We'll list subscriptions and liquidity income as two such possible building blocks.</p>
+<h3 id="subscriptions"><a class="header" href="#subscriptions">Subscriptions</a></h3>
+<p>Recurring payment or subscription is a typical economic model for services offered on the blockchain that span over some duration of time. One such example is the off-chain transaction monitoring service that's often needed for layer 2 solutions. On the Nervos CKB, duration based services can ask their users to lock certain amount of native tokens in the NervosDAO and designate the service providers as the beneficiaries of the generated interest income in a subscription based model. Users can stop using the services by withdrawing their tokens from the NervosDAO.</p>
+<p>In fact, Store of Assets users that occupy global state can be seen as paying an ongoing subscription metered by the size of their state, and the beneficiaries are the miners that provide the security service.</p>
+<h3 id="liquidity-income"><a class="header" href="#liquidity-income">Liquidity Income</a></h3>
+<p>In a Plasma like layer 2 solution, a typical pattern is that users would deposit native tokens in a smart contract on the layer 1 blockchain in exchange for transaction tokens on the layer 2. A layer 2 operator with sufficient reputation can have users commit to fixed duration deposits, and then use such deposits to provide liquidity to the lending market and earn income. This gives operators of layer 2 solutions an additional revenue stream on top of the fees collected on layer 2.</p>
+<h2 id="appendix-1-transaction-cost-analysis"><a class="header" href="#appendix-1-transaction-cost-analysis">Appendix 1: Transaction Cost Analysis</a></h2>
+<p>Nervos CKB uses Proof of Work based Nakamoto consensus, similar to what's used in Bitcoin - for more details, please see the &quot;Nervos Consensus Paper&quot;</p>
+<p>The economics of the consensus process is designed to incentivize nodes to participate in the consensus process and provide measurements that nodes can use to prioritize transactions.  At the core, it's designed to help consensus nodes answer the question: &quot;Is this transaction worth to be included in the next block if I had the opportunity to produce the block?&quot;</p>
+<p>A block producing node can do a cost/benefit analysis to answer this question. The benefit of including a transaction is to be able to collect its transaction fee, and the cost of including a transaction in a block has three parts:</p>
+<ul>
+<li>Fee Estimation Cost (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/01.png" alt="" /> ): this is the cost to estimate the maximum possible income if a node where to include a transaction</li>
+<li>Transaction Verification Cost (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/02.png" alt="" /> ): blocks containing invalid transactions will be rejected by the consensus process, therefore block producing nodes have to verify transactions before including them in a new block.</li>
+<li>State Transition Cost (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/03.png" alt="" />）: after a block is produced, the block producing node has to perform local state transitions defined by state machines of the transactions in the block.</li>
+</ul>
+<p>In particular, transaction verification, <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/04.png" alt="" />  has two possible steps:</p>
+<ul>
+<li>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/05.png" alt="" />: Authorization Verification Cost</p>
+</li>
+<li>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/06.png" alt="" />: State Transition Verification Cost</p>
+</li>
+</ul>
+<p>We use CPC and EVC to represent Complete Processing Cost and Estimation and Verification Cost:</p>
+<ul>
+<li>CPC: Complete Processing Cost
+<ul>
+<li><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/07.png" alt="" /></li>
+</ul>
+</li>
+<li>EVC: Estimation and Verification Cost;
+<ul>
+<li><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/08.png" alt="" /></li>
+</ul>
+</li>
+</ul>
+<h3 id="bitcoins-transaction-cost-analysis"><a class="header" href="#bitcoins-transaction-cost-analysis">Bitcoin's Transaction Cost Analysis</a></h3>
+<p>Bitcoin allows flexible authorization verification with the Bitcoin Script. Users can script the authorization rules and build smart contracts through <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/09.png" alt="" /> when creating transactions. Bitcoin has a fixed state transition semantic, which is to spend and create new UTXOs. In Bitcoin, the result of the state transitions are already included in transactions, therefore the State Transition Cost (STC) is 0.</p>
+<p>Bitcoin uses the amount difference of the inputs and outputs to express transaction fees. Therefore, the cost of estimating transaction fees scales to <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/10.png" alt="" /> where <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/11.png" alt="" /> is the total number of inputs and outputs.</p>
+<p>Authorization verification in Bitcoin requires running scripts of all inputs. Because the Bitcoin Script prohibits JUMP/looping, the computation complexity can roughly scale to the length of the input scripts, as<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/12.png" alt="" />, where <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/13.png" alt="" /> is the number of inputs and <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/14.png" alt="" /> is the average script length of an input. Therefore, the total cost of <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/15.png" alt="" /> roughly scales to the size of total transaction.</p>
+<p>Bitcoin's state transition rules are simple, and nodes only have to verify the total input amount is the same as the total output amount. Therefore, the <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/16.png" alt="" /> in Bitcoin is the same as <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/17.png" alt="" />, also scaling to <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/18.png" alt="" />.</p>
+<p>In total, Bitcoin's cost of processing a transaction roughly scales to the size of the transaction:
+<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/19.png" alt="" /></p>
+<h3 id="ethereums-transaction-cost-analysis"><a class="header" href="#ethereums-transaction-cost-analysis">Ethereum's Transaction Cost Analysis</a></h3>
+<p>Ethereum comes with Turing-complete scriptability, and gives users more flexibility to customize state transition rules with smart contracts. Ethereum transactions include <em>gaslimit</em> and <em>gasprice</em>, and the transaction fees are calculated using the product of their multiplication. Therefore, <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/20.png" alt="" /> is <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/21.png" alt="" />.</p>
+<p>Unlike Bitcoin, Ethereum's transactions only include the computation commands of state transitions, instead of the results of the state transitions. Therefore, Ethereum's transaction verification is limited to authorization verification, and doesn't have state transition verification. The rules of authorization verification in Ethereum are:</p>
+<ul>
+<li>Verify the validility of the Secp256k1 signatures, with computation complexity of <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/22.png" alt="" /></li>
+<li>Verify the nonce match of the transaction and the account that starts the transaction, with computation complexity of <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/23.png" alt="" /></li>
+<li>Verify the account that starts transaction has enough ether to pay for the transaction fees and the amount transferred. This requires access to the account's current balance. Ignoring the global state size's impact on account access, we can assume the complexity of this step is also <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/23.png" alt="" />.</li>
+</ul>
+<p>Based on the above, the overall authorization verification complexity in Ethereum is <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/24.png" alt="" />.</p>
+<p>Since every byte of the transaction data comes with cost <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/25.png" alt="" />, the larger <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/26.png" alt="" /> is, the more gas it needs, up to the <em>gaslimit</em> <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/27.png" alt="" />specified. Therefore,</p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/54.png" alt="" /></p>
+<p>Ethereum comes with a Turing complete VM, and the computation of the result state could include logic of any complexity. Ethereum transaction's <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/28.png" alt="" /> caps the upper bound of computation, therefore <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/29.png" alt="" />。To summarize all the above:</p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/30.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/31.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/32.png" alt="" /></p>
+<p>Different from Bitcoin, <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/33.png" alt="" /> for the Ethereum nodes is less than <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/34.png" alt="" />. This is because Ethereum nodes only compute the result state after transactions are included in the block. This is also the reason that transaction results on Ethereum could be invalid, (e.g. exceptions in contract invocation or the gas limit is exceeded),  but the Bitcoin blockchain only has successfully executed transactions and valid results.</p>
+<h3 id="nervos-ckbs-transaction-cost-analysis"><a class="header" href="#nervos-ckbs-transaction-cost-analysis">Nervos CKB's Transaction Cost Analysis</a></h3>
+<p>Nervos CKB's transactions are structured with inputs and outputs, similar to Bitcoin's. Therefore, the <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/35.png" alt="" /> and <img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/36.png" alt="" /> for the Nervos CKB are the same as those of Bitcoin's:</p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/37.png" alt="" /></p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/38.png" alt="" /></p>
+<p>Because CKB transactions include the result of the transactions as outputs, therefore:</p>
+<p><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/39.png" alt="" /></p>
+<h3 id="cycles-as-measurement-units-of-computation-complexity"><a class="header" href="#cycles-as-measurement-units-of-computation-complexity">Cycles as Measurement Units of Computation Complexity</a></h3>
+<p>We introduce &quot;cycle&quot; as a unit of measurement for computation complexity in the CKB, similar to the &quot;gas&quot; concept in Ethereum. Nervos CKB's VM is a RISC-V CPU simulator, therefore cycles here refer to real CPU computation cycles in the VM. The cycle number for an instruction represents the relative computation cost of that instruction. Transactions in the Nervos CKB require the sender to specify the number of cycles required for its verification. Nodes can opt to set an acceptable cycle upper bound <em>cyclemax</em>, and only process transactions with fewer cycles. We'll also introduce <em>cycles</em> to a block, with its value equal to the sum of all specified transaction cycles.  The value of <em>cycles</em> in a block can't exceed the value <em>blockcyclesmax</em>, which are set and can be automatically adjusted by the system.</p>
+<p>Nodes can set their <em>cyclemax</em> to different values. <em>cyclemax</em> only impacts how a block producing node accepts new transactions, not how a node accepts transactions in a new block. Therefore, it's not going to cause inconsistency in the validation of blocks. A valid block needs valid proof of work, and this cost discourages a block producing node to include an invalid transaction with high <em>cycles</em> value.</p>
+<p>The following table shows the runtime differences in Bitcoin, Ethereum and the Nervos CKB.</p>
+<table><thead><tr><th></th><th>Authorization (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/40.png" alt="" />）</th><th>State Validation (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/41.png" alt="" />)</th><th>State Transition（<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/42.png" alt="" />）</th></tr></thead><tbody>
+<tr><td>Bitcoin</td><td>Generalized</td><td>Fixed</td><td>None</td></tr>
+<tr><td>Ethereum</td><td>Fixed</td><td>None</td><td>Generalized</td></tr>
+<tr><td>CKB</td><td>Generalized</td><td>Generalized</td><td>None</td></tr>
+</tbody></table>
+<p>Here's a summary of the computational complexity of different parts of the consensus process for Bitcoin, Ethereum and Nervos CKB (<img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/55.png" alt="" /> means cycle limit)</p>
+<table><thead><tr><th></th><th><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/43.png" alt="" /></th><th><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/44.png" alt="" /></th><th><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/45.png" alt="" /></th><th><img src="https://raw.githubusercontent.com/Jack0814/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/46.png" alt="" /></th><th><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/47.png" alt="" /></th></tr></thead><tbody>
+<tr><td>Bitcoin</td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/48.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/50.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png" alt="" /></td></tr>
+<tr><td>Ethereum</td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/51.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/52.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/49.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/52.png" alt="" /></td></tr>
+<tr><td>CKB</td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/48.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/50.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png" alt="" /></td><td><img src="https://raw.githubusercontent.com/nervosnetwork/rfcs/master/rfcs/0015-ckb-cryptoeconomics/images/53.png" alt="" /></td></tr>
+</tbody></table>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

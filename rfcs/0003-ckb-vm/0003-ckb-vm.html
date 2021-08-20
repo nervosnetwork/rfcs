@@ -1,0 +1,501 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0003 CKB-VM - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html" class="active">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0003-ckb-vm/0003-ckb-vm.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0003&quot;
+Category: Informational
+Status: Draft
+Author: Xuejie Xiao
+Organization: Nervos Foundation
+Created: 2018-08-01
+</code></pre>
+<h1 id="ckb-vm"><a class="header" href="#ckb-vm">CKB-VM</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>VM layer in CKB is used to perform a series of validation rules to determine if transaction is valid given transaction's inputs and outputs.</p>
+<p>CKB uses <a href="https://riscv.org/">RISC-V</a> ISA to implement VM layer. To be more precise, CKB uses rv64imc architecture: it is based on core <a href="https://riscv.org/specifications/">RV64I</a> ISA with M standard extension for integer multiplication and division, and C standard extension for RCV(RISC-V Compressed Instructions). Note that CKB doesn't support floating point instructions, a CKB script developer can choose to pack a softfloat implementation into the binary if needed.</p>
+<p>CKB relies on dynamic linking and syscalls to provide additional capabilities required by the blockchain, such as reading external cells or other crypto computations. Any compilers with RV64I support, such as <a href="https://github.com/riscv/riscv-gcc">riscv-gcc</a>, <a href="https://github.com/lowRISC/riscv-llvm">riscv-llvm</a> or <a href="https://github.com/rust-embedded/wg/issues/218">Rust</a> can be used to generate CKB compatible scripts.</p>
+<h2 id="risc-v-runtime-model"><a class="header" href="#risc-v-runtime-model">RISC-V Runtime Model</a></h2>
+<p>CKB leverages 64-bit RISC-V virtual machine to run contracts. We provide the core instructions in 64-bit address space, with additional integer multiplication/division extension instructions. CKB also supports RISC-V Compressed Instructions to reduce contract size. For maximum tooling and debugging support, CKB leverages Linux ELF format directly as contract format.</p>
+<p>CKB virtual machine has a maximum of 4 MB runtime memory for running contracts. VM's runtime memory provides space for executable code pages mapped from contracts, stack space, head space and mmapped pages of external cell.</p>
+<p>Running a contract is almost the same as running an executable in single core Linux environment:</p>
+<pre><code class="language-c">int main(int argc, char* argv[]) {
+  uint64_t input_cell_length = 10000;
+  void *input_cell = malloc(input_cell_length);
+  ckb_load_cell(input_cell, &amp;input_cell_length, 0, 0, CKB_SOURCE_INPUT);
+
+  uint64_t output_cell_length = 10000;
+  void *output_cell = malloc(output_cell_length);
+  ckb_load_cell(output_cell, &amp;output_cell_length, 0, 0, CKB_SOURCE_OUTPUT);
+
+  // Consume input &amp; output cell
+
+  return 0;
+}
+</code></pre>
+<p>Contract starts from main function in the ELF formatted contract file, arguments are passed in via standard argc and argv. When main returns 0, the contract is treated as success. Note that due to space consideration, we might not store full inputs and outputs data in argv. Instead, we might just provide metadata in argv, and leverages additional libraries and syscalls to support input/output loading. This way the runtime cost can be minimized. CKB VM is a strict single-threaded model, contract can ship with coroutines of their own.</p>
+<p>For simplicity and deterministic behavior, CKB doesn't support floating point numbers. We suggest a softfloat solution if floating point number is really needed. Since CKB runs in a single threaded environment, atomic instructions are not needed.</p>
+<h2 id="wx-memory"><a class="header" href="#wx-memory">W^X Memory</a></h2>
+<p>CKB VM does not have an MMU unit. It works quite like CPUs in the very early era or CPUs in some embedded systems: the whole memory block can be readable, writable and executable at the same time. Nothing prevents a script from changing the code running next, or jumping to the stack section and assume the stack just contains code to run.</p>
+<p>However, like the early day computers, this architecture has certain problems:</p>
+<ol>
+<li>It makes the script running in CKB VM very prone to security problems. A buffer overflow, when not managed well, can easily lead to rewriting of code section, which changes the script behavior. On the other hand, specially crafted scripts can also be used to corrupt data section.</li>
+<li>It also complicates the implementation of CKB VM, when we apply certain optimizations such as <a href="https://en.wikipedia.org/wiki/Trace_Cache">trace cache</a>, we have to add <a href="https://github.com/nervosnetwork/ckb-vm/blob/16207caf5755b5edde6df8228a2366a553960a10/src/machine.rs#L431">special code</a> to make sure memory writes also invalidates certain trace cache, which is both error-prone and time consuming.</li>
+</ol>
+<p>As a result, a small feature named <a href="https://en.wikipedia.org/wiki/W%5EX">W^X</a> is added to CKB VM, basically, it ensures the memory is either writable or executable. Syscalls will be provided to make the conversion between writable memory and executable memory.</p>
+<p>For a more complete CPU model with proper MMU unit, it might not be necessary to make this feature mandatory, but we argue that in the sense of CKB VM, having mandatory W^X can actually be extremely useful here:</p>
+<ol>
+<li>It provides a way for the script to avoid most easily made mistakes out there by having clear distinction between writable memory, and executable memory. Obviously, attacks like <a href="https://en.wikipedia.org/wiki/Return-oriented_programming">ROP</a> are still possible but W^X can already help with many types of exploits and beginner mistakes.</li>
+<li>It also simplifies the implementation significantly. In a VM with proper MMU, this won't make much difference, but for CKB VM which already lacks MMU, this can help reduce the last complicated piece in the memory part. In addition, it also enables us to more easily build JIT or even AOT solutions for CKB VM.</li>
+</ol>
+<h3 id="wx-specification"><a class="header" href="#wx-specification">W^X Specification</a></h3>
+<p>Following RISC-V specification, CKB VM will divide its running memory into multiple 4KB memory pages. The memory pages will be aligned on a 4KB boundary, meaning the memory pages would start at 0x0, 0x1000, 0x2000, etc. For each memory page, CKB VM will maintain separate flag denoting if the page is writable or executable. Notice the 2 flags will be mutual exclusive, meaning a memory page can either be writable or executable, but not both. The following checks will also be added:</p>
+<ul>
+<li>Before executing an instruction, CKB VM will ensure the memory page containing current instruction is marked executable.</li>
+<li>Before issuing a memory write, CKB VM will ensure the memory page that is written to is marked writable.</li>
+</ul>
+<p>Violating either rule above will result in page faults. Handling page faults will be discussed below.</p>
+<p>When booting CKB VM, all memory pages will be marked as writable, except for the <code>LOAD</code> code sections marked as <code>executable</code> in ELF. CKB VM will return immediately with an error when the ELF file tries to load a code section that is both <code>writable</code> and <code>executable</code>.</p>
+<p>When loading a executable code section that is not page aligned in ELF, CKB VM will enlarge the code section just enough to make it aligned to page boundaries. For example, loading an executable code section starting from 0x139080 which spans 0x1320 bytes will result in the memory from 0x139000 till 0x13b000 be marked as executable.</p>
+<h2 id="libraries-and-bootloader"><a class="header" href="#libraries-and-bootloader">Libraries and bootloader</a></h2>
+<p>CKB provides additional libraries in the form of VM libraries, and system cell. This is to make sure contract size can be reduced to bare minimum. Those libraries might include: libc, crypto libraries, IO libraries for reading/writing inputs/outputs, and additional tools for working with Cell. All those libraries would be implemented via dynamic linking to reduce contract size.</p>
+<p>In addition, we will provide custom bootloader which might be used in compiler(gcc/llvm) linking phase to further reduce unnecessary cost.</p>
+<p>Based on current architecture, the following minimal C contract can be shrinked to 628 bytes uncompressed, and 313 bytes gzipped:</p>
+<pre><code class="language-c">int main()
+{
+  return 0;
+}
+</code></pre>
+<p>We can think this as the intrinsic cost of RISC-V model.</p>
+<h2 id="languages"><a class="header" href="#languages">Languages</a></h2>
+<p>CKB only defines the low level virtual machine. In theory, any languages with RISC-V backend can be used for CKB contract development:</p>
+<ul>
+<li>CKB can leverage standard riscv-gcc, riscv-llvm or even upstream gcc/llvm for C/C++ contract development. Executables emitted by those compilers can be directly used as CKB contracts.</li>
+<li>C-based Bitcoin or Ethereum VM can also be compiled into RISC-V binaries as common cells, contracts can then load those common cells to run Bitcoin or Ethereum compatible contracts.</li>
+<li>Higher-level language VMs, such as <a href="http://duktape.org/">duktape</a> or <a href="https://github.com/mruby/mruby">mruby</a> can also be compiled and loaded to run contracts running by JavaScript or Ruby</li>
+<li><a href="https://github.com/riscv-rust/rust">Rust</a> can also be used to write contracts with recent development in this space</li>
+</ul>
+<h2 id="runtime-cost"><a class="header" href="#runtime-cost">Runtime Cost</a></h2>
+<p>CKB will leverage suitable open source RISC-V CPU implementation as the CPI(cycle per instruction) model. CPU cycles will be gathered while running each instruction of a contract. The total cycles accumulated when contract is completed will then be treated as the runtime cost of the contract.</p>
+<p>In addition, we will also record running costs of reading/writing additional cells while running a contract.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>Here a user defined token(UDT) issuing process will be used as an example. Note that the UDT implementation used here is simplified here:</p>
+<ul>
+<li>64-bit integer is used to store token number instead of 256-bit integer</li>
+<li>Simple linear array is used instead of hashtable as account data structure. A strict upper bound is also used for simplicity</li>
+<li>Alphabetical order is used to store accounts, so a simple memcmp can be used to determine data structure equality in exchange for slight performance penalty</li>
+<li>Instead of a serialization step, C layout is used for storage</li>
+</ul>
+<p>In production, the above assumptions won't be made in CKB</p>
+<h3 id="data-structure"><a class="header" href="#data-structure">Data structure</a></h3>
+<p>Following data structure is used to store token account information:</p>
+<pre><code class="language-c">#define ADDRESS_LENGTH 32
+#define MAX_BALANCES 100
+#define MAX_ALLOWED 100
+
+typedef struct {
+  char address[ADDRESS_LENGTH];
+  int64_t tokens;
+} balance_t;
+
+typedef struct {
+  char address[ADDRESS_LENGTH];
+  char spender[ADDRESS_LENGTH];
+  int64_t tokens;
+} allowed_t;
+
+typedef struct {
+  balance_t balances[MAX_BALANCES];
+  int used_balance;
+  allowed_t allowed[MAX_ALLOWED];
+  int used_allowed;
+
+  char owner[ADDRESS_LENGTH];
+  char newOwner[ADDRESS_LENGTH];
+  int64_t total_supply;
+} data_t;
+</code></pre>
+<p>Following APIs are provided to work on the above data structures:</p>
+<pre><code class="language-c">int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int udt_total_supply(const data_t *data);
+int64_t udt_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+</code></pre>
+<p>It's both possible to compile implementations of those functions directly into the contract, or as dynamic linking cell code. Both solutions will be introduced below.</p>
+<h3 id="issuing-tokens"><a class="header" href="#issuing-tokens">Issuing tokens</a></h3>
+<p>Assume CKB has the following method for reading cell data:</p>
+<pre><code class="language-c">int ckb_read_cell_data(size_t index, size_t source, void** buffer, size_t* size);
+</code></pre>
+<p>Given a cell ID, CKB VM will mmap cell content to address space of current virtual machine, and returns pointer to the content and size.</p>
+<p>Following contract can then be used for issuing tokens:</p>
+<pre><code class="language-c">int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply)
+{
+  memset(&amp;data, 0, sizeof(data_t));
+  memcpy(data-&gt;owner, owner, ADDRESS_LENGTH);
+  memcpy(data-&gt;balances[0].address, owner, ADDRESS_LENGTH);
+
+  data-&gt;balances[0].tokens = total_supply;
+  data-&gt;used_balance = 1;
+  data-&gt;used_allowed = 0;
+  data-&gt;total_supply = total_supply;
+
+  return 0;
+}
+
+int main(int argc, char* argv[]) {
+  data_t data;
+  ret = udt_initialize(&amp;data, &quot;&lt;i am an owner&gt;&quot;, 10000000);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(0, CKB_SOURCE_OUTPUT, (void **) &amp;output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (memcmp(&amp;data, output_data, sizeof(data_t)) != 0) {
+    return -1;
+  }
+  return 0;
+}
+</code></pre>
+<p>It ensures generated data is legit by validating that contents in output cell match contents generated in token initializing steps.</p>
+<h3 id="transfer"><a class="header" href="#transfer">Transfer</a></h3>
+<p>In the above example, function implementation for validating cell is directly compiled into input contract script. It's also possible to reference and call code from external cell for validation.</p>
+<p>First, the following implementation can be provided for transfering UDT tokens:</p>
+<pre><code class="language-c">int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)
+{
+  balance_t *from_balance = NULL, *to_balance = NULL;
+  int ret = _udt_find_balance(data, from, 1, &amp;from_balance);
+  if (ret != 0) {
+    return ret;
+  }
+  ret = _udt_find_balance(data, to, 1, &amp;to_balance);
+  if (ret != 0) {
+    return ret;
+  }
+  if (from_balance-&gt;tokens &lt; tokens) {
+    return ERROR_NOT_SUFFICIENT_BALANCE;
+  }
+  int target = to_balance-&gt;tokens + tokens;
+  if (target &lt; to_balance-&gt;tokens) {
+    return ERROR_OVERFLOW;
+  }
+  from_balance-&gt;tokens -= tokens;
+  to_balance-&gt;tokens = target;
+  return 0;
+}
+</code></pre>
+<p><code>_udt_find_balance</code> here is used to locate <code>balance_t</code> data structure given an address, and also create an entry if the address doesn't already exist. Here we omit the full implementation for this function, please refer to CKB codebase for full example.</p>
+<p>Following binary code is compiled result of this function:</p>
+<pre><code class="language-c">00000000 &lt;_udt_find_balance&gt;:
+   0:   7179                    addi    sp,sp,-48
+   2:   d606                    sw      ra,44(sp)
+   4:   d422                    sw      s0,40(sp)
+   6:   1800                    addi    s0,sp,48
+   8:   fca42e23                sw      a0,-36(s0)
+   c:   fcb42c23                sw      a1,-40(s0)
+  10:   fcc42a23                sw      a2,-44(s0)
+  14:   fcd42823                sw      a3,-48(s0)
+  18:   fe042623                sw      zero,-20(s0)
+  1c:   57fd                    li      a5,-1
+  1e:   fef42423                sw      a5,-24(s0)
+  22:   a835                    j       5e &lt;.L2&gt;
+
+00000024 &lt;.L5&gt;:
+  24:   fec42703                lw      a4,-20(s0)
+  28:   87ba                    mv      a5,a4
+  2a:   078a                    slli    a5,a5,0x2
+  2c:   97ba                    add     a5,a5,a4
+  2e:   078e                    slli    a5,a5,0x3
+  30:   fdc42703                lw      a4,-36(s0)
+  34:   97ba                    add     a5,a5,a4
+  36:   02000613                li      a2,32
+
+&lt;omitted ...&gt;
+</code></pre>
+<p>Tools will be provided by CKB to encode the binary code here as cell data. Following input contract script can then be used:</p>
+<pre><code class="language-c">typedef int *transfer(data_t *, const char*, const char*, int64_t);
+
+int main(int argc, char* argv[]) {
+  data_t *input_data = NULL;
+  ret = ckb_read_cell(0, CKB_SOURCE_INPUT, (void **) &amp;input_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(1, CKB_SOURCE_OUTPUT, (void **) &amp;output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  transfer *f = (transfer *) ckb_mmap_cell(function_cell_id, 0, -1, PROT_EXEC);
+  ret = f(input_data, from, to, 100);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (memcmp(input_data, output_data, sizeof(data_t)) != 0) {
+    return -1;
+  }
+  return 0;
+}
+</code></pre>
+<p>With mmap, we load a cell directly as a callable function, this function is then used to complete the transfer. This way we can ensure contract size stays minimal while reusing the same method across multiple transactions.</p>
+<h2 id="multi-function-support-via-dynamic-linking"><a class="header" href="#multi-function-support-via-dynamic-linking">Multi-function support via dynamic linking</a></h2>
+<p>Even though transfer method is stored as an external cell in the above example, one disadvantage here is that the memory address of the mmapped function is unknown at compile time. As a result, internal implementation within that method can only leverage local jumps. In addition, only one function is supported this way, there's no way to store multiple function in a single cell.</p>
+<p>Dynamic linking is provide to solve this problem: assuming we have all UDT functions compiled as a shared library in one cell:</p>
+<pre><code class="language-c">int udt_initialize(data_t *data, char owner[ADDRESS_LENGTH], int64_t total_supply);
+int udt_total_supply(const data_t *data);
+int64_t udt_balance_of(data_t *data, const char address[ADDRESS_LENGTH]);
+int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+int udt_approve(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], int64_t tokens);
+int udt_transfer_from(data_t *data, const char from[ADDRESS_LENGTH], const char spender[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens);
+</code></pre>
+<p>With dynamic linking, following input script can be used:</p>
+<pre><code class="language-c">int main(int argc, char* argv[])
+{
+  data_t *input_data = NULL;
+  ret = ckb_read_cell(0, CKB_SOURCE_INPUT, (void **) &amp;input_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  data_t *output_data = NULL;
+  ret = ckb_read_cell(0, CKB_SOURCE_OUTPUT, (void **) &amp;output_data, NULL);
+  if (ret != 0) {
+    return ret;
+  }
+
+  if (strcmp(argv[4], &quot;initialize&quot;) == 0) {
+    // processing initialize arguments
+    ret = udt_initialize(...);
+    if (ret != 0) {
+      return ret;
+    }
+  } else if (strcmp(argv[4], &quot;transfer&quot;) == 0) {
+    // processing transfer arguments
+    ret = udt_transfer(input_data, ...);
+    if (ret != 0) {
+      return ret;
+    }
+  } else if (strcmp(argv[4], &quot;approve&quot;) == 0) {
+    // processing approve arguments
+    ret = udt_approve(input_data, ...);
+    if (ret != 0) {
+      return ret;
+    }
+  }
+  // more commands here
+
+  if (memcmp(input_data, output_data, sizeof(data_t)) != 0) {
+    return -1;
+  }
+  return 0;
+}
+</code></pre>
+<p>Here all UDT functions are linked dynamically from external cells, current contract can be minimized in terms of size.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0002-ckb/0002-ckb.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0002-ckb/0002-ckb.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

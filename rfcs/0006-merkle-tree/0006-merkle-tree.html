@@ -1,0 +1,333 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0006 Merkle Tree for Static Data - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html" class="active">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0006-merkle-tree/0006-merkle-tree.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0006&quot;
+Category: Standards Track
+Status: Proposal
+Author: Ke Wang
+Organization: Nervos Foundation
+Created: 2018-12-01
+</code></pre>
+<h1 id="merkle-tree-for-static-data"><a class="header" href="#merkle-tree-for-static-data">Merkle Tree for Static Data</a></h1>
+<h2 id="complete-binary-merkle-tree"><a class="header" href="#complete-binary-merkle-tree">Complete Binary Merkle Tree</a></h2>
+<p>CKB uses Complete Binary Merkle Tree(CBMT) to generate <em>Merkle Root</em>  and <em>Merkle Proof</em> for a static list of items. Currently, CBMT is used to calculate <em>Transactions Root</em>. Basically, CBMT is a <em><strong>complete binary tree</strong></em>, in which every level, except possibly the last, is completely filled, and all nodes are as far left as possible. And it is also a <em><strong>full binary tree</strong></em>, in which every node other than the leaves has two children. Compare with other Merkle trees, the hash computation of CBMT is minimal, as well as the proof size.</p>
+<h2 id="nodes-organization"><a class="header" href="#nodes-organization">Nodes Organization</a></h2>
+<p>For the sake of illustration, we order the tree nodes from <em><strong>top to bottom</strong></em> and <em><strong>left to right</strong></em> starting at zero. In CBMT with <em>n</em> items, root is the <em>first</em> node, and the first item's hash is <em>node 0</em>, second is <em>node n+1</em>, etc. We choose this nodes organization because it is easy to calculate the node order for an item.</p>
+<p>For example, CBMT with 6 items(suppose the hashes are <code>[T0, T1, T2, T3, T4, T5]</code>) and CBMT with 7 items(suppose the hashes are <code>[T0, T1, T2, T3, T4, T5, T6]</code>) is shown below:</p>
+<pre><code>        with 6 items                       with 7 items
+
+              B0 -- node 0                       B0 -- node 0
+             /  \                               /  \
+           /      \                           /      \
+         /          \                       /          \
+       /              \                   /              \
+      B1 -- node 1    B2 -- node 2       B1 -- node 1    B2 -- node 2
+     /  \            /  \               /  \            /  \
+    /    \          /    \             /    \          /    \
+   /      \        /      \           /      \        /      \
+  B3(3)   B4(4)  TO(5)    T1(6)      B3(3)   B4(4)   B5(5)   T0(6)
+ /  \    /  \                       /  \    /  \    /  \
+T2  T3  T4  T5                     T1  T2  T3  T4  T5  T6
+(7) (8) (9) (10)                   (7) (8) (9)(10)(11) (12)
+</code></pre>
+<p>Specially, the tree with 0 item is empty(0 node) and its root is <code>H256::zero</code>.</p>
+<h2 id="tree-struct"><a class="header" href="#tree-struct">Tree Struct</a></h2>
+<p>CBMT can be represented in a very space-efficient way, using an array alone. Nodes in the array are presented in ascending order.</p>
+<p>For example, the two trees above can be represented as:</p>
+<pre><code>// an array with 11 elements, the first element is node 0(BO), second is node 1, etc.
+[B0, B1, B2, B3, B4, T0, T1, T2, T3, T4, T5]
+
+// an array with 13 elements, the first element is node 0(BO), second is node 1, etc.
+[B0, B1, B2, B3, B4, B5, T0, T1, T2, T3, T4, T5, T6]
+</code></pre>
+<p>Suppose a CBMT with <em>n</em> items, the size of the array would be <em>2n-1</em>, the index of item i(start at 0) is <em>i+n-1</em>. For node at <em>i</em>, the index of its parent is <em>(i-1)/2</em>, the index of its sibling is <em>(i+1)^1-1</em>(<em>^</em> is xor) and the indexes of its children are <em>[2i+1, 2i+2]</em>.</p>
+<h2 id="merkle-proof"><a class="header" href="#merkle-proof">Merkle Proof</a></h2>
+<p>Merkle Proof can provide a proof for existence of one or more items. Only sibling of the nodes along the path that form leaves to root, excluding the nodes already in the path, should be included in the proof. We also specify that <em><strong>the nodes in the proof is presented in descending order</strong></em>(with this, algorithms of proof's generation and verification could be much simple). Indexes of item that need to prove are essential to complete the root calculation, since the index is not the inner feature of item, so the indexes are also included in the proof, and in order to get the correct correspondence, we specify that the indexes are <em><strong>presented in ascending order by corresponding hash</strong></em>. For example, if we want to show that <code>[T1, T4]</code> is in the list of 6 items above, only nodes <code>[T5, T0, B3]</code> and indexes <code>[9, 6]</code> should be included in the proof.</p>
+<h3 id="proof-structure"><a class="header" href="#proof-structure">Proof Structure</a></h3>
+<p>The schema of proof struct is:</p>
+<pre><code>table Proof {
+  // indexes of items
+  indexes: [uint32];
+  // nodes on the path which can not be calculated, in descending order by index
+  nodes: [H256];
+}
+</code></pre>
+<h3 id="algorithm-of-proof-generation"><a class="header" href="#algorithm-of-proof-generation">Algorithm of proof generation</a></h3>
+<pre><code class="language-c++">Proof gen_proof(Hash tree[], U32 indexes[]) {
+  Hash nodes[];
+  U32 tree_indexes[];
+  Queue queue;
+
+  int size = len(tree) &gt;&gt; 1 + 1;
+  indexes.desending_sort();
+
+  for index in indexes {
+    queue.push_back(index + size - 1);
+  }
+
+  while(queue is not empty) {
+    int index = queue.pop_front();
+    int sibling = calculate_sibling(index);
+
+    if(sibling == queue.front()) {
+      queue.pop_front();
+    } else {
+      nodes.push_back(tree[sibling]);
+    }
+
+    int parent = calculate_parent(index);
+    if(parent != 0) {
+      queue.push_back(parent);
+    }
+  }
+
+  add (size-1) for every index in indexes;
+  sort indexes in ascending order by corresponding hash;
+
+  return Proof::new(indexes, nodes);
+}
+</code></pre>
+<h3 id="algorithm-of-validation"><a class="header" href="#algorithm-of-validation">Algorithm of validation</a></h3>
+<pre><code class="language-c++">bool validate_proof(Proof proof, Hash root, Item items[]) {
+  Queue queue;
+  ascending_sort_by_item_hash(items);
+
+  for (index,item) in (proof.indexes, items) {
+    queue.push_back((item.hash(), index));
+  }
+
+  descending_sort_by_index(queue);
+
+  int i = 0;
+  while(queue is not empty) {
+    Hash hash, hash1, hash2;
+    int index1, index2;
+
+    (hash1, index1) = queue.pop_front();
+    (hash2, index2) = queue.front();
+    int sibling = calculate_sibling(index1);
+
+    if(sibling == index2) {
+      queue.pop_front();
+      hash = merge(hash2, hash1);
+    } else {
+      hash2 = proof.nodes[i++];
+
+      if(is_left_node(index1)) {
+        hash = merge(hash1, hash2);
+      } else {
+        hash = merge(hash2, hash1);
+      }
+    }
+
+    int parent = calculate_parent(index);
+    if(parent == 0) {
+      return root == hash;
+    }
+    queue.push_back((hash, parent))
+  }
+
+  return false;
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>

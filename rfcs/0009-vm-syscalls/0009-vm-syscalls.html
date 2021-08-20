@@ -1,0 +1,654 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RFC0009 VM Syscalls - The Nervos RFC Book</title>
+                
+
+        <!-- Custom HTML head -->
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+                <link rel="icon" href="../../favicon.svg">
+                        <link rel="shortcut icon" href="../../favicon.png">
+                <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+                <link rel="stylesheet" href="../../css/print.css" media="print">
+        
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+                <link rel="stylesheet" href="../../fonts/fonts.css">
+        
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+                <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../../rfcs/0001-positioning/0001-positioning.html">RFC0001 The Nervos Network Positioning Paper</a></li><li class="chapter-item expanded "><a href="../../rfcs/0002-ckb/0002-ckb.html">RFC0002 Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></li><li class="chapter-item expanded "><a href="../../rfcs/0003-ckb-vm/0003-ckb-vm.html">RFC0003 CKB-VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">RFC0004 CKB Block Synchronization Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0005-priviledged-mode/0005-priviledged-mode.html">RFC0005 Privileged architecture support for CKB VM</a></li><li class="chapter-item expanded "><a href="../../rfcs/0006-merkle-tree/0006-merkle-tree.html">RFC0006 Merkle Tree for Static Data</a></li><li class="chapter-item expanded "><a href="../../rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">RFC0007 P2P Scoring System And Network Security</a></li><li class="chapter-item expanded "><a href="../../rfcs/0008-serialization/0008-serialization.html">RFC0008 Serialization</a></li><li class="chapter-item expanded "><a href="../../rfcs/0009-vm-syscalls/0009-vm-syscalls.html" class="active">RFC0009 VM Syscalls</a></li><li class="chapter-item expanded "><a href="../../rfcs/0010-eaglesong/0010-eaglesong.html">RFC0010 Eaglesong (Proof-of-Work Function for Nervos CKB)</a></li><li class="chapter-item expanded "><a href="../../rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">RFC0011 Transaction Filter Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0012-node-discovery/0012-node-discovery.html">RFC0012 CKB Node Discovery Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0013-get-block-template/0013-get-block-template.html">RFC0013 get_block_template</a></li><li class="chapter-item expanded "><a href="../../rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">RFC0014 VM Cycle Limits</a></li><li class="chapter-item expanded "><a href="../../rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">RFC0015 Crypto-Economics of the Nervos Common Knowledge Base</a></li><li class="chapter-item expanded "><a href="../../rfcs/0017-tx-valid-since/0017-tx-valid-since.html">RFC0017 Transaction valid since</a></li><li class="chapter-item expanded "><a href="../../rfcs/0019-data-structures/0019-data-structures.html">RFC0019 Data Structures of Nervos CKB</a></li><li class="chapter-item expanded "><a href="../../rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">RFC0020 CKB Consensus Protocol</a></li><li class="chapter-item expanded "><a href="../../rfcs/0021-ckb-address-format/0021-ckb-address-format.html">RFC0021 CKB Address Format</a></li><li class="chapter-item expanded "><a href="../../rfcs/0022-transaction-structure/0022-transaction-structure.html">RFC0022 CKB Transaction Structure</a></li><li class="chapter-item expanded "><a href="../../rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">RFC0023 Deposit and Withdraw in Nervos DAO</a></li><li class="chapter-item expanded "><a href="../../rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">RFC0024 CKB System Script List</a></li><li class="chapter-item expanded "><a href="../../rfcs/0025-simple-udt/0025-simple-udt.html">RFC0025 Simple UDT</a></li><li class="chapter-item expanded "><a href="../../rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">RFC0026 Anyone-Can-Pay Lock</a></li><li class="chapter-item expanded "><a href="../../rfcs/0027-block-structure/0027-block-structure.html">RFC0027 CKB Block Structure</a></li></ol>            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                                                <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                                            </div>
+
+                    <h1 class="menu-title">The Nervos RFC Book</h1>
+
+                    <div class="right-buttons">
+                                                <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+                                                                        <a href="https://github.com/nervosnetwork/rfcs/edit/master/rfcs/0009-vm-syscalls/0009-vm-syscalls.md" title="Suggest an edit" aria-label="Suggest an edit">
+                            <i id="git-edit-button" class="fa fa-edit"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code class="language-yaml">Number: &quot;0009&quot;
+Category: Standards Track
+Status: Proposal
+Author: Xuejie Xiao
+Organization: Nervos Foundation
+Created: 2018-12-14
+</code></pre>
+<h1 id="vm-syscalls"><a class="header" href="#vm-syscalls">VM Syscalls</a></h1>
+<h2 id="abstract"><a class="header" href="#abstract">Abstract</a></h2>
+<p>This document describes all the RISC-V VM syscalls implemented in CKB so far.</p>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>CKB VM syscalls are used to implement communications between the RISC-V based CKB VM, and the main CKB process, allowing scripts running in the VM to read current transaction information as well as general blockchain information from CKB. Leveraging syscalls instead of custom instructions allow us to maintain a standard compliant RISC-V implementation which can embrace the broadest industrial support.</p>
+<h2 id="partial-loading"><a class="header" href="#partial-loading">Partial Loading</a></h2>
+<p>With the exception of <code>Exit</code>, all syscalls included here use a partial loading design. The following 3 arguments are used in each syscall:</p>
+<ul>
+<li><code>addr</code>: a pointer to a buffer in VM memory space denoting where we would load the syscall data.</li>
+<li><code>len</code>: a pointer to a 64-bit unsigned integer in VM memory space, when calling the syscall, this memory location should store the length of the buffer specified by <code>addr</code>, when returning from the syscall, CKB VM would fill in <code>len</code> with the actual length of the buffer. We would explain the exact logic below.</li>
+<li><code>offset</code>: an offset specifying from which offset we should start loading the syscall data.</li>
+</ul>
+<p>Each syscall might have different ways of preparing syscall return data, when the data is successfully prepared, it is fed into VM via the steps below. For ease of reference, we refer to the prepared syscall return data as <code>data</code>, and the length of <code>data</code> as <code>data_length</code>.</p>
+<ol>
+<li>A memory read operation is executed to read the value in <code>len</code> pointer from VM memory space, we call the read result <code>size</code> here.</li>
+<li><code>full_size</code> is calculated as <code>data_length - offset</code>.</li>
+<li><code>real_size</code> is calculated as the minimal value of <code>size</code> and <code>full_size</code></li>
+<li>The serialized value starting from <code>&amp;data[offset]</code> till <code>&amp;data[offset + real_size]</code> is written into VM memory space location starting from <code>addr</code>.</li>
+<li><code>full_size</code> is written into <code>len</code> pointer</li>
+<li><code>0</code> is returned from the syscall denoting execution success.</li>
+</ol>
+<p>The whole point of this process, is providing VM side a way to do partial reading when the available memory is not enough to support reading the whole data altogether.</p>
+<p>One trick here, is that by providing <code>NULL</code> as <code>addr</code>, and a <code>uint64_t</code> pointer with 0 value as <code>len</code>, this syscall can be used to fetch the length of the serialized data part without reading any actual data.</p>
+<h2 id="syscall-specifications"><a class="header" href="#syscall-specifications">Syscall Specifications</a></h2>
+<p>In CKB we use RISC-V's standard syscall solution: each syscall accepts 6 arguments stored in register <code>A0</code> through <code>A5</code>. Each argument here is of register word size so it can store either regular integers or pointers. The syscall number is stored in <code>A7</code>. After all the arguments and syscall number are set, <code>ecall</code> instruction is used to trigger syscall execution, CKB VM then transfers controls from the VM to the actual syscall implementation beneath. For example, the following RISC-V assembly would trigger <em>Exit</em> syscall with a return code of 10:</p>
+<pre><code>li a0, 10
+li a7, 93
+ecall
+</code></pre>
+<p>As shown in the example, not all syscalls use all the 6 arguments. In this case the caller side can only fill in the needed arguments.</p>
+<p>Syscalls can respond to the VM in 2 ways:</p>
+<ul>
+<li>A return value is put in <code>A0</code> if exists.</li>
+<li>Syscalls can also write data in memory location pointed by certain syscall arguments, so upon syscall completion, normal VM instructions can read the data prepared by the syscall.</li>
+</ul>
+<p>For convenience, we could wrap the logic of calling a syscall in a C function:</p>
+<pre><code class="language-c">static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3, long _a4, long _a5)
+{
+  register long a0 asm(&quot;a0&quot;) = _a0;
+  register long a1 asm(&quot;a1&quot;) = _a1;
+  register long a2 asm(&quot;a2&quot;) = _a2;
+  register long a3 asm(&quot;a3&quot;) = _a3;
+  register long a4 asm(&quot;a4&quot;) = _a4;
+  register long a5 asm(&quot;a5&quot;) = _a5;
+
+  register long syscall_id asm(&quot;a7&quot;) = n;
+
+  asm volatile (&quot;scall&quot;
+		: &quot;+r&quot;(a0) : &quot;r&quot;(a1), &quot;r&quot;(a2), &quot;r&quot;(a3), &quot;r&quot;(a4), &quot;r&quot;(a5), &quot;r&quot;(syscall_id));
+
+  return a0;
+}
+
+#define syscall(n, a, b, c, d, e, f) \
+        __internal_syscall(n, (long)(a), (long)(b), (long)(c), (long)(d), (long)(e), (long)(f))
+</code></pre>
+<p>(NOTE: this is adapted from <a href="https://github.com/riscv/riscv-newlib/blob/77e11e1800f57cac7f5468b2bd064100a44755d4/libgloss/riscv/internal_syscall.h#L25">riscv-newlib</a>)</p>
+<p>Now we can trigger the same <em>Exit</em> syscall more easily in C code:</p>
+<pre><code class="language-c">syscall(93, 10, 0, 0, 0, 0, 0);
+</code></pre>
+<p>Note that even though <em>Exit</em> syscall only needs one argument, our C wrapper requires us to fill in all 6 arguments. We can initialize other unused arguments as all 0. Below we would illustrate each syscall with a C function signature to demonstrate each syscall's accepted arguments. Also for clarifying reason, all the code shown in this RFC is assumed to be written in pure C.</p>
+<ul>
+<li><a href="#exit">Exit</a></li>
+<li><a href="#load-transaction-hash">Load Transaction Hash</a></li>
+<li><a href="#load-transaction">Load Transaction</a></li>
+<li><a href="#load-script-hash">Load Script Hash</a></li>
+<li><a href="#load-script">Load Script</a></li>
+<li><a href="#load-cell">Load Cell</a></li>
+<li><a href="#load-cell-by-field">Load Cell By Field</a></li>
+<li><a href="#load-cell-data">Load Cell Data</a></li>
+<li><a href="#load-cell-data-as_code">Load Cell Data As Code</a></li>
+<li><a href="#load-input">Load Input</a></li>
+<li><a href="#load-input-by-field">Load Input By Field</a></li>
+<li><a href="#load-header">Load Header</a></li>
+<li><a href="#load-header-by-field">Load Header By Field</a></li>
+<li><a href="#load-witness">Load Witness</a></li>
+<li><a href="#debug">Debug</a></li>
+</ul>
+<h3 id="exit"><a class="header" href="#exit">Exit</a></h3>
+<p>As shown above, <em>Exit</em> syscall has a signature like following:</p>
+<pre><code class="language-c">void exit(int8_t code)
+{
+  syscall(93, code, 0, 0, 0, 0, 0);
+}
+</code></pre>
+<p><em>Exit</em> syscall don't need a return value since CKB VM is not supposed to return from this function. Upon receiving this syscall, CKB VM would terminate execution with the specified return code. This is the only way of correctly exiting a script in CKB VM.</p>
+<h3 id="load-transaction-hash"><a class="header" href="#load-transaction-hash">Load Transaction Hash</a></h3>
+<p><em>Load Transaction Hash</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_tx_hash(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2061, addr, len, offset, 0, 0, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+</ul>
+<p>This syscall would calculate the hash of current transaction and copy it to VM memory space based on <em>partial loading</em> workflow.</p>
+<h3 id="load-transaction"><a class="header" href="#load-transaction">Load Transaction</a></h3>
+<p><em>Load Transaction</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_transaction(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2051, addr, len, offset, 0, 0, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+</ul>
+<p>This syscall serializes the full transaction containing running script into the Molecule Encoding <a href="../0008-serialization/0008-serialization.html">1</a> format, then copy it to VM memory space based on <em>partial loading</em> workflow.</p>
+<h3 id="load-script-hash"><a class="header" href="#load-script-hash">Load Script Hash</a></h3>
+<p><em>Load Script Hash</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_script_hash(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2062, addr, len, offset, 0, 0, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+</ul>
+<p>This syscall would calculate the hash of current running script and copy it to VM memory space based on <em>partial loading</em> workflow.</p>
+<h3 id="load-script"><a class="header" href="#load-script">Load Script</a></h3>
+<p><em>Load Script</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_script(void* addr, uint64_t* len, size_t offset)
+{
+  return syscall(2052, addr, len, offset, 0, 0, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+</ul>
+<p>This syscall serializes the current running script into the Molecule Encoding <a href="../0008-serialization/0008-serialization.html">1</a> format, then copy it to VM memory space based on <em>partial loading</em> workflow.</p>
+<h3 id="load-cell"><a class="header" href="#load-cell">Load Cell</a></h3>
+<p><em>Load Cell</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_cell(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
+{
+  return syscall(2071, addr, len, offset, index, source, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>2: output cells.</li>
+<li><code>0x0100000000000002</code>: output cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate a single cell in the current transaction based on <code>source</code> and <code>index</code> value, serialize the whole cell into the Molecule Encoding <a href="../0008-serialization/0008-serialization.html">1</a> format, then use the same step as documented in <a href="#partial-loading">Partial Loading</a> section to feed the serialized value into VM.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="load-cell-by-field"><a class="header" href="#load-cell-by-field">Load Cell By Field</a></h3>
+<p><em>Load Cell By Field</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_cell_by_field(void* addr, uint64_t* len, size_t offset,
+                           size_t index, size_t source, size_t field)
+{
+  return syscall(2081, addr, len, offset, index, source, field);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>2: output cells.</li>
+<li><code>0x0100000000000002</code>: output cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+</ul>
+</li>
+<li><code>field</code>: a flag denoting the field of the cell to read, possible values include:
+<ul>
+<li>0: capacity in 64-bit unsigned little endian integer value.</li>
+<li>1: data hash.</li>
+<li>2: lock in the Molecule Encoding format.</li>
+<li>3: lock hash.</li>
+<li>4: type in the Molecule Encoding format.</li>
+<li>5: type hash.</li>
+<li>6: occupied capacity in 64-bit unsigned little endian integer value.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate a single cell in current transaction just like <em>Load Cell</em> syscall, and then fetches the data denoted by the <code>field</code> value. The data is then fed into VM memory space using the <em>partial loading</em> workflow.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>An invalid field value would immediately trigger an VM error and halt execution.</li>
+<li>In some cases certain values are missing(such as requesting type on a cell without type script), the syscall would return <code>2</code> as return value then.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="load-cell-data"><a class="header" href="#load-cell-data">Load Cell Data</a></h3>
+<p><em>Load Cell Data</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_cell_data(void* addr, uint64_t* len, size_t offset,
+                       size_t index, size_t source)
+{
+  return syscall(2092, addr, len, offset, index, source, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>2: output cells.</li>
+<li><code>0x0100000000000002</code>: output cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locale a single cell in the current transaction just like <em>Load Cell</em> syscall, then locates its cell data section. The cell data is then fed into VM memory space using the <em>partial loading</em> workflow.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="load-cell-data-as-code"><a class="header" href="#load-cell-data-as-code">Load Cell Data As Code</a></h3>
+<p><em>Load Cell Data</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_cell_data_as_code(void* addr, size_t memory_size, size_t content_offset,
+                               size_t content_size, size_t index, size_t source)
+{
+  return syscall(2091, addr, memory_size, content_offset, content_size, index, source);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>: a pointer to a buffer in VM memory space used to hold loaded code, must be aligned on a 4KB boundary.</li>
+<li><code>memory_size</code>: the size of memory buffer used to hold code, must be a multiple of 4KB.</li>
+<li><code>content_offset</code>: start offset of code to load in cell data.</li>
+<li><code>content_size</code>: size of code content to load in cell data.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>2: output cells.</li>
+<li><code>0x0100000000000002</code>: output cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locale a single cell in the current transaction just like <em>Load Cell</em> syscall, then locates its cell data section. But different from <em>Load Cell Data</em> syscall, this syscall would load the requested cell data content into VM memory, and marked the loaded memory page as executable. Later CKB VM can then jump to the loaded memory page to execute loaded code. This can be used to implement dynamic linking in CKB VM.</p>
+<p>Notice this syscall does not implement <em>partial loading</em> workflow.</p>
+<p>For now, memory pages marked as executable cannot be reverted to non-executable pages.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>An unaligned <code>addr</code> or <code>memory_size</code> would immediately trigger an VM error and halt execution.</li>
+<li>Out of bound<code>content_offset</code> or <code>content_size</code> values would immediately trigger an VM error and halt execution.</li>
+<li><code>content_size</code> must not be larger than <code>memory_size</code>, otherwise it would immediately trigger an VM error and halt execution.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<p>For an example using this syscall, please refer to <a href="https://github.com/nervosnetwork/ckb-miscellaneous-scripts/blob/0759a656c20e652e9ad2711fde0ed96ce9f1130b/c/or.c">this script</a>.</p>
+<h3 id="load-input"><a class="header" href="#load-input">Load Input</a></h3>
+<p><em>Load Input</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_input(void* addr, uint64_t* len, size_t offset,
+                   size_t index, size_t source)
+{
+  return syscall(2073, addr, len, offset, index, source, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of inputs to read.</li>
+<li><code>source</code>: a flag denoting the source of inputs to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate a single cell input in the current transaction based on <code>source</code> and <code>index</code> value, serialize the whole cell input into the Molecule Encoding <a href="../0008-serialization/0008-serialization.html">1</a> format, then use the same step as documented in <a href="#partial-loading">Partial Loading</a> section to feed the serialized value into VM.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>When <code>output cells</code> or <code>dep cells</code> is used in <code>source</code> field, the syscall would return with <code>2</code> as return value, since cell input only exists for input cells.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="load-input-by-field"><a class="header" href="#load-input-by-field">Load Input By Field</a></h3>
+<p><em>Load Input By Field</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_input_by_field(void* addr, uint64_t* len, size_t offset,
+                            size_t index, size_t source, size_t field)
+{
+  return syscall(2083, addr, len, offset, index, source, field);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of inputs to read.</li>
+<li><code>source</code>: a flag denoting the source of inputs to locate, possible values include:
+<ul>
+<li>1: inputs.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+</ul>
+</li>
+<li><code>field</code>: a flag denoting the field of the input to read, possible values include:
+<ul>
+<li>0: out_point in the Molecule Encoding format.</li>
+<li>1: since in 64-bit unsigned little endian integer value.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate a single cell input in current transaction just like <em>Load Cell</em> syscall, and then fetches the data denoted by the <code>field</code> value. The data is then fed into VM memory space using the <em>partial loading</em> workflow.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>When <code>output cells</code> or <code>dep cells</code> is used in <code>source</code> field, the syscall would return with <code>2</code> as return value, since cell input only exists for input cells.</li>
+<li>An invalid field value would immediately trigger an VM error and halt execution.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="load-header"><a class="header" href="#load-header">Load Header</a></h3>
+<p><em>Load Header</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_header(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
+{
+  return syscall(2072, addr, len, offset, index, source, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+<li>4: header deps.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate the header associated either with an input cell, a dep cell, or a header dep based on <code>source</code> and <code>index</code> value, serialize the whole header into Molecule Encoding <a href="../0008-serialization/0008-serialization.html">1</a> format, then use the same step as documented in <a href="#partial-loading">Partial Loading</a> section to feed the serialized value into VM.</p>
+<p>Note when you are loading the header associated with an input cell or a dep cell, the header hash should still be included in <code>header deps</code> section of current transaction.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>This syscall would return with <code>2</code> as return value if requesting a header for an input cell, but the <code>header deps</code> section is missing the header hash for the input cell.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h4 id="loading-header-immature-rule"><a class="header" href="#loading-header-immature-rule">Loading Header Immature Rule</a></h4>
+<p><strong>Attention</strong> that the script can only load the header of a block which is 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction loading its header can only be included in the first block of epoch 8 and later blocks.</p>
+<h3 id="load-header-by-field"><a class="header" href="#load-header-by-field">Load Header By Field</a></h3>
+<p><em>Load Header By Field</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_header_by_field(void* addr, uint64_t* len, size_t offset,
+                             size_t index, size_t source, size_t field)
+{
+  return syscall(2082, addr, len, offset, index, source, field);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>3: dep cells.</li>
+<li>4: header deps.</li>
+</ul>
+</li>
+<li><code>field</code>: a flag denoting the field of the header to read, possible values include:
+<ul>
+<li>0: current epoch number in 64-bit unsigned little endian integer value.</li>
+<li>1: block number for the start of current epoch in 64-bit unsigned little endian integer value.</li>
+<li>2: epoch length in 64-bit unsigned little endian integer value.</li>
+</ul>
+</li>
+</ul>
+<p>This syscall would locate the header associated either with an input cell, a dep cell, or a header dep based on <code>source</code> and <code>index</code> value, and then fetches the data denoted by the <code>field</code> value. The data is then fed into VM memory space using the <em>partial loading</em> workflow.</p>
+<p>Note when you are loading the header associated with an input cell or a dep cell, the header hash should still be included in <code>header deps</code> section of current transaction.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+<li>This syscall would return with <code>2</code> as return value if requesting a header for an input cell, but the <code>header deps</code> section is missing the header hash for the input cell.</li>
+<li>An invalid field value would immediately trigger an VM error and halt execution.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<p><em>Attention</em>* that this syscall also follows <a href="#loading-header-immature-error">loading header immature rule</a>.</p>
+<h3 id="load-witness"><a class="header" href="#load-witness">Load Witness</a></h3>
+<p><em>Load Witness</em> syscall has a signature like following:</p>
+<pre><code class="language-c">int ckb_load_witness(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
+{
+  return syscall(2074, addr, len, offset, index, source, 0);
+}
+</code></pre>
+<p>The arguments used here are:</p>
+<ul>
+<li><code>addr</code>, <code>len</code> and <code>offset</code> follow the usage descripted in <a href="#partial-loading">Partial Loading</a> section.</li>
+<li><code>index</code>: an index value denoting the index of entries to read.</li>
+<li><code>source</code>: a flag denoting the source of cells to locate, possible values include:
+<ul>
+<li>1: input cells.</li>
+<li><code>0x0100000000000001</code>: input cells with the same running script as current script</li>
+<li>2: output cells.</li>
+<li><code>0x0100000000000002</code>: output cells with the same running script as current script</li>
+</ul>
+</li>
+</ul>
+<p>This syscall locates a witness entry in current transaction based on <code>source</code> and <code>index</code> value, then use the same step as documented in <a href="#partial-loading">Partial Loading</a> section to feed the serialized value into VM.</p>
+<p>The <code>source</code> field here, is only used a hint helper for script side. As long as one provides a possible <code>source</code> listed above, the corresponding witness entry denoted by <code>index</code> will be returned.</p>
+<p>This syscall might return the following errors:</p>
+<ul>
+<li>An invalid source value would immediately trigger an VM error and halt execution.</li>
+<li>The syscall would return with <code>1</code> as return value if the index value is out of bound.</li>
+</ul>
+<p>In case of errors, <code>addr</code> and <code>index</code> will not contain meaningful data to use.</p>
+<h3 id="debug"><a class="header" href="#debug">Debug</a></h3>
+<p><em>Debug</em> syscall has a signature like following:</p>
+<pre><code class="language-c">void ckb_debug(const char* s)
+{
+  syscall(2177, s, 0, 0, 0, 0, 0);
+}
+</code></pre>
+<p>This syscall accepts a null terminated string and prints it out as debug log in CKB. It can be used as a handy way to debug scripts in CKB. This syscall has no return value.</p>
+<h1 id="reference"><a class="header" href="#reference">Reference</a></h1>
+<ul>
+<li><a href="../0008-serialization/0008-serialization.html">1</a>: <a href="../0008-serialization/0008-serialization.html">Molecule Encoding</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="../../rfcs/0008-serialization/0008-serialization.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+                                                    <a rel="next" href="../../rfcs/0010-eaglesong/0010-eaglesong.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="../../rfcs/0008-serialization/0008-serialization.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+                                    <a rel="next" href="../../rfcs/0010-eaglesong/0010-eaglesong.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                            </nav>
+
+        </div>
+
+        
+        
+        
+                <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        
+        
+                <script src="../../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+        <script src="../../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+        
+    </body>
+</html>
