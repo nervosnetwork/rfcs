@@ -6,6 +6,7 @@ set -u
 
 mkdir -p src
 rsync -avu --delete --progress -h rfcs/ src/rfcs/
+cp -f README.md src/introduction.md
 
 printf '[Introduction](introduction.md)\n\n' > src/SUMMARY.md
 
