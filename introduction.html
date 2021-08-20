@@ -151,7 +151,70 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+                        <h1 id="nervos-network-rfcs"><a class="header" href="#nervos-network-rfcs">Nervos Network RFCs</a></h1>
+<p><a href="https://t.me/nervos_rfcs"><img src="https://cdn.rawgit.com/Patrolavia/telegram-badge/8fe3382b/chat.svg" alt="Telegram Group" /></a></p>
+<p>This repository contains proposals, standards and documentations related to Nervos Network.</p>
+<p>The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction of Nervos network is evolving in.</p>
+<p>RFCs publication here does not make it formally accepted standard until its status becomes Standard.</p>
+<h2 id="categories"><a class="header" href="#categories">Categories</a></h2>
+<p>Not all RFCs are standards, there are 2 categories:</p>
+<ul>
+<li>Standards Track - RFC that is intended to be standard followed by protocols, clients and applications in Nervos network.</li>
+<li>Informational - Anything related to Nervos network.</li>
+</ul>
+<h2 id="process"><a class="header" href="#process">Process</a></h2>
+<p>The RFC process attempts to be as simple as possible at beginning and evolves with the network.</p>
+<h3 id="1-discuss-your-idea-with-community"><a class="header" href="#1-discuss-your-idea-with-community">1. Discuss Your Idea with Community</a></h3>
+<p>Before submiting a RFC pull request, you should proposal the idea or document to <a href="https://t.me/nervos_rfcs">Nervos RFCs Chatroom</a> or <a href="https://groups.google.com/a/nervos.org/d/forum/rfcs">Nervos RFCs Mailing List</a>.</p>
+<h3 id="2-propose-your-rfc"><a class="header" href="#2-propose-your-rfc">2. Propose Your RFC</a></h3>
+<p>After discussion, please create a pull request to propose your RFC:</p>
+<blockquote>
+<p>Copy <code>0000-template</code> as <code>rfcs/0000-feature-name</code>, where <code>feature-name</code> is the descriptive name of the RFC. Don't assign an number yet.</p>
+</blockquote>
+<p>Nervos RFCs should be written in English, but translated versions can be provided to help understanding. English version is the canonical version, check english version when there's ambiguity.</p>
+<p>Nervos RFCs should follow the keyword conventions defined in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>, <a href="https://tools.ietf.org/html/rfc6919">RFC 6919</a>.</p>
+<h3 id="3-review--accept"><a class="header" href="#3-review--accept">3. Review / Accept</a></h3>
+<p>The maintainers of RFCs and the community will review the PR, and you can update the RFC according to comments left in PR. When the RFC is ready and has enough supports, it will be accepted and merged into this repository.</p>
+<p>An Informational RFC will be in Draft status once merged and published. It can be made Final by author at any time, or by RFC maintainers if there's no updates to the draft in 12 months.</p>
+<h3 id="4-standards-track-propose-your-standard"><a class="header" href="#4-standards-track-propose-your-standard">4. (Standards Track) Propose Your Standard</a></h3>
+<p>A Standards Track RFC can be in 1 of 3 statuses:</p>
+<ol>
+<li>Proposal (Default)</li>
+<li>Standard</li>
+<li>Obsolete</li>
+</ol>
+<p>A Standards Track RFC will be in <strong>Proposal</strong> status intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a <strong>Standard</strong>.</p>
+<p>The maintainers of RFCs will review the proposal, ask if there's any objections, and discuss about the PR. The PR will be accepted or closed based on <strong>rough consensus</strong> in this early stage.</p>
+<h2 id="rfcs"><a class="header" href="#rfcs">RFCs</a></h2>
+<table><thead><tr><th>Number</th><th>Title</th><th>Author</th><th>Category</th><th>Status</th></tr></thead><tbody>
+<tr><td>1</td><td><a href="rfcs/0001-positioning/0001-positioning.html">The Nervos Network Positioning Paper</a></td><td>The Nervos Team</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>2</td><td><a href="rfcs/0002-ckb/0002-ckb.html">Nervos CKB: A Common Knowledge Base for Crypto-Economy</a></td><td>Jan Xie</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>3</td><td><a href="rfcs/0003-ckb-vm/0003-ckb-vm.html">CKB-VM</a></td><td>Xuejie Xiao</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>4</td><td><a href="rfcs/0004-ckb-block-sync/0004-ckb-block-sync.html">CKB Block Synchronization Protocol</a></td><td>Ian Yang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>5</td><td><a href="rfcs/0005-priviledged-mode/0005-priviledged-mode.html">Privileged architecture support for CKB VM</a></td><td>Xuejie Xiao</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>6</td><td><a href="rfcs/0006-merkle-tree/0006-merkle-tree.html">Merkle Tree for Static Data</a></td><td>Ke Wang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>7</td><td><a href="rfcs/0007-scoring-system-and-network-security/0007-scoring-system-and-network-security.html">P2P Scoring System And Network Security</a></td><td>Jinyang Jiang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>8</td><td><a href="rfcs/0008-serialization/0008-serialization.html">Serialization</a></td><td>Boyu Yang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>9</td><td><a href="rfcs/0009-vm-syscalls/0009-vm-syscalls.html">VM Syscalls</a></td><td>Xuejie Xiao</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>10</td><td><a href="rfcs/0010-eaglesong/0010-eaglesong.html">Eaglesong (Proof-of-Work Function for Nervos CKB)</a></td><td>Alan Szepieniec</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>11</td><td><a href="rfcs/0011-transaction-filter-protocol/0011-transaction-filter-protocol.html">Transaction Filter</a></td><td>Quake Wang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>12</td><td><a href="rfcs/0012-node-discovery/0012-node-discovery.html">Node Discovery</a></td><td>Linfeng Qian, Jinyang Jiang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>13</td><td><a href="rfcs/0013-get-block-template/0013-get-block-template.html">Block Template</a></td><td>Dingwei Zhang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>14</td><td><a href="rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.html">VM Cycle Limits</a></td><td>Xuejie Xiao</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>15</td><td><a href="rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.html">Crypto-Economics of the Nervos Common Knowledge Base</a></td><td>Kevin Wang, Jan Xie, Jiasun Li, David Zou</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>17</td><td><a href="rfcs/0017-tx-valid-since/0017-tx-valid-since.html">Transaction valid since</a></td><td>Jinyang Jiang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>19</td><td><a href="rfcs/0019-data-structures/0019-data-structures.html">Data Structures</a></td><td>Xuejie Xiao</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>20</td><td><a href="rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.html">CKB Consensus Protocol</a></td><td>Ren Zhang</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>21</td><td><a href="rfcs/0021-ckb-address-format/0021-ckb-address-format.html">CKB Address Format</a></td><td>Cipher Wang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>22</td><td><a href="rfcs/0022-transaction-structure/0022-transaction-structure.html">CKB Transaction Structure</a></td><td>Ian Yang</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>23</td><td><a href="rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.html">Deposit and Withdraw in Nervos DAO</a></td><td>Jan Xie, Xuejie Xiao, Ian Yang</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>24</td><td><a href="rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.html">CKB System Script List</a></td><td>Dylan Duan</td><td>Informational</td><td>Draft</td></tr>
+<tr><td>25</td><td><a href="rfcs/0025-simple-udt/0025-simple-udt.html">Simple UDT</a></td><td>Xuejie Xiao</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>26</td><td><a href="rfcs/0026-anyone-can-pay/0026-anyone-can-pay.html">Anyone-Can-Pay Lock</a></td><td>Xuejie Xiao</td><td>Standards Track</td><td>Proposal</td></tr>
+<tr><td>27</td><td><a href="rfcs/0027-block-structure/0027-block-structure.html">CKB Block Structure</a></td><td>Ian Yang</td><td>Informational</td><td>Draft</td></tr>
+</tbody></table>
+<h2 id="license"><a class="header" href="#license">License</a></h2>
+<p>This repository is being licensed under terms of <a href="LICENSE">MIT license</a>.</p>
 
                     </main>
 
