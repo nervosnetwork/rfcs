@@ -1,0 +1,11 @@
+[book]
+title = "The Nervos RFC Book"
+
+[output.html]
+no-section-label = true
+git-repository-url = "https://github.com/nervosnetwork/rfcs"
+mathjax-support = true
+edit-url-template = "https://github.com/nervosnetwork/rfcs/edit/master/{path}"
+
+[output.html.print]
+enable = true

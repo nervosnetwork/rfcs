@@ -1,5 +1,5 @@
-_book
 .vscode
+/src
+/book
 *.pdf
 *.patch
-*.sh
