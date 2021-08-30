@@ -1,6 +1,6 @@
 # Nervos Network RFCs
 
-[![Telegram Group](https://cdn.rawgit.com/Patrolavia/telegram-badge/8fe3382b/chat.svg)](https://t.me/nervos_rfcs)
+[![Discord](https://img.shields.io/badge/chat-on%20Discord-7289DA.svg)](https://discord.gg/dBPuQ3qnXS)
 
 This repository contains proposals, standards and documentations related to Nervos Network.
 
