@@ -34,7 +34,7 @@ Full payload format directly encodes all data fields of lock script while the `h
 The encode rule of full payload format is bench32m.
 
 ```c
-payload = 0x00 | hash_type | code_hash | args
+payload = 0x00 | code_hash | hash_type | args
 ```
 
 The `hash_type` field is for CKB VM version selection.
@@ -124,8 +124,9 @@ address generated:       ckb1qyq5lv479ewscx3ms620sv34pgeuz6zagaaqklhtgg
 
 == full address test ==
 code_hash to encode:     9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
+hash_type to encode:     01
 with args to encode:     b39bbc0b3673c7d36450bc14cfcdad2d559c6c64
-full address generated:   ckb1qqqeh4lqdulv7jlq7t7dyxyty0cmnlxg3ew5kedgvda3wu3mhk3ue69nnw7qkdnnclfkg59uzn8umtfd2kwxceqsynv8u
+full address generated: ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4
 
  == deprecated full address test ==
 code_hash to encode:     9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
