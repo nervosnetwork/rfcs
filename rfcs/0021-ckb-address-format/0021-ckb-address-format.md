@@ -31,7 +31,7 @@ There are several methods to convert lock script into payload bytes array. We us
 ### Full Payload Format
 
 Full payload format directly encodes all data fields of lock script while the `hash_type` filed indicates CKB VM version.
-The encode rule of full payload format is Bench32m.
+The encode rule of full payload format is Bech32m.
 
 ```c
 payload = 0x00 | code_hash | hash_type | args
@@ -46,7 +46,7 @@ The `hash_type` field is for CKB VM version selection.
 ### Short Payload Format
 
 Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
-The encode rule of short payload format is Bench32.
+The encode rule of short payload format is Bech32.
 
 ```c
 payload = 0x01 | code_hash_index | args
@@ -81,7 +81,7 @@ Notice that the length of args in payload here is always 20 bytes. So, if you wa
 ### Deprecated Full Payload Format
 
 The deprecated full payload format directly encodes all data field of lock script.
-The encode rule of deprecated full payload format is Bench32.
+The encode rule of deprecated full payload format is Bech32.
 
 ```c
 payload = 0x02/0x04 | code_hash | args
@@ -93,7 +93,7 @@ Two reasons have caused this address format to be deprecated. First, a [flaw](ht
 
 ## Wrap to Address
 
-We follow [Bitcoin base32 address format (BIP-173)][bip173] or [Bitcoin base32m address format (BIP-350)][bip350] rules to wrap payload into address, which uses Bech32/Bech32m encoding and a [BCH checksum][bch].
+We follow [Bitcoin bech32 address format (BIP-173)][bip173] or [Bitcoin bech32m address format (BIP-350)][bip350] rules to wrap payload into address, which uses Bech32/Bech32m encoding and a [BCH checksum][bch].
 
 The original version of Bech32/Bech32m allows at most 90 characters long. Similar with [BOLT][BOLT_url], we simply remove the length limit. The error correction function is disabled when the Bech32/Bech32m string is longer than 90. We don't intent to use this function anyway, because there is a risk to get wrong correction result.
 
