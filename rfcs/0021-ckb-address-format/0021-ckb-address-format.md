@@ -31,7 +31,7 @@ There are several methods to convert lock script into payload bytes array. We us
 ### Full Payload Format
 
 Full payload format directly encodes all data fields of lock script while the `hash_type` filed indicates CKB VM version.
-The encode rule of full payload format is bench32m.
+The encode rule of full payload format is Bench32m.
 
 ```c
 payload = 0x00 | code_hash | hash_type | args
@@ -46,7 +46,7 @@ The `hash_type` field is for CKB VM version selection.
 ### Short Payload Format
 
 Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
-The encode rule of short payload format is bench32.
+The encode rule of short payload format is Bench32.
 
 ```c
 payload = 0x01 | code_hash_index | args
@@ -81,7 +81,7 @@ Notice that the length of args in payload here is always 20 bytes. So, if you wa
 ### Deprecated Full Payload Format
 
 The deprecated full payload format directly encodes all data field of lock script.
-The encode rule of deprecated full payload format is bench32.
+The encode rule of deprecated full payload format is Bench32.
 
 ```c
 payload = 0x02/0x04 | code_hash | args
