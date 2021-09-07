@@ -126,12 +126,12 @@ address generated:       ckb1qyq5lv479ewscx3ms620sv34pgeuz6zagaaqklhtgg
 code_hash to encode:     9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
 hash_type to encode:     01
 with args to encode:     b39bbc0b3673c7d36450bc14cfcdad2d559c6c64
-full address generated: ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4
+full address generated:  ckb1qzda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xwsqdnnw7qkdnnclfkg59uzn8umtfd2kwxceqxwquc4
 
  == deprecated full address test ==
 code_hash to encode:     9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8
 with args to encode:     b39bbc0b3673c7d36450bc14cfcdad2d559c6c64
-deprecated full address generated:   ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks
+full address generated:  ckb1qjda0cr08m85hc8jlnfp3zer7xulejywt49kt2rr0vthywaa50xw3vumhs9nvu786dj9p0q5elx66t24n3kxgj53qks
 ```
 
 Demo code: https://github.com/rev-chaos/ckb-address-demo
