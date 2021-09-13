@@ -9,7 +9,7 @@ Created: 2019-09-12
 
 # The Nervos Network Positioning Paper
 
-## 1.Purpose of This Paper
+## 1. Purpose of This Paper
 
 The Nervos Network is made up of a number of protocols and innovations. It's important to have clear documentation and technical specifications on key protocol design and implementations - for which we utilize an [RFC](https://github.com/nervosnetwork/rfcs) (request for comment) process. However, we feel it's equally important that we help our communities to understand what we try to accomplish, the trade-offs we have made, and how we have arrived at our current design decisions.
 
