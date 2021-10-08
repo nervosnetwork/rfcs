@@ -21,16 +21,16 @@ To generate a CKB address, we firstly encode lock script to bytes array, name *p
 
 There are several methods to convert lock script into payload bytes array. We use 1 byte to identify the payload format.
 
-| format type |                   description                        |
-|:-----------:|------------------------------------------------------|
-|  0x00       | full version identifies the hash_type and vm_version |
-|  0x01       | short version for locks with popular code_hash       |
-|  0x02       | full version with hash_type = "Data", deprecated     |
-|  0x04       | full version with hash_type = "Type", deprecated     |
+| format type |                   description                    |
+|:-----------:|--------------------------------------------------|
+|  0x00       | full version identifies the hash_type            |
+|  0x01       | short version for locks with popular code_hash   |
+|  0x02       | full version with hash_type = "Data", deprecated |
+|  0x04       | full version with hash_type = "Type", deprecated |
 
 ### Full Payload Format
 
-Full payload format directly encodes all data fields of lock script while the `hash_type` filed indicates CKB VM version.
+Full payload format directly encodes all data fields of lock script.
 The encode rule of full payload format is Bech32m.
 
 ```c
