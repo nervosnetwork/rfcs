@@ -37,17 +37,17 @@ Nervos RFCs should follow the keyword conventions defined in [RFC 2119](https://
 
 The maintainers of RFCs and the community will review the PR, and you can update the RFC according to comments left in PR. When the RFC is ready and has enough supports, it will be accepted and merged into this repository.
 
-An Informational RFC will be in Draft status once merged and published. It can be made Final by author at any time, or by RFC maintainers if there's no updates to the draft in 12 months.
+An Informational RFC will be in `Draft` status once merged and published. It can be made `Final` by author at any time, or by RFC maintainers if there's no updates to the draft in 12 months.
 
 ### 4. (Standards Track) Propose Your Standard
 
 A Standards Track RFC can be in 1 of 3 statuses:
 
-1. Proposal (Default)
-2. Standard
-3. Obsolete
+1. `Proposal` (Default)
+2. `Standard`
+3. `Obsolete`
 
-A Standards Track RFC will be in **Proposal** status intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a **Standard**.
+A Standards Track RFC will be in `Proposal` status intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a `Standard`.
 
 The maintainers of RFCs will review the proposal, ask if there's any objections, and discuss about the PR. The PR will be accepted or closed based on **rough consensus** in this early stage.
 

@@ -1,7 +1,7 @@
 ---
 Number: "0001"
 Category: Informational
-Status: Draft
+Status: Final
 Author: The Nervos Team
 Organization: Nervos Foundation
 Created: 2019-09-12
