@@ -21,7 +21,7 @@ The RFC process attempts to be as simple as possible at beginning and evolves wi
 
 ### 1. Discuss Your Idea with Community
 
-Before submiting a RFC pull request, you should send the draft to community to solicit initial feedbacks. The [#rfc-chat discord channel](https://discord.gg/SWE7AtDKc4) or [Nervos Talk](https://talk.nervos.org/) are both good places to go.
+Before submitting a RFC pull request, you should send the draft to community to solicit initial feedbacks. The [#rfc-chat discord channel](https://discord.gg/SWE7AtDKc4) or [Nervos Talk](https://talk.nervos.org/) are both good places to go.
 
 ### 2. Create A Pull Request
 
