@@ -21,9 +21,9 @@ The RFC process attempts to be as simple as possible at beginning and evolves wi
 
 ### 1. Discuss Your Idea with Community
 
-Before submiting a RFC pull request, you should proposal the idea or document to [Nervos RFCs Chatroom](https://t.me/nervos_rfcs) or [Nervos RFCs Mailing List](https://groups.google.com/a/nervos.org/d/forum/rfcs).
+Before submitting a RFC pull request, you should send the draft to community to solicit initial feedbacks. The [#rfc-chat discord channel](https://discord.gg/SWE7AtDKc4) or [Nervos Talk](https://talk.nervos.org/) are both good places to go.
 
-### 2. Propose Your RFC
+### 2. Create A Pull Request
 
 After discussion, please create a pull request to propose your RFC:
 
@@ -33,30 +33,32 @@ Nervos RFCs should be written in English, but translated versions can be provide
 
 Nervos RFCs should follow the keyword conventions defined in [RFC 2119](https://tools.ietf.org/html/rfc2119), [RFC 6919](https://tools.ietf.org/html/rfc6919).
 
+A RFC should be put in either `Informational Track` or `Standards Track`. A RFC on `Standards Track` is a technical specification for software developers to facilitate an interoperable ecosystem. A RFC on `Informational Track` is a descriptive document providing necessary and/or helpful information to users and builders.
+
+A RFC on `Informational Track` has 3 statuses:
+
+1. `Draft` (initial status)
+2. `Withdrawn`
+3. `Final`
+
+A RFC on `Standards Track` has 5 statuses:
+
+1. `Proposal` (initial status)
+2. `Active`
+3. `Withdrawn`
+4. `Rejected`
+5. `Obsolete`
+
 ### 3. Review / Accept
 
-The maintainers of RFCs and the community will review the PR, and you can update the RFC according to comments left in PR. When the RFC is ready and has enough supports, it will be accepted and merged into this repository.
-
-An Informational RFC will be in `Draft` status once merged and published. It can be made `Final` by author at any time, or by RFC maintainers if there's no updates to the draft in 12 months.
-
-### 4. (Standards Track) Propose Your Standard
-
-A Standards Track RFC can be in 1 of 3 statuses:
-
-1. `Proposal` (Default)
-2. `Standard`
-3. `Obsolete`
-
-A Standards Track RFC will be in `Proposal` status intially, it can always be updated and improved by PRs. When you believe it's rigorous and mature enough after more discussions, you should create a PR to propose making it a `Standard`.
-
-The maintainers of RFCs will review the proposal, ask if there's any objections, and discuss about the PR. The PR will be accepted or closed based on **rough consensus** in this early stage.
+The maintainers of RFCs and the community will review the PR, and you should update the RFC according to feedbacks. When a RFC is ready and get enough supports, it will be accepted and merged into this repository. The acceptance of a RFC is based on [rough consensus](https://en.wikipedia.org/wiki/Rough_consensus) at this early stage, we'll keep improving it as the network and ecosystem develops, until we reached the decentralized governance stage.
 
 ## RFCs
 
 | Number | Title | Author | Category | Status |
 |--------|-------|--------|----------|--------|
-| [1](rfcs/0001-positioning) | [The Nervos Network Positioning Paper](rfcs/0001-positioning/0001-positioning.md) | The Nervos Team | Informational | Draft |
-| [2](rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Crypto-Economy](rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Draft |
+| [1](rfcs/0001-positioning) | [The Nervos Network Positioning Paper](rfcs/0001-positioning/0001-positioning.md) | The Nervos Team | Informational | Final |
+| [2](rfcs/0002-ckb) | [Nervos CKB: A Common Knowledge Base for Crypto-Economy](rfcs/0002-ckb/0002-ckb.md) | Jan Xie | Informational | Final |
 | [3](rfcs/0003-ckb-vm) | [CKB-VM](rfcs/0003-ckb-vm/0003-ckb-vm.md) | Xuejie Xiao | Informational | Draft |
 | [4](rfcs/0004-ckb-block-sync) | [CKB Block Synchronization Protocol](rfcs/0004-ckb-block-sync/0004-ckb-block-sync.md) | Ian Yang | Standards Track | Proposal |
 | [5](rfcs/0005-priviledged-mode) | [Privileged architecture support for CKB VM](rfcs/0005-priviledged-mode/0005-priviledged-mode.md) | Xuejie Xiao | Informational | Draft |
