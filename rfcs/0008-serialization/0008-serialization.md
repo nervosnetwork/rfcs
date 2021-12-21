@@ -1,7 +1,7 @@
 ---
 Number: "0008"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Boyu Yang
 Organization: Nervos Foundation
 Created: 2018-12-17
@@ -12,7 +12,6 @@ Created: 2018-12-17
 CKB uses two major serialization formats, [Molecule][molecule] and [JSON][json].
 
 [Molecule][molecule] is a canonicalization and zero-copy serialization format.
-[Molecule][molecule] is in the experimental stage, and we may make a few minor changes.
 
 [JSON][json] is used in node RPC service via [JSON-RPC][jsonrpc].
 
