@@ -1,7 +1,7 @@
 ---
 Number: "0005"
 Category: Informational
-Status: Draft
+Status: Withdrawn
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2018-11-26
