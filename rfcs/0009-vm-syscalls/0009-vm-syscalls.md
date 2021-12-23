@@ -1,7 +1,7 @@
 ---
 Number: "0009"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2018-12-14
