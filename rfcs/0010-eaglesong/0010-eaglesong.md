@@ -1,7 +1,7 @@
 ---
 Number: "0010"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Alan Szepieniec
 Organization: Nervos Foundation
 Created: 2019-07-18
