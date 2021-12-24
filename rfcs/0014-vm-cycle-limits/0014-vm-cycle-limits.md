@@ -1,7 +1,7 @@
 ---
 Number: "0014"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Xuejie Xiao
 Organization: Nervos Foundation
 Created: 2019-01-04
