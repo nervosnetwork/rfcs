@@ -1,7 +1,7 @@
 ---
 Number: "0013"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Dingwei Zhang
 Organization: Nervos Foundation
 Created: 2019-01-02
