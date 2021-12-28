@@ -1,5 +1,6 @@
 _book
 .vscode
+.DS_Store
 *.pdf
 *.patch
 *.sh
