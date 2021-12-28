@@ -45,7 +45,7 @@ The `hash_type` field is for CKB VM version selection.
 
 ### Deprecated Short Payload Format
 
-Short payload format is a compact format which identifies common used code_hash by 1 byte code_hash_index instead of 32 bytes code_hash.
+Short payload format is a compact format which identifies common used [code_hash][system-script-list] by 1 byte code_hash_index instead of 32 bytes code_hash.
 The encode rule of short payload format is Bech32.
 
 ```c
@@ -145,3 +145,5 @@ Demo code: https://github.com/rev-chaos/ckb-address-demo
 [BOLT_url]: https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
 
 [multisig_code]: https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c
+
+[system-script-list]: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md
