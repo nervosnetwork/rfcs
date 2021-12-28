@@ -1,9 +1,9 @@
 ---
 Number: "0021"
 Category: Standards Track
-Status: Proposal
-Author: Cipher Wang
-Organization: Nervos Foundation
+Status: Active
+Author: Cipher Wang, Axel Wan
+Organization: Nervos Foundation, Cryptape
 Created: 2019-01-20
 ---
 
