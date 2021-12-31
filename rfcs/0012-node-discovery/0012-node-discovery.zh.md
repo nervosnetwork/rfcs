@@ -55,8 +55,15 @@ CKB 节点发现协议主要参考了[比特币的协议][0]。主要不同点�
 我们使用 [Molecule][2] 作为数据序列化格式，以下为相关数据结构的 schema:
 
 ```
+array Bool [byte; 1];
+array Uint16 [byte; 2];
+array Uint32 [byte; 4];
+option PortOpt (Uint16);
+vector NodeVec <Node>;
+vector BytesVec <Bytes>;
+
 table DiscoveryMessage {
-    payload: DiscoveryPayload;
+    payload: DiscoveryPayload,
 }
 
 union DiscoveryPayload {
@@ -65,18 +72,18 @@ union DiscoveryPayload {
 }
 
 table GetNodes {
-    version: uint32;
-    count: uint32;
+    version: Uint32,
+    count: Uint32,
+    listen_port: PortOpt,
 }
 
 table Nodes {
-    announce: bool;
-    items: [Node];
+    announce: Bool,
+    items: NodeVec,
 }
 
 table Node {
-    node_id: Bytes;
-    addresses: [Bytes];
+    addresses: BytesVec,
 }
 ```
 
