@@ -1,7 +1,7 @@
 ---
 Number: "0015"
 Category: Informational
-Status: Draft
+Status: Final
 Author: Kevin Wang, Jan Xie, Jiasun Li, David Zou
 Organization: Nervos Foundation
 Created: 2019-03-08
