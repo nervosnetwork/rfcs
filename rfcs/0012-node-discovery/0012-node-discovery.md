@@ -1,7 +1,7 @@
 ---
 Number: "0012"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Linfeng Qian, JinYang Jiang
 Organization: Nervos Foundation
 Created: 2018-11-28
