@@ -1,7 +1,7 @@
 ---
 Number: "0023"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Jan Xie, Xuejie Xiao, Ian Yang
 Organization: Nervos Foundation
 Created: 2019-10-30
