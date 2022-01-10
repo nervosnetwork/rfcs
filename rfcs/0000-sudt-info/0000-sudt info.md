@@ -84,10 +84,11 @@ Outputs:
 
 The following rules should be met in a Sudt Info Cell (typescript):
 
-- **Rule 1:** In this transaction, at least one sudt cell must exist in the output cell, and the hash of its typescript matches the args of Info_cell.
-- **Rule 2:** In this transaction, at least one cell must exist in the input cell, and its lockscript is the owner lockscript of sudt.
-- **Rule 3:** the lockscript of info_cell should be set to deadlock by default, in some cases, developers can choose other lockscript.
-- **Rule 4:** If there are multiple Info_cells, choose the info_cell with the smallest block height at the time of generation. If it is at the same block height, choose the info_cell with the smallest transaction index. The same transaction cannot generate two info_cells.
+- **Rule 1:** validate the format of info cell data.
+- **Rule 2:** In this transaction, at least one sudt cell must exist in the output cell, and the hash of its typescript matches the args of Info_cell.
+- **Rule 3:** In this transaction, at least one cell must exist in the input cell, and its lockscript is the owner lockscript of sudt.
+- **Rule 4:** the lockscript of info_cell should be set to deadlock by default, in some cases, developers can choose other lockscript.
+- **Rule 5:** If there are multiple Info_cells, choose the info_cell with the smallest block height at the time of generation. If it is at the same block height, choose the info_cell with the smallest transaction index. The same transaction cannot generate two info_cells.
 
 ### 3.2. For Script-drive sudt
 
@@ -114,8 +115,8 @@ Outputs:
 
 The following rules should be met in a Sudt Info Cell (typescript):
 
-- **Rule1**: The cell data conforms to the format.
-- **Rule2**: The args conform to the rules of type id.
+- **Rule 1:** validate the format of info cell data.
+- **Rule 2:** The args conform to the rules of type id.
 - **Rule 3:** The lockscript of info_cell should be set to deadlock by default, in some cases, developers can choose other lockscript.
 - **Rule 4:** After constructing this Info cell, use the hash of info_cell's type_script as the first 32 bytes of the args of the lockscript of sudt owner. 
 
@@ -150,8 +151,8 @@ Witnesses:
 
 For a single-owner-controlled sudt, info_data satisfies the following rules:
 
-- **Rule 1**: First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
-- **Rule 2**: When there is no corresponding info_cell, scan the entire chain to find the first sudt issuance transaction that has data in the sudt info format in the output_type of the witness corresponding to owner_lock, and use the sudt info.
+- **Rule 1:** First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
+- **Rule 2:** When there is no corresponding info_cell, scan the entire chain to find the first sudt issuance transaction that has data in the sudt info format in the output_type of the witness corresponding to owner_lock, and use the sudt info.
 
 ### 4.2. For Script-drive sudt
 
@@ -180,5 +181,5 @@ Witnesses:
 
 For a script-drive sudt, info_data satisfies the following rules:
 
-- **Rule 1**: First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
-- **Rule 2**:  When there is no corresponding info_cell, scan the entire chain to find the first issuance transaction corresponding to sudt with data in the sudt info format in the output_type of the witness corresponding to the owner lockscript, and the hash of info_data is equal to the first 32 bytes of the owner lockscript args.
+- **Rule 1:** First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
+- **Rule 2:**  When there is no corresponding info_cell, scan the entire chain to find the first issuance transaction corresponding to sudt with data in the sudt info format in the output_type of the witness corresponding to the owner lockscript, and the hash of info_data is equal to the first 32 bytes of the owner lockscript args.
