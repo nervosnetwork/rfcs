@@ -102,7 +102,7 @@ CKB's block header has a particular field named `dao` containing auxiliary infor
 
 Each value is encoded as an unsigned 64-bit little-endian number in the `dao` field. To maintain enough precision, `AR_i` is encoded as the original value multiplied by `10 ** 16`.
 
-For a single block `i`, it's easy to calculate the following values:
+For a single block `i`, the following values are known:
 
 - `p_i`: primary issuance for block `i`
 - `s_i`: secondary issuance for block `i`
@@ -110,7 +110,7 @@ For a single block `i`, it's easy to calculate the following values:
 - `U_{out,i}` : occupied capacities for all output cells in block `i`
 - `C_{in,i}` : total capacities for all input cells in block `i`
 - `C_{out,i}` : total capacities for all output cells in block `i`
-- `I_i` : total withdrawed Nervos DAO compensation in block `i` (not includes withdrawing compensation)
+- `I_i` : total compensation of completed Nervos DAO withdrawals in block `i` (not includes withdrawing compensation)
 
 In genesis block, the values are defined as follows:
 
