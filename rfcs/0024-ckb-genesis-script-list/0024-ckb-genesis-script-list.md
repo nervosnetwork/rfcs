@@ -204,7 +204,7 @@ Nervos DAO script is for **type script**:
 
 ### Type ID
 
-[Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is the builtin type script to support upgradable script. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `cell_type` is no need. 
+[Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is the builtin type script to support unique and immutable reference. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `dep_type` is no need. 
 
 Type ID script is for **type script**:
 
