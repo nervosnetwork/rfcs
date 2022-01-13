@@ -1,7 +1,7 @@
 ---
 Number: "0024"
 Category: Informational
-Status: Draft
+Status: Final
 Author: Dylan Duan
 Organization: Nervina Labs
 Created: 2020-05-21
