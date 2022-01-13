@@ -3,7 +3,7 @@ Number: "0024"
 Category: Informational
 Status: Draft
 Author: Dylan Duan
-Organization: Nervos Foundation
+Organization: Nervina Labs
 Created: 2020-05-21
 ---
 
