@@ -11,7 +11,7 @@ Created: 2020-05-21
 
 ## Abstract
 
-Genesis scripts are the smart contracts built and deployed by the CKB core team. Genesis scripts can provide core functions (e.g. [SECP256k1/blake160](#secp256k1blake160) and [Nervos DAO](#nervos-dao)), or other auxiliary infrastructure components. This document presents the information of all Nervos CKB genesis scripts, including a brief introduction and _code_hash_, _hash_type_, _out_point_(_tx_hash_ and _index_), _dep_type_ on mainnet Lina and testnet Aggron.
+Genesis scripts are the smart contracts built by the CKB team and set in the CKB genesis block. Genesis scripts provide core functions like (e.g. [SECP256k1/blake160](#secp256k1blake160) and [Nervos DAO](#nervos-dao)). This document presents the information of all Nervos CKB genesis scripts, including a brief introduction and _code_hash_, _hash_type_, _out_point_(_tx_hash_ and _index_), _dep_type_ on mainnet Lina and testnet Aggron.
 
 ## Motivation
 
@@ -204,7 +204,7 @@ Nervos DAO script is for **type script**:
 
 ### Type ID
 
-[Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is the builtin type script to support upgradable script. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `cell_type` is no need. 
+[Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is the builtin type script to support unique and immutable reference. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `dep_type` is no need. 
 
 Type ID script is for **type script**:
 
