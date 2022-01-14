@@ -204,7 +204,9 @@ Nervos DAO script is for **type script**:
 
 ### Type ID
 
-[Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is the builtin type script, not set in the CKB genesis block, but directly implemented in CKB (not run in CKB-VM) in Rust. Type ID is usually used to support unique and immutable reference. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `dep_type` is no need. 
+Strictly speaking, [Type ID](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#type-id) ([Source Code](https://github.com/nervosnetwork/ckb/blob/master/script/src/type_id.rs)) is a builtin script directly implemented in Rust within CKB, it doesn't run in CKB-VM. It's still included in this document because it can be used the same way as other genesis scripts since genesis block.
+
+Type ID is used to support unique and immutable references. The _code_hash_ and _hash_type_ are fixed and the same on mainnet Lina and testnet Aggron and the `dep_type` is no need. 
 
 Type ID script is for **type script**:
 
