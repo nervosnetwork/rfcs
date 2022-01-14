@@ -19,7 +19,7 @@ This is a modification to the RFC17 [Transaction valid since](../0017-tx-valid-s
 
 The current consensus rule uses the median of the timestamps in the 37 blocks preceding the referenced cell committing block. Getting the median timestamp is resource consuming because it requires either getting 37 block headers or caching the median timestamp for each block. The intention of using median time was to prevent miners from manipulating block timestamp to include more transactions. But it is safe to use the committing block timestamp as the start time because of two reasons:
 
-1. The timestamp in the block header has already been verified by the network that it must be larger than the median of the previous 37 blocks and less than or equal to the current time plus 15 seconds. TODO: reference to block data structure RFC
+1. The timestamp in the block header has already been verified by the network that it must be larger than the median of the previous 37 blocks and less than or equal to the current time plus 15 seconds. (See [RFC27](../0027-block-structure/0027-block-structure.md#timestamp-uint64))
 2. The transaction consuming a cell with the `since` requirement is committed later than the transaction creating the cell. When miners see the consuming transaction, the start timestamp has already been determined. 
 
 ## Specification
