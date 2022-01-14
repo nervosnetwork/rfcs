@@ -8,7 +8,7 @@ Created: 2019-03-11
 
 # Transaction valid since
 
-<!-- Dialogs are created in LucidChart: https://lucid.app/documents/view/d756089a-2388-4ea4-b61a-3943cbe2620a -->
+<!-- Diagrams are created in LucidChart: https://lucid.app/documents/view/d756089a-2388-4ea4-b61a-3943cbe2620a -->
 
 ## Abstract
 
