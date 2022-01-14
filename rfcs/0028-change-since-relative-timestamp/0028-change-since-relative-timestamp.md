@@ -17,7 +17,7 @@ This is a modification to the RFC17 [Transaction valid since](../0017-tx-valid-s
 
 ## Motivation
 
-The current consensus rule uses the median of the timestamp fields of the 37 blocks preceding the referenced cell committing block. It is resource consuming to get the median timestamp because it requires either getting 37 block headers or caching the median timestamp for each block. The intention to use the median time is to avoid miners profitable by manipulating block timestamp to include more transactions, but it is safe to use the committing block timestamp as the start time because of two reasons:
+The current consensus rule uses the median of the timestamps in the 37 blocks preceding the referenced cell committing block. Getting the median timestamp is resource consuming because it requires either getting 37 block headers or caching the median timestamp for each block. The intention of using median time was to prevent miners from manipulating block timestamp to include more transactions. But it is safe to use the committing block timestamp as the start time because of two reasons:
 
 1. The timestamp in the block header has already been verified by the network that it must be larger than the median of the previous 37 blocks and less than or equal to the current time plus 15 seconds. TODO: reference to block data structure RFC
 2. The transaction consuming a cell with the `since` requirement is committed later than the transaction creating the cell. When miners see the consuming transaction, the start timestamp has already been determined. 
@@ -43,7 +43,7 @@ where
 
 The transaction verification fails if the transaction is immature.
 
-The only change is `StartTime`, which was the median of the previous 37 blocks preceding the one that has committed the consumed cell. Because block timestamp must be larger than the median of its previous 37 blocks, the new consensus rule is more strict than the old rule. The transaction that is mature using the old rule may be immature using the new rule, but the transaction that is mature using the new rule must be mature using the old rule.
+The only change is `StartTime`, which was the median of the previous 37 blocks preceding the one that has committed the consumed cell. Because block timestamp must be larger than the median of its previous 37 blocks, the new consensus rule is more strict than the old rule. A transaction that is mature under the old rule may be immature under the new rule, but a transaction that is mature under the new rule must be mature under the old rule.
 
 ## Test Vectors
 
@@ -59,9 +59,9 @@ Assuming that:
 * The timestamp of block S is 20,000.
 * The median of the previous 37 blocks preceding block T is 615,000
 
-In the old consensus, StartTime + SinceValue = 10,000 + 600,000 = 610,000, which is less than the MedianTimestamp 615,000, thus the transaction is mature.
+In the old consensus, `StartTime` + `SinceValue` = 10,000 + 600,000 = 610,000, which is less than the `MedianTimestamp` 615,000, thus the transaction is mature.
 
-But in the new rule, StartTime + SinceValue = 20,000 + 600,000 = 620,000 ≥ 615,000, so the transaction is still immature.
+But in the new rule, `StartTime` + `SinceValue` = 20,000 + 600,000 = 620,000 ≥ 615,000, so the transaction is still immature.
 
 ## Deployment
 
