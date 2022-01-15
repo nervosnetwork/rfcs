@@ -7,7 +7,7 @@ Organization: Lay2dev
 Created: 2021-12-25
 ---
 
-# sudt info
+# SUDT Info
 
 ## 1.Overview
 
@@ -15,11 +15,11 @@ sudt is a very simple udt standard. With the udt deployed by this standard, we c
 
 To extend the existing sudt standard, it is necessary to design a scheme to store token information and bind it to the corresponding sudt, but does not destroy any compatibility with the existing sudt.
 
-## 2. sudt Info format
+## 2. SUDT Info format
 
-In sudt info, the most basic information that must be included is token_name, token_symbol, and decimals. As for total supply and balance, they can all be obtained by indexing the cell.
+In SUDT Info, the most basic information that must be included is token_name, token_symbol, and decimals. As for total supply and balance, they can all be obtained by indexing the cell.
 
-A sudt Info in specification looks like following:
+A SUDT Info in specification looks like following:
 
 ```
 decimals: uint8
@@ -28,7 +28,7 @@ symbol: CKB
 extra: {website:"https://nervos.org"} // optional
 ```
 
-The serialization format of sudt info should be json. 
+The serialization format of SUDT Info should be json. 
 
 **Data:**
 
@@ -43,9 +43,9 @@ If info is placed in a cell, the cell should look like this:
 
 ````
 Data:
-	sudt info
+	SUDT Info
 Type:
-	code_hash: sudt_info typescript
+	code_hash: SUDT_Info typescript
 	args: sudt type script hash or type_ID
 Lock:
 	...
@@ -60,7 +60,7 @@ The issuance of sudt on CKB is controlled by lockscript, so the simplest sudt is
 For this type of sudt, you can construct an info_cell while minting sudt, whose typescript's code_hash is info_cell typescript, its args is sudt's type_script hash. Info_cell will check whether the transaction meets the conditions.
 
 ````
-// Issue new Sudt/Sudt_Info
+// Issue new SUDT/ create a new SUDT_Info cell
 Inputs:
   <... one of the input cells must have owner lock script as lock>
 Outputs:
@@ -72,17 +72,17 @@ Outputs:
      		args: owner lock script hash (...)
      	Lock:
      		<user defined>
-	Sudt_Info_Cell:
+	SUDT_Info_Cell:
   		Data:
-  			sudt info
+  			SUDT Info
   		Type:
-  			code_hash: sudt_info type script
+  			code_hash: SUDT_Info type script
   			args: sudt type script hash
   		Lock:
   			sudt creator defined
 ````
 
-The following rules should be met in a Sudt Info Cell (typescript):
+The following rules should be met in a SUDT Info Cell (typescript):
 
 - **Rule 1:** validate the format of info cell data.
 - **Rule 2:** In this transaction, at least one sudt cell must exist in the output cell, and the hash of its typescript matches the args of Info_cell.
@@ -99,21 +99,21 @@ Since anyone can mint sudt while following the script logic, if we continue to u
 Since it is impossible to distinguish whether an owner lockscript is script-driven from the outside, it should be checked first according to the script-driven logic.
 
 ````
-// Issue new Sudt/Sudt_Info
+// Create a new SUDT_Info cell
 Inputs:
 	 ...
 Outputs:
-	Sudt_Info_Cell:
+	SUDT_Info_Cell:
 		Data:
-			sudt info
+			SUDT Info
 		Type:
-			code_hash: sudt_info type script
+			code_hash: SUDT_Info type script
 			args: type_id
 		Lock:
 			sudt creator defined
 ````
 
-The following rules should be met in a Sudt Info Cell (typescript):
+The following rules should be met in a SUDT Info Cell (typescript):
 
 - **Rule 1:** validate the format of info cell data.
 - **Rule 2:** The args conform to the rules of type id.
@@ -124,14 +124,14 @@ The type script of the info cell checks whether the transaction satisfies one of
 
 ## 4. info data in witness
 
-The above describes a solution to put info data in the cell, but if we don’t change info often, we can treat sudt Info as static data and put it in witness. This solution is an additional solution to info_cell and does not conflict with info_cell.
+The above describes a solution to put info data in the cell, but if we don’t change info often, we can treat SUDT Info as static data and put it in witness. This solution is an additional solution to info_cell and does not conflict with info_cell.
 
 The advantage is that it can reduce the state occupation on the chain. When sudt is useless, no state will be occupied, and there will be no situation where the state is still occupied on the chain after the EOS fundraising ends. The disadvantage is that if the blockchain of ckb is to be prune in the future, the information may be lost.
 
 ### 4.1. For Single Owner sudt
 
 ````
-// Issue new sudt Info
+// Create new SUDT_Info data
 Inputs:
 	<... one of the input cells must have owner lock script as lock>
 Outputs:
@@ -152,7 +152,7 @@ Witnesses:
 For a single-owner-controlled sudt, info_data satisfies the following rules:
 
 - **Rule 1:** First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
-- **Rule 2:** When there is no corresponding info_cell, scan the entire chain to find the first sudt issuance transaction that has data in the sudt info format in the output_type of the witness corresponding to owner_lock, and use the sudt info.
+- **Rule 2:** When there is no corresponding info_cell, scan the entire chain to find the first sudt issuance transaction that has data in the SUDT Info format in the output_type of the witness corresponding to owner_lock, and use the SUDT Info.
 
 ### 4.2. For Script-drive sudt
 
@@ -161,7 +161,7 @@ Script-driven sudt stands for, the owner_lock of sudt is not a lock controlled b
 Since it is impossible to distinguish whether an owner lockscript is script-driven from the outside, it should be checked first according to the script-driven logic.
 
 ````
-// Issue new Sudt/Sudt_Info
+// Create a new SUDT_Info data
 Inputs:
 	<... one of the input cells must have owner lock script as lock>
 Outputs:
@@ -182,4 +182,4 @@ Witnesses:
 For a script-drive sudt, info_data satisfies the following rules:
 
 - **Rule 1:** First, check according to the rules of info_cell, if there is a corresponding info_cell, use info_cell.
-- **Rule 2:**  When there is no corresponding info_cell, scan the entire chain to find the first issuance transaction corresponding to sudt with data in the sudt info format in the output_type of the witness corresponding to the owner lockscript, and the hash of info_data is equal to the first 32 bytes of the owner lockscript args.
+- **Rule 2:**  When there is no corresponding info_cell, scan the entire chain to find the first issuance transaction corresponding to sudt with data in the SUDT Info format in the output_type of the witness corresponding to the owner lockscript, and the hash of info_data is equal to the first 32 bytes of the owner lockscript args.
