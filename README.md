@@ -78,7 +78,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [21](rfcs/0021-ckb-address-format) | [CKB Address Format](rfcs/0021-ckb-address-format/0021-ckb-address-format.md) | Cipher Wang, Axel Wan | Standards Track | Active
 | [22](rfcs/0022-transaction-structure) | [CKB Transaction Structure](rfcs/0022-transaction-structure/0022-transaction-structure.md) | Ian Yang | Informational | Draft
 | [23](rfcs/0023-dao-deposit-withdraw) | [Deposit and Withdraw in Nervos DAO](rfcs/0023-dao-deposit-withdraw/0023-dao-deposit-withdraw.md) | Jan Xie, Xuejie Xiao, Ian Yang | Standards Track | Active
-| [24](rfcs/0024-ckb-system-script-list) | [CKB System Script List](rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md) | Dylan Duan | Informational | Draft
+| [24](rfcs/0024-ckb-genesis-script-list) | [CKB Genesis Script List](rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md) | Dylan Duan | Informational | Final
 | [25](rfcs/0025-simple-udt) | [Simple UDT](rfcs/0025-simple-udt/0025-simple-udt.md) | Xuejie Xiao | Standards Track | Proposal
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
 | [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
