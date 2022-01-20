@@ -84,7 +84,7 @@ Outputs:
 
 The following rules should be met in a SUDT Info Cell (typescript):
 
-- **Rule 1:** validate the format of info cell data.
+- **Rule 1:** The info cell data should match the SUDT info format we mention above. We will not validate the format on-chain. If it is invalid when we parse it off-chain, just ignore the info and treat it as a SUDT without info.
 - **Rule 2:** In this transaction, at least one SUDT cell must exist in the output cell, and the hash of its typescript matches the args of Info_cell.
 - **Rule 3:** In this transaction, at least one cell must exist in the input cell, and its lockscript is the owner lockscript of SUDT.
 - **Rule 4:** the lockscript of info_cell should be set to deadlock by default, in some cases, developers can choose other lockscript.
@@ -115,7 +115,7 @@ Outputs:
 
 The following rules should be met in a SUDT Info Cell (typescript):
 
-- **Rule 1:** validate the format of info cell data.
+- **Rule 1:** The info cell data should match the SUDT info format we mention above. We will not validate the format on-chain. If it is invalid when we parse it off-chain, just ignore the info and treat it as a SUDT without info.
 - **Rule 2:** The args conform to the rules of type id.
 - **Rule 3:** The lockscript of info_cell should be set to deadlock by default, in some cases, developers can choose other lockscript.
 - **Rule 4:** After constructing this Info cell, use the hash of info_cell's type_script as the first 32 bytes of the args of the lockscript of SUDT owner. 
