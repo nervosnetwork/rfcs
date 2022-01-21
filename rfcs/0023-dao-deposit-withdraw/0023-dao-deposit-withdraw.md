@@ -25,7 +25,7 @@ Nervos DAO is a smart contract with which users can interact the same way as any
 CKB's token issuance curve consists of two components:
 
 - Primary issuance: Hardcapped issuance for miners, using the same issuance curve as Bitcoin, half at every 4 years.
-- Secondary issuance: Constant issuance, the same amount of CKBytes will be issued at every epoch, which means the secondary issuance rate approaches zero gradually over time. [Because epoch length is dynamically adjusted](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md), secondary issuance at every block is a variable, flucutates in a range. 
+- Secondary issuance: Constant issuance, the same amount of CKBytes will be issued at every epoch, which means the secondary issuance rate approaches zero gradually over time. [Because epoch length is dynamically adjusted](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md), secondary issuance at every block is a variable, flucutates in a range.
 
 If there's only primary issuance, but no secondary issuance in CKB, the total supply of CKBytes would have a hardcap, and the issuance curve would be the exact same as Bitcoin. To counter the dilution effect caused by secondary issuance, CKBytes locked in Nervos DAO will get the proportion of secondary issuance tantamount to the locked CKByte's percentage in circulation.
 
@@ -126,7 +126,7 @@ Then from the genesis block, the values for each succeeding block can be calcula
 - `S_i` : `S_{i-1}` - `I_i` + `s_i` - floor( `s_i` * `U_{i-1}` / `C_{i-1}` )
 - `AR_i` : `AR_{i-1}` + floor( `AR_{i-1}` * `s_i` / `C_{i-1}` )
 
-With those values, Nervos DAO compensation can be calculated for any deposited cell. Assuming a Nervos DAO cell is deposited at block `m`, i.e. the `deposit cell` is included at block `m`. One initiates withdrawal and gets phase 1 `withdrawing cell` included at block `n`. The total capacity of the `deposit cell` is `c_t`, the occupied capacity for the `deposit cell` is `c_o`. Then its Nervos DAO compensation is calculated as: 
+With those values, Nervos DAO compensation can be calculated for any deposited cell. Assuming a Nervos DAO cell is deposited at block `m`, i.e. the `deposit cell` is included at block `m`. One initiates withdrawal and gets phase 1 `withdrawing cell` included at block `n`. The total capacity of the `deposit cell` is `c_t`, the occupied capacity for the `deposit cell` is `c_o`. Then its Nervos DAO compensation is calculated as:
 
 ( `c_t` - `c_o` ) * `AR_n` / `AR_m` - ( `c_t` - `c_o` )
 
@@ -136,7 +136,7 @@ Meaning that the maximum withdrawable capacity one can get from this Nervos DAO 
 
 ## Example
 
-The following type script represents the [Nervos DAO script on CKB mainnet](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-system-script-list/0024-ckb-system-script-list.md#nervos-dao):
+The following type script represents the [Nervos DAO script on CKB mainnet](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#nervos-dao):
 
     {
       "code_hash": "0x82d76d1b75fe2fd9a27dfbaa65a039221a380d76c926f378d3f81cf3e7e13f2e",
