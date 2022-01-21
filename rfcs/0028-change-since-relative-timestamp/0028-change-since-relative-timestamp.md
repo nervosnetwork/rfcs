@@ -1,6 +1,6 @@
 ---
 Number: "0028"
-Category: Consensus (Soft Fork)
+Category: Standards Track
 Status: Draft
 Author: Ian Yang
 Organization: Nervos Foundation
