@@ -98,7 +98,7 @@ Note here we assume 0.01 CKByte is paid as the transaction fee, in production on
 
 ### Claim
 
-#### Claim via receiver signature
+#### 1. Claim via receiver signature
 
 ```
 Inputs:
@@ -135,7 +135,7 @@ Inputs:
 
 When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender normal cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
 
-#### Claim via receiver lock script
+#### 2. Claim via receiver lock script
 
 ```
 Inputs:
@@ -175,7 +175,7 @@ Here the transaction inputs contain a receiver secp256k1_blake160 cell whose fir
 
 ### Withdraw
 
-#### Withdraw via sender signature
+#### 1. Withdraw via sender signature
 
 ```
 Inputs:
@@ -203,7 +203,7 @@ Witnesses:
 
 When a signature is provided and can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender normal cell with SUDT.
 
-#### Withdraw via sender lock script
+#### 2. Withdraw via sender lock script
 
 ```
 Inputs:
