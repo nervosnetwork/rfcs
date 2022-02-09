@@ -93,7 +93,7 @@ Witnesses
     <valid signature for sender public key hash>
 ```
 
-Note here we assume 0.01 CKByte is paid as the transaction fee, in production one should calculate the fee based on factors including transaction size, running cycles as well as network status. 0.01 CKByte will be used in all examples as fees for simplicity.
+In this example 0.01 CKBytes is paid as the transaction fee, in production one should calculate the fee based on factors including transaction size, running cycles as well as network status. 0.01 CKByte will be used in all examples as fees for simplicity.
 
 ### Claim
 
