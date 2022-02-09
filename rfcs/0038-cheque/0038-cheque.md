@@ -47,7 +47,7 @@ The cheque lock follows the rules below:
 
    - 1.c. If the provided signature is valid with the sender secp256k1 public key hash, then:
 
-     - 1.c.i. It loops through all input cells using the current cheque lock script, if the any since of the cheque input cells is not same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque lock returns with an error state
+     - 1.c.i. It loops through all input cells using the current cheque lock script, if the `since` of any input cell is not the same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque lock returns with an error state
 
 2. If a signature is not provided in witness, the lock continues with the cheque logic below:
 
