@@ -39,7 +39,7 @@ The cheque lock follows the rules below:
 
    - 1.a. If the provided signature fails validation with both the receiver and the sender secp256k1-blake2b public key hash, the cheque lock returns with an error.
 
-   - 1.b. If the provided signature in witness can be validated with the receiver secp256k1 public key hash, the cheque lock continues with the claim logic below:
+   - 1.b. If the provided signature is valid with the receiver secp256k1 public key hash, then:
 
      - 1.b.i. It loops through all input cells using the current cheque lock script(notice here the lock script we refer to include public key hash, meaning if a transaction contains 2 cells using the same cheque lock code, but different public key hash, they will be treated as different lock script, and each will perform the script unlock rule checking independently), if the since of 2 inputs are not zero, the cheque lock returns with an error state
 
