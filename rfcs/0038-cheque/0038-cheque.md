@@ -57,7 +57,7 @@ The cheque lock follows the rules below:
 
      - 2.b.iii. It loops through all input cells using the receiver lock hash, if the matching inputs are not found or the first related witness is empty(the witness is not WitnessArgs or the lock of WitnessArgs is empty), the cheque lock returns with an error state
 
-   - 2.c. If the matching input cells with the sender lock hash are found, it does the same work as the 1.c.i and returns the same error state
+   - 2.c. If the matching input cells with the sender lock hash are found, it performs the same check as in 1.c.i.
 Notice the cheque lock script includes a public key hash, two cheque lock scripts using the same cheque lock code but different public key hash, will be treated as different lock scripts, and each will perform the script unlock rule checking independently.
 ## Examples
 
