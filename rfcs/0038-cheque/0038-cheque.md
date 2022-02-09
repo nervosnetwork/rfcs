@@ -15,7 +15,7 @@ Here we try to solve the problem by introducing a new cheque lock script, which 
 
 ### Cheque Script Structure
 
-A cheque cell looks like following:
+A cheque cell is the cell whose lock script is cheque script and its structure looks like following:
 
 ```
 data:
@@ -27,9 +27,9 @@ lock:
     args: <20 byte receiver secp256k1-blake2b-sighash-all lock hash> <20 byte sender secp256k1-blake2b-sighash-all lock hash>
 ```
 
-When the sender wants to transfer the SUDT to another, he/she needs to create a cheque cell whose lock args includes the receiver’s and sender’s secp256k1-blake2b-sighash-all lock hash. The receiver can unlock the related cheque cell to get the SUDT and give back the CKB to the sender.
+When the sender wants to transfer the SUDT to another, he/she needs to create a cheque cell whose lock args includes the receiver’s and sender’s [secp256k1-blake2b-sighash-all](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2pkh) lock hash. The receiver can unlock the related cheque cell to get the SUDT and give back the CKB to the sender.
 
-When the cheque cell exceeds the lock-up period(6 epochs), the sender can withdraw his/her assets.
+The receiver can withdraw the asset at any time, as long as the asset is not claimed by the sender. When the cheque cell exceeds the lock-up period(6 epochs), the sender can withdraw his/her assets.
 
 ## Unlock Rules
 
@@ -43,7 +43,7 @@ The cheque lock follows the rules below:
 
      - 1.b.i. It loops through all input cells using the current cheque lock script, if any of the inputs' `since` is not zero, the cheque lock returns with an error state.
 
-     - 1.b.ii. It loops through all output cells using the receiver lock hash, if the sum of the output cells capacity is not equal to the sum of the cheque input cells capacity, the cheque lock returns with an error state
+     - 1.b.ii. It loops through all output cells using the sender lock hash, if the sum of the output cells capacity is not equal to the sum of the cheque input cells capacity, the cheque lock returns with an error state
 
    - 1.c. If the provided signature is valid with the sender secp256k1 public key hash, then:
 
@@ -55,12 +55,15 @@ The cheque lock follows the rules below:
 
    - 2.b. If the matching input cells with the receiver lock hash are found, it performs the same check as in 1.b.i and 1.b.ii.
 
-     - 2.b.iii. It loops through all input cells using the receiver lock hash, if the matching inputs are not found or the first related witness is empty(the witness is not WitnessArgs or the lock of WitnessArgs is empty), the cheque lock returns with an error state
+     - 2.b.i. It loops through all input cells using the receiver lock hash, if the matching inputs are not found, the cheque lock returns with an error state
+
+     - 2.b.ii It loops through all input cells using the receiver lock hash, if the first witness of the cheque cell group is empty(the witness is not [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) or the lock of WitnessArgs is empty)
 
    - 2.c. If the matching input cells with the sender lock hash are found, it performs the same check as in 1.c.i.
-Notice the cheque lock script includes a public key hash, two cheque lock scripts using the same cheque lock code but different public key hash, will be treated as different lock scripts, and each will perform the script unlock rule checking independently.
-## Examples
 
+     Notice the cheque lock script includes a public key hash, two cheque lock scripts using the same cheque lock code but different public key hash, will be treated as different lock scripts, and each will perform the script unlock rule checking independently.
+
+## Examples
 
 ### Create a cheque Cell
 
@@ -123,7 +126,7 @@ Inputs:
         Type: <sudt_type_script>
         Data:
             sudt_amount: 300 UDT
-    Normal Cell:
+    Empty Cell:
         Capacity: 165 CKBytes
         Lock: <sender_secp256k1_blake2b_lock_script>
 
@@ -132,7 +135,7 @@ Inputs:
       < valid signature for receiver public key hash >
 ```
 
-When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender normal cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
+When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender empty cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
 
 #### 2. Claim via receiver lock script
 
@@ -160,7 +163,7 @@ Outputs:
         Type: <sudt_type_script>
         Data:
             sudt_amount: 300 UDT
-    Normal Cell:
+    Empty Cell:
         Capacity: 165 CKBytes
         Lock: <sender_secp256k1_blake2b_lock_script>
 
@@ -200,7 +203,7 @@ Witnesses:
     < valid signature for sender public key hash >
 ```
 
-When a signature is provided and can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender normal cell with SUDT.
+When a signature is provided and can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender empty cell with SUDT.
 
 #### 2. Withdraw via sender lock script
 
@@ -215,7 +218,7 @@ Inputs:
         Data:
             sudt_amount: 100 UDT
         Since: 0xA000000000000006
-    Normal Cell:
+    Empty Cell:
         Capacity: 200 CKBytes
         Lock: <sender_secp256k1_blake2b_lock_script>
 
@@ -226,7 +229,7 @@ Outputs:
         Type: <sudt_type_script>
         Data:
             sudt_amount: 100 UDT
-    Normal Cell:
+    Empty Cell:
         Capacity: 199.99 CKBytes
         Lock: <sender_secp256k1_blake2b_lock_script>
 
@@ -235,11 +238,11 @@ Witnesses:
     < valid signature for sender public key hash >
 ```
 
-In this example, the transaction inputs include a sender secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `sender_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender normal cell with SUDT.
+In this example, the transaction inputs include a sender secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `sender_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender empty cell with SUDT.
 
 ## Deployment
 
-[cheque](https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209) ([Source Code](https://github.com/nervosnetwork/ckb-cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8)) allows a sender to temporarily provide cell capacity in asset transfer.
+Cheque Script allows a sender to temporarily provide cell capacity in asset transfer.
 
 - Lina
 
@@ -321,3 +324,9 @@ $ cd ../../.. && capsule build --release
 ```
 
 A draft of this specification has already been released, reviewed, and discussed in the community at [here](https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209) for quite some time.
+
+## References
+
+[1] SUDT Cheque Deposit Design and Implementation, https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209
+
+[2] Cheque Script Source Code, https://github.com/nervosnetwork/ckb-cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8
