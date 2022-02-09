@@ -51,7 +51,7 @@ The cheque lock follows the rules below:
 
 2. If a signature is not provided in witness, then:
 
-   - 2.a. It loops through all input cells using the receiver and the sender lock hash, if no matching input cells are found, the cheque lock returns with an error state
+   - 2.a. It loops through all input cells using the receiver and the sender lock hash, if no matching input cells are found, the cheque lock returns with an error state.
 
    - 2.b. If the matching input cells with the receiver lock hash are found, it performs the same check as in 1.b.i and 1.b.ii.
 
