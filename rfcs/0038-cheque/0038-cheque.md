@@ -131,8 +131,9 @@ Inputs:
         Lock: <sender_secp256k1_blake2b_lock_script>
 
  Witnesses :
-      < valid signature for another public key hash >
       < valid signature for receiver public key hash >
+      < valid signature for another receiver public key hash >
+      
 ```
 
 When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender empty cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
