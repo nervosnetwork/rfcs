@@ -171,7 +171,7 @@ Witnesses:
 
 ```
 
-Here the transaction inputs contain a receiver secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `receiver_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cell can be unlocked.
+In this example, the transaction inputs include a receiver secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `receiver_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cell can be unlocked.
 
 ### Withdraw
 
