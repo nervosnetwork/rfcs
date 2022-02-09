@@ -49,7 +49,7 @@ The cheque lock follows the rules below:
 
      - 1.c.i. It loops through all input cells using the current cheque lock script, if the `since` of any input cell is not the same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque lock returns with an error state
 
-2. If a signature is not provided in witness, the lock continues with the cheque logic below:
+2. If a signature is not provided in witness, then:
 
    - 2.a. It loops through all input cells using the receiver and the sender lock hash, if no matching input cells are found, the cheque lock returns with an error state
 
