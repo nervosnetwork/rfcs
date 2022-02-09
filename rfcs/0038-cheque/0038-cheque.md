@@ -236,7 +236,7 @@ Witnesses:
     < valid signature for sender public key hash >
 ```
 
-Here the transaction inputs contain a sender secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `sender_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender normal cell with SUDT.
+In this example, the transaction inputs include a sender secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `sender_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender normal cell with SUDT.
 
 ## Deployment
 
