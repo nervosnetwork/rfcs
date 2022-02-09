@@ -45,7 +45,7 @@ The cheque lock follows the rules below:
 
      - 1.b.ii. It loops through all output cells using the receiver lock hash, if the sum of the output cells capacity is not equal to the sum of the cheque input cells capacity, the cheque lock returns with an error state
 
-   - 1.c. If the provided signature in witness can be validated with the sender secp256k1 public key hash, the cheque lock continues with the withdraw logic below:
+   - 1.c. If the provided signature is valid with the sender secp256k1 public key hash, then:
 
      - 1.c.i. It loops through all input cells using the current cheque lock script, if the any since of the cheque input cells is not same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque lock returns with an error state
 
