@@ -37,7 +37,7 @@ The cheque lock follows the rules below:
 
 1. If a signature is provided in witness, the lock continues with the cheque logic below:
 
-   - 1.a. If the provided signature in witness fails validation with the receiver or the sender secp256k1 public key hash, the cheque lock returns withe an error state.
+   - 1.a. If the provided signature fails validation with both the receiver and the sender secp256k1-blake2b public key hash, the cheque lock returns with an error.
 
    - 1.b. If the provided signature in witness can be validated with the receiver secp256k1 public key hash, the cheque lock continues with the claim logic below:
 
