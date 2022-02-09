@@ -61,7 +61,6 @@ The cheque lock follows the rules below:
 Notice the cheque lock script includes a public key hash, two cheque lock scripts using the same cheque lock code but different public key hash, will be treated as different lock scripts, and each will perform the script unlock rule checking independently.
 ## Examples
 
-Here we describe useful transaction examples involving cheque lock.
 
 ### Create a cheque Cell
 
