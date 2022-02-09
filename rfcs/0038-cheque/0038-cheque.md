@@ -33,7 +33,7 @@ When the cheque cell exceeds the lock-up period(6 epochs), the sender can withdr
 
 ## Unlock Rules
 
-The cheque lock will work following the rules below:
+The cheque lock follows the rules below:
 
 1. If a signature is provided in witness, the lock continues with the cheque logic below:
 
