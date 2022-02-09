@@ -53,7 +53,7 @@ The cheque lock follows the rules below:
 
    - 2.a. It loops through all input cells using the receiver and the sender lock hash, if no matching input cells are found, the cheque lock returns with an error state
 
-   - 2.b. If the matching input cells with the receiver lock hash are found, it does the same work as the 1.b.i and 1.b.ii and returns the same error state
+   - 2.b. If the matching input cells with the receiver lock hash are found, it performs the same check as in 1.b.i and 1.b.ii.
 
      - 2.b.iii. It loops through all input cells using the receiver lock hash, if the matching inputs are not found or the first related witness is empty(the witness is not WitnessArgs or the lock of WitnessArgs is empty), the cheque lock returns with an error state
 
