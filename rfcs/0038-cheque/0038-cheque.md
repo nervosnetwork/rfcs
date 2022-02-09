@@ -35,7 +35,7 @@ When the cheque cell exceeds the lock-up period(6 epochs), the sender can withdr
 
 The cheque lock follows the rules below:
 
-1. If a signature is provided in witness, the lock continues with the cheque logic below:
+1. If a signature is provided in witness, then:
 
    - 1.a. If the provided signature fails validation with both the receiver and the sender secp256k1-blake2b public key hash, the cheque lock returns with an error.
 
