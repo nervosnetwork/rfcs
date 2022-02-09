@@ -306,7 +306,7 @@ and the `out_point` of `cheque` is
 }
 ```
 
-## Notes
+## Reproducible Build
 
 Anyone can use the reproducible build to verify that the deployed script is consistent with the source code. To build the deployed cheque lock script, one can use the following steps:
 
