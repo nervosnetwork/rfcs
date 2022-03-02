@@ -56,7 +56,6 @@ A phase 1 transaction MUST satisfy the following conditions:
 - One or more `deposit cell`s MUST be included in the transaction as inputs.
 - For each `deposit cell`, the transaction MUST also include reference to its associated including block in `header_deps`, which will be used by Nervos DAO type script as the starting point of deposit.
 - For a `deposit cell` at input index `i`, a `withdrawing cell` MUST be created at output index `i` with the following requirements:
-    - The `withdrawing cell` MUST use the same lock script as the `deposit cell`.
     - The `withdrawing cell` MUST use the same Nervos DAO type script as the `deposit cell`.
     - The `withdrawing cell` MUST have the same capacity as the `deposit cell`.
     - The `withdrawing cell` MUST also have 8 bytes length cell data, but instead of 8 zero, it MUST store the block number of the `deposit cell`'s including block. The number MUST be packed in 64-bit unsigned little-endian integer format.
