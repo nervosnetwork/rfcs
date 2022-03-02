@@ -72,7 +72,7 @@ using rational number operations.
 
 ## Test Vectors
 
-When `since` uses the absolute epoch `99 + 360 / 180`, and the current epoch is `100 + 0 / 180`, the transaction is mature using the old consensus rule but is immature using the new rule.
+When `since` uses the absolute epoch `99 + 360 / 180`, and the current epoch is `100 + 0 / 180`, the transaction is mature using the old consensus rule but is invalid using the new rule.
 
 ## Deployment
 
