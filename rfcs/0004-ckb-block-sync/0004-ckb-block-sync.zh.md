@@ -189,37 +189,34 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 具体消息定义见参考实现，这里只列出同步涉及到的消息和必要的一些字段和描述。
 
-消息的发送是完全异步的，比如发送 `getheaders` 并不需要等待对方回复 `headers` 再发送其它请求，也不需要保证请求和回复的顺序关系，比如节点 A 发送了 `getheaders` 和 `getdata` 给 B，B 可以先发送 `block`，然后再发送 `headers` 给 A。
+消息的发送是完全异步的，比如发送 `GetHeaders` 并不需要等待对方回复 `SendHeaders` 再发送其它请求，也不需要保证请求和回复的顺序关系，比如节点 A 发送了 `GetHeaders` 和 `GetBlocks` 给 B，B 可以先发送 `SendBlock`，然后再发送 `SendHeaders` 给 A。
 
-Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会在 Compact Block 相关文档中说明。
+Compact Block [^1] 需要使用到的消息会在 Compact Block 相关文档中说明。
 
-### getheaders
+### GetHeaders
 
 用于连接块头时向邻居节点请求块头。请求第一页，和收到后续页使用相同的 getheaders 消息，区别是第一页是给本地的 Best Header Chain Tip 的父块生成 Locator，而后续页是使用上一页的最后一个块生成 Locator。
 
-- `locator`: 对 Chain 上块采样，得到的哈希列表
+- `hash_stop`: 通知对端构建 `SendHeaders` 时如果处理到指定 hash 的区块应该提前返回。
+- `block_locator_hashes`: 对 Chain 上块采样，得到的哈希列表。
 
-### headers
+### SendHeaders
 
-用于回复 `getheaders` 和通知新块，处理逻辑没有区别，只是当块头数量小于 `MAX_BLOCKS_TO_ANNOUNCE` 时如果发现有 Orphan Block，因为可能是新块通知，所以需要做一次连接块同步。收到 `headers` 如果块头数量等于 `MAX_HEADERS_RESULTS` 表示还有更多的块需要请求。
+用于回复 `GetHeaders`。返回块头列表。从 Locator 获得的最后一个共同块开始到 `hash_stop` 或者数量达到 `MAX_BLOCKS_TO_ANNOUNCE`。两个条件满足任意一个就必须停止添加并返回结果。
 
 - `headers`：块头列表
 
-### getdata
+### GetBlocks
 
 用于下载块阶段
 
-- `inventory`: 要下载对象列表，每个成员包含字段
-	- `type`: 下载对象的类型，这里只用到块
-	- `hash`: 使用对象哈希做标识符
+- `block_hashes`: 要下载的区块哈希列表
 
-### block
+### SendBlock
 
-回复 `getdata` 的块下载请求
+回复 `GetBlocks` 的块下载请求
 
-- `header` 块头
-- `transactions` 交易列表
-
+- `block`: 请求的块的完整内容
 
 [^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) 和 Bitcoin 相关 [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki)。
 
