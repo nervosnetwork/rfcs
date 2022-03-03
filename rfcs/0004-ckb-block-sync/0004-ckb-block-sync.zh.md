@@ -1,7 +1,7 @@
 ---
 Number: "0004"
-Category: Standards Track
-Status: Proposal
+Category: Information
+Status: Final
 Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2018-07-25
