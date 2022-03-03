@@ -1,6 +1,6 @@
 # Nervos Network RFCs
 
-[![Discord](https://img.shields.io/badge/chat-on%20Discord-7289DA.svg)](https://discord.gg/dBPuQ3qnXS)
+[![Discord](https://img.shields.io/badge/chat-on%20Discord-7289DA.svg)](https://discord.com/invite/nervos)
 
 This repository contains proposals, standards and documentations related to Nervos Network.
 
