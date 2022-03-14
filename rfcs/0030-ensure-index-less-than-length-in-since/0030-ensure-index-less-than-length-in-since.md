@@ -11,64 +11,38 @@ Created: 2021-02-04
 
 ## Abstract
 
-This document proposes to fix a bug in the CKB reference implementation. When a transaction input uses the epoch with fraction in the `since` field, the `value` must ensure that the index is less than the length.
+This document proposes adding a new consensus rule to verify the `since` field in the transaction.
+
+As described in the RFC17, [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md), when a transaction input uses the epoch with fraction in the `since` field, the `value` is an encoded rational number `E + I / L`, where
+
+- `E` is the epoch number.
+- `I` is the block index in the epoch.
+- `L` is the epoch length.
+
+This RFC requires that when any transaction uses the epoch with fraction as the unit, the encoded number `E + I / L` is valid only if
+
+- `I` is less than `L`, or
+- `I` and `L` are both zero.
+
+If any `since` field is invalid, the transaction is rejected.
 
 ## Motivation
 
-The `value` part is an encoded number `epoch + index / length`. In CKB, every block is also assigned an epoch number with a fraction. If the block is the `I`th block in the epoch which epoch number is `E` and length is `L`, its epoch number with the fraction is `E + I / L` and `I` must be less than `L`. 
+The `since` field prevents the transaction from being mined before an absolute or relative time.
 
-To verify that a transaction is mature since an absolute epoch number with a fraction, the current implementation assumes that `index` must be less than `length` and checks that:
-
-```
-E > epoch
-or (E == epoch and I / L >= index/length)
-```
-
-This is not consistent when using relative flag in the `since` field, where the `value` is considered as a rational number and added to the cell start epoch.
-
-This document suggests adding a new rule to verify that when `since` uses epoch as the unit, it must ensure that index is less than the length.
-
-See RFC17 [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md) for details of the `since` field encoding patterns.
+When the `since` field uses epoch with fraction number as the unit, the `value` is an encoded rational number `E + I / L`. If it is a relative time, the rational number is used as it is. But when it is the absolute time, the special rule, **Absolute Epoch With Fraction Value Normalization** as mentioned in RFC17, requires normalizing the number to `E + 1 + 0 / 1` when `I` equals to or is larger than `L`.
+This document suggests adding a new rule to verify that when `since` uses epoch as the unit, it must ensure that the index `I` is less than the length `L`.
 
 ## Specification
 
-### Since Absolute Epoch
+This RFC adds a new verification requirement on the transaction `since` field.
 
-When an input `since` field is present, and
+When an input `since` field is present, and the `metric_flag` is epoch (01), the `value` part is the encoded number `E + I / L`. No matter whether the relative flag is `relative` or `absolute`, the number is valid if and only if
 
-* The `metric_flag` is epoch (01).
-* The `relative_flag` is absolute (0).
+- `I` is less than `L`, or
+- `I` and `L` are both zero.
 
-Providing that `value` is the encoded number `epoch + index / length`, the transaction is valid only if `index` is less than `length` or both `index` and `length` are zero \*.
-
-> \* When both `index` and `length` are zero, `value` is converted to `epoch + 0 / 1`. 
-
-If the current epoch number with the fraction is `E + I / L`, the transaction is considered mature when
-
-```
-E + I / L >= epoch + index / length
-```
-
-using rational number operations.
-
-### Since Relative Epoch
-
-When an input `since` field is present, and
-
-* The `metric_flag` is epoch (01).
-* The `relative_flag` is relative (1).
-
-Providing that `value` is the encoded number `epoch + index / length`, the transaction is valid only if `index` is less than `length` or both `index` and `length` are zero \*.
-
-> \* When both `index` and `length` are zero, `value` is converted to `epoch + 0 / 1`. 
-
-If the cell creation epoch number with fraction is `e + i / l`, and the current epoch number with the fraction is `E + I / L`, the transaction is considered mature when
-
-```
-E + I / L >= e + i / l + epoch + index / length
-```
-
-using rational number operations.
+There are no changes to the rules in RFC17, except that **Absolute Epoch With Fraction Value Normalization** is no longer needed.
 
 ## Test Vectors
 
@@ -76,12 +50,12 @@ When `since` uses the absolute epoch `99 + 360 / 180`, and the current epoch is 
 
 ## Deployment
 
-The deployment can be performed in two stages.
+The deployment can advance in two stages.
 
-The first stage will activate the new consensus rule starting from a specific epoch. The mainnet and testnet will use different starting epochs and all other chains will use the new rule from epoch 0.
+The first stage will activate the new consensus rule, starting from a specific epoch. The mainnet and testnet will use different starting epochs and all other chains will use the new rule from epoch 0.
 
-The second stage is optional. After the new rule has been activated, and the blocks in the chain before activation can also pass the new consensus rule, the old rule can be removed and all chains will use the new rule starting from the genesis block.
+The second stage is optional. After the new rule is active, and the blocks in the chain before activation can also pass the new consensus rule, the old rule is redundant and can be safely removed.
 
 ## Backward compatibility
 
-The new rule is striker than the old one thus it can be deployed via a soft fork. When most nodes have upgraded to the new version, the old versions can keep up to date although blocks generated by old versions may be rejected by new version nodes. 
+The new rule is striker than the old one, thus it can be deployed via a soft fork. When most nodes have upgraded to the new version, the old versions can keep up to date, although new version nodes may reject blocks generated by old versions.
