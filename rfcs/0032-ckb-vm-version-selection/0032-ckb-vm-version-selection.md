@@ -65,26 +65,21 @@ Here is an example of when VM version 2 is available:
 
 > \* The actual value to represent data hash plus VM version 2 is undecided yet.
 
-User can trade off between the determination and VM performance boost when creating the cell. Choose data hash for determination, and type hash for the latest VM techniques.
-
-Because the VM selection algorithm depends on which epoch the transaction belongs to, it is not deterministic for transactions still in the memory pool. The CKB node must run two versions of transaction relay protocols, one for the current CKB version C and another for the next fork version N.
-
-* Before the fork is activated, CKB node must relay transactions via relay protocol C and must drop all messages received via protocol N.
-* After the fork is activated, CKB node must relay transactions via relay protocol N and must drop all messages received via protocol C.
-
-The relay protocol C will be dropped after the fork succeeds. See [rfc35] for details.
-
-[rfc35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
-
-Attention that, [rfc33], [rfc34], and [rfc35] must be activated together with this one starting at the same epoch.
-
-When a new block is appended to the chain and the fork is activated, or a block is rolled back and the fork is deactivated, the CKB node must rerun the verification on all the transactions in the pool.
+Cell owners can trade off between the determination and VM performance boost when creating the cell. They should use data hash for determination, and type hash for the latest VM techniques.
 
 In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is returned in the JSON RPC as an enum. Now it has three allowed values:
 
 * 0: "data"
 * 1: "type"
 * 2: "data1"
+
+## RFC Dependencies
+
+This RFC depends on [rfc33], [rfc34], and [rfc35]. The 4 RFCs must be activated together at the same epoch.
+
+[rfc35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
+
+The first two RFCs, [rfc33] and [rfc34] are the specification of VM version 1. The [rfc35] proposes to run two versions of transaction relay protocols during the fork, because the VM selection algorithm depends on which epoch the transaction belongs to, thus it is not deterministic for transactions still in the memory pool.
 
 ## Rationale
 
