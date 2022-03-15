@@ -85,7 +85,7 @@ The first two RFCs, [rfc33] and [rfc34] are the specification of VM version 1. T
 
 There are many other solutions to select VM versions. The current solution results from discussion and trade-off. Following are some example alternatives:
 
-* Always use the latest VM version. The users have no options to freeze the VM versions used in their transactions.
+Consistently uses the latest VM version. The users cannot specify the VM versions for transactions, and the version selection will be non-determine cause it will depend on the chain state.
 * Depend on the script code cell epoch. Use the old VM version if the code cell is deployed before the fork, and use the new one otherwise. The problem with this solution is that anyone can re-deploy the cell and construct the transaction using the new code cell to choose VM versions.
 
 ## Backward compatibility
@@ -168,4 +168,4 @@ The Transaction Hash is `0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d1
 
 ## Acknowledgments
 
-The authors would like to thank Jan (@janx) and Xuejie (@xxuejie) for their comments and insightful suggestions. The members in the CKB Dev team also helped by participating the discussion and review. Boyu (@yangby-cryptape) is the major author of the code changes, and his experiments and feedbacks are essential to complete this document.
+The authors would like to thank Jan (@janx) and Xuejie (@xxuejie) for their comments and insightful suggestions. The members of the CKB Dev team also helped by participating in the discussion and review. Boyu (@yangby-cryptape) is the primary author of the code changes, and his experiments and feedbacks are essential to complete this document.
