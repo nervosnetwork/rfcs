@@ -82,7 +82,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [25](rfcs/0025-simple-udt) | [Simple UDT](rfcs/0025-simple-udt/0025-simple-udt.md) | Xuejie Xiao | Standards Track | Proposal
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
 | [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
-| [37](rfcs/0037-ckb2021) | [CKB 2021](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
+| [37](rfcs/0037-ckb2021) | [CKB Consensus Change (Edition CKB2021)](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
 
 ## License
 
