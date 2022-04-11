@@ -1,7 +1,7 @@
 ---
 Number: "0035"
-Category: P2P Protocol 
-Status: Draft
+Category: Standards Track
+Status: Proposal
 Author: Chao Luo, Ian Yang
 Organization: Nervos Foundation
 Created: 2021-07-01

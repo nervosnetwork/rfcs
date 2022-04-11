@@ -1,7 +1,7 @@
 ---
 Number: "0031"
-Category: Consensus (Hard Fork)
-Status: Draft
+Category: Standards Track
+Status: Proposal
 Author: Ian Yang
 Organization: Nervos Foundation
 Created: 2021-02-07
