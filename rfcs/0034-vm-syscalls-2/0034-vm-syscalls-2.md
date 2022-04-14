@@ -91,4 +91,4 @@ The arguments used here are:
 * [2]: [CKB VM version selection][2]
 
 [1]: ../0014-vm-cycle-limits/0014-vm-cycle-limits.md
-[2]: ../0232-ckb-vm-version-selection/0232-ckb-vm-version-selection.md
+[2]: ../0032-ckb-vm-version-selection/0032-ckb-vm-version-selection.md
