@@ -97,7 +97,7 @@ CKB only defines the low level virtual machine. In theory, any languages with RI
 * CKB can leverage standard riscv-gcc, riscv-llvm or even upstream gcc/llvm for C/C++ contract development. Executables emitted by those compilers can be directly used as CKB contracts.
 * C-based Bitcoin or Ethereum VM can also be compiled into RISC-V binaries as common cells, contracts can then load those common cells to run Bitcoin or Ethereum compatible contracts.
 * Higher-level language VMs, such as [duktape](http://duktape.org/) or [mruby](https://github.com/mruby/mruby) can also be compiled and loaded to run contracts running by JavaScript or Ruby
-* [Rust](https://github.com/riscv-rust/rust) can also be used to write contracts with recent development in this space
+* [Rust](https://github.com/riscv-rust/riscv-rust-quickstart) can also be used to write contracts with recent development in this space
 
 ## Runtime Cost
 

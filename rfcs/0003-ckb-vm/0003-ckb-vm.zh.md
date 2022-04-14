@@ -70,7 +70,7 @@ CKB 核心只定义了底层的虚拟机模型，理论上任何提供了 RISC-V
 * CKB 可以直接使用标准的 riscv-gcc 以及 riscv-llvm 以 C/C++ 语言来进行开发。编译后的可执行文件可以直接作为 CKB 的合约来使用
 * 与此相应的，可以将 C 实现的 Bitcoin 以及 Ethereum VM 编译成 RISC-V 二进制代码，保存在公共 Cell 中，然后在合约中引用公共 Cell 来运行 Bitcoin 或者 Ethereum 的合约
 * 其他的高级语言 VM 如 [duktape](http://duktape.org/) 及 [mruby](https://github.com/mruby/mruby) 在编译后，也可以用来相应的运行 JavaScript 或者 Ruby 编写的合约
-* 相应的也可以使用 [Rust](https://github.com/riscv-rust/rust) 作为实现语言来编写合约
+* 相应的也可以使用 [Rust](https://github.com/riscv-rust/riscv-rust-quickstart) 作为实现语言来编写合约
 
 ## Runtime Cost
 
