@@ -1,0 +1,28 @@
+name: lychee
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Link Checker
+      uses: lycheeverse/lychee-action@master
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        args: '--verbose --max-retries 4 --no-progress "**/*.md"'
+
+    - name: Create Issue From File
+      uses: peter-evans/create-issue-from-file@v2
+      with:
+        title: Link Checker Report
+        content-filepath: ./lychee/out.md
+        labels: automated issue
