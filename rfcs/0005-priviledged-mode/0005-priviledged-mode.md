@@ -24,7 +24,7 @@ Notice privileged architecture here is an opt-in feature that is closed by defau
 
 ## Privileged mode support via CSR instructions
 
-To ensure maximum compatibility, we will use the exact instructions and workflows defined in the [RISC-V spec](https://riscv.org/specifications/privileged-isa/) to implement privilege mode support here:
+To ensure maximum compatibility, we will use the exact instructions and workflows defined in the [RISC-V spec](https://riscv.org/technical/specifications/privileged-isa/) to implement privilege mode support here:
 
 * First, CSR instructions as defined in RISC-V will be implemented in CKB VM to implement read/write on control and status registers(CSR).
 * For simplicity reasons, we might not implement every control and status register as defined in RISC-V spec. For now, we are planning to implement `Supervisor Trap Vector Base Address Register(stvec)` and any other register that might be used in the trap phase. As documented in the spec, reading/writing other registers will result in illegal instruction exception, it's up to contract writer how they want to handle this.

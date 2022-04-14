@@ -24,7 +24,7 @@ Created: 2018-11-26
 
 ## 基于 CSR 指令的特权模式支持
 
-为尽最大可能确保兼容性，我们会用 [RISC-V 标准](https://riscv.org/specifications/privileged-isa/) 中定义的指令以及流程来实现特权指令支持：
+为尽最大可能确保兼容性，我们会用 [RISC-V 标准](https://riscv.org/technical/specifications/privileged-isa/) 中定义的指令以及流程来实现特权指令支持：
 
 * 首先，我们会实现 RISC-V 标准中定义的 CSR 指令，用于读写控制与状态寄存器 (CSR)。
 * 出于简化实现的考虑，我们不会实现 RISC-V 中定义的每一个控制与状态寄存器。目前为止，我们只计划实现 `Supervisor Trap Vector Base Address Register(stvec)` 以及其他在 trap 阶段会被用到的寄存器。在 CKB VM 中读写其他寄存器会参照 spec 中的定义，抛出违法指令的异常，合约开发者可以自行决定如何处理异常。
