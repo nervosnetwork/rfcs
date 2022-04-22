@@ -5,28 +5,28 @@ Status: Proposal
 Author: Chao Luo <@driftluo>, Ian Yang <@doitian>
 Created: 2021-07-01
 ---
-# P2P protocol upgrade
+# P2P Protocols Upgrade
 
 ## Abstract
 
-This RFC describes how the network protocol changes before and after the ckb hard fork, and how the network protocols smoothly upgrade along the hard fork.
+This RFC describes how network protocols change before and after the CKB hard fork, and how they are upgraded smoothly during the hard fork.
 
 ## Motivation
 
-The network protocol is the foundation of distributed applications. Before and after hard fork, there will be small changes in data format, but the network should not be disconnected or split because of this change. After hard fork, only clients that support hard fork are allowed to connect.
+Network protocols are the basis of distributed applications. There will be small changes in data format before and after the hard fork, but the network should not be disconnected or split because of this change. After the hard fork, only clients that support the hard fork can connect.
 
-This RFC describes in detail how the ckb node implements this functionality.
+This RFC describes how CKB nodes implement this functionality in detail.
 
 ## Specification
 
-We divide the entire hard fork process into three phases: before hard fork, the moment that hard fork activates, and after hard fork. The protocols are divided into two categories which have different upgrade strategies.
+The hard fork process consists of three phases: before the hard fork, the hard fork activation, and after the hard fork. The protocols are divided into two categories with different upgrade strategies.
 
-- Upgrade the version of a specific protocol and ensure that both versions of the protocol are supported and can be enabled at the same time
-- Mount two protocols that are functionally identical but require runtime switching for smooth upgrades
+- Upgrade the version of a specific protocol and ensure that both versions can be enabled simultaneously
+- Mount two functionally identical protocols that will require runtime switching for smooth upgrades
 
-### For protocols whose functionality and implementation do not need to be modified
+### Protocols whose functionality and implementation do not require modification
 
-Including protocols:
+#### Protocols
 
 - Identify
 - Ping
@@ -35,63 +35,63 @@ Including protocols:
 - Time
 - Alert
 
-##### Before hard fork
+##### Before the hard fork
 
-Change the version support list from `[1]` to `[1, 2]`, the client will support both versions of the protocol, the new client will enable version 2 and the old client will enable version 1
+Change the version support list from `[1]` to `[1, 2]`. Clients will be able to use both versions. New clients will enable version 2 and old clients will enable version 1.
 
-##### Hard fork moment
+##### Hard fork activation
 
-Disconnect all clients with the protocol version 1 on, and reject this version afterwards.
+Disconnect all clients that are using version 1 of the protocol, and reject it afterward.
 
-##### After hard fork
+##### After the hard fork
 
-Remove the support for the protocol version 1 from the next version of client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code
+Remove the support for version 1 of the protocol from the next version of the client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code.
 
-### Implement protocols that requires modification
+### Protocols that require modification
 
-#### Discovery
+#### Discovery Protocols
 
-##### Before hard fork
+##### Before the hard fork
 
 1. Change the version support list from `[1]` to `[1, 2]`.
-2. Remove redundant codec operations from the previous implementation
+2. Remove redundant codec operations from the previous implementation.
 
-##### Hard fork moment
+##### Hard fork activation
 
-Disconnect all clients with the protocol version 1 on, and reject this version afterwards.
+Disconnect all clients using version 1 of the protocol and reject it afterward.
 
-##### After hard fork
+##### After the hard fork
 
-Remove the support for the protocol version 1 from the next version of client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code
+Remove the support for version 1 of the protocol from the next version of the client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code.
 
-#### Sync
+#### Sync Protocols
 
-##### Before hard fork Before
+##### Before the hard fork
 
 1. Change the version support list from `[1]` to `[1, 2]`
-2. Remove the 16 group limit from the sync request list and keep the maximum number of syncs, new version changes the block sync request limit from 16 to 32
+2. Remove the 16 group limit from the sync request list, keep the maximum number of syncs, and change the block sync request limit from 16 to 32.
 
-##### Hard fork moment
+##### Hard fork activation
 
-Disconnect all clients with the protocol version 1 on, and reject this version afterwards.
-
-##### After hard fork
-
-Remove the support for the protocol version 1 from the next version of client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code
-
-### For protocols whose behavior will conflict before and after fork
-
-#### Relay
-
-##### Before hard fork.
-
-Since relay protocols before and after fork may have inconsistent cycle of transaction validation due to inconsistent vm, such behavior cannot be identified by a simple upgrade, for such protocols, another solution will be adopted to smooth the transition, i.e., open both relay protocols, disable the new protocol relay tx related messages, and let the old protocol work normally
-
-##### Hard fork moment
-
-1. Disable relay tx related messages in version 1 protocol and switch to the new relay
-2. Allow opening the version 1 protocols
+Disconnect all clients using version 1 of the protocol and reject it afterward.
 
 ##### After hard fork
 
-Remove the support for the old relay protocol in the next version of the client code, i.e. remove the support for the old relay protocol and clean up the compatibility code
+Remove the support for version 1 of the protocol from the next version of the client code, i.e. change the support list from `[1, 2]` to `[2]`, and clean up the compatibility code.
+
+### Protocols that have conflicting behavior before and after the hard fork
+
+#### Relay Protocols
+
+##### Before the hard fork
+
+Relay protocols may have different cycles for transaction validation before and after the hard fork due to inconsistent VMs. Such behavior cannot be identified by a simple upgrade. Alternatively, another solution can be used to smooth the transition, i.e., open both relay protocols, disable the new protocol from relaying messages related to tx, and allow the old protocol to continue functioning normally.
+
+##### Hard fork activation
+
+1. Disable relaying messages related to tx in version 1 and switch to the new relay.
+2. Allow the opening of the protocol version 1.
+
+##### After the hard fork
+
+Remove the support for the old relay protocol in the next version of the client code, i.e. remove the old relay protocol support and clean up the compatibility code.

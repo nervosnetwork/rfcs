@@ -6,20 +6,22 @@ Author: Ian Yang <@doitian>
 Created: 2021-02-03
 ---
 
-# Use input cell committing block timestamp as the start time for the relative timestamp in `since`
+# Use input cell committing block timestamp as the start time for the relative timestamp in `Since`
 
 ## Abstract
 
-This document proposes a transaction verification consensus change. When the `since` field of the transaction input uses a relative timestamp, the referenced cell committing block timestamp is used instead of the median timestamp.
+The document proposes a consensus change for transaction verification. When the `since` field of the transaction input uses a relative timestamp, the referenced cell committing block timestamp is used instead of the median timestamp.
 
-This is a modification to the RFC17 [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md).
+This is a modification to RFC17, [Transaction Valid Since](../0017-tx-valid-since/0017-tx-valid-since.md).
 
 ## Motivation
 
-The current consensus rule uses the median of the timestamps in the 37 blocks preceding the referenced cell committing block. Getting the median timestamp is resource consuming because it requires either getting 37 block headers or caching the median timestamp for each block. The intention of using median time was to prevent miners from manipulating block timestamp to include more transactions. But it is safe to use the committing block timestamp as the start time because of two reasons:
+The current consensus rule uses the median of the timestamps in the 37 blocks preceding the committing block of the referenced cell. The intention of using the median timestamp was to prevent miners from manipulating block timestamps in order to include more transactions. It is resource-consuming to get the median timestamp because it requires either getting 37 block headers or caching the median timestamp for each block.
 
-1. The timestamp in the block header has already been verified by the network that it must be larger than the median of the previous 37 blocks and less than or equal to the current time plus 15 seconds. (See [RFC27](../0027-block-structure/0027-block-structure.md#timestamp-uint64))
-2. The transaction consuming a cell with the `since` requirement must wait until the cell is mature. During this waiting time, the transaction that created the cell has accumulated enough confirmations that it is difficult for the miner to manipulate it.
+It is safe to use the committing block timestamp as the start time for two reasons:
+
+1. The timestamp in the block header has already been verified by the network, and it must exceed the median timestamp of the previous 37 blocks and be less than or equal to the current time plus 15 seconds. (See [RFC27](../0027-block-structure/0027-block-structure.md#timestamp-uint64))
+2. The transaction that consumes a cell with the `since` requirement must wait until the cell is mature. During this waiting period, the transaction that created the cell has accumulated enough confirmations that it is difficult for the miner to manipulate it.
 
 ## Specification
 
@@ -38,27 +40,29 @@ where
 
 * `StartTime` is the block timestamp that commits the cell consumed by the input.
 * `SinceValue` is the `value` part of the `since` field.
-* `MedianTimestamp` is the median timestamp of the previous 37 blocks preceding the block if the transaction is in the block, or the latest 37 blocks if the transaction is in the pool.
+* `MedianTimestamp`
+  * If the transaction is in a block, `MedianTimestamp` is the median timestamp of the previous 37 blocks preceding the block.
+  * If the transaction is in the pool, `MedianTimestamp` is the median timestamp of the latest 37 blocks.
 
-The transaction verification fails if the transaction is immature.
+If the transaction is immature, the transaction verification fails.
 
-The only change is `StartTime`, which was the median of the previous 37 blocks preceding the one that has committed the consumed cell. Because block timestamp must be larger than the median of its previous 37 blocks, the new consensus rule is more strict than the old rule. A transaction that is mature under the old rule may be immature under the new rule, but a transaction that is mature under the new rule must be mature under the old rule.
+The only change is `StartTime`, which was the median of the previous 37 blocks preceding the one that committed the consumed cell. Because the block timestamp must be larger than the median of its previous 37 blocks, the new consensus rule is more strict than the old rule. Transactions that are mature under the old rule may be immature under the new rule, but transactions that are mature under the new rule must also be mature under the old rule.
 
 ## Test Vectors
 
-Following is an example that a transaction is mature using the new rule but is immature using the old rule.
+The following is an example of a mature transaction using the new rule, but an immature transaction using the old rule.
 
 Assuming that:
 
-* A transaction consumes a cell in block S and is about to be committed into block T with a since requirement that:
+* A transaction consumes a cell in block S and is about to be committed into block T with the since requirement that:
 	* The `metric_flag` is block timestamp (10).
 	* The `relative_flag` is relative (1).
 	* The `value` is 600,000 (10 minutes).
 * The median of the previous 37 blocks preceding block S is 10,000.
 * The timestamp of block S is 20,000.
-* The median of the previous 37 blocks preceding block T is 615,000
+* The median of the previous 37 blocks preceding block T is 615,000.
 
-In the old consensus, `StartTime` + `SinceValue` = 10,000 + 600,000 = 610,000, which is less than the `MedianTimestamp` 615,000, thus the transaction is mature.
+In the old consensus rule, `StartTime` + `SinceValue` = 10,000 + 600,000 = 610,000, which is less than the `MedianTimestamp` 615,000, thus the transaction is mature.
 
 But in the new rule, `StartTime` + `SinceValue` = 20,000 + 600,000 = 620,000 ≥ 615,000, so the transaction is still immature.
 
@@ -66,10 +70,10 @@ But in the new rule, `StartTime` + `SinceValue` = 20,000 + 600,000 = 620,000 ≥
 
 The deployment can be performed in two stages.
 
-The first stage will activate the new consensus rule starting from a specific epoch. The mainnet and testnet will use different starting epochs and all other chains will use the new rule from epoch 0.
+In the first stage, the new consensus rule will be activated from a specific epoch. Mainnet and testnet will use different epochs, whereas all other chains will use the new rule from epoch 0.
 
-After the fork is activated, and if the transactions in the old epochs all satisfy the new rule, the old consensus rule will be removed and the new rule will be applied from the genesis block.
+The second stage occurs after the fork is activated, after which, if the transactions in the old epochs all comply with the new rule, the old consensus rule will be removed and the new rule will take effect from the genesis block.
 
-## Backward compatibility
+## Backward Compatibility
 
 Because the new consensus rule is more strict than the old one, this proposal can be deployed via a soft fork.

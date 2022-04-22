@@ -6,84 +6,67 @@ Author: Wanbiao Ye <mohanson@outlook.com>
 Created: 2021-05-25
 ---
 
-# VM version1
+# CKB VM Version 1 Changes
 
-This RFC describes version 1 of the CKB-VM, in comparison to version 0, which
+The following changes have been made to CKB VM version 1 in comparison to version 0:
 
-- Fixed several bugs
-- Behavioural changes not affecting execution results
+- Bug fixes
+- Behavior changes without affecting execution results
 - New features
-- Performance optimisations
+- Performance optimization
 
-## 1 Fixed Several Bugs
+## Bug Fixes
 
-CKB-VM Version 1 has fixed identified bugs discovered in Version 0.
+CKB VM version 1 has corrected the following problems found in version 0:
 
-### 1.1 Enabling Stack Pointer SP To Be Always 16-byte Aligned
+1. Incorrect alignment for the stack pointer. The stack pointer was incorrectly aligned during stack initialization in the previous version. In version 1, the stack pointer is kept 16-byte aligned. For more information, see [issue #97](https://github.com/nervosnetwork/ckb-vm/issues/97).
 
-In the previous version, SP incorrectly aligned during stack initialisation. See [issue](https://github.com/nervosnetwork/ckb-vm/issues/97).
+2. The argv of CKB VM does not end with null. As stated in C Standard 5.1.2.2.1/2, `argv[argc]` must be a null pointer. `NULL` was unfortunately omitted during stack initialization, and it has now returned. For more information, see [issue #98](https://github.com/nervosnetwork/ckb-vm/issues/98).
 
-### 1.2 Added a NULL To Argv
+3. Unexpected behavior caused by the JALR instruction on AsmMachine. The problem arose with the JALR instruction when `rs1` and `rd` use the same register. CKB VM made an error in the sequence of its steps. The correct procedure is to calculate `pc` first and then update `rd`. For more information, see [issue #92](https://github.com/nervosnetwork/ckb-vm/issues/92).
 
-C Standard 5.1.2.2.1/2 states: `argv[argc]` should be a null pointer. `NULL` was unfortunately omitted during the initialization of the stack, and now it has returned. See [issue](https://github.com/nervosnetwork/ckb-vm/issues/98).
+4. OutOfBound error caused by reading the last byte of memory.
 
-### 1.3 JALR Caused Erroneous Behaviour on AsmMachine When rs1 and rd utilised the same register
+5. Unaligned executable pages from loading binary would raise an error.
+6. Writeable pages were frozen. This error occurred during the loading of elf. CKB VM incorrectly set a freeze flag on a writeable page, making the page unmodifiable. The problem occurred primarily with external variables that have dynamic links.
 
-The problem arose with the JALR instruction, where the CKB-VM had made an error in the sequence of its different steps. The correct step to follow would be to calculate the pc first and then update the rd. See [problem](https://github.com/nervosnetwork/ckb-vm/issues/92).
+7. Crate goblin upgrade. Goblin is a cross-platform trifecta of binary parsing and loading fun. CKB VM uses it to load RISC-V programs. Due to the fact that goblin fixed many bugs and produced destructive upgrades, we decided to upgrade goblin. In this way, the binary that was unable to be loaded in the past can now be loaded normally.
 
-### 1.4 Error OutOfBound was triggered by reading the last byte of memory
+## Behavior Changes Without Affecting Execution Results
 
-We have fixed it, as described in the title.
+### Skip writing 0 to memory when argc equals 0 during stack initialization
 
-### 1.5 Unaligned executable pages from loading binary would raise an error
+For CKB scripts, argc is always 0 and the memory is initialized to 0, so memory writing can be safely skipped. If "chaos_mode" is enabled and "argv" is empty, reading "argc" will result in unexpected data. This rarely occurs and does not occur on the mainnet.
 
-We have fixed it, as described in the title.
+### Redesign of internal instruction format
 
-### 1.6 Frozen writable pages by error
+For the sake of fast decoding and cache convenience, RISC-V instructions are decoded into 64-bit unsigned integers. CKB VM uses this format internally instead of the original RISC-V instruction format.
 
-This error occurred during the loading of elf. The CKB-VM has incorrectly set a freeze flag on a writeable page, which made the page unmodifiable.
+## New Features
 
-It happened mainly with external variables that have dynamic links.
+### B extension
 
-### 1.7 Update crate goblib
+We have added the RISC-V B extension (v1.0.0) [1]. This extension aims cover the four major categories of bit manipulation: counting, extracting, inserting and swapping. For all B instructions, 1 cycle will be consumed.
 
-goblin is a cross-platform trifecta of binary parsing and loading fun. ckb-vm uses it to load RISC-V programs. But in the past period of time goblin fixed many bugs and produced destructive upgrades, we decided to upgrade goblin: this will cause the binary that could not be loaded before can now be normal Load, or vice versa.
+### Chaos memory mode
 
-## 2 Behavioural Changes that will not affect the execution outcomes
+The debugging tools now support chaos memory mode. In this mode, the program memory is forcibly initialized randomly, helping us identify uninitialized objects and values in the script.
 
-### 2.1 Skip writing 0 to memory when argc equals 0 during stack initialisation
+### Suspend and resume a running VM
 
-For ckb scripts, argc is always 0 and the memory is initialised to 0, so memory writing can be safely skipped. Note that when "chaos_mode" is enabled and "argv" is empty, the reading of "argc" will return an unexpected data. This happens uncommonly, and never happens on the mainnet.
+It is possible to suspend a running CKB VM, save its state to a specified location, and then resume the previously running VM later, potentially on a different machine.
 
-### 2.2 Redesign of the internal instruction format
+## Performance Optimization
 
-For the sake of fast decoding and cache convenience, RISC-V instruction is decoded into the 64-bit unsigned integer. Such a format used only internally in ckb-vm rather than the original RISC-V instruction format.
+### Lazy initialization memory
 
-## 3 New features
+In version 0, when the VM was initialized, program memory was initialized to zero. The initialization of program memory has been deferred in version 1. Program memory is divided into several frames, such that only when a frame is read or written, the corresponding program memory area of that frame is initialized to zero. As a result, small programs with low memory requirements can run faster.
 
-### 3.1 B extension
+### MOP
 
-We have added the RISC-V B extension (v1.0.0) [1]. This extension aims at covering the four major categories of bit manipulation: counting, extracting, inserting and swapping. For all B instructions, 1 cycle will be consumed.
+Macro-Operation Fusion (also Macro-Op Fusion, MOP Fusion, or Macrofusion) is a hardware optimization technique found in many modern microarchitectures whereby a series of adjacent macro-operations are merged into a single macro-operation prior or during decoding. Those instructions are later decoded into fused-OPs.
 
-### 3.2 Chaos memory mode
-
-Chaos memory mode was added for the debugging tools. Under this mode, the program memory forcibly initializes randomly, helping us to discover uninitialized objects/values in the script.
-
-### 3.3 Suspend/resume a running VM
-
-It is possible to suspend a running CKB VM, save the state to a certain place and to resume the previously running VM later on, possibly even on a different machine.
-
-## 4 Performance optimization
-
-### 4.1 Lazy initialization memory
-
-In version 0, when the VM was initialised, the program memory would be initialised to zero value. Now, we have deferred the initialisation of program memory. The program memory is divided into several different frames, so that only when a frame is used (read, write), the corresponding program memory area of that frame will be initialised with zero value. As a result , small programs that do not need to use large volumes of memory will be able to run faster.
-
-### 4.2 MOP
-
-Macro-Operation Fusion (also Macro-Op Fusion, MOP Fusion, or Macrofusion) is a hardware optimization technique found in many modern microarchitectures whereby a series of adjacent macro-operations are merged into a single macro-operation prior or during decoding. Those instructions are later decoded into fused-µOPs.
-
-The cycle consumption of the merged instructions is the maximum cycle value of the two instructions before the merge. We have verified that the use of MOPs can lead to significant improvements in some encryption algorithms.
+The cycle consumption of two merged instructions is equal to the maximum cycle value of the two instructions before merging. We have verified that MOPs can significantly improve some encryption algorithms.
 
 |            Opcode            |            Origin            |      Cycles       |
 | ---------------------------- | ---------------------------- | ----------------- |
@@ -98,7 +81,7 @@ The cycle consumption of the merged instructions is the maximum cycle value of t
 | FAR_JUMP_ABS                 | lui + jalr                   | 0 + 3             |
 | LD_SIGN_EXTENDED_32_CONSTANT | lui + addiw                  | 1 + 0             |
 
-# Reference
+## Reference
 
 * [1]: [B extension][1]
 * [2]: [Macro-op-fusion: Pattern design of ADC and SBB][2]

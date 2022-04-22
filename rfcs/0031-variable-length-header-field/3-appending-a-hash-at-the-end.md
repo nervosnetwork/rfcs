@@ -1,6 +1,6 @@
-### Appending a Hash At the End
+### Appending a Hash at the End
 
-Instead of adding the new field directly at the end of the header, this solution adds a 32 bytes hash at the end of the header which is the hash of the new variable length field. The header is still a fixed length struct but is 32 bytes larger. If client does not need the extra field, it only has the 32 bytes overhead. Otherwise it has to download both the header and the extra field and verify that the hash matches.
+Instead of adding the new field directly at the end of the header, this solution adds a 32-byte hash to the end of the header which is the hash of the new variable length field. The header is still a fixed length structure, but it is 32 bytes larger. If the client does not need the extra field, it only has 32 bytes overhead. Otherwise, it must download both the header and extra field and verify that the hash matches.
 
 ```
 +-----------------------+--+
