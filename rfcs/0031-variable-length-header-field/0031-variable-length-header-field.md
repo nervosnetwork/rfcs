@@ -7,30 +7,29 @@ Organization: Nervos Foundation
 Created: 2021-02-07
 ---
 
-# Add a variable length field in the block
+# Add a Variable Length Field in Block
 
 ## Abstract
 
-This document proposes adding an optional variable length field to the block.
+This document proposes adding an optional variable length field to the block data structure.
 
 ## Motivation
 
 In the consensus version before activating this RFC, the block header is a fixed length structure. Each header consists of 208 bytes.
 
-Many extensions require adding new fields into the block, but there’s no enough reserved bits for them. For example, flyclient requires a 64-byte hash in the header.
-Workaround exists such as storing these data in the cellbase transaction, but it has a big overhead for clients which want to verify the chain using PoW only. Because they have to download the cellbase transaction and the merkle tree proof of the cellbase transaction, which can be larger than the block header itself.
+Many extensions require adding new fields to the block data structure, for example, flyclient requires a 64-byte hash in the header. However, there are not enough reserved bits for this. There are workarounds such as storing these data in the cellbase transaction, but this has a heavy overhead for clients that want to verify the chain using only PoW. Because they have to download the cellbase transaction and the merkle tree proof of the cellbase transaction, which can be larger than the block header itself.
 
-This document proposes a solution to add a variable length field in the block. How to interpret the new field is beyond the scope of this document and must be defined and deployed via a future soft fork. Although the field is added to the block body, nodes can synchronize the block header and this field together in the future version.
+This document proposes a solution to add a variable length field in the block data structure. The interpretation of the new field is beyond the scope of this document and will need to be defined and deployed in a future soft fork. Although the field is added to the block body, nodes can synchronize the block header and this field together in the future version.
 
 ## Specification
 
 The block header is encoded as a molecule struct, which consists of fixed length fields. The header binary is just the concatenation of all the fields in sequence.
 
-There are many ways to add the variable length field to the block header. This RFC proposes to replace the `uncles_hash` in the header with the new field `extra_hash`, which is also a 32-byte hash. The block will have a new field `extension`.
+There are many ways to add the variable length field to the block header. This RFC proposes to replace the `uncles_hash` field in the header with the new `extra_hash` field, which is also a 32-byte hash. The block data structure will have a new `extension` field.
 
 There are two important time points to deploy this RFC, activation epoch A and extension application epoch B.
 
-In blocks before epoch A, the `extension` must be absent. The value of `extra_hash` is the same as the original `uncles_hash` in these blocks, so this RFC will not change the serialized headers of existing blocks. The field `extra_hash` is all zeros when the `uncles` field is empty, or `ckbhash` on all the uncle header hashes concatenated together.
+In blocks before epoch A, the `extension` field must be absent. The value of `extra_hash` is the same as the original `uncles_hash` in these blocks, so this RFC will not change the serialized headers of existing blocks. If the `uncles` field is empty, the `extra_hash` field is zero; otherwise, it is `ckbhash`, which is the concatenation of all the uncle header hashes.
 
 ```
 uncles_hash = 0 when uncles is empty, otherwise
@@ -41,18 +40,18 @@ uncles_hash = ckbhash(U1 || U2 || ... || Un)
 
 See Appendix for the default hash function `ckbhash`. The annotation `||` means bytes concatenation.
 
-In blocks generated since epoch A, `extension` can be absent, or any binary with 1 to 96 bytes. The upper limit 96 prevents abusing this field because there's no consensus rule to verify the content of `extension`. The 96 bytes limit allows storing the 64-byte flyclient hash and an extra 32-byte hash on further extension bytes.
+In blocks generated since epoch A, `extension` can be absent, or any binary with 1 to 96 bytes. The upper limit of 96 prevents abuse of this field because there is no consensus rule to verify the content of `extension`. The 96 bytes limit allows storing the 64-byte flyclient hash and an extra 32-byte hash on further extension bytes.
 
 The `extra_hash` is defined as:
 
 * When `extension` is empty, `extra_hash` is the same as the `uncles_hash`.
-* Otherwise `extra_hash = ckbhash(uncles_hash || ckbhash(extension))`
+* Otherwise, `extra_hash = ckbhash(uncles_hash || ckbhash(extension))`
 
-Since epoch B, consensus will define the schema of `extension` and verify the content. This is a soft fork if the `extension` is at most 96 bytes, because nodes deployed since epoch A do not verify the content of `extension`.  
+Since epoch B, the consensus will define the schema and verify the content of `extension`. This is a soft fork if the `extension` field is at most 96 bytes, because nodes deployed since epoch A do not verify the content of `extension`.  
 
 ### P2P Protocols Changes
 
-The field `uncles_hash` in the block header is renamed to `extra_hash`.
+The `uncles_hash` field in the block header is renamed to `extra_hash`.
 
 ```
 struct RawHeader {
@@ -69,7 +68,7 @@ struct RawHeader {
 }
 ```
 
-The new field `extension` will be added to the block body and following data structures:
+The new `extension` field will be added to the block body and the following data structures:
 
 ```
 table Block {
@@ -90,22 +89,22 @@ table CompactBlock {
 }
 ```
 
-For blocks before the activation epoch A, `extension` must be absent. After activation, the node must verify that `extension` is absent or a binary with 1 to 96 bytes, and `uncles` and `extension` match the `extra_hash` in the header.
+In blocks before the activation epoch A, `extension` must be absent. After the activation, the node must verify that `extension` is absent or a binary with 1 to 96 bytes, and `uncles` and `extension` match the `extra_hash` value in the header.
 
-Pay attention that the `extension` field will occupy the block size. See section [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) in RFC20 for details.
+The `extension` field will occupy the block size. For more information, see [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) in RFC20.
 
 The uncle blocks packaged in `uncles` will not include the `extension` field.
 
 ### RPC Changes
 
 * The `uncles_hash` is renamed to `extra_hash`.
-* The new field `extension` is added to the block body RPC response. For blocks generated in ckb2019, it is always empty.
+* The new `extension` field is added to the block body RPC response. For blocks generated in CKB2019, it is always empty.
 
 ## Comparison With Alternative Solutions
 
-1. [Appending the Field At the End](./1-appending-the-field-at-the-end.md)
-2. [Using Molecule Table in New Block Headers](./2-using-molecule-table-in-new-block-headers.md)
-3. [Appending a Hash At the End](./3-appending-a-hash-at-the-end.md)
+1. [Appending the Field at the End](./1-appending-the-field-at-the-end.md)
+2. [Using a Molecule Table in New Block Headers](./2-using-molecule-table-in-new-block-headers.md)
+3. [Appending a Hash at the End](./3-appending-a-hash-at-the-end.md)
 
 ## Test Vectors
 
@@ -344,12 +343,12 @@ Transaction Hashes:
 
 ### ckbhash
 
-CKB uses [blake2b](https://blake2.net/blake2.pdf) as the default hash algorithm with following configurations:
+CKB uses [blake2b](https://blake2.net/blake2.pdf) as the default hash algorithm with the following configurations:
 
 - output digest size: 32
 - personalization: ckb-default-hash
 
-Python 3 Example and test vectors:
+A Python 3 example and test vectors:
 
 ```python
 import hashlib

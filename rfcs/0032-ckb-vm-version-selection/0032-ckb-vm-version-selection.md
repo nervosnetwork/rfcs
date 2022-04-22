@@ -11,34 +11,34 @@ Created: 2021-04-26
 
 ## Abstract
 
-This RFC proposes a mechanism to decide on the CKB VM version to execute the transaction scripts.
+This RFC proposes a mechanism for selecting the CKB VM version to execute transaction scripts.
 
 ## Motivation
 
-It's essential to keep improving CKB VM because it is the computation bottleneck of the whole network. The upgrade packages can improve the performance, bring bug fixings and add new RISC-V extensions. However the upgrade should not break the old code, users must have the opt-in option to specify the VM version.
+CKB VM must be continuously improved, since it is the computation bottleneck of the entire network. The upgrade package can improve performance, bring bug fixes and add new RISC-V extensions. However, the upgrade must not break the old code, and users must have the opt-in option to specify the VM version.
 
 This RFC proposes a general mechanism that determines how the CKB node chooses the CKB VM version for a transaction script group.
 
 ## Specification
 
-When CKB launches the testnet Lina, it only has one VM version, the version 0. The first hard fork will bring VM version 1 which coexists with version 0. Users have the opt-in option to specify which VM version to run the script of a cell by setting the `hash_type` field.
+When CKB launches the testnet Lina, it has only one VM version, version 0. The first hard fork will bring VM version 1, which will coexist with version 0. By setting the `hash_type` field, users can specify which VM version to use to run a cell's script.
 
-In CKB, each VM version also has its bundled instruction set, syscalls and cost model. The [rfc3], [rfc5], [rfc9] and [rfc14] have defined what is VM version 0. VM version 1 is version 0 plus the revisions mentioned in [rfc33] and [rfc34].
+Each VM version in CKB has its own bundled instruction set, syscalls, and cost model. [RFC3], [RFC5], [RFC9] and [RFC14] have defined what VM version 0 is. VM version 1 is version 0 plus the revisions mentioned in [RFC33] and [RFC34].
 
-[rfc3]: ../0003-ckb-vm/0003-ckb-vm.md
-[rfc5]: ../0005-priviledged-mode/0005-priviledged-mode.md
-[rfc9]: ../0009-vm-syscalls/0009-vm-syscalls.md
-[rfc14]: ../0014-vm-cycle-limits/0014-vm-cycle-limits.md
-[rfc33]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md
-[rfc34]: ../0034-vm-syscalls-2/0034-vm-syscalls-2.md
+[RFC3]: ../0003-ckb-vm/0003-ckb-vm.md
+[RFC5]: ../0005-priviledged-mode/0005-priviledged-mode.md
+[RFC9]: ../0009-vm-syscalls/0009-vm-syscalls.md
+[RFC14]: ../0014-vm-cycle-limits/0014-vm-cycle-limits.md
+[RFC33]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md
+[RFC34]: ../0034-vm-syscalls-2/0034-vm-syscalls-2.md
 
-The first hard fork takes effect from an epoch decided by the community consensus. For all the transactions in the blocks before the activation epoch, they must run the CKB VM version 0 to verify all the script groups. In these transactions, the `hash_type` in cell lock and type script must be 0 or 1 in the serialized molecule data.
+The first hard fork takes effect from an epoch decided by the community consensus. For the transactions in blocks before the activation epoch, it is necessary to run CKB VM version 0 to verify all script groups. In these transactions, the `hash_type` field in the cell lock and type script must be 0 or 1 in the serialized molecule data.
 
-After the fork is activated, CKB nodes must choose the CKB VM version for each script group. The allowed values for the `hash_type` field in the lock and type script are 0, 1, and 2. Cells are sorted into different groups if they have different `hash_type`. According to the value of `hash_type`:
+After the fork is activated, CKB nodes must choose CKB VM version for each script group. The allowed values for the `hash_type` field in the lock and type script are 0, 1, and 2. Cells are sorted into different groups if they have different `hash_type` values. A script group matches code and select the VM version according to the value of `hash_type`:
 
-* When the `hash_type` is 0, the script group matches code via data hash and will run the code using the CKB VM version 0.
-* When the `hash_type` is 1, the script group matches code via type script hash and will run the code using the CKB VM version 1.
-* When the `hash_type` is 2, the script group matches code via data hash and will run the code using the CKB VM version 1.
+* When the value of `hash_type` is 0, the script group matches code via data hash and will run the code using CKB VM version 0.
+* When the value of `hash_type` is 1, the script group matches code via type script hash and will run the code using CKB VM version 1.
+* When the value of `hash_type` is 2, the script group matches code via data hash and will run the code using CKB VM version 1.
 
 | `hash_type` | matches by       | VM version |
 | ----------- | ---------------- | ---------- |
@@ -46,13 +46,13 @@ After the fork is activated, CKB nodes must choose the CKB VM version for each s
 | 1           | type script hash | 1          |
 | 2           | data hash        | 1          |
 
-The transaction is invalid if any `hash_type` is not in the allowed values 0, 1, and 2.
+If a `hash_type` is not one of the allowed values 0, 1, or 2, then the transaction is invalid.
 
-See more information about code locating using `hash_type` in [rfc22].
+For more information about locating code using `hash_type`, see [RFC22].
 
-[rfc22]: ../0022-transaction-structure/0022-transaction-structure.md
+[RFC22]: ../0022-transaction-structure/0022-transaction-structure.md
 
-The `hash_type` encoding pattern ensures that if a script matches code via type hash, CKB always uses the latest available version of VM depending when the script is executed. But if the script matches code via data hash, the VM version to execute is determined when the cell is created.
+The `hash_type` encoding pattern ensures that if a script matches code via type hash, CKB always uses the latest available version of VM depending when the script is executed. But if the script matches code via data hash, the VM version is determined when the cell is created.
 
 Here is an example of when VM version 2 is available:
 
@@ -65,7 +65,7 @@ Here is an example of when VM version 2 is available:
 
 > \* The actual value to represent data hash plus VM version 2 is undecided yet.
 
-Cell owners can trade off between the determination and VM performance boost when creating the cell. They should use data hash for determination, and type hash for the latest VM techniques.
+Cell owners can trade off between determination and VM performance boost when creating the cell. They can use data hash for determination, and type hash for the latest VM techniques.
 
 In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is returned in the JSON RPC as an enum. Now it has three allowed values:
 
@@ -75,28 +75,31 @@ In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is
 
 ## RFC Dependencies
 
-This RFC depends on [rfc33], [rfc34], and [rfc35]. The 4 RFCs must be activated together at the same epoch.
+This RFC depends on [RFC33], [RFC34], and [RFC35]. The 4 RFCs must be activated together at the same epoch.
 
-[rfc35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
+[RFC35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
 
-The first two RFCs, [rfc33] and [rfc34] are the specification of VM version 1. The [rfc35] proposes to run two versions of transaction relay protocols during the fork, because the VM selection algorithm depends on which epoch the transaction belongs to, thus it is not deterministic for transactions still in the memory pool.
+The first two RFCs, [RFC33] and [RFC34] are the specification of VM version 1. [RFC35] proposes to run two versions of transaction relay protocols during the fork. This is because the VM selection algorithm depends on which epoch transactions belong to, thus it is not deterministic for transactions still in the memory pool.
 
 ## Rationale
 
-There are many other solutions to select VM versions. The current solution results from discussion and trade-off. Following are some example alternatives:
+There are many other solutions to select VM versions. The current solution is the result of discussions and trade-offs.
 
-Consistently uses the latest VM version. The users cannot specify the VM versions for transactions, and the version selection will be non-determine cause it will depend on the chain state.
-* Depend on the script code cell epoch. Use the old VM version if the code cell is deployed before the fork, and use the new one otherwise. The problem with this solution is that anyone can re-deploy the cell and construct the transaction using the new code cell to choose VM versions.
+The following are two alternative solutions:
 
-## Backward compatibility
+- Use the latest VM version consistently. You cannot specify the VM version for transactions, and the version selection will be non-deterministic due to the chain state.
 
-For cell scripts which reference codes via data hash, they will use the same VM before and after the fork. For those referenced by type hash, they will use the different VM versions. The dApps developers must ensure the compatibility of their scripts and upgrade them if necessary.
+* Select the VM version depending on the epoch of the script code cell. If the code cell is deployed before the fork, you can use the old VM version. Otherwise, use the new version. This solution has the problem that anyone can re-deploy the cell and then construct the transaction using the new code cell to choose VM versions.
+
+## Backward Compatibility
+
+The cell scripts that match code via data hash will use the same VM before and after the fork. The cell scripts that match code via type hash will use different VM versions. DApp developers must ensure the compatibility of their scripts and upgrade them if necessary.
 
 ## Test Vectors
 
 ### Transaction Hash
 
-This is a transaction containing `data1` hash type.
+The following is a transaction containing the `data1` hash type.
 
 <details><summary>JSON</summary>
 
@@ -164,7 +167,7 @@ This is a transaction containing `data1` hash type.
 
 </details>
 
-The Transaction Hash is `0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d16ee62543f5c`.
+The transaction hash is `0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d16ee62543f5c`.
 
 ## Acknowledgments
 

@@ -11,18 +11,18 @@ Created: 2021-02-03
 
 ## Abstract
 
-This document proposes a transaction verification consensus change to allow multiple cell dep matches on type script hash when all the matches are resolved to the same script code.
+This document proposes a consensus change for transaction verification. This change allows multiple cell dep matches on type script hash when all the matches are resolved to the same script code.
 
 ## Motivation
 
-CKB locates the code for lock and type script to execute via data hash or type script hash.
+By using data hash or type script hash, CKB finds the code for lock and type script to execute.
 
-CKB allows multiple matches on data hash because it is safe. Data hash is the hash on the code, thus multiple matches must have the same code. This does not hold for type hash. Two cells with the same type script hash may have different contents.
+CKB allows multiple matches on data hash because it is safe. Data hash is the hash of the code, so multiple matches must have the same code. Type script hash does not conform to this rule. Cells with the same type script hash may have different contents.
 
-Currently, CKB does not allow multiple matches on type script hash. But in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. Because in the most scenarios, the cause is that the transaction uses two dep groups which contain duplicated cells, the multiple matches on type script hash really point to the same cell.
+Currently, CKB does not allow multiple matches on type script hash. However, in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. In most scenarios, the transaction uses two dep groups that contain duplicate cells, so the multiple matches on type script hash actually point to the same cell.
 
 ```
-# An example that multiple matches on the type script hash really are the same cell.
+# An example that multiple matches on the type script hash actually are the same cell.
 cell_deps:
   - out_point: ...
     # Expands to
@@ -42,17 +42,23 @@ inputs:
       hash_type: Type
 ```
 
-Based on the observation above, this RFC proposes to allow the multiple matches on the type script hash if they all have the same data.
+Based on the observation above, this RFC proposes to allow multiple matches on type script hash if they all have the same data.
 
 ## Specification
 
-When the transaction verifier locates script code in dep cell via data hash, multiple matches are allowed. This is the same as before.
+The same as before, multiple matches are allowed when the transaction verifier locates the script code in the dep cell via data hash. 
 
-When the verifier locates code via type hash, multiple matches are allowed if all the matched cells have the same data, otherwise, the transaction is invalid and the verification fails. This is the modification introduced by this RFC.
+This RFC introduces the following modification to the case where the verifier locates the code via type hash:
+
+- If all the matched cells have the same data, multiple matches are allowed;
+
+- Otherwise, the transaction is invalid and the verification fails.
 
 ## Test Vectors
 
-Multiple matches of data hash. This works in both the old rule and the new one.
+**Multiple matches of data hash**
+
+This works in both the old rule and the new one.
 
 ```
 #  hash(Cell B.data) equals to hash(Cell A.data)
@@ -74,7 +80,9 @@ inputs:
       hash_type: Data
 ```
 
-Multiple matches of type hash which all resolve to the same code. This transaction is invalid using the old rule but valid using the new rule.
+**Multiple matches of type hash that all resolved to the same code**
+
+The transaction is invalid under the old rule, but valid under the new rule.
 
 ```
 #  hash(Cell B.data) equals to hash(Cell A.data)
@@ -102,10 +110,10 @@ inputs:
 
 The deployment can be performed in two stages.
 
-The first stage will activate the new consensus rule starting from a specific epoch. The mainnet and testnet will use different starting epochs and all the development chains initialized via the default settings in this stage will use the new rule from epoch 0.
+In the first stage, the new consensus rule will be activated from a specific epoch. The mainnet and testnet will use different starting epochs. All the development chains initialized with the default settings will use the new rule from epoch 0.
 
 After the fork is activated, the old rule will be replaced by the new rule starting from the genesis block by new CKB node versions.
 
-## Backward compatibility
+## Backward Compatibility
 
-The consensus rule proposed in this document is looser, so it must be activated via a hard fork. The blocks accepted by new version clients may be rejected by the old versions.
+The consensus rule proposed in this document is looser, so it must be activated via a hard fork. The blocks accepted by the new version of clients may be rejected by old versions.

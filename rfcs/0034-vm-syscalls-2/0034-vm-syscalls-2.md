@@ -7,11 +7,11 @@ Organization: Nervos Foundation
 Created: 2021-05-25
 ---
 
-# VM Syscalls 2
+# CKB VM Syscalls 2
 
 ## Abstract
 
-This document describes the addition of the syscalls during the ckb2021. These syscalls are only available since ckb-vm version 1 and ckb2021 [2].
+This document describes the addition of the syscalls in CKB2021. These syscalls are only available since CKB VM version 1 and CKB2021 [2].
 
 - [VM Version]
 - [Current Cycles]
@@ -20,7 +20,7 @@ This document describes the addition of the syscalls during the ckb2021. These s
 ### VM Version
 [vm version]: #vm-version
 
-As shown above, *VM Version* syscall has a signature like following:
+The *VM Version* syscall has a signature like this:
 
 ```c
 int ckb_vm_version()
@@ -29,17 +29,17 @@ int ckb_vm_version()
 }
 ```
 
-*VM version* syscall returns current running VM version, so far 2 values will be returned:
+The *VM version* syscall returns the current VM version. So far, two values will be returned:
 
-- Error for Lina CKB-VM version
-- 1 for the new hardfork CKB-VM version.
+- Lina CKB VM version error
+- 1 for the CKB VM version of the new hardfork 
 
 This syscall consumes 500 cycles.
 
 ### Current Cycles
 [current cycles]: #current-cycles
 
-*Current Cycles* syscall has a signature like following:
+The *Current Cycles* syscall has a signature like this:
 
 ```c
 uint64_t ckb_current_cycles()
@@ -48,18 +48,18 @@ uint64_t ckb_current_cycles()
 }
 ```
 
-*Current Cycles* returns current cycle consumption just before executing this syscall. This syscall consumes 500 cycles.
+The *Current Cycles* syscall returns the number of cycles that were consumed just before the syscall was executed. This syscall consumes 500 cycles.
 
 
 ### Exec
 [exec]: #exec
 
-Exec runs an executable file from specified cell data in the context of an already existing machine, replacing the previous executable. The used cycles does not change, but the code, registers and memory of the vm are replaced by those of the new program. It's cycles consumption consists of two parts:
+Exec runs an executable file from specified cell data in the context of an already existing machine, replacing the previous executable. The used cycles do not change, however the code, registers and memory of the VM are replaced by those of the new program. The used cycles are in two parts:
 
 - Fixed 500 cycles
-- Initial Loading Cycles [1]
+- Initial loading cycles [1]
 
-*Exec* syscall has a signature like following:
+The *Exec* syscall has a signature like this:
 
 ```c
 int ckb_exec(size_t index, size_t source, size_t place, size_t bounds, int argc, char* argv[])
@@ -68,27 +68,30 @@ int ckb_exec(size_t index, size_t source, size_t place, size_t bounds, int argc,
 }
 ```
 
-The arguments used here are:
+Here are the arguments:
 
-* `index`: an index value denoting the index of entries to read.
-* `source`: a flag denoting the source of cells or witnesses to locate, possible values include:
+* `index`: an index value that indicates the index of entries to read
+* `source`: a flag that indicates the source of cells or witnesses to locate. Possible values include:
     + 1: input cells.
     + `0x0100000000000001`: input cells with the same running script as current script
     + 2: output cells.
     + `0x0100000000000002`: output cells with the same running script as current script
     + 3: dep cells.
-* `place`: A value of 0 or 1:
+* `place`: a value of 0 or 1
     + 0: read from cell data
     + 1: read from witness
-* `bounds`: high 32 bits means `offset`, low 32 bits means `length`. if `length` equals to zero, it read to end instead of reading 0 bytes.
-* `argc`: argc contains the number of arguments passed to the program
-* `argv`: argv is a one-dimensional array of strings
+* `bounds`: 
+    * The high 32 bits means `offset`.
+    * The low 32 bits means `length`. If `length` is zero, it reads to the end instead of reading zero bytes.
+* `argc`: the number of arguments passed to the program
+* `argv`: a one-dimensional array of strings.
 
 
 # Reference
 
 * [1]: [Vm Cycle Limits][1]
-* [2]: [CKB VM version selection][2]
+* [2]: [CKB VM Version Selection][2]
 
 [1]: ../0014-vm-cycle-limits/0014-vm-cycle-limits.md
-[2]: ../0232-ckb-vm-version-selection/0232-ckb-vm-version-selection.md
+[2]: ../0032-ckb-vm-version-selection/0032-ckb-vm-version-selection.md
+
