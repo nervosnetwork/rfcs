@@ -83,6 +83,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
 | [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
 | [37](rfcs/0037-ckb2021) | [CKB Consensus Change (Edition CKB2021)](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
+| [38](rfcs/0038-naming-convention-for-nervos-cross-chain-assets) | [Naming Convention for Nervos Cross-Chain Assets](rfcs/0038-naming-convention-for-nervos-cross-chain-assets/0038-naming-convention-for-nervos-cross-chain-assets.md) | Hanlei Liang | Informational | Draft
 
 ## License
 
