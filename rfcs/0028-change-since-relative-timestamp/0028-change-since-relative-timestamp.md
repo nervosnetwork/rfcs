@@ -6,7 +6,7 @@ Author: Ian Yang <@doitian>
 Created: 2021-02-03
 ---
 
-# Use input cell committing block timestamp as the start time for the relative timestamp in `Since`
+# Use input cell committing block timestamp as the start time for the relative timestamp in `since`
 
 ## Abstract
 
