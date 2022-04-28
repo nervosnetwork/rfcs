@@ -29,7 +29,7 @@ There are many ways to add the variable length field to the block header. This R
 
 There are two important time points to deploy this RFC, activation epoch A and extension application epoch B.
 
-In blocks before epoch A, the `extension` field must be absent. The value of `extra_hash` is the same as the original `uncles_hash` in these blocks, so this RFC will not change the serialized headers of existing blocks. If the `uncles` field is empty, the `extra_hash` field is zero; otherwise, it is `ckbhash`, which is the concatenation of all the uncle header hashes.
+In blocks before epoch A, the `extension` field must be absent. The value of `extra_hash` is the same as the original `uncles_hash` in these blocks, so this RFC will not change the serialized headers of existing blocks. If the `uncles` field is empty, the `extra_hash` field is zero; otherwise, the ckbhash function is applied to the concatenation of all uncle header hashes.
 
 ```
 uncles_hash = 0 when uncles is empty, otherwise
