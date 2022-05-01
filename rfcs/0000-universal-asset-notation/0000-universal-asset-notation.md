@@ -15,7 +15,7 @@ This document specifies a universal naming method for assets flowing on Nervos N
 
 ## Motivation
 
-The interoperation between Nervos Network and other crypto or traditional economy networks brings new assets to Nervos Network. The boom of assets create difficulties for developers and users - for example, different assets on different networks may accidentally use the same name, or the same asset may arrive Nervos Network through different cross-chain bridges/routes and eventually appears as different mapping assets. A proper asset notation help incorporate assets origin from multiple networks into one network without causing any confusion, thus lowers the operational risk and facilitates deveoper and user experience.
+The interoperation between Nervos Network and other crypto or traditional economy networks brings new assets to Nervos Network. The boom of assets create difficulties for developers and users - for example, different assets on different networks may accidentally use the same name, or the same asset may arrive Nervos Network through different cross-chain bridges/routes and eventually appears as different mapping assets. A proper asset notation helps incorporate assets origin from multiple networks into one network without causing any confusion, thus lowers the operational risk and facilitates developer and user experience.
 
 ## Definition
 
