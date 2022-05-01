@@ -115,4 +115,4 @@ ETH (via Forcebridge from ETH)
 
 ## References
 
-- [Forcebridge Asset List](https://github.com/nervosnetwork/force-bridge/blob/main/configs/all-bridged-tokens.json)
+- UAN is an extension of the convention used in [Forcebridge Asset List](https://github.com/nervosnetwork/force-bridge/blob/fb769301dbc3beddbdeabec23b764305c1b1b937/configs/all-bridged-tokens.json) with modifications.
