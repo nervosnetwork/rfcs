@@ -21,7 +21,7 @@ which the administrator deems proper. This part has evolved from the [Regulation
 of the asset lock spectrum and lays the foundation of registered assets like Apple stock on CKB. When used together,
 Omnilock and RCE provide an [ERC-1404](https://erc1404.org/) equivalence.
 
-### Authentication
+## Authentication
 
 Omnilock introduces a new concept, authentication ( auth ) to CKB lock scripts: an auth is a 21-byte data structure
 containing the following components:
@@ -57,7 +57,7 @@ Depending on the value of the flag, the auth content has the following interpret
   Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
 
 
-### Omnilock Script
+## Omnilock Script
 
 An Omnilock script has the following structure:
 ```text
@@ -81,7 +81,7 @@ among which, the structure of `<Omnilock args>` is as follows:
 | Omnilock args      | N/A        |21-byte auth identity | 21 | signature in OmniLockWitnessLock
 
 
-### Administrator Mode
+## Administrator Mode
 
 When "administrator mode" is enabled, `<32 byte RC cell type ID>` must be present. The RC cell type ID contains the type script hash used by a special
 cell with the same format as [RCE Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338). RC cell
@@ -115,19 +115,20 @@ That means both the administrator and the user can unlock the cell, but the admi
 timelock. The administrator can only unlock existing cells with Administrator mode on. It's still impossible to bypass
 supply limitation or mint new tokens at will.
 
-### Anyone-can-pay Mode
+## Anyone-can-pay Mode
 
 When anyone-can-pay mode is enabled, `<2 bytes minimum ckb/udt in ACP>` must be present. It follows the rules of
-[anyone-can-pay lock](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438). The `<1 byte CKByte minimum>` and `<1
-byte UDT minimum>` are present at the same time.
+[anyone-can-pay
+lock](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md). The `<1 byte
+CKByte minimum>` and `<1 byte UDT minimum>` are present at the same time.
 
-### Time-lock Mode
+## Time-lock Mode
 
 When time-lock mode is enabled, `<8 bytes since for time lock>` must be present. The
 [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91)
 is used. The input parameter since is obtained from `<8 bytes since for time lock>`.
 
-### Supply Mode
+## Supply Mode
 
 When supply mode is enabled, `<32 bytes type script hash>` must be present. The cell data of info cell which is specified
 by type script hash has the following data structure:
@@ -155,7 +156,7 @@ and
 
 All the modes mentioned above can co-exist in Omnilock args in memory layout.
 
-### Omnilock Witness
+## Omnilock Witness
 
 When unlocking an Omnilock, the corresponding witness must be a proper `WitnessArgs` data structure in molecule format. In
 the lock field of the `WitnessArgs`, an `OmniLockWitnessLock` structure must be present as follows:
@@ -187,7 +188,7 @@ If `omni_identity` is missing, the auth included in lock script args will then b
 Once the processing above is successfully done and the auth to be used is confirmed, the flag in the designated auth
 will be checked for the succeeding operations:
 
-* When the auth flag is 0x0, a signature must be present in OmniLockWitnessLock. We will use the signature for secp256k1
+* When the auth flag is 0x0, a signature must be present in `OmniLockWitnessLock`. We will use the signature for secp256k1
   recoverable signature verification. The recovered public key hash using the blake160 algorithm must match the current
   auth content.
 
@@ -195,9 +196,9 @@ will be checked for the succeeding operations:
   script matches the auth content when hashed via blake160.
 
 
-When signature is present, the signature can be used to unlock the cell in anyone-can-pay mode.
+When `signature` is present, the signature can be used to unlock the cell in anyone-can-pay mode.
 
-When preimage is present, if auth flag is:
+When `preimage` is present, if auth flag is:
 * 0xFD (exec): the preimage's memory layout will be as follows:
 ```
 exec code hash (32 bytes)
@@ -222,9 +223,9 @@ It loads the dynamic linking libraries of code hash and hash type, and gets the 
 the entry function to validate the message and signature. The auth returned from the entry function is compared with the
 blake160 hash of the pubkey. If they are the same, then validation succeeds.
 
-### Examples
+## Examples
 
-#### Unlock via owner's public key hash
+### Unlock via owner's public key hash
 ```
 CellDeps:
     <vec> Omnilock Script Cell
@@ -247,7 +248,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via owner's lock script hash
+### Unlock via owner's lock script hash
 
 ```
 CellDeps:
@@ -275,7 +276,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via administrator's public key hash
+### Unlock via administrator's public key hash
 
 ```
 CellDeps:
@@ -301,7 +302,7 @@ Witnesses:
         preimage: <...>
       <...>
 ```
-#### Unlock via administrator's lock script hash (1)
+### Unlock via administrator's lock script hash (1)
 Note: the location of RC AdminList Cell 1 is in cell deps
 
 ```
@@ -333,7 +334,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via administrator's lock script hash (2)
+### Unlock via administrator's lock script hash (2)
 Note: the location of RC AdminList Cell 1 is in input cell
 
 ```
@@ -369,7 +370,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via anyone-can-pay
+### Unlock via anyone-can-pay
 
 ```
 CellDeps:
@@ -395,7 +396,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via dynamic linking
+### Unlock via dynamic linking
 
 ```
 COPY
@@ -420,7 +421,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via exec
+### Unlock via exec
 ```
 COPY
 CellDeps:
@@ -444,7 +445,7 @@ Witnesses:
       <...>
 ```
 
-#### Unlock via owner's public key hash with time lock limit
+### Unlock via owner's public key hash with time lock limit
 ```
 CellDeps:
     <vec> Omnilock Script Cell
@@ -468,9 +469,9 @@ Witnesses:
 ```
 
 
-### Notes
+## Notes
 
-An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/master/c/omni_lock.c) of the omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
+An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/master/c/omni_lock.c) of the Omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
 
 
 - Mirana
