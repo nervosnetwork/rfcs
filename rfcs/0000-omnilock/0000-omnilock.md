@@ -69,23 +69,24 @@ Args: <21 byte auth> <Omnilock args>
 among which, the structure of `<Omnilock args>` is as follows:
 
 ```
-<1 byte Omnilock flags> <32 byte RC cell type ID, optional> <2 bytes minimum ckb/udt in ACP, optional> <8 bytes since for time lock, optional> <32 bytes type script hash for supply, optional>
+<1 byte Omnilock flags> <32 byte AdminList cell Type ID, optional> <2 bytes minimum ckb/udt in ACP, optional> <8 bytes since for time lock, optional> <32 bytes type script hash for supply, optional>
 ```
 
 | Name               | Flags      | Affected Args   |Affected Args Size (byte)|Affected Witness
 | -------------------|------------|-----------------|---------|-------------------------------- 
-| administrator mode | 0b00000001 |	RC cell type ID | 32      | omni_identity/signature in OmniLockWitnessLock
+| administrator mode | 0b00000001 |	AdminList cell Type ID | 32      | omni_identity/signature in OmniLockWitnessLock
 | anyone-can-pay mode| 0b00000010 | minimum ckb/udt in ACP| 2 | N/A
 | time-lock mode     | 0b00000100 | since for timelock| 8     | N/A
 | supply mode        | 0b00001000 |type script hash for supply| 32 | N/A
-| Omnilock args      | N/A        |21-byte auth identity | 21 | signature in OmniLockWitnessLock
+| auth               | N/A        |21-byte auth identity | 21 | signature in OmniLockWitnessLock
 
 
 ## Administrator Mode
 
-When "administrator mode" is enabled, `<32 byte RC cell type ID>` must be present. The RC cell type ID contains the type script hash used by a special
-cell with the same format as [RCE Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338). RC cell
-follows a set of rules and contains whitelists and blacklists. These lists can be used in the [SMT proofs
+When "administrator mode" is enabled, `<32 byte AdminList cell Type ID>` must be present. The AdminList cell contains the
+type script hash used by a special cell with the same format as [RCE
+Cell](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338). The RCE cell follows a set of rules and contains
+whitelists and blacklists. These lists can be used in the [SMT proofs
 scenarios](https://github.com/nervosnetwork/sparse-merkle-tree).
 
 The RCE cells are organized in tree structure illustrated in the following diagram:
@@ -93,12 +94,12 @@ The RCE cells are organized in tree structure illustrated in the following diagr
 ![RCE Cells](./rce_cells.png)
 
 
-The above shows the 4 lists in total. The RC Cell type ID is pointed to the root of tree and represents 4 lists in
+The diagram above shows the 4 lists in total. The AdminList cell Type ID is pointed to the root of tree and represents 4 lists in
 order. If the current `RCRule` uses blacklist, the `auth` identity in `omni_identity` (see below) must not be present in
 the blacklist SMT tree. If the current `RCRule` uses whitelist, the `auth` identity in `omni_identity` must be present
 in the whitelist SMT tree.
 
-The RC cell has the following distinctions compared to RCE Cell:
+The AdminList cell has the following distinctions compared to RCE Cell:
 
 * The cell used here contains auth identities, not lock script hashes.
 
@@ -106,9 +107,8 @@ The RC cell has the following distinctions compared to RCE Cell:
 
 * If the cell contains an RCCellVec structure, there must be at least one RCRule structure using whitelists in the RCCellVec.
 
-To make it easier for reference, we call this cell `RC AdminList Cell`. To make this mode more flexible, when no type
-script hash is found in cell_deps, it continues searching input cells with the same type script hash. Once a cell is
-found, it will be used as `RC AdminList Cell`.
+To make this mode more flexible, when no type script hash is found in `cell_deps`, it continues searching in input cells
+with the same type script hash. Once a cell is found, it will be used as `AdminList Cell`.
 
 If the administrator mode flag is on, Anyone-can-pay mode, Time-lock mode and Supply mode flag will be ignored even set.
 That means both the administrator and the user can unlock the cell, but the administrator is not constrained by
@@ -198,30 +198,40 @@ will be checked for the succeeding operations:
 
 When `signature` is present, the signature can be used to unlock the cell in anyone-can-pay mode.
 
-When `preimage` is present, if auth flag is:
-* 0xFD (exec): the preimage's memory layout will be as follows:
+When `preimage` is present, the auth flag can be 0xFD or 0xFE.
+
+* When auth flag is 0xFD, the `exec` method is used. The preimage's memory layout will be as follows:
 ```
 exec code hash (32 bytes)
 exec hash type (1 byte)
 place (1 byte)
 bounds (8 bytes)
-pubkey hash (20 bytes)
+pubkey blake160 hash (20 bytes)
 ```
-Firstly, message, signature, pubkey hash are encoded into hex strings suggested by [Ideas on chained
-locks](https://talk.nervos.org/t/ideas-on-chained-locks/5887). Then these strings are passed in as arguments in
-[ckb_exec](https://github.com/nervosnetwork/rfcs/pull/237/files). The code finally returned is the same as ckb_exec.
 
-* 0xFE (dynamic linking), the preimage's memory layout will be as follows:
+The `place` and `bounds` are passed in directly to [exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec):
+```C
+int ckb_exec(size_t index, size_t source, size_t place, size_t bounds, int argc, char* argv[]);
+```
+The `index` is located by `exec code hash` and `exec hash type` from `cell_deps`([See usage](https://github.com/nervosnetwork/ckb-c-stdlib/blob/20578dfb092b3b3761df755395e20ec142a83d6e/ckb_syscalls.h#L368)].
+Finally, message, signature, pubkey blake160 hash are encoded into hex strings. Then these hex strings are passed in as `argv`.
+
+* When auth flag is 0xFE, the `dynamic linking` method is used. The preimage's memory layout will be as follows:
 ```
 dynamic library code hash (32 bytes)
 dynamic library hash type (1 byte)
-pubkey hash （20 bytes)
+pubkey blake160 hash （20 bytes)
 ```
 
-It loads the dynamic linking libraries of code hash and hash type, and gets the entry function of
-[validate_signature](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802). Then it calls
-the entry function to validate the message and signature. The auth returned from the entry function is compared with the
-blake160 hash of the pubkey. If they are the same, then validation succeeds.
+It loads the dynamic linking libraries via `code hash` and `hash type`, and gets the entry function named 
+`validate_signature`. The entry function is expected to have following C API:
+```C
+int validate_signature(void *prefilled_data, const uint8_t *signature_buffer,
+    size_t signature_size, const uint8_t *message_buffer, size_t message_size,
+    uint8_t *pubkey_hash, size_t *pubkey_hash_len);
+```
+Then the entry function is called to validate the message and signature. The `pubkey_hash` returned from the entry
+function is compared with the blake160 hash of the pubkey. If they are the same, then validation succeeds.
 
 ## Examples
 
@@ -281,14 +291,14 @@ Witnesses:
 ```
 CellDeps:
     <vec> Omnilock Script Cell
-    <vec> RC AdminList Cell 1
+    <vec> AdminList Cell 1
 Inputs:
     <vec> Cell
         Data: <...>
         Type: <...>
         Lock:
             code_hash: Omnilock
-            args: <flag: 0x0> <pubkey hash 1> <Omnilock flags: 1> <RC AdminList Cell 1's type ID>
+            args: <flag: 0x0> <pubkey hash 1> <Omnilock flags: 1> <AdminList Cell 1's type ID>
     <...>
 Outputs:
     <vec> Any cell
@@ -298,24 +308,24 @@ Witnesses:
         signature: <valid secp256k1 signature for pubkey hash 2>
         omni_identity:
            identity: <flag: 0x0> <pubkey hash 2>
-           proofs: <SMT proofs for the above identity in RC AdminList Cell 1>
+           proofs: <SMT proofs for the above identity in AdminList Cell 1>
         preimage: <...>
       <...>
 ```
 ### Unlock via administrator's lock script hash (1)
-Note: the location of RC AdminList Cell 1 is in cell deps
+Note: the location of AdminList Cell 1 is in cell deps
 
 ```
 CellDeps:
     <vec> Omnilock Script Cell
-    <vec> RC AdminList Cell 1
+    <vec> AdminList Cell 1
 Inputs:
     <vec> Cell
         Data: <...>
         Type: <...>
         Lock:
             code_hash: Omnilock
-            args: <flag: 0> <pubkey hash 1> <Omnilock flags: 1> <RC AdminList Cell 1's type ID>
+            args: <flag: 0> <pubkey hash 1> <Omnilock flags: 1> <AdminList Cell 1's type ID>
     <vec> Cell
         Data: <...>
         Type: <...>
@@ -329,29 +339,29 @@ Witnesses:
         signature: <...>
         omni_identity:
            identity: <flag: 0xFC> <lock hash: 0x1234>
-           proofs: <SMT proofs for the above identity in RC AdminList Cell 1>
+           proofs: <SMT proofs for the above identity in AdminList Cell 1>
         preimage: <...>
       <...>
 ```
 
 ### Unlock via administrator's lock script hash (2)
-Note: the location of RC AdminList Cell 1 is in input cell
+Note: the location of AdminList Cell 1 is in input cell
 
 ```
 CellDeps:
     <vec> Omnilock Script Cell
 
 Inputs:
-    <vec> RC AdminList Cell 1
+    <vec> AdminList Cell 1
         Data: <RCData, union of RCCellVec and RCRule>
-        Type: <its hash is same to RC AdminList Cell 1's type ID>
+        Type: <its hash is same to AdminList Cell 1's type ID>
         Lock: <...>
     <vec> Cell
         Data: <...>
         Type: <...>
         Lock:
             code_hash: Omnilock
-            args: <flag: 0> <pubkey hash 1> <Omnilock flags: 1> <RC AdminList Cell 1's type ID>
+            args: <flag: 0> <pubkey hash 1> <Omnilock flags: 1> <AdminList Cell 1's type ID>
     <vec> Cell
         Data: <...>
         Type: <...>
@@ -365,7 +375,7 @@ Witnesses:
         signature: <...>
         omni_identity:
            identity: <flag: 0xFC> <lock hash: 0x1234>
-           proofs: <SMT proofs for the above identity in RC AdminList Cell 1>
+           proofs: <SMT proofs for the above identity in AdminList Cell 1>
         preimage: <...>
       <...>
 ```
