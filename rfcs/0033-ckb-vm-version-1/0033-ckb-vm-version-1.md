@@ -2,8 +2,7 @@
 Number: "0033"
 Category: Informational
 Status: Draft
-Author: Wanbiao Ye
-Organization: Nervos Foundation
+Author: Wanbiao Ye <mohanson@outlook.com>
 Created: 2021-05-25
 ---
 

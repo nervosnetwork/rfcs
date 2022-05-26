@@ -2,8 +2,7 @@
 Number: "0011"
 Category: Standards Track
 Status: Withdrawn
-Author: Quake Wang
-Organization: Nervos Foundation
+Author: Quake Wang <quake.wang@gmail.com>
 Created: 2018-12-11
 ---
 

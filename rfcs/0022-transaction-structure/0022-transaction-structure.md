@@ -2,8 +2,7 @@
 Number: "0022"
 Category: Informational
 Status: Draft
-Author: Ian Yang
-Organization: Nervos Foundation
+Author: Ian Yang <@doitian>
 Created: 2019-08-26
 ---
 

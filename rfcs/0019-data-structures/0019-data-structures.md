@@ -2,8 +2,7 @@
 Number: "0019"
 Category: Informational
 Status: Withdrawn
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2019-03-26
 ---
 

@@ -2,8 +2,7 @@
 Number: "0023"
 Category: Standards Track
 Status: Active
-Author: Jan Xie, Xuejie Xiao, Ian Yang
-Organization: Nervos Foundation
+Author: Jan Xie <jan@cryptape.com>, Xuejie Xiao <xxuejie@gmail.com>, Ian Yang <@doitian>
 Created: 2019-10-30
 ---
 

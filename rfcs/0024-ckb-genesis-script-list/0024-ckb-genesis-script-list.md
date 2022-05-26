@@ -2,8 +2,7 @@
 Number: "0024"
 Category: Informational
 Status: Final
-Author: Dylan Duan
-Organization: Nervina Labs
+Author: Dylan Duan <duanyytop@gmail.com>
 Created: 2020-05-21
 ---
 
