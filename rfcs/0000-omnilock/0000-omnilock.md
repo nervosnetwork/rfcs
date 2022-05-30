@@ -2,8 +2,7 @@
 Number: "0000"
 Category: Standards Track
 Status: Proposal
-Author: Xu Jiandong
-Organization: Nervos Foundation
+Author: Xu Jiandong <lynndon@gmail.com>
 Created: 2022-05-19
 ---
 
