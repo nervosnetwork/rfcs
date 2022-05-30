@@ -268,11 +268,11 @@ Inputs:
         Type: <...>
         Lock:
             code_hash: Omnilock
-            args: <flag: 0xFC> <lock hash: 0x1234> <Omnilock flags: 0>
+            args: <flag: 0xFC> <lock hash: 0x12...34> <Omnilock flags: 0>
     <vec> Cell
         Data: <...>
         Type: <...>
-        Lock: blake160 for this lock script must be 0x1234
+        Lock: blake160 for this lock script must be 0x12...34
     <...>
 Outputs:
     <vec> Any cell
@@ -328,7 +328,7 @@ Inputs:
     <vec> Cell
         Data: <...>
         Type: <...>
-        Lock: blake160 for this lock script must be 0x1234
+        Lock: blake160 for this lock script must be 0x12...34
     <...>
 Outputs:
     <vec> Any cell
@@ -337,7 +337,7 @@ Witnesses:
       Lock:
         signature: <...>
         omni_identity:
-           identity: <flag: 0xFC> <lock hash: 0x1234>
+           identity: <flag: 0xFC> <lock hash: 0x12...34>
            proofs: <SMT proofs for the above identity in AdminList Cell 1>
         preimage: <...>
       <...>
@@ -364,7 +364,7 @@ Inputs:
     <vec> Cell
         Data: <...>
         Type: <...>
-        Lock: blake160 for this lock script must be 0x1234
+        Lock: blake160 for this lock script must be 0x12...34
     <...>
 Outputs:
     <vec> Any cell
@@ -373,7 +373,7 @@ Witnesses:
       Lock:
         signature: <...>
         omni_identity:
-           identity: <flag: 0xFC> <lock hash: 0x1234>
+           identity: <flag: 0xFC> <lock hash: 0x12...34>
            proofs: <SMT proofs for the above identity in AdminList Cell 1>
         preimage: <...>
       <...>
