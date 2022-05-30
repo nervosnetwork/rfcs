@@ -252,8 +252,8 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <valid secp256k1 signature for pubkey hash 1>
-        omni_identity: <...>
-        preimage: <...>
+        omni_identity: <EMPTY>
+        preimage: <EMPTY>
       <...>
 ```
 
@@ -279,9 +279,9 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <...>
-        omni_identity: <...>
-        preimage: <...>
+        signature: <EMPTY>
+        omni_identity: <EMPTY>
+        preimage: <EMPTY>
       <...>
 ```
 
@@ -308,7 +308,7 @@ Witnesses:
         omni_identity:
            identity: <flag: 0x0> <pubkey hash 2>
            proofs: <SMT proofs for the above identity in AdminList Cell 1>
-        preimage: <...>
+        preimage: <EMPTY>
       <...>
 ```
 ### Unlock via administrator's lock script hash (1)
@@ -335,11 +335,11 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <...>
+        signature: <EMPTY>
         omni_identity:
            identity: <flag: 0xFC> <lock hash: 0x12...34>
            proofs: <SMT proofs for the above identity in AdminList Cell 1>
-        preimage: <...>
+        preimage: <EMPTY>
       <...>
 ```
 
@@ -351,10 +351,6 @@ CellDeps:
     <vec> Omnilock Script Cell
 
 Inputs:
-    <vec> AdminList Cell 1
-        Data: <RCData, union of RCCellVec and RCRule>
-        Type: <its hash is same to AdminList Cell 1's type ID>
-        Lock: <...>
     <vec> Cell
         Data: <...>
         Type: <...>
@@ -365,17 +361,21 @@ Inputs:
         Data: <...>
         Type: <...>
         Lock: blake160 for this lock script must be 0x12...34
+    <vec> AdminList Cell 1
+        Data: <RCData, union of RCCellVec and RCRule>
+        Type: <its hash is same to AdminList Cell 1's type ID>
+        Lock: <...>
     <...>
 Outputs:
     <vec> Any cell
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <...>
+        signature: <EMPTY>
         omni_identity:
            identity: <flag: 0xFC> <lock hash: 0x12...34>
            proofs: <SMT proofs for the above identity in AdminList Cell 1>
-        preimage: <...>
+        preimage: <EMPTY>
       <...>
 ```
 
@@ -399,9 +399,9 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <...>
-        omni_identity: <...>
-        preimage: <...>
+        signature: <EMPTY>
+        omni_identity: <EMPTY>
+        preimage: <EMPTY>
       <...>
 ```
 
@@ -425,7 +425,7 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <valid secp256k1 signature for pubkey hash 1>
-        omni_identity: <...>
+        omni_identity: <EMPTY>
         preimage: <code hash> <hash type> <pubkey hash 1>
       <...>
 ```
@@ -449,7 +449,7 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <valid secp256k1 signature for pubkey hash 1>
-        omni_identity: <...>
+        omni_identity: <EMPTY>
         preimage: <code hash> <hash type> <place> <bounds> <pubkey hash 1>
       <...>
 ```
@@ -472,8 +472,8 @@ Witnesses:
     WitnessArgs structure:
       Lock:
         signature: <valid secp256k1 signature for pubkey hash 1>
-        omni_identity: <...>
-        preimage: <...>
+        omni_identity: <EMPTY>
+        preimage: <EMPTY>
       <...>
 ```
 
