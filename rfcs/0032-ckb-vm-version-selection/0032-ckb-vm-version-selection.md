@@ -2,8 +2,7 @@
 Number: "0032"
 Category: Standards Track
 Status: Proposal
-Author: Ian Yang
-Organization: Nervos Foundation
+Author: Ian Yang <@doitian>
 Created: 2021-04-26
 ---
 
@@ -168,4 +167,4 @@ The Transaction Hash is `0x9110ca9266f89938f09ae6f93cc914b2c856cc842440d56fda6d1
 
 ## Acknowledgments
 
-The authors would like to thank Jan (@janx) and Xuejie (@xxuejie) for their comments and insightful suggestions. The members of the CKB Dev team also helped by participating in the discussion and review. Boyu (@yangby-cryptape) is the primary author of the code changes, and his experiments and feedbacks are essential to complete this document.
+The authors would like to thank Jan Xie and Xuejie Xiao for their comments and insightful suggestions. The members of the CKB Dev team also helped by participating in the discussion and review. Boyu Yang is the primary author of the code changes, and his experiments and feedbacks are essential to complete this document.

@@ -2,8 +2,7 @@
 Number: "0008"
 Category: Standards Track
 Status: Active
-Author: Boyu Yang
-Organization: Nervos Foundation
+Author: Boyu Yang <yangby@cryptape.com>
 Created: 2018-12-17
 ---
 

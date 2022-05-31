@@ -2,8 +2,7 @@
 Number: "0035"
 Category: Standards Track
 Status: Proposal
-Author: Chao Luo, Ian Yang
-Organization: Nervos Foundation
+Author: Chao Luo <@driftluo>, Ian Yang <@doitian>
 Created: 2021-07-01
 ---
 
