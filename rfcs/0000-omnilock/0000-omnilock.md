@@ -408,7 +408,6 @@ Witnesses:
 ### Unlock via dynamic linking
 
 ```
-COPY
 CellDeps:
     <vec> Omnilock Script Cell
 Inputs:
@@ -432,7 +431,6 @@ Witnesses:
 
 ### Unlock via exec
 ```
-COPY
 CellDeps:
     <vec> Omnilock Script Cell
 Inputs:
@@ -476,6 +474,49 @@ Witnesses:
         preimage: <EMPTY>
       <...>
 ```
+
+
+### Unlock with supply mode
+```
+CellDeps:
+    <vec> Omnilock Script Cell
+    <vec> sUDT Script Cell
+Inputs:
+    <vec> Cell
+        Data: <version> <current supply, 2,000>  <max supply: 10,000> <sUDT script hash, H1>
+        Type: <Type ID script with hash H2>
+        Lock:
+            code_hash: Omnilock
+            args: <flag: 0x0> <pubkey hash 1> <Omnilock flags: 8> <type script hash, H2>
+    <... one of the input cell must have owner lock script as lock, to mint>
+
+Outputs:
+    <vec> Cell
+        Data: <version> <current supply, 3,000>  <max supply: 10,000> <sUDT script hash, H1>
+        Type: <Type ID script with hash H2>
+        Lock:
+            code_hash: Omnilock
+            args: <flag: 0x0> <pubkey hash 1> <Omnilock flags: 8> <type script hash, H2>
+    <vec> Minted sUDT Cell
+        Data: <amount, 1,000>
+        Type: <type script hash, H1>
+    <...>
+Witnesses:
+    WitnessArgs structure:
+      Lock:
+        signature: <valid secp256k1 signature for pubkey hash 1>
+        omni_identity: <EMPTY>
+        preimage: <EMPTY>
+      <...>
+```
+Note, Here we combine Omnilock(lock script) and Type ID script(type script) into one cell.
+```
+Type: <Type ID script with hash H2>
+Lock:
+    code_hash: Omnilock
+    args: <flag: 0x0> <pubkey hash 1> <Omnilock flags: 8> <type script hash, H2>
+```
+They can be in different cells.
 
 
 ## Notes
