@@ -2,7 +2,7 @@
 Number: "0015"
 Category: Informational
 Status: Final
-Author: Kevin Wang <@knwang>, Jan Xie <jan@cryptape.com>, Jiasun Li <jli29@gmu.edu>, David Zou <chwzou@gmail.com>
+Author: Kevin Wang <@knwang>, Jan Xie <jan@cryptape.com>, Jiasun Li <@mysteryfigure>, David Zou <chwzou@gmail.com>
 Created: 2019-03-08
 ---
 # Crypto-Economics of the Nervos Common Knowledge Base
