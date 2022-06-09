@@ -528,9 +528,9 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
-| `code_hash` | TODO   |
+| `code_hash` | 0x9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | TODO   |
+| `tx_hash`   | 0xdfdb40f5d229536915f2d5403c66047e162e25dedd70a79ef5164356e1facdc8   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
@@ -550,7 +550,7 @@ Reproducible build is supported to verify the deploy script. To build the deploy
 ```bash
 $ git clone https://github.com/nervosnetwork/ckb-production-scripts
 $ cd ckb-production-scripts
-$ git checkout 716433e
+$ git checkout 716433e2eb6fb862acbe8d858ab7f294d894faf5
 $ git submodule update --init --recursive
 $ make all-via-docker
 ```
