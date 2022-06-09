@@ -429,7 +429,7 @@ Witnesses:
       <...>
 ```
 
-### Unlock via exec
+### Unlock via exec, using ethereum signature
 ```
 CellDeps:
     <vec> Omnilock Script Cell
@@ -446,7 +446,7 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
       Lock:
-        signature: <valid secp256k1 signature for pubkey hash 1>
+        signature: <valid ethereum signature for pubkey hash 1>
         omni_identity: <EMPTY>
         preimage: <code hash> <hash type> <place> <bounds> <pubkey hash 1>
       <...>
