@@ -9,7 +9,7 @@ Created: 2022-05-19
 # Omnilock
 
 Omnilock is a lock script designed for interoperability. It comes with built-in support for verification of transaction signing methods used in
-popular blockchains, such as Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verification
+Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verification
 algorithms can be added in future. This feature makes Omnilock a powerful module in Nervos interoperability 2.0.
 
 Another feature of Omnilock for practitioners is the regulation compliance module (Consider it as interoperability with
