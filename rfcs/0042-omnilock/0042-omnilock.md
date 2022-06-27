@@ -47,7 +47,7 @@ Depending on the value of the flag, the auth content has the following interpret
   to [P2SH in BTC](https://en.bitcoin.it/wiki/Pay_to_script_hash).
 
 * 0xFD: The auth content that represents the blake160 hash of a preimage. The preimage contains
-  [exec](https://github.com/nervosnetwork/rfcs/pull/237) information that is used to delegate signature verification to
+  [exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec) information that is used to delegate signature verification to
   another script via exec.
 
 * 0xFE: The auth content that represents the blake160 hash of a preimage. The preimage contains [dynamic
