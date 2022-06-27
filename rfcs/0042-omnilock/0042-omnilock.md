@@ -20,7 +20,10 @@ which the administrator deems proper. This part has evolved from the [Regulation
 of the asset lock spectrum and lays the foundation of registered assets like Apple stock on CKB. When used together,
 Omnilock and RCE provide an [ERC-1404](https://erc1404.org/) equivalence.
 
-## Authentication
+
+## Omnilock Script
+
+### Authentication
 
 An authentication (auth) is a 21-byte data structure
 containing the following components:
@@ -55,8 +58,7 @@ Depending on the value of the flag, the auth content has the following interpret
   signature verification to the dynamic linking script. The interface described in [Swappable Signature Verification
   Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
 
-
-## Omnilock Script
+### Lock Script
 
 An Omnilock script has the following structure:
 ```text
@@ -80,7 +82,7 @@ among which, the structure of `<Omnilock args>` is as follows:
 | auth               | N/A        |21-byte auth identity | 21 | signature in OmniLockWitnessLock
 
 
-## Administrator Mode
+### Administrator Mode
 
 When "administrator mode" is enabled, `<32 byte AdminList cell Type ID>` must be present. The AdminList cell contains the
 type script hash used by a special cell with the same format as [RCE
@@ -114,20 +116,20 @@ That means both the administrator and the user can unlock the cell, but the admi
 timelock. The administrator can only unlock existing cells with Administrator mode on. It's still impossible to bypass
 supply limitation or mint new tokens at will.
 
-## Anyone-can-pay Mode
+### Anyone-can-pay Mode
 
 When anyone-can-pay mode is enabled, `<2 bytes minimum ckb/udt in ACP>` must be present. It follows the rules of
 [anyone-can-pay
 lock](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md). The `<1 byte
 CKByte minimum>` and `<1 byte UDT minimum>` are present at the same time.
 
-## Time-lock Mode
+### Time-lock Mode
 
 When time-lock mode is enabled, `<8 bytes since for time lock>` must be present. The
 [check_since](https://github.com/nervosnetwork/ckb-system-scripts/blob/63c63e9c96887395fc6990908bcba95476d8aad1/c/common.h#L91)
 is used. The input parameter since is obtained from `<8 bytes since for time lock>`.
 
-## Supply Mode
+### Supply Mode
 
 When supply mode is enabled, `<32 bytes type script hash>` must be present. The cell data of info cell which is specified
 by type script hash has the following data structure:
