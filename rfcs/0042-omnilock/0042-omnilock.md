@@ -22,7 +22,7 @@ Omnilock and RCE provide an [ERC-1404](https://erc1404.org/) equivalence.
 
 ## Authentication
 
-Omnilock introduces a new concept, authentication ( auth ) to CKB lock scripts: an auth is a 21-byte data structure
+An authentication (auth) is a 21-byte data structure
 containing the following components:
 
 ```
