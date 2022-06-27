@@ -12,7 +12,7 @@ Omnilock is a lock script designed for interoperability. It comes with built-in 
 Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verification
 algorithms can be added in future. This feature makes Omnilock a powerful module in Nervos interoperability 2.0.
 
-Another feature of Omnilock for practitioners is the regulation compliance module (Consider it as interoperability with
+Another feature of Omnilock for practitioners is the regulation compliance module which brings interoperability with
 the traditional world). If enabled, the specified administrator can revoke tokens held by users under circumstances
 which the administrator deems proper. This part has evolved from the [Regulation Compliance Extension
 (RCE)](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338) proposal for
