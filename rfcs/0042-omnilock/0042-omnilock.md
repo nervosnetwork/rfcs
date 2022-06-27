@@ -13,7 +13,7 @@ Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verif
 algorithms can be added in future.
 
 Another feature of Omnilock for practitioners is the regulation compliance module which brings interoperability with
-the traditional world). If enabled, the specified administrator can revoke tokens held by users under circumstances
+the traditional world. If enabled, the specified administrator can revoke tokens held by users under circumstances
 which the administrator deems proper. This part has evolved from the [Regulation Compliance Extension
 (RCE)](https://talk.nervos.org/t/rfc-regulation-compliance-extension/5338) proposal for
 [xUDT](https://talk.nervos.org/t/rfc-extensible-udt/5337). This feature provides an option that sits at the other side
