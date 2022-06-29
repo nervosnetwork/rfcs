@@ -159,6 +159,12 @@ All the modes mentioned above can co-exist in Omnilock args in memory layout.
 
 ## Omnilock Witness
 
+In witness, there is a signature field which is signed from a message. The message can be calculated via [blake2b hash function](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md#crypto-primitives) with following data:
+- Transaction hash
+- Witness length and content in same script group covered by inputs, excluding `lock` field which contains signature
+- Other witness length and content that not covered by inputs
+
+
 When unlocking an Omnilock, the corresponding witness must be a proper `WitnessArgs` data structure in molecule format. In
 the lock field of the `WitnessArgs`, an `OmniLockWitnessLock` structure must be present as follows:
 ```
