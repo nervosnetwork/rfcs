@@ -8,8 +8,8 @@ Created: 2022-05-19
 
 # Omnilock
 
-Omnilock is a lock script designed for interoperability. It comes with built-in support for verification of transaction signing methods used in
-Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verification
+Omnilock is a lock script designed for interoperability. It comes with built-in support for verification of transaction
+signing methods used in Bitcoin, Ethereum, EOS, and Dogecoin. Omnilock is also extensible, so more verification
 algorithms can be added in future.
 
 Another feature of Omnilock for practitioners is the regulation compliance module which brings interoperability with
@@ -23,10 +23,47 @@ Omnilock and RCE provide an [ERC-1404](https://erc1404.org/) equivalence.
 
 ## Omnilock Script
 
+### Lock Script
+
+An Omnilock script has the following structure:
+```text
+Code hash: Omnilock script code hash
+Hash type: Omnilock script hash type
+Args: <21 byte auth> <Omnilock args>
+```
+
+
+There are 2 key fields in `args`: `Omnilock args` and `auth`. The `Omnilock args` is to control extra checking. It
+allows different modes to be enabled in the same `Omnilock args`. The `auth` is used for authentication. It is generally
+with pubkey hash in its content. 
+
+The `Omnilock args` can be empty (with `Omnilock flags` = 0) while the `auth` must be present. The functionality of
+Omnilock script with empty `Omnilock args` is almost the same as traditional
+[SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#secp256k1blake160)
+lock script. The Omnilock script can be considered as a traditional lock script with additional checking/modes.
+Different modes can be enabled in different scenarios, depending on requirements.
+
+
+### Omnilock args
+
+The structure of `Omnilock args` is as follows:
+
+```
+<1 byte Omnilock flags> <32 byte AdminList cell Type ID, optional> <2 bytes minimum ckb/udt in ACP, optional> <8 bytes since for time lock, optional> <32 bytes type script hash for supply, optional>
+```
+
+| Name               | Flags      | Affected Args   |Affected Args Size (byte)|Affected Witness
+| -------------------|------------|-----------------|---------|-------------------------------- 
+| administrator mode | 0b00000001 |	AdminList cell Type ID | 32      | omni_identity/signature in OmniLockWitnessLock
+| anyone-can-pay mode| 0b00000010 | minimum ckb/udt in ACP| 2 | N/A
+| time-lock mode     | 0b00000100 | since for timelock| 8     | N/A
+| supply mode        | 0b00001000 |type script hash for supply| 32 | N/A
+
+All the modes will be described later.
+
 ### Authentication
 
-An authentication (auth) is a 21-byte data structure
-containing the following components:
+An authentication (auth) is a 21-byte data structure containing the following components:
 
 ```
 <1 byte flag> <20 bytes auth content>
@@ -57,29 +94,6 @@ Depending on the value of the flag, the auth content has the following interpret
   linking](https://docs.nervos.org/docs/labs/capsule-dynamic-loading-tutorial/) information that is used to delegate
   signature verification to the dynamic linking script. The interface described in [Swappable Signature Verification
   Protocol Spec](https://talk.nervos.org/t/rfc-swappable-signature-verification-protocol-spec/4802) is used here.
-
-### Lock Script
-
-An Omnilock script has the following structure:
-```text
-Code hash: Omnilock script code hash
-Hash type: Omnilock script hash type
-Args: <21 byte auth> <Omnilock args>
-```
-
-among which, the structure of `<Omnilock args>` is as follows:
-
-```
-<1 byte Omnilock flags> <32 byte AdminList cell Type ID, optional> <2 bytes minimum ckb/udt in ACP, optional> <8 bytes since for time lock, optional> <32 bytes type script hash for supply, optional>
-```
-
-| Name               | Flags      | Affected Args   |Affected Args Size (byte)|Affected Witness
-| -------------------|------------|-----------------|---------|-------------------------------- 
-| administrator mode | 0b00000001 |	AdminList cell Type ID | 32      | omni_identity/signature in OmniLockWitnessLock
-| anyone-can-pay mode| 0b00000010 | minimum ckb/udt in ACP| 2 | N/A
-| time-lock mode     | 0b00000100 | since for timelock| 8     | N/A
-| supply mode        | 0b00001000 |type script hash for supply| 32 | N/A
-| auth               | N/A        |21-byte auth identity | 21 | signature in OmniLockWitnessLock
 
 
 ### Administrator Mode
