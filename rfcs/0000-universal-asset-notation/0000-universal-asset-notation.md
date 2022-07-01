@@ -65,7 +65,7 @@ BNB.ckb|fb.bsc
 ETH.ckb|ab.eth
 
 // ETH crossed from the Ethereum chain to the Godwoken chain via Forcebridge and Godwoken bridge
-ETH.gw|gw.ckb|fb.eth
+ETH.gw|gb.ckb|fb.eth
 ```
 
 ## Display Name
