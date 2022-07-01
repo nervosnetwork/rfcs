@@ -102,7 +102,7 @@ BNB (via Forcebridge from BSC)
 
 // ETH crossed from the Ethereum chain to the CKB chain via Anotherbridge
 // UAN
-ETH.ckb|eth.ab
+ETH.ckb|ab.eth
 // Display Name
 ETH (via Anotherbridge from ETH)
 
