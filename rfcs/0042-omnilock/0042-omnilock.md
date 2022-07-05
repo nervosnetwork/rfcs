@@ -37,8 +37,8 @@ There are 2 key fields in `args`: `Omnilock args` and `auth`. The `Omnilock args
 allows different modes to be enabled in the same `Omnilock args`. The `auth` is used for authentication. It is generally
 with pubkey hash in its content. 
 
-The `Omnilock args` can be empty (with `Omnilock flags` = 0) while the `auth` must be present. The functionality of
-Omnilock script with empty `Omnilock args` is almost the same as traditional
+The `Omnilock args` can be without mode (with `Omnilock flags` = 0) while the `auth` must be present. The functionality
+of Omnilock script without mode is almost the same as traditional
 [SECP256K1/blake160](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#secp256k1blake160)
 lock script. The Omnilock script can be considered as a traditional lock script with additional checking/modes.
 Different modes can be enabled in different scenarios, depending on requirements.
