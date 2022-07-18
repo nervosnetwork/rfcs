@@ -1,10 +1,9 @@
 ---
 Number: "0000"
-Category: <TBD>
-Status: <TBD>
-Author: <TBD>
-Organization: <TBD>
-Created: <TBD>
+Category: Informational | Standards
+Status: Draft (for Informational) | Proposal (for Standards)
+Author: Your Name <your@email.com or @twitter_handle or @github_handle>
+Created: YYYY-MM-DD
 ---
 
 # Put RFC Title Here

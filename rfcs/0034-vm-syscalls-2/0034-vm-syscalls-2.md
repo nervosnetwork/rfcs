@@ -2,8 +2,7 @@
 Number: "0034"
 Category: Standards Track
 Status: Proposal
-Author: Wanbiao Ye
-Organization: Nervos Foundation
+Author: Wanbiao Ye <mohanson@outlook.com>
 Created: 2021-05-25
 ---
 

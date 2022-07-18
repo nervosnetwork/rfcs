@@ -2,8 +2,7 @@
 Number: "0021"
 Category: Standards Track
 Status: Active
-Author: Cipher Wang, Axel Wan
-Organization: Nervos Foundation, Cryptape
+Author: Cipher Wang <cipher@nervina.io>, Axel Wan <wancencen@cryptape.com>
 Created: 2019-01-20
 ---
 

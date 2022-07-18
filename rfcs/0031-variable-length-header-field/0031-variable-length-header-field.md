@@ -2,8 +2,7 @@
 Number: "0031"
 Category: Standards Track
 Status: Proposal
-Author: Ian Yang
-Organization: Nervos Foundation
+Author: Ian Yang <@doitian>
 Created: 2021-02-07
 ---
 

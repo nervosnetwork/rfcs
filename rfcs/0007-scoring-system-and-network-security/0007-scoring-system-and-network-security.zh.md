@@ -2,8 +2,7 @@
 Number: "0007"
 Category: Standards Track
 Status: Withdrawn
-Author: Jinyang Jiang
-Organization: Nervos Foundation
+Author: Jinyang Jiang <@jjyr>
 Created: 2018-10-02
 ---
 

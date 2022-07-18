@@ -2,8 +2,7 @@
 Number: "0014"
 Category: Standards Track
 Status: Active
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2019-01-04
 ---
 

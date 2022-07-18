@@ -2,8 +2,7 @@
 Number: "0017"
 Category: Standards Track
 Status: Proposal
-Author: Jinyang Jiang
-Organization: Nervos Foundation
+Author: Jinyang Jiang <@jjyr>
 Created: 2019-03-11
 ---
 

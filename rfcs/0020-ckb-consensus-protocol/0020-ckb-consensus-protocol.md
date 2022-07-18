@@ -2,8 +2,7 @@
 Number: "0020"
 Category: Informational
 Status: Draft
-Author: Ren Zhang
-Organization: Nervos Foundation
+Author: Ren Zhang <@nirenzhang>
 Created: 2019-6-19
 ---
 # CKB Consensus Protocol

@@ -2,8 +2,7 @@
 Number: "0010"
 Category: Standards Track
 Status: Active
-Author: Alan Szepieniec
-Organization: Nervos Foundation
+Author: Alan Szepieniec <alan.szepieniec@gmail.com>
 Created: 2019-07-18
 ---
 
