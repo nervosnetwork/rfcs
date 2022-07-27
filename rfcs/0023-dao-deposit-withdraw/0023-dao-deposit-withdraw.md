@@ -409,4 +409,3 @@ Now the maximum withdrawable capacity can be calculated:
 ## Gotchas
 
 * Nervos DAO only supports *absolute epoch number* as since value in the withdrawal process. If you are using a lock that supports lock period, such as the system included [multi-sign script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c), please make sure to ONLY use *absolute epoch number* as lock period. Otherwise, the locked Nervos DAO cell cannot be spent.
-* ~~CKB has a maturity constraint on referencing header: a block header can only be referenced in a cell that is committed at least 4 epochs after the referenced block header.~~ This no longer holds true after the activation of [RFC 0036 Remove Header Deps Immature Rule](../0036-remove-header-deps-immature-rule/0036-remove-header-deps-immature-rule.md), the transaction can use any existing blocks in the chain as the header dep.
