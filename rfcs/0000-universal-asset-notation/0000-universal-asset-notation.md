@@ -108,7 +108,7 @@ ETH (via Anotherbridge from ETH)
 
 // ETH crossed from the Ethereum chain to the Godwoken chain via Force Bridge and Godwoken Bridge
 // UAN
-ETH.gw|gw.ckb|fb.eth
+ETH.gw|gb.ckb|fb.eth
 // Display Name
 ETH (via Forcebridge from ETH)
 ```
