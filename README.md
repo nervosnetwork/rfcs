@@ -83,7 +83,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
 | [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
 | [37](rfcs/0037-ckb2021) | [CKB Consensus Change (Edition CKB2021)](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
-
+| [42](rfcs/0042-omnilock) | [Omnilock](rfcs/0042-omnilock/0042-omnilock.md) | Xu Jiandong | Standards Track | Proposal
 ## License
 
 This repository is being licensed under terms of [MIT license](LICENSE).

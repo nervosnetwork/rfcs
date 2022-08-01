@@ -2,8 +2,7 @@
 Number: "0003"
 Category: Informational
 Status: Final
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2018-08-01
 ---
 

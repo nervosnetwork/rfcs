@@ -2,8 +2,7 @@
 Number: "0023"
 Category: Standards Track
 Status: Active
-Author: Jan Xie, Xuejie Xiao, Ian Yang
-Organization: Nervos Foundation
+Author: Jan Xie <jan@cryptape.com>, Xuejie Xiao <xxuejie@gmail.com>, Ian Yang <@doitian>
 Created: 2019-10-30
 ---
 
@@ -410,6 +409,3 @@ Now the maximum withdrawable capacity can be calculated:
 ## Gotchas
 
 * Nervos DAO only supports *absolute epoch number* as since value in the withdrawal process. If you are using a lock that supports lock period, such as the system included [multi-sign script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c), please make sure to ONLY use *absolute epoch number* as lock period. Otherwise, the locked Nervos DAO cell cannot be spent.
-* CKB has a maturity constraint on referencing header: a block header can only be referenced in a cell that is committed at least 4 epochs after the referenced block header. This constraint limits Nervos DAO withdrawal in the following ways:
-   - Phase 1 withdrawal transaction can only be committed 4 epochs after the fund is originally deposited.
-   - Phase 2 withdrawal transaction can only be committed 4 epochs after phase 1 withdrawal transaction is committed.

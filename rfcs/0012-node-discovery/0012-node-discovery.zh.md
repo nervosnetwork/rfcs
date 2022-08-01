@@ -2,8 +2,7 @@
 Number: "0012"
 Category: Standards Track
 Status: Active
-Author: Linfeng Qian, JinYang Jiang
-Organization: Nervos Foundation
+Author: Linfeng Qian <@thewawar>, JinYang Jiang <@jjyr>
 Created: 2018-11-28
 ---
 
