@@ -143,7 +143,7 @@ For more information regarding how `Script` structure is implemented please refe
 | ----------------- | -------------------------------- | ------------------------------------------------------------ |
 | `version`         | uint32                           | **The version of the transaction.** It‘s used to distinguish transactions when there's a fork happened to the blockchain system. |
 | `cell_deps`       | [`CellDep`]                      | **An array of `outpoint` pointing to the cells that are dependencies of this transaction.** Only live cells can be listed here. The cells listed are read-only. |
-| `header_deps`     | [`H256(hash)`]                   | **An array of `H256` hashes pointing to block headers that are dependencies of this transaction.** Notice maturity rules apply here: a transaction can only reference a header that is at least 4 epochs old. |
+| `header_deps`     | [`H256(hash)`]                   | **An array of `H256` hashes pointing to block headers that are dependencies of this transaction.**   |
 | `inputs`          | [`CellInput`]                    | **An array of referenced cell inputs.** See below for explanations of underlying data structure |
 | `outputs`         | [`Cells`], see above for details | **An array of cells that are used as outputs**, i.e. the newly generated cells. These are the cells may be used as inputs for other transactions. Each of the Cell has the same structure to [the Cell section](#cell) above. |
 | `outputs_data`    | [`Bytes`]                        | **An array of cell data for each cell output.** The actual data are kept separated from outputs for the ease of CKB script handling and for the possibility of future optimizations. |
@@ -306,4 +306,3 @@ More information about the Transaction of Nervos CKB can be found in [whitepaper
 | ----------------------- | ------------- | ------------------------------------------------------------ |
 | `header`                | `Header`      | **The block header of the uncle block.** The inner structure of this part is same as [the Header structure](#header) above. |
 | `proposals`             | [`string`]    | **An array of short transaction IDs of the proposed transactions in the uncle block.** |
-
