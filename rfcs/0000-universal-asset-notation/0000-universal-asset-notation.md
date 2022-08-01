@@ -19,7 +19,7 @@ The interoperation between Nervos Network and other crypto or traditional econom
 
 ## Definition
 
-The Universal Asset Notation (UAN) consists of asset notation and route notation, which in turn are build upon asset symbol, chain symbol and bridge symbol.
+The Universal Asset Notation (UAN) consists of asset notation and route notation, which in turn are built upon asset symbol, chain symbol and bridge symbol.
 
 UAN Definition (in [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)):
 
