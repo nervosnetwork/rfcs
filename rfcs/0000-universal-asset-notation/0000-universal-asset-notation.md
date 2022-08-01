@@ -2,8 +2,7 @@
 Number: ""
 Category: Standards Track
 Status: Proposal
-Author: Jan Xie, Jordan Mack, Wenchao Hu
-Organization: Nervos Foundation, Cryptape
+Author: Jan Xie <jan@cryptape.com>, Jordan Mack <jordan.mack@brilliantnotion.com>, Wenchao Hu <zjuhwc@gmail.com>
 Created: 2022-04-22
 ---
 
