@@ -43,7 +43,7 @@ UAN Definition (in [BNF](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form)
 - `<path>` is a pair of bridge symbol and chain symbol, connected by a single dot `.`.
 - `<asset-symbol>` is a upper-case abbreviation of the asset, e.g. `BTC` for bitcoin, `CKB` for CKByte.
 - `<chain-symbol>` is a lower-case abbreviation of the source chain where the asset resided before came through the path, e.g. `eth` for the Ethereum chain, `ckb` for the CKB chain. Note the source chain may be different from the issuance chain of the asset.
-- `<bridge-symbol>` is a lower-case abbreviation of the bridge through which the asset came, e.g. `fb` for assets moved by Forcebridge.
+- `<bridge-symbol>` is a lower-case abbreviation of the bridge through which the asset came, e.g. `fb` for assets moved by Force Bridge.
 
 Examples:
 
@@ -54,10 +54,10 @@ CKB.ckb
 // CKByte on the Godwoken chain
 CKB.gw
 
-// WBTC crossed from the Ethereum chain to the CKB chain via Forcebridge
+// WBTC crossed from the Ethereum chain to the CKB chain via Force Bridge
 WBTC.ckb|fb.eth
 
-// BNB crossed from the BSC chain to the CKB chain via Forcebridge
+// BNB crossed from the BSC chain to the CKB chain via Force Bridge
 BNB.ckb|fb.bsc
 
 // ETH crossed from the Ethereum chain to the CKB chain via Anotherbridge
@@ -87,17 +87,17 @@ Where `<bridge-name>` is the full name of the bridge in the rightmost path of ro
 Examples:
 
 ```
-// WBTC crossed from the Ethereum chain to the CKB chain via Forcebridge
+// WBTC crossed from the Ethereum chain to the CKB chain via Force Bridge
 // UAN
 WBTC.ckb|fb.eth
 // Display Name
-WBTC (via Forcebridge from ETH)
+WBTC (via Force Bridge from ETH)
 
-// BNB crossed from the BSC chain to the CKB chain via Forcebridge
+// BNB crossed from the BSC chain to the CKB chain via Force Bridge
 // UAN
 BNB.ckb|fb.bsc
 // Display Name
-BNB (via Forcebridge from BSC)
+BNB (via Force Bridge from BSC)
 
 // ETH crossed from the Ethereum chain to the CKB chain via Anotherbridge
 // UAN
@@ -109,9 +109,9 @@ ETH (via Anotherbridge from ETH)
 // UAN
 ETH.gw|gb.ckb|fb.eth
 // Display Name
-ETH (via Forcebridge from ETH)
+ETH (via Force Bridge from ETH)
 ```
 
 ## References
 
-- UAN is an extension of the convention used in [Forcebridge Asset List](https://github.com/nervosnetwork/force-bridge/blob/fb769301dbc3beddbdeabec23b764305c1b1b937/configs/all-bridged-tokens.json) with modifications.
+- UAN is an extension of the convention used in [Force Bridge Asset List](https://github.com/nervosnetwork/force-bridge/blob/e2f21091f768d8e345fee080a2906262e354bd1d/configs/all-bridged-tokens.json) with modifications.
