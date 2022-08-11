@@ -48,7 +48,7 @@ The `since` is a `u64` (unsigned 64-bit integer) type field in the transaction i
 
 A CKB node must iterate each input to check whether the cell is mature:
 
-* The cell is mature when the `since` is 0.
+* An input is always due if its `since` is 0.
 * If the relative flag is `0` (absolute), the cell is mature when the destruction time is larger than or equal to the `value`.
 * If the relative flag is `1` (relative), the cell is mature when the destruction time is larger than or equal to the creation time plus the `value`.
 * Otherwise, the cell is immature.
