@@ -22,7 +22,7 @@ Transaction input adds a new field `since`, which prevents the transaction to be
 
 There are two important moments for a cell, the time of creation and destruction. The cell is created when the transaction producing it as an output has been committed into a block in the chain. And the destruction time is when the transaction consuming the cell as an input has been committed.
 
-The field `since` specifies the minimal destruction time of the input cell. The input is said premature when the `since` field is present and the minimal destruction time has not arrived yet. A transaction is premature when any of its input is premature. The block should not commit any premature transactions.
+The field `since` specifies the earliest destruction time of the input cell. An input is said premature when its `since` field is present and the specified earliest destruction time has not arrived yet. A transaction is premature if any of its input is premature. A block should not commit any premature transactions.
 
 ![](cell-lifecycle.jpg)
 
