@@ -12,21 +12,27 @@ Created: 2019-03-11
 
 ## Abstract
 
-This RFC suggests adding a new consensus rule to prevent a cell to be spent before a certain time.
-
-The time can be specified absolutely or relative to the cell committing time, and it can be measured using block number, epoch number with fraction, or block timestamp.
-
-## Summary
-
-Transaction input adds a new field `since`, which prevents the transaction to be mined before an absolute or relative time.
-
-There are two important moments for a cell, the time of creation and destruction. The cell is created when the transaction producing it as an output has been committed into a block in the chain. And the destruction time is when the transaction consuming the cell as an input has been committed.
-
-The field `since` specifies the earliest destruction time of the input cell. An input is said premature when its `since` field is present and the specified earliest destruction time has not arrived yet. A transaction is premature if any of its input is premature. A block should not commit any premature transactions.
-
-![](cell-lifecycle.jpg)
+This RFC suggests adding a consensus to restrict committing a transaction before a certain time. The time comes from the block headers in the chain via block number, epoch number with fraction, or block timestamp.
 
 ## Specification
+
+Every transaction input has a field `since`, which optionally specifies a time absolutely or relative to the input cell commitment time. When `since` is present, it adds a time lock to the transaction. The time lock prevents committing the transaction until the derived time reaches the preset time.
+
+A transaction may have multiple time locks and is only ready for committing after all the time locks have expired.
+
+### Transaction Commitment
+
+CKB adopts Two-Step Transaction Confirmation (see [RFC20][]). The time lock imposed by the `since` field prevents a transaction entering the block commitment zone but does not affect when the transaction is proposed.
+
+[RFC20]: ../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#two-step-transaction-confirmation
+
+The term "commit" can be used on a transaction or a cell. When a block commits a transaction, it means the block has included the transaction in the commitment zone. The block also has commit all the cells that occur as outputs of transactions in the commitment zone.
+
+When `since` uses relative time, the starting time is derived from the block that has commit the input cell.
+
+### Derived Time
+
+TODO: how to derive time for cell commitment time and current time.
 
 ### Encoding
 
