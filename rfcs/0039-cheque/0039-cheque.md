@@ -9,7 +9,9 @@ Created: 2022-01-27
 
 # Cheque Lock
 
-This RFC describes a new lock script for CKB that can send SUDT([Simple UDT](../0025-simple-udt/0025-simple-udt.md)) to anyone that does not have an ACP([any-one-pay](../0026-anyone-can-pay/0026-anyone-can-pay.md)) cell for the SUDT. Previously, the receiver needs to create an ACP cell for the SUDT, and the receiver cannot actually know in advance that someone is going to send a new SUDT to him/her, for now the receiver can only be notified via an off-chain notification that an ACP cell is needed. Or the sender needs to give the receiver an ACP cell of the SUDT when sending the SUDT. These two ways will cause a problem that the receiver cannot receive the SUDT conveniently or the sender needs to pay additional costs.
+This RFC describes a new lock script for CKB that can send SUDT([Simple UDT](../0025-simple-udt/0025-simple-udt.md)), mNFT([Multi-purpose NFT: An NFT standard on CKB](https://talk.nervos.org/t/rfc-multi-purpose-nft-draft-spec/5434)) and other custom assets defined by type scripts to anyone that does not have an ACP([any-one-pay](../0026-anyone-can-pay/0026-anyone-can-pay.md)) cell for custom assets. Note that not all custom assets are available, depending on type scripts. For the convenience of description, the following will use SUDT as an example to refer to custom assets.
+
+Previously, the receiver needs to create an ACP cell for the SUDT, and the receiver cannot actually know in advance that someone is going to send a new SUDT to him/her, for now the receiver can only be notified via an off-chain notification that an ACP cell is needed. Or the sender needs to give the receiver an ACP cell of the SUDT when sending the SUDT. These two ways will cause a problem that the receiver cannot receive the SUDT conveniently or the sender needs to pay additional costs.
 
 Here we try to solve the problem by introducing a new cheque lock script, which can be claimed not only by the receiver who does not have an ACP cell to receive the SUDT, but also withdrawing by the sender after lock-up period(6 epochs). When the sender wants to send the SUDT to a receiver who does not have an ACP cell for the SUDT, he/she can transfer the SUDT to a cheque cell and then wait for the receiver to claim it. The receiver can get the cheque cell information from the chain and then decide whether to create a cell to receive the SUDT so that the receiver can receive the SUDT without creating an ACP cell in advance and the sender doesn’t need to pay the additional costs.
 
@@ -133,7 +135,7 @@ Inputs:
  Witnesses :
       < valid signature for receiver public key hash >
       < valid signature for another receiver public key hash >
-      
+
 ```
 
 When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender empty cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
