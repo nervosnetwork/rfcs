@@ -6,193 +6,145 @@ Author: Jinyang Jiang <@jjyr>, Ian Yang <@doitian>
 Created: 2019-03-11
 ---
 
-# Transaction valid since
+# Transaction Since Precondition
 
 <!-- Diagrams are created in LucidChart: https://lucid.app/documents/view/d756089a-2388-4ea4-b61a-3943cbe2620a -->
 
 ## Abstract
 
-This RFC suggests adding a consensus to restrict committing a transaction before a certain time. The time comes from the block headers in the chain via block number, epoch number with fraction, or block timestamp.
+This RFC suggests adding a consensus rule to restrict committing a transaction before a certain time. The time comes from the block headers in the chain via block number, epoch number with fraction, or block timestamp.
+
+## Summary
+
+The new consensus rule allows the transaction input to optionally specify a since precondition. CKB nodes must verify the transactions in the commitment zone of a block that all of the input since preconditions are fulfilled.
+
+The since precondition locates a unique block in any given chain if it is long enough. The precondition is effective before the block, and is fulfilled since the block.
+
+There are three metrics to specify the since precondition:
+
+1. via block number,
+2. epoch number with fraction,
+3. or the median timestamp of the preceding 37 blocks.
+
+All of them strictly increase along the block number.
+
+The precondition is absolute or relative. A relative precondition depends on which block has commit the input.
+
+In conclusion, the since precondition is a per input threshold value with a specific metric, either absolute or relative to the input commitment block. The precondition prevents a block committing the transaction if the derived metric value from the block has not reached the since precondition threshold yet. 
 
 ## Specification
 
-Every transaction input has a field `since`, which optionally specifies a time absolutely or relative to the input cell commitment time. When `since` is present, it adds a time lock to the transaction. The time lock prevents committing the transaction until the derived time reaches the preset time.
+### How to Specify the Since Precondition
 
-A transaction may have multiple time locks and is only ready for committing after all the time locks have expired.
+The per input field `since` is an unsigned 64-bit integer which encodes the since precondition.[^1] The value 0 indicates that the precondition is absent. Otherwise, the highest 8 bits of the `since` field is the `flags`, and the remaining `56` bits represent the `value`.
 
-### Transaction Commitment
-
-CKB adopts Two-Step Transaction Confirmation (see [RFC20][]). The time lock imposed by the `since` field prevents a transaction entering the block commitment zone but does not affect when the transaction is proposed.
-
-[RFC20]: ../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#two-step-transaction-confirmation
-
-The term "commit" can be used on a transaction or a cell. When a block commits a transaction, it means the block has included the transaction in the commitment zone. The block also has commit all the cells that occur as outputs of transactions in the commitment zone.
-
-When `since` uses relative time, the starting time is derived from the block that has commit the input cell.
-
-### Derived Time
-
-TODO: how to derive time for cell commitment time and current time.
-
-### Encoding
-
-The `since` is a `u64` (unsigned 64-bit integer) type field in the transaction input. The highest 8 bits of the `since` field is the `flags`. The remaining `56` bits represent the `value`.
+[^1]: See [RFC22][../rfcs/0022-transaction-structure/0022-transaction-structure.md] for the full transaction structure.
 
 ![](since-encoding.jpg)
 
 * The highest bit is the relative flag.
-    * `0`: The `value` is absolute that the cell destruction time should not be earlier than `value`.
-    * `1`: The `value` is relative that the cell destruction time should not be earlier than cell creation time plus `value`.
-* The following two bits choose the time metric used to represent the creation time, destruction time, and the `value`.
+    * `0`: The `value` is absolute
+    * `1`: The `value` is relative
+* The following two bits choose which metric to specify the precodition. It is also the unit of the `value`.
     * `00`: Use block number.
     * `01`: Use epoch number with fraction.
-    * `10`: Use the timestamp median of previous block headers.
+    * `10`: Use the timestamp median of previous 37 block headers.
     * `11`: Invalid. Transaction should not set metric flag to `11`.
 * The next 5 bits are reserved for future extension. They must be set to all zeros now.
 
-### Since Verification
+How the `value` is encoded depends on the metric in use.
 
-A CKB node must iterate each input to check whether the cell is mature:
+For block number (`00`) and timestamp median (`10`), `value` is a 56-bit unsigned integer.
 
-* An input is always due if its `since` is 0.
-* If the relative flag is `0` (absolute), the cell is mature when the destruction time is larger than or equal to the `value`.
-* If the relative flag is `1` (relative), the cell is mature when the destruction time is larger than or equal to the creation time plus the `value`.
-* Otherwise, the cell is immature.
+When the metric flag is `01`, `value` represents a rational number `E + I / L`, where
 
-The transaction verification fails when any of its input is immature.
+* `E` has 3 bytes from the lowest bit 0 to 23.
+* `I` has 2 bytes from the bit 24 to 39.
+* `L` has 2 bytes from the bit 40 to 55.
+
+Following table shows how to decode different parts of `since` using bit operations right shift (`>>`), left shift (`<<`), and bit and (`&`).
+
+| Name | Bit Operation |
+| ---- | ------------- |
+| relative flag | `since >> 63` |
+| metric flag   | `(since >> 61) & 3` |
+| value         | `since & ((1 << 56) - 1)` |
+| `E` in value  | `since & ((1 << 24) - 1)` |
+| `I` in value  | `(since >> 24) & ((1 << 16) - 1)` |
+| `L` in value  | `(since >> 40) & ((1 << 16) - 1)` |
+
+### How to Verify the Since Precondition
+
+There are three major steps to verify the since precondition:
+
+1. Decode: Decode since and verify the format is valid.
+2. Compute Threshold: Determine the commitment block and compute the threshold for relative since precondition.
+3. Derive and Compare: Derive the target value from the block that is going to commit the transaction. Compare it with threshold to check whether the precondition is fulfilled.
+
+Following is the flow chart of the verification process.
 
 ![](since-verification.jpg)
 
-### Time Metrics
+#### Step 1. Decode
 
-The metric flag determines how to obtain the cell creation and destruction time, and how to interpret the `value`.
+> Decode since and verify the format is valid.
 
-Assume that the `S` is block in which the transaction creating the cell is committed, and `T` is the block where the current transaction is committed. If the transaction is still in the memory pool, `T` is the next to be mined block. `T - i` means the block which block number is  block `T`'s block number minus `i`.
+If the since field is zero, skip current input since precondition verification. Otherwise, verify that the format is valid:
 
-| Metric | Creation Time | Destruction Time | Value |
-| ------ | ------------- | ---------------- | ----- |
-| 00     | block number of S | block number of T | Number of blocks in integer |
-| 01     | epoch number with fraction of S | epoch number with fraction of T | number of epochs in fraction |
-| 10     | timestamp median of \[ S - 37, S - 1 \] | timestamp median of \[ T - 37, T - 1 \] | Number of milliseconds |
+1. The metric flag should not be `11`.
+2. The reserved flags must be all zeros.
+3. When the metric flag is epoch number with fraction (`01`), `I` must be either less than `L`, or they are both zeros. If the latter is the case, the since value is `E + 0 / 1`.
 
-#### Block Number
+Continue the next two steps when the since field format is valid.
 
-When the metric flag is `00` (Block number):
+#### Step 2. Compute Threshold
 
-* The creation time is the block number of `S`.
-* The destruction time is the block number of `T`.
-* The `value` is a unsigned integer. It is a block number when the relative flag is `0` (absolute), and is the number of blocks when of relative flag is `1` (relative).
+> Determine the commitment block and compute the threshold for relative since precondition.
 
-#### Epoch Number With Fraction
+The threshold value is the decoded since value for the absolute precondition.
 
-When the metric flag is `01` (Epoch number with fraction):
+The relative precondition threshold depends on the commitment block of the current transaction input.
 
-* The creation time is a rational number `E(S) + I(S) / L(S)`, where
-    * `E(S)` is the epoch number of the epoch that the block `S` is in.
-    * `I(S)` is the block index of `S` in the epoch. The index of the first block in an epoch is 0.
-    * `L(S)` is the epoch length.
-* The destruction time is a rational number `E(T) + I(T) / L(T)`, where
-    * `E(T)` is the epoch number of the epoch that the block `T` is in.
-    * `I(T)` is the block index of `T` in its epoch.
-    * `L(T)` is the epoch length.
-* The `value` is a encoded rational number `E + I / L` the same as the `epoch` field in the block header, where
+The term "commit" comes from the two step transaction confirmation protocol in [RFC20][]. A block commits a transaction by including it in the commitment zone of the block body. The commitment block of a transaction is the block which has commit the transaction.
 
-    ![](../0027-block-structure/epoch.png)
+[RFC20]: ../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#two-step-transaction-confirmation
 
-    * `E` is the epoch number part, the three bytes from the lowest bit 0 to 23.
-    * `I` is the block index in the epoch part, the two bytes from the bit 24 to 39.
-    * `L` is the epoch length part, the two bytes from the bit 40 to 55. There's an **exception** here, `L` is at least 1. If `L` is zero, the whole rational number is considered as `E + 0 / 1`.
+In CKB, the transaction input is a reference to an output of another transaction. The commitment block of a transaction input is the commitment block of the transaction producing the referenced output.
 
-**Specially**, when the relative flag is `0` (absolute), the `value` is normalized first. But when the relative flag is `1` (relative), the `value` is interpreted as it is and is added to the creation time directly.
+![](commitment-block.jpg)
 
-**Absolute Epoch With Fraction Value Normalization**: If the relative flag is `0` (absolute)　and `I` is larger than or equal to `L`, the `value` is normalized to `E + 1 + 0 / 1`.
+For example, in the diagram above, the block B is the commitment block of input 0 of the transaction X.
 
-#### Block Timestamp
+The base value is from the input commitment block.
 
-When the metric flag is `10` (Timestamp median of previous block headers):
+1. If the metric flag is `00` (block number), the base value is the block number of the commitment block.
+2. If the metric flag is `01` (epoch number with fraction), the base value is the epoch field in the commitment block header, which is also a rational number.
+3. If the metric flag is `10` (timestamp), the base value is the timestamp field in the commitment block header.
 
-* The creation time is the timestamp median of the 37 blocks from `S - 37` to `S - 1`.
-* The destruction time is the timestamp median of the 37 blocks from `T - 37` to `T - 1`.
-* The `value` is the number of milliseconds since the Unix Epoch when the relative flag is `0` (absolute) or number of milliseconds when it is `1` (relative).
+The threshold value of a relative precondition equals to the base value plus the decoded since value.
 
-## Test Vectors
+The diagram below is a summary of the threshold value computation process.
 
-### Encoding
+![](threshold-value.jpg)
 
-* `0x0000_0000_0000_0000`
-    Valid, it represents that the since is absent.
+#### Step 3. Derive and Compare
 
+> Derive the target value from the block that is going to commit the transaction. Compare it with threshold to check whether the precondition is fulfilled.
 
-* `0x0000_0000_0000_3039`
-    Valid, where
-    * The relative flag is 0 (absolute) = `since >> 63`,
-    * The metric flag is 00 in binary (block number) = `(since >> 61) & 3`,
-    * The value is 12345 = `since & ((1 << 56) - 1)`.
+This section will refer to the block that is going to commit the transaction as the target block.
 
-    It requires the minimal destruction time to be the block number 12345.
+The target block of a commit transaction is the block which has commit the transaction.
 
+The target block of a transaction that is pending in the network or the memory pool, is the next to-be-mined block.
 
-* `0x2000_0000_0000_0400`
-    Valid, where
-    * The relative flag is 0 (absolute) = `since >> 63`,
-    * The metric flag is 01 in binary (epoch number with fraction) = `(since >> 61) & 3`,
-    * The value is `1024 + 0/1`:
-        * The epoch number is 1024 = `since & ((1 << 24) - 1)`,
-        * The block index in epoch is 0 = `(since >> 24) & ((1 << 16) - 1)`,
-        * The epoch length is 1 = `max(1, (since >> 40) & ((1 << 16) - 1))`.
-    
-    It requires the minimal destruction time to be the first block in the epoch 1024.
- 
-* `0x4000_0171_3309_9c00`
-    Valid, where
-    * The relative flag is 0 (absolute) = `since >> 63`,
-    * The metric flag is 10 in binary (timestamp median) = `(since >> 61) & 3`,
-    * The value is 1585699200000 = `since & ((1 << 56) - 1)`, which is 2020-04-01 12:00 AM in UTC.
+The target value does not depend on the fields in the target block headers to ensure that the target value is determined for both commit and pending transactions.
 
-    It requires the minimal destruction time to be the first block where the median of the block header timestamp of the previous 37 blocks is at least 1585699200000.
+The target value is from the target block preceding blocks that:
 
-* `0x8000_0000_0000_0064`
-    Valid, where
-    * The relative flag is 1 (relative) = `since >> 63`,
-    * The metric flag is 00 in binary (block number) = `(since >> 61) & 3`,
-    * The value is 100 = `since & ((1 << 56) - 1)`.
+1. If the metric flag is `00` (block number), the target value is the parent block number plus 1.
+2. If the metric flag is `01` (epoch number with fraction), and the parent block epoch is `E + I / L`, the target value is `E + (I + 1) / L`.
+3. If the metric flag is `10` (timestamp), the target value is the median of the timestamp field of the 37 blocks preceding the target block.
 
-    It requires the minimal destruction time to be the block number `S` plus 100.
+![](target-value.jpg)
 
-* `0xa000_0000_0000_0018`
-    Valid, where
-    * The relative flag is 1 (relative) = `since >> 63`,
-    * The metric flag is 01 in binary (epoch number with fraction) = `(since >> 61) & 3`,
-    * The `value` is `24 + 0 / 1`:
-        * The epoch number is 24 = `since & ((1 << 24) - 1)`,
-        * The block index in epoch is 0 = `(since >> 24) & ((1 << 16) - 1)`,
-        * The epoch length is 1 = `max(1, (since >> 40) & ((1 << 16) - 1))`.
-    
-    It requires the minimal destruction time to be the epoch number with fraction equal to creation time plus `24 + 0 / 1`.
-
-* `0xc000_0000_4819_0800`
-    Valid, where
-    * The relative flag is 1 (relative) = `since >> 63`,
-    * The metric flag is 10 in binary (timestamp median) = `(since >> 61) & 3`,
-    * The value is 1209600000 = `since & ((1 << 56) - 1)`, which is 14 days.
-
-    It requires the minimal destruction time to be the median timestamp equal to creation time plus 14 days.
-
-* `0x0000_0000_0000_3039`
-    Valid, where
-    * The relative flag is 0 (absolute) = `since >> 63`,
-    * The metric flag is 00 in binary (block number) = `(since >> 61) & 3`,
-    * The value is 12345 = `since & ((1 << 56) - 1)`.
-
-    It requires the minimal destruction time to be the block number 12345.
-
-* `0x0100_0000_0000_3039`
-    Invalid, the preserve flags are not all zeros: `(since >> 56) & ((1 << 5) - 1) = 1`
-
-* `0x6000_0000_0000_3039`
-    Invalid, the metric flag is 11 in binary: `(since >> 61) & 3`
-
-### Since Verification
-
-* Since is the absolute epoch with fraction `100 + 101 / 100`, which is normalized to `101 + 0 / 1` first. The transaction is valid when it is in the block which is in epoch 101 or later epochs. Or it is the transaction pool and the tip block is the last block of epoch 100, or any block in later epochs.
-* Since is the relative epoch with fraction `100 + 101 / 100`, and the cell is created at `1 + 5 / 1800`. The transaction is valid when the destruction time is at least `100 + 101 / 100 + 1 + 5 / 1800`, which equals to `102 + 23 / 1800`.
+The last step is comparing the threshold value and the target value. The precondition is fulfilled if the target value is larger than or equals to the threshold value.
