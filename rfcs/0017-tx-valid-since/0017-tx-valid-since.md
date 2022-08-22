@@ -38,7 +38,7 @@ In conclusion, the since precondition is a per input threshold value with a spec
 
 The per input field `since` is an unsigned 64-bit integer, which encodes the since precondition.[^1] The value 0 shows that the precondition is absent. Otherwise, the highest 8 bits of the `since` field is the `flags`, and the remaining `56` bits represent the `value`.
 
-[^1]: See [RFC22][../rfcs/0022-transaction-structure/0022-transaction-structure.md] for the full transaction structure.
+[^1]: See [RFC22](../rfcs/0022-transaction-structure/0022-transaction-structure.md) for the full transaction structure.
 
 ![](since-encoding.jpg)
 
