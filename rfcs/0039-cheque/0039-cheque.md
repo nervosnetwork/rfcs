@@ -2,8 +2,7 @@
 Number: "0039"
 Category: Standards Track
 Status: Proposal
-Author: Dylan Duan
-Organization: Nervina Labs
+Author: Dylan Duan <duanyytop@gmail.com>
 Created: 2022-01-27
 ---
 
