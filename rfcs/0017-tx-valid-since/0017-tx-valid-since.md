@@ -18,7 +18,7 @@ This RFC suggests adding a consensus rule to restrict committing a transaction b
 
 The new consensus rule allows the transaction input to specify an optional since precondition. CKB nodes must verify the transactions in the commitment zone of a block that all the input since preconditions are fulfilled.
 
-The since precondition locates a unique block in any chain if it is long enough. The precondition is effective before the block, and is fulfilled since the block.
+The since precondition locates a unique block in the past or future on the chain. The precondition is effective before the block, and is fulfilled since the block.
 
 There are three metrics to specify the since precondition:
 
