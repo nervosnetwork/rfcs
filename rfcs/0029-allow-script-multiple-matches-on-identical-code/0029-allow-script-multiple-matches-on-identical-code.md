@@ -21,7 +21,7 @@ CKB allows multiple matches on a data hash because it causes no problem. Data ha
 Currently, CKB does not allow multiple matches on type script hash. However, in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. In most scenarios, the transaction uses two dep groups that contain duplicate cells, so the multiple matches on type script hash actually point to the same cell.
 
 ```
-# An example that multiple matches on the type script hash actually are the same cell.
+# An example that multiple type script hash matches refer to the same cell.
 cell_deps:
   - out_point: ...
     # Expands to
