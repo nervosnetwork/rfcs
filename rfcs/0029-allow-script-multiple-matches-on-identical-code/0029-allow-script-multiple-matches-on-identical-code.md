@@ -16,7 +16,7 @@ This document proposes a consensus change for transaction verification. This cha
 
 By using data hash or type script hash, CKB finds the code for lock and type script to execute.
 
-CKB allows multiple matches on data hash because it is safe. Data hash is the hash of the code, so multiple matches must have the same code. Type script hash does not conform to this rule. Cells with the same type script hash may have different contents.
+CKB allows multiple matches on a data hash because it causes no problem. Data hash is the cryptographic hash of referenced code, so multiple matches can only mean they refer to the same code. Type script hash does not conform to this rule. Cells with the same type script hash may have different contents.
 
 Currently, CKB does not allow multiple matches on type script hash. However, in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. In most scenarios, the transaction uses two dep groups that contain duplicate cells, so the multiple matches on type script hash actually point to the same cell.
 
