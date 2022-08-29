@@ -41,7 +41,7 @@ When an input `since` field is present, and the `metric_flag` is epoch (01), the
 - `I` is less than `L`, or
 - `I` and `L` are both zero.
 
-In RFC17, the only rule change is the elimination of **Absolute Epoch With Fraction Value Normalization**.
+Comparing to RFC17, the only rule change is the elimination of **Absolute Epoch With Fraction Value Normalization**.
 
 ## Test Vectors
 
