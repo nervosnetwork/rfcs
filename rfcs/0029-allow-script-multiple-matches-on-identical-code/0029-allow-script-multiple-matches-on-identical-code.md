@@ -18,7 +18,7 @@ By using data hash or type script hash, CKB finds the code for lock and type scr
 
 CKB allows multiple matches on a data hash because it causes no problem. Data hash is the cryptographic hash of referenced code, so multiple matches can only mean they refer to the same code. Type script hash does not conform to this rule. Cells with the same type script hash may have different contents.
 
-Currently, CKB does not allow multiple matches on type script hash. However, in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. In most scenarios, the transaction uses two dep groups that contain duplicate cells, so the multiple matches on type script hash actually point to the same cell.
+Currently, CKB does not allow multiple matches on type script hash. However, in many cases, multiple matches on type script hash do not introduce ambiguity if all the matches have the same data hash as well. For example, if a transaction uses two dep groups that contain duplicate references to the same cell, the multiple type script hash matches on them actually point to the same cell too.
 
 ```
 # An example that multiple type script hash matches refer to the same cell.
