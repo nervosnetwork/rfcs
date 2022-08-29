@@ -54,7 +54,7 @@ The following is an example of a mature transaction using the new rule, but an i
 
 Assuming that:
 
-* A transaction consumes a cell in block S and is about to be committed into block T with the since requirement that:
+* A transaction consumes a cell in block S and is about to be committed into block T with the `since` requirement that:
 	* The `metric_flag` is block timestamp (10).
 	* The `relative_flag` is relative (1).
 	* The `value` is 600,000 (10 minutes).
