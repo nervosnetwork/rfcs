@@ -171,7 +171,7 @@ Outputs:
 
 Witnesses:
     < 0x >
-    < valid signature for receiver_receiver public key hash >
+    < valid signature for receiver public key hash >
 
 ```
 
