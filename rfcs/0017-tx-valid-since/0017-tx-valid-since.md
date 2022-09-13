@@ -12,61 +12,73 @@ Created: 2019-03-11
 
 ## Abstract
 
-This RFC suggests adding a consensus rule to restrict committing a transaction before a specified time. The time comes from the block headers in the chain via block number, epoch number with fraction, or block timestamp.
+This RFC describes a consensus rule used to prevent a transaction input from being committed before a specified time in the future. 
 
 ## Summary
 
-The new consensus rule allows the transaction input to specify an optional since precondition. CKB nodes must verify the transactions in the commitment zone of a block that all the input since preconditions are fulfilled.
+An optional `since` value can be added to any input within a transaction that specifies a time in the future when it can be committed. The current time must be equal to or greater than the time specified in the `since` value before a CKB node will consider this precondition fulfilled and allow the transaction to be committed.
 
-The since precondition locates a unique block in the past or future on the chain. The precondition is effective before the block, and is fulfilled since the block.
+A transaction may be composed of multiple inputs from different parties that are batched together. Therefore a `since` field is located on each input within the transaction to allow every party to set their `since` value individually. If the `since` precondition is not met on any input within the transaction, the entire transaction will be immediately rejected by the CKB node on submission.
 
-There are three metrics to specify the since precondition:
+Three metrics can be used to specify how the `since` time is expressed:
 
-1. via block number,
-2. epoch number with fraction,
-3. or the median timestamp of the preceding 37 blocks.
+1. Block Number
+2. Epoch Number (with fraction)
+3. Timestamp (median of previous 37 blocks)
 
-All of them strictly increase along the block number.
+A developer can choose exactly one of these three metrics to use, and this will be used to indicate the format of `since` value. The metric used also used to determine how the threshold value, and the target value will be calculated. The threshold value is the block number, epoch number, or timestamp that must be reached to fulfill the precondition and allow the commit to occur. The target value can be thought of as the current block number, epoch number, or timestamp.
 
-The precondition is absolute or relative. A relative precondition depends on which block has committed the input.
+Note: Each one of these metrics will always increase in value over time with each new block added to the chain, meaning it is safe to assume these values will never decrease over time.
 
-In conclusion, the since precondition is a per input threshold value with a specific metric, either absolute or relative to the input commitment block. The precondition prevents a block committing the transaction if the derived metric value from the block has not reached the since precondition threshold yet.
+The relative flag must be set to either `absolute` or `relative` with the specified metric. This indicates how the threshold value should be calculated. 
+
+When `absolute` is specified, the threshold value is set to the specified `since` value, which is interpreted by the metric selected.
+
+When `relative` is specified, the threshold value is calculated by retrieving the base value from the commitment block and and adding the `since` value. The base value is the block number, epoch number, or timestamp depending on the metric selected. The commitment block is the block in which the input was committed.
+
+After the treshold value and target value have been calculated they can be compared. The precondition is fulfilled only if the target value is equal to or greater than the treshold value.
 
 ## Specification
 
 ### How to Specify the Since Precondition
 
-The per input field `since` is an unsigned 64-bit integer, which encodes the since precondition.[^1] The value 0 shows that the precondition is absent. Otherwise, the highest 8 bits of the `since` field is the `flags`, and the remaining `56` bits represent the `value`.
+Each transaction input has a `since` field. The field itself is an unsigned 64-bit integer (u64) with special encoding for different values.[^1] A u64 value of `0` is used to indicate that the `since` precondition is disabled and will be ignored. If the field value is not `0`, then the highest 8 bits of the `since` field represent configuration `flags` and the remaining `56` bits represent the `value`.
 
 [^1]: See [RFC22](../rfcs/0022-transaction-structure/0022-transaction-structure.md) for the full transaction structure.
 
-![](since-encoding.jpg)
+![Since Encoding](since-encoding.jpg)
 
-* The highest bit is the relative flag.
+* The highest bit is used to specify if the `value` is `absolute` or `relative`.
 
-    * `0`: The `value` is absolute
-    * `1`: The `value` is relative
+    * `0`: The `value` is `absolute`.
+    * `1`: The `value` is `relative`.
 
-* The following two bits choose which metric to specify the precondition. It is also the unit of the `value`.
+* The next two bits specify the metric which will be used to interpret `value` and to calculate the treshold value and target value.
 
-    * `00`: Use block number.
-    * `01`: Use epoch number with fraction.
-    * `10`: Use the timestamp median of the previous 37 block headers.
-    * `11`: Invalid. Transaction should not set the metric flag to `11`.
+    * `00`: Use the block number.
+    * `01`: Use the epoch number with fraction.
+    * `10`: Use the median timestamp of the previous 37 block headers.
+    * `11`: Invalid. The metric flag should never be set to `11`.
 
-* The next 5 bits are reserved for future extension. They must be all zeros now.
+* The next 5 bits are reserved for future extension. They must all be set to zero for now.
 
-How to interpret the `value` part depends on the metric in use.
+Interpretation of `value` is dependent on the metric which was specified.
 
-For block number (`00`) and timestamp median (`10`), `value` is a 56-bit unsigned integer.
+When the metric flag is set to block number (`00`) or timestamp median (`10`), then `value` is a 56-bit unsigned integer stored in little-endian.
 
-When the metric flag is `01`, `value` represents a rational number `E + I / L`, where
+When the metric flag is set to epoch number with fraction (`01`), `value` represents an epoch (E), epoch index (I), and epoch length (L). These three values are encoded into `value` as follows:
 
 * `E` has 3 bytes, from the lowest bit 0 to 23.
-* `I` has 2 bytes, from the bit 24 to 39.
-* `L` has 2 bytes, from the bit 40 to 55.
+* `I` has 2 bytes, from bit 24 to 39.
+* `L` has 2 bytes, from bit 40 to 55.
 
-Following table shows how to decode different parts of `since` using bit operations right shift (`>>`), left shift (`<<`), and bit and (`&`).
+Note: The bit ranges for `E`, `I`, and `L` are using [LSB 0 Bit Numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) which counts from right to left. All three values are stored in little-endian.
+
+The following diagram illustrates how the `E`, `I`, and `L` bit ranges are positioned within the 56-bit `value` portion of the `since` field.
+
+![EIL Encoding](e-i-l-encoding.png)
+
+The following table shows how to decode different values contained within `since` using bit operations right shift (`>>`), left shift (`<<`), and bit and (`&`).
 
 | Name | Bit Operation |
 | ---- | ------------- |
@@ -81,72 +93,76 @@ Following table shows how to decode different parts of `since` using bit operati
 
 There are three major steps to verify the since precondition:
 
-1. Decode: Decode since and verify the format is valid.
-2. Compute Threshold: Determine the commitment block and compute the threshold for relative since precondition.
-3. Derive and Compare: Derive the target value from the block that is going to commit the transaction. Compare it with the threshold to check whether the precondition is fulfilled.
+1. Decode Values: Extract the necessary values which are encoded within the `since` field and verify the format is valid.
+2. Compute Threshold Value: Determine the threshold value that will be used for comparison.
+3. Derive Target Value and Compare: Derive the target value from the block that is going to commit the transaction. Compare it with the threshold value to check whether the precondition is fulfilled.
 
-Following is the flowchart of the verification process.
+The following flowchart illustrates the verification process.
 
-![](since-verification.jpg)
+![Since Verification](since-verification.jpg)
 
-#### Step 1. Decode
+#### Step 1. Decode Values
 
-> Decode since and verify the format is valid.
+> Extract the necessary values which are encoded within the `since` field and verify the format is valid.
 
-If the since field is zero, skip current input since precondition verification. Otherwise, verify that the format is valid:
+If the `since` field value is zero, then this indicates that since precondition is not used and verification can be skipped.
+
+If the `since` field value is not zero, verify that the format is valid:
 
 1. The metric flag should not be `11`.
 2. The reserved flags must be all zeros.
-3. When the metric flag is epoch number with fraction (`01`), `I` must be less than `L`, or they are both zeros. If the latter is the case, the since value is `E + 0 / 1`.
+3. When the metric flag is epoch number with fraction (`01`), `I` must be less than `L`, or they must both be zeros. In the latter case, the `I` and `L` values will be set to `0` and `1` respectively.
 
-Continue the next two steps when the since field format is valid.
+If the format is valid, the process moves on to the next step.
 
-#### Step 2. Compute Threshold
+#### Step 2. Compute Threshold Value
 
-> Determine the commitment block and compute the threshold for relative since precondition.
+> Determine the threshold value that will be used for comparison.
 
-The threshold value is the decoded value part of the since field for the absolute precondition.
+The relative flag specifies if `absolute` or `relative` should be used to determine the threshold value.
 
-The relative precondition threshold depends on the commitment block of the current transaction input.
+When `absolute` is specified, the threshold value is set to the 56-bit `value` portion of the `since` field. This is a simple process that copies the value directly without any conversion, and no further steps need to be taken.
 
-The term "commit" comes from the two-step transaction confirmation protocol in [RFC20][]. A block commits a transaction by including it in the commitment zone of the block body. The commitment block of a transaction is the block which has committed the transaction.
+When `relative` is specified, the threshold value is set to the base value derived from the commitment block plus the (56-bit) `value` portion of the `since` field.
+
+##### Commitment Block
+
+A two-step transaction confirmation protocol is used by CKB, and it is defined in [RFC20][]. A transaction is only considered committed when it is included in the commitment zone of a block. The commitment block of a transaction is the block that committed the transaction.
 
 [RFC20]: ../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#two-step-transaction-confirmation
 
-In CKB, the transaction input is a reference to an output of another transaction. The commitment block of a transaction input is the commitment block of the transaction producing the referenced output.
+A transaction input is a reference to an output of another transaction. The commitment block of a transaction input is the same as the commitment block of the transaction producing the referenced output.
 
-![](commitment-block.jpg)
+In the diagram below, `Block B` is the commitment block of `Input 0` of `Transaction X`.
 
-For example, in the diagram above, the block B is the commitment block of input 0 of the transaction X.
+![Commitment Block](commitment-block.jpg)
 
-The base value is from the input commitment block.
+##### Base Value
+
+The base value is derived from the input commitment block according to the metric that is specified.
 
 1. If the metric flag is `00` (block number), the base value is the block number of the commitment block.
-2. If the metric flag is `01` (epoch number with fraction), the base value is the epoch field in the commitment block header, which is also a rational number.
+2. If the metric flag is `01` (epoch number with fraction), the base value is the epoch field in the commitment block header. This shares the same encoding as the aforementioned epoch field which contains the individual values for epoch (E), epoch index (I), and epoch length (L).
 3. If the metric flag is `10` (timestamp), the base value is the timestamp field in the commitment block header.
 
-The threshold value of a relative precondition equals to the base value plus the decoded since value.
+The threshold value of an `absolute` precondition equals the 56-bit `value` portion of the `since` field. The threshold value of a `relative` precondition equals the base value plus the `value` portion of the `since` field.
 
-The diagram below summarizes the threshold value computation process.
+The diagram below visualizes the threshold value computation process.
 
-![](threshold-value.jpg)
+![Threshold Value](threshold-value.jpg)
 
-#### Step 3. Derive and Compare
+#### Step 3. Derive Target Value and Compare
 
 > Derive the target value from the block that is going to commit the transaction. Compare it with the threshold to check whether the precondition is fulfilled.
 
-This section will refer to the block that is going to commit the transaction as the target block.
+We will use the term "target block" to refer to the block that commits a transaction. The target block of a committed transaction is the mined block which included the transaction. This is the same as the commitment block. The target block of a pending transaction in the mempool or in transit is the next block that will be mined, but has not been mined yet.
 
-The target block of a committed transaction is the block which has committed the transaction. For the pending transactions in the air or the memory pool, the target block is the next to-be-mined block.
+The target value is determined by the target block depending on which metric was selected. These are calculated as follows:
 
-Note that the target value does not depend on the fields in the target block headers to ensure that the target value is determined for both committed and pending transactions.
-
-The target value is from the target block preceding blocks that:
-
-1. If the metric flag is `00` (block number), the target value is the parent block number plus 1.
-2. If the metric flag is `01` (epoch number with fraction), and the parent block epoch is `E + I / L`, the target value is `E + (I + 1) / L`.
+1. If the metric flag is `00` (block number), the target value is the block number of the last mined block, plus 1.
+2. If the metric flag is `01` (epoch number with fraction), the target value is the next index of the last mined block. If the last mined block is `500 10/20` (E = 500, I = 10, L = 20), then the target value is `500 11/20` (E = 500, I = 11, L = 20).
 3. If the metric flag is `10` (timestamp), the target value is the median of the timestamp field of the 37 blocks preceding the target block.
 
-![](target-value.jpg)
+![Target Value](target-value.jpg)
 
-The last step is comparing the threshold value and the target value. The precondition is fulfilled if the target value is larger than or equals to the threshold value.
+The final step is to compare the target value to the threshold value. The precondition is fulfilled if the target value is equal to or greater than the threshold value.
