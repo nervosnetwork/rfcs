@@ -312,7 +312,7 @@ and the `out_point` of `cheque` is
 
 ## Reproducible Build
 
-Anyone can use the reproducible build to verify that the deployed script is consistent with the source code. To build the deployed cheque lock script, one can use the following steps:
+Anyone can use the reproducible build to verify that the deployed script is consistent with the source code and anyone can refer to the [CI configure file](https://github.com/nervosnetwork/ckb-cheque-script/blob/main/.github/workflows/build_and_test.yml) to build the latest binaries. To build the deployed cheque lock script, one can use the following steps:
 
 ```bash
 $ git clone https://github.com/nervosnetwork/ckb-cheque-script
