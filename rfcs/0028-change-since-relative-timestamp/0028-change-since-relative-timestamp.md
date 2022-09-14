@@ -10,13 +10,13 @@ Created: 2021-02-03
 
 ## Abstract
 
-This document proposes a transaction verification consensus change. When the `since` field of the transaction input uses a relative timestamp, the referenced cell committing block timestamp is used instead of the median timestamp.
+This document proposes a transaction verification consensus change. When the `since` field of the transaction input uses a relative timestamp, the commitment block header timestamp is used as the base value instead of the median timestamp of previous 37 blocks.
 
 This is a modification to the RFC17 [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md).
 
 ## Motivation
 
-The current consensus rule uses the median of the timestamps in the 37 blocks preceding the referenced cell committing block. Getting the median timestamp is resource consuming because it requires either getting 37 block headers or caching the median timestamp for each block. The intention of using median time was to prevent miners from manipulating block timestamp to include more transactions. But it is safe to use the committing block timestamp as the start time because of two reasons:
+The current consensus rule uses the median of the timestamps in the 37 blocks preceding the referenced cell commitment block. Getting the median timestamp is resource consuming because it requires either getting 37 block headers or caching the median timestamp for each block. The intention of using median time was to prevent miners from manipulating block timestamp to include more transactions. But it is safe to use the committing block timestamp as the start time because of two reasons:
 
 1. The timestamp in the block header has already been verified by the network that it must be larger than the median of the previous 37 blocks and less than or equal to the current time plus 15 seconds. (See [RFC27](../0027-block-structure/0027-block-structure.md#timestamp-uint64))
 2. The transaction consuming a cell with the `since` requirement must wait until the cell is mature. During this waiting time, the transaction that created the cell has accumulated enough confirmations that it is difficult for the miner to manipulate it.
@@ -28,7 +28,7 @@ When an input `since` field is present, and
 * The `metric_flag` is block timestamp (10).
 * The `relative_flag` is relative (1).
 
-The transaction is mature when
+The input since precondition is fulfilled when
 
 ```
 MedianTimestamp ≥ StartTime + SinceValue
@@ -36,11 +36,9 @@ MedianTimestamp ≥ StartTime + SinceValue
 
 where
 
-* `StartTime` is the block timestamp that commits the cell consumed by the input.
+* `StartTime` is the timestamp field in the commitment block header.
 * `SinceValue` is the `value` part of the `since` field.
 * `MedianTimestamp` is the median timestamp of the previous 37 blocks preceding the block if the transaction is in the block, or the latest 37 blocks if the transaction is in the pool.
-
-The transaction verification fails if the transaction is immature.
 
 The only change is `StartTime`, which was the median of the previous 37 blocks preceding the one that has committed the consumed cell. Because block timestamp must be larger than the median of its previous 37 blocks, the new consensus rule is more strict than the old rule. A transaction that is mature under the old rule may be immature under the new rule, but a transaction that is mature under the new rule must be mature under the old rule.
 
