@@ -36,7 +36,7 @@ When `absolute` is specified, the threshold value is set to the specified `since
 
 When `relative` is specified, the threshold value is calculated by retrieving the base value from the commitment block and and adding the `since` value. The base value is the block number, epoch number, or timestamp depending on the metric selected. The commitment block is the block in which the input was committed.
 
-After the treshold value and target value have been calculated they can be compared. The precondition is fulfilled only if the target value is equal to or greater than the treshold value.
+After the threshold value and target value have been calculated they can be compared. The precondition is fulfilled only if the target value is equal to or greater than the threshold value.
 
 ## Specification
 
