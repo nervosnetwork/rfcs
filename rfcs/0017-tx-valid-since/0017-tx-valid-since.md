@@ -2,7 +2,7 @@
 Number: "0017"
 Category: Standards Track
 Status: Active
-Author: Jinyang Jiang <@jjyr>, Ian Yang <@doitian>
+Author: Jinyang Jiang <@jjyr>, Ian Yang <@doitian>, Jordan Mack <@jordanmack>
 Created: 2019-03-11
 ---
 
