@@ -12,13 +12,13 @@ Created: 2021-02-04
 
 This document proposes adding a new consensus rule to verify the `since` field in the transaction.
 
-As described in the RFC17, [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md), when a transaction input uses the epoch with fraction in the `since` field, the `value` is an encoded rational number `E + I / L`, where
+As described in the RFC17, [Transaction valid since](../0017-tx-valid-since/0017-tx-valid-since.md), when a transaction input uses the epoch with fraction in the `since` field, the `value` is an encoded rational number `E I/L`, where
 
 - `E` is the epoch number.
 - `I` is the block index in the epoch.
 - `L` is the epoch length.
 
-This RFC requires that when any transaction uses the epoch with fraction as the unit, the encoded number `E + I / L` is valid only if
+This RFC requires that when any transaction uses the epoch with fraction as the unit, the encoded number `E I/L` is valid only if
 
 - `I` is less than `L`, or
 - `I` and `L` are both zero.
@@ -29,14 +29,14 @@ If any `since` field is invalid, the transaction is rejected.
 
 The `since` field prevents the transaction from being mined before an absolute or relative time.
 
-When the `since` field uses epoch with fraction number as the unit, the `value` is an encoded rational number `E + I / L`. If it is a relative time, the rational number is used as it is. But when it is the absolute time, the special rule, **Absolute Epoch With Fraction Value Normalization** as mentioned in RFC17, requires normalizing the number to `E + 1 + 0 / 1` when `I` equals to or is larger than `L`.
+When the `since` field uses epoch with fraction number as the unit, the `value` is an encoded rational number `E I/L`. If it is a relative time, the rational number is used as it is. But when it is the absolute time, the special rule, **Absolute Epoch With Fraction Value Normalization** as mentioned in RFC17, requires normalizing the number to `E+1 0/1` when `I` equals to or is larger than `L`.
 This document suggests adding a new rule to verify that when `since` uses epoch as the unit, it must ensure that the index `I` is less than the length `L`.
 
 ## Specification
 
 This RFC adds a new verification requirement on the transaction `since` field.
 
-When an input `since` field is present, and the `metric_flag` is epoch (01), the `value` part is the encoded number `E + I / L`. No matter whether the relative flag is `relative` or `absolute`, the number is valid if and only if
+When an input `since` field is present, and the `metric_flag` is epoch (01), the `value` part is the encoded number `E I/L`. No matter whether the relative flag is `relative` or `absolute`, the number is valid if and only if
 
 - `I` is less than `L`, or
 - `I` and `L` are both zero.
@@ -45,7 +45,7 @@ There are no changes to the rules in RFC17, except that **Absolute Epoch With Fr
 
 ## Test Vectors
 
-When `since` uses the absolute epoch `99 + 360 / 180`, and the current epoch is `100 + 0 / 180`, the transaction is mature using the old consensus rule but is invalid using the new rule.
+When `since` uses the absolute epoch `99 360/180`, and the current epoch is `100 0/180`, the transaction is mature using the old consensus rule but is invalid using the new rule.
 
 ## Deployment
 
