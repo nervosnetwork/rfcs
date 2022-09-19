@@ -56,9 +56,7 @@ The cheque lock follows the rules below:
 
    - 2.b. If the matching input cells with the receiver lock hash are found, it performs the same check as in 1.b.i and 1.b.ii.
 
-     - 2.b.i. It loops through all input cells using the receiver lock hash, if the matching inputs are not found, the cheque lock returns with an error state
-
-     - 2.b.ii It loops through all input cells using the receiver lock hash, if the first witness of the cheque cell group is empty(the witness is not [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) or the lock of WitnessArgs is empty)
+     - 2.b.i It loops through all input cells using the receiver lock hash, if the first witness of the cheque cell group is empty(the witness is not [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) or the lock of WitnessArgs is empty), the cheque lock returns with an error state
 
    - 2.c. If the matching input cells with the sender lock hash are found, it performs the same check as in 1.c.i.
 
