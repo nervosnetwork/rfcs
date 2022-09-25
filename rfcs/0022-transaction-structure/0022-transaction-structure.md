@@ -92,8 +92,6 @@ The `capacity` in the cell is not only just the amount of the stored tokens, but
 
 The capacity is not only used to store data but it also has to cover all the fields in the cell, including `data`,  `lock`, `type`, and `capacity` itself.
 
-The specification to compute occupied capacity will have its RFC in the future, which is still a [draft](https://github.com/nervosnetwork/rfcs/issues/118) now.
-
 The transaction must create an output cell which occupied capacity is less than the cell capacity.
 
 ```json
