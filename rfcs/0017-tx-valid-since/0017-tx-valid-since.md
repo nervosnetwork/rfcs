@@ -44,7 +44,7 @@ After the threshold value and target value have been calculated they can be comp
 
 Each transaction input has a `since` field. The field itself is an unsigned 64-bit integer (u64) with special encoding for different values.[^1] A u64 value of `0` is used to indicate that the `since` precondition is disabled and will be ignored. If the field value is not `0`, then the highest 8 bits of the `since` field represent configuration `flags` and the remaining `56` bits represent the `value`.
 
-[^1]: See [RFC22](../rfcs/0022-transaction-structure/0022-transaction-structure.md) for the full transaction structure.
+[^1]: See [RFC22](../0022-transaction-structure/0022-transaction-structure.md) for the full transaction structure.
 
 ![Since Encoding](since-encoding.jpg)
 
