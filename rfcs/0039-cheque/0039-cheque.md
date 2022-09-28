@@ -8,243 +8,285 @@ Created: 2022-01-27
 
 # Cheque Lock
 
-This RFC describes a new lock script for CKB that can send SUDT([Simple UDT](../0025-simple-udt/0025-simple-udt.md)), mNFT([Multi-purpose NFT: An NFT standard on CKB](https://talk.nervos.org/t/rfc-multi-purpose-nft-draft-spec/5434)) and other custom assets defined by type scripts to anyone that does not have an ACP([any-one-pay](../0026-anyone-can-pay/0026-anyone-can-pay.md)) cell for custom assets. Note that not all custom assets are available, depending on type scripts. For the convenience of description, the following will use SUDT as an example to refer to custom assets.
+## Abstract
 
-Previously, the receiver needs to create an ACP cell for the SUDT, and the receiver cannot actually know in advance that someone is going to send a new SUDT to him/her, for now the receiver can only be notified via an off-chain notification that an ACP cell is needed. Or the sender needs to give the receiver an ACP cell of the SUDT when sending the SUDT. These two ways will cause a problem that the receiver cannot receive the SUDT conveniently or the sender needs to pay additional costs.
+This RFC describes a lock script that can be used to transfer assets, such as SUDT ([Simple UDT](../0025-simple-udt/0025-simple-udt.md)) and mNFT ([Multi-purpose NFT](https://talk.nervos.org/t/rfc-multi-purpose-nft-draft-spec/5434)), from one user to another user that does not have an ACP ([Anyone-Can-Pay](../0026-anyone-can-pay/0026-anyone-can-pay.md)) cell available, and without the sender having to provide CKBytes to create the destination cell for the receiver. 
 
-Here we try to solve the problem by introducing a new cheque lock script, which can be claimed not only by the receiver who does not have an ACP cell to receive the SUDT, but also withdrawing by the sender after lock-up period(6 epochs). When the sender wants to send the SUDT to a receiver who does not have an ACP cell for the SUDT, he/she can transfer the SUDT to a cheque cell and then wait for the receiver to claim it. The receiver can get the cheque cell information from the chain and then decide whether to create a cell to receive the SUDT so that the receiver can receive the SUDT without creating an ACP cell in advance and the sender doesn’t need to pay the additional costs.
+## Summary
 
-### Cheque Script Structure
+The most basic method of transferring an asset from one user to another is to have the sender provide the CKBytes to create a destination cell for the receiver that holds the asset. However, when using this method the required CKBytes must be sent with the asset, and this can become a significant additional cost to the sender.
 
-A cheque cell is the cell whose lock script is cheque script and its structure looks like following:
+When ACP is used to transfer an asset, the sender no longer has to provide CKBytes for the receiver. However, the receiver must first create an ACP cell to hold the asset that will be sent to them in the future. This requires that the receiver knows in advance what is being sent. There is no automatic method to do this, which makes it a significant UX burden.
+
+The Cheque Lock attempts to solve this problem by allowing the sender to lock an asset they want to transfer into a Cheque cell (a cell uses the Cheque Lock) with the receiver's address indicated. Only the receiver can claim the asset, and to do so they must provide the CKBytes required to create a destination cell that they own to move the asset into.
+
+The sender must provide the CKBytes to create the Cheque cell that holds the asset while waiting to be claimed by the receiver. When the receiver claims their asset, the CKBytes from the Cheque cell are returned to the sender. This process allows a sender to transfer an asset without sending CKBytes, and without requiring the receiver to first create an ACP cell to receive the asset. 
+
+When the asset is put into the Cheque cell, it is locked for a period of 6 epochs which is approximately 24 hours. During this period, the receiver can freely claim at their convenience. If the asset is not claimed after 6 epochs have passed, the sender has the option to cancel the process and withdraw the asset.
+
+## Specification
+
+The Cheque Lock is designed to work with the [secp256k1-blake2b-sighash-all](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2pkh) lock, also known as the default lock. This is the only fully supported lock that is used for both the sender and receiver. Attempting to use other locks with the Cheque Lock is not recommended.
+
+The Cheque Lock will work with many types of custom assets, but those which require non-standard functionality may not be compatible. The Cheque Lock should only be used with asset types that are known to be compatible to reduce the risk of lost assets or funds. We will use SUDT tokens for all examples below since they are known to be fully compatible.
+
+### Cheque Lock Script Structure
+
+A Cheque cell is a cell that uses the Cheque Lock as the lock script and has a structure that is similar to the following:
 
 ```
-data:
-    amount: uint128
+lock:
+    code_hash: <cheque_lock_script>
+    args: <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
 type:
     <simple_udt_type_script>
-lock:
-    code_hash: cheque lock script
-    args: <20 byte receiver secp256k1-blake2b-sighash-all lock hash> <20 byte sender secp256k1-blake2b-sighash-all lock hash>
+data:
+    <sudt_amount: uint128>
 ```
 
-When the sender wants to transfer the SUDT to another, he/she needs to create a cheque cell whose lock args includes the receiver’s and sender’s [secp256k1-blake2b-sighash-all](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2pkh) lock hash. The receiver can unlock the related cheque cell to get the SUDT and give back the CKB to the sender.
+The `20-byte_receiver_lock_hash` and the `20-byte_sender_lock_hash` are `Blake2b160` hashes of lock scripts which rely on the default lock ([secp256k1-blake2b-sighash-all](https://github.com/nervosnetwork/ckb-system-scripts/wiki/How-to-sign-transaction#p2pkh)). Specifying the sender lock hash and receiver lock hash in the lock args defines who can access the assets that are locked in the Cheque cell.
 
-The receiver can withdraw the asset at any time, as long as the asset is not claimed by the sender. When the cheque cell exceeds the lock-up period(6 epochs), the sender can withdraw his/her assets.
+A `Blake2b160` hash is calculated as follows. First, a fully populated lock script structure for the sender or receiver must be converted to its binary representation. Next, a `Blake2b256` hash of the binary representation is generated, which results in a 32-byte (256-bit) hash. Finally, this hash is truncated to the first 20 bytes, which is 160 bits.
+
+The sender initiates the process by creating a Cheque Lock cell that contains the asset they wish to deposit. At this time they specify both the sender and receiver lock hashes as lock args on the Cheque cell. To create the Cheque cell, the sender must also provide the CKBytes necessary for the cell. The amount required depends on the requirements of the asset being transferred.
+
+The receiver can claim the asset at any time after the Cheque cell has been created, as long as the asset has not been withdrawn by the sender. After the Cheque cell has been created, the sender cannot withdraw for a period of 6 epochs. This gives a guaranteed window of approximately 24 hours where only the receiver can claim the asset. If the receiver does not claim the asset within 6 epochs, then the sender has the option to cancel the process and withdraw the asset and CKBytes that they provided.
 
 ## Unlock Rules
 
-The cheque lock follows the rules below:
+The Cheque Lock follows the rules below when validating a transaction.
 
-1. If a signature is provided in witness, then:
+1. If a signature is provided in the witness:
 
-   - 1.a. If the provided signature fails validation with both the receiver and the sender secp256k1-blake2b public key hash, the cheque lock returns with an error.
+    - 1.a. Check the signature against the sender lock hash and receiver lock hash. If the signature does not match either, then return with an error.
 
-   - 1.b. If the provided signature is valid with the receiver secp256k1 public key hash, then:
+    - 1.b. If the provided signature is valid and matches the `20-byte_receiver_lock_hash`:
 
-     - 1.b.i. It loops through all input cells using the current cheque lock script, if any of the inputs' `since` is not zero, the cheque lock returns with an error state.
+        - 1.b.i. Loop through all the input cells using the current Cheque Lock script). If any of these inputs has a [since](../0017-tx-valid-since/0017-tx-valid-since.md) value that is not zero, return with an error. This ensures that the receiver is always able to claim immediately without a time delay restriction.
 
-     - 1.b.ii. It loops through all output cells using the sender lock hash, if the sum of the output cells capacity is not equal to the sum of the cheque input cells capacity, the cheque lock returns with an error state
+        - 1.b.ii. Loop through all the output cells with the sender's lock hash. If the sum of the capacity in these cells is not equal to the sum of the capacity in the input Cheque cells, return with an error. This ensures that the CKBytes provided by the sender for the Cheque cell are always returned to the sender when the asset is claimed.
 
-   - 1.c. If the provided signature is valid with the sender secp256k1 public key hash, then:
+    - 1.c. If the provided signature is valid and matches the `20-byte_receiver_lock_hash`:
 
-     - 1.c.i. It loops through all input cells using the current cheque lock script, if the `since` of any input cell is not the same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque lock returns with an error state
+        - 1.c.i. Loop through all the input cells using the current Cheque Lock script. If any of these inputs has a [since](../0017-tx-valid-since/0017-tx-valid-since.md) value that is not set to `0xA000000000000006`, return with an error. A `since` value of `0xA000000000000006` indicates that the cell cannot be committed in a transaction until a minimum of 6 epochs have passed since the Cheque cell was created. This ensures a window of approximately 24 hours where only the receiver can claim the asset.
 
-2. If a signature is not provided in witness, then:
+2. If a signature is not provided in the witness:
 
-   - 2.a. It loops through all input cells using the receiver and the sender lock hash, if no matching input cells are found, the cheque lock returns with an error state.
+   - 2.a. Loop through all the input cells checking their lock script hash against the `20-byte_receiver_lock_hash` and `20-byte_sender_lock_hash`. If no matches are found, return with an error.
 
-   - 2.b. If the matching input cells with the receiver lock hash are found, it performs the same check as in 1.b.i and 1.b.ii.
+   - 2.b. If an input cell is found that matches the `20-byte_receiver_lock_hash`:
 
-     - 2.b.i It loops through all input cells using the receiver lock hash, if the first witness of the cheque cell group is empty(the witness is not [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) or the lock of WitnessArgs is empty), the cheque lock returns with an error state
+     - 2.b.i. Perform the same checks as in rules 1.b.i and 1.b.ii.
 
-   - 2.c. If the matching input cells with the sender lock hash are found, it performs the same check as in 1.c.i.
+     - 2.b.ii. Loop through all the input cells and locate the first input cell with a lock script hash that matches the `20-byte_receiver_lock_hash`, and note the index of the matched cell. Then locate the corresponding witness at the same index that was noted. If the witness at this index is empty, is not a [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) structure, or the WitnessArgs structure has an empty lock property, return with an error. This helps ensure proper lock usage and transaction structure.
 
-     Notice the cheque lock script includes a public key hash, two cheque lock scripts using the same cheque lock code but different public key hash, will be treated as different lock scripts, and each will perform the script unlock rule checking independently.
+   - 2.c. If an input cell is found that matches the `20-byte_sender_lock_hash`:
+
+     - 2.c.i. Perform the same checks as in rules 1.c.i.
+
+> Note: The Cheque Lock allows for batching, meaning that a single transaction can contain multiple Cheque cells for different claims and withdrawals which will all be processed at the same time. When two or more Cheque cells have identical scripts (the exact same code_hash, hash_type, and args), they will execute in the same lock script and process together in a single script execution group. If there is any difference in the scripts, such as the same code_hash, hash_type, but a different sender or receiver is provided in the args, then they will execute in separate script execution groups. 
 
 ## Examples
 
-### Create a cheque Cell
+Below are example transactions for several operations of the Cheque Lock.
+
+In these examples, a 0.01 CKByte transaction fee is used for simplicity. In a production environment, transaction fees should be [calculated](https://docs.nervos.org/docs/essays/faq/#how-do-you-calculate-transaction-fee) based on factors including transaction size, running cycles as well as network status.
+
+### Create a Cheque Cell
 
 ```
-Inputs:
-    SUDT Cell:
-        Capacity: 1000 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+inputs:
+    sudt_cell:
+        capacity: 1000 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 1000 UDT
 
-Outputs:
-    Cheque Cell:
-        Capacity: 165 CKBytes
-        Lock:
-            code_hash: cheque lock
-            args:  <receiver_secp256k1_blake2b_lock_hash[0..20]> <sender_secp256k1_blake2b_lock_hash[0..20]>
-        Type: <sudt_type_script>
-        Data:
+outputs:
+    cheque_cell:
+        capacity: 165 CKBytes
+        lock:
+            code_hash: <cheque_lock_script>
+            args:  <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-    SUDT Cell:
-        Capacity: 834.99 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+    sudt_cell:
+        capacity: 834.99 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 900 UDT
 
-Witnesses
-    <valid signature for sender public key hash>
+witnesses:
+    <valid_signature_for_sender_secp256k1_blake2b_lock_script>
 ```
 
-In this example 0.01 CKBytes is paid as the transaction fee, in production one should calculate the fee based on factors including transaction size, running cycles as well as network status. 0.01 CKByte will be used in all examples as fees for simplicity.
+This transaction creates a Cheque cell, locking 100 UDT tokens that can be claimed by the receiver.
+
+The `20-byte_sender_lock_hash` is a match to `sender_secp256k1_blake2b_lock_script`. This will allow the sender to withdraw the asset from the Cheque cell after 6 epochs if the receiver does not claim the asset.
 
 ### Claim
 
-#### 1. Claim via receiver signature
+#### 1. Claim via Receiver Signature
 
 ```
-Inputs:
-    Cheque Cell:
-        Capacity: 165 CKBytes
-        Lock:
-            code_hash: cheque lock
-            args: <receiver_secp256k1_blake2b_lock_hash[0..20]> <sender_secp256k1_blake2b_lock_hash[0..20]>
-        Type: <sudt_type_script>
-        Data:
+inputs:
+    cheque_cell:
+        capacity: 165 CKBytes
+        lock:
+            code_hash: <cheque_lock_script>
+            args: <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-    SUDT Cell:
-        Capacity: 200 CKBytes
-        Lock: <another_receiver_lock_script>
-        Type: <sudt_type_script>
-        Data:
+    sudt_cell:
+        capacity: 200 CKBytes
+        lock: <another_receiver_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 200 UDT
 
- Outputs :
-    SUDT Cell :
-        Capacity: 199.99 CKBytes
-        Lock: <another_receiver_lock_script>
-        Type: <sudt_type_script>
-        Data:
+outputs:
+    sudt_cell:
+        capacity: 199.99 CKBytes
+        lock: <another_receiver_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 300 UDT
-    Empty Cell:
-        Capacity: 165 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
+    basic_cell:
+        capacity: 165 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
 
- Witnesses :
-      < valid signature for receiver public key hash >
-      < valid signature for another receiver public key hash >
-
-```
-
-When a signature is provided and can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cells can be unlocked. In this example a cheque cell is converted back to a sender empty cell and the SUDT is transferred from the sender to an arbitrary lock script set by the receiver.
-
-#### 2. Claim via receiver lock script
+witnesses:
+    <valid_signature_for_receiver_secp256k1_blake2b_lock_script>
+    <valid_signature_for_another_receiver_lock_script>
 
 ```
-Inputs:
-    Cheque Cell:
-        Capacity: 165 CKBytes
-        Lock:
-            code_hash: cheque lock
-            args: <receiver_secp256k1_blake2b_lock_hash[0..20]> <sender_secp256k1_blake2b_lock_hash[0..20]>
-        Type: <sudt_type_script>
-        Data:
+
+This transaction claims the 100 UDT tokens in the Cheque cell using the receiver's signature, and sends them to a different address.
+
+The receiver provides his signature (`witnesses[0]`) to unlock the Cheque cell (`inputs[0]`). The signature in witnesses[0] is a valid match to the `20-byte_receiver_lock_hash`. The receiver also provides an SUDT cell (`inputs[1]`) that contains the same SUDT tokens in the Cheque cell (`inputs[0]`), and extra capacity which will be used to cover the transaction fee. The SUDT cell uses a different lock script, `another_receiver_lock_script`, which means it must be unlocked using a different signature (`witnesses[1]`). The output SUDT cell (`outputs[0]`) receives the SUDT tokens from the Cheque cell (`inputs[0]`), and pays the 0.01 CKByte transaction fee. The 165 CKBytes of capacity from the Cheque cell (`inputs[0]`) are returned to the sender in a basic cell (`output[1]`).
+
+#### 2. Claim via Receiver Lock Script
+
+```
+inputs:
+    cheque_cell:
+        capacity: 165 CKBytes
+        lock:
+            code_hash: <cheque_lock_script>
+            args: <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-    SUDT Cell:
-        Capacity: 200 CKBytes
-        Lock: <receiver_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+    sudt_cell:
+        capacity: 200 CKBytes
+        lock: <receiver_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 200 UDT
 
-Outputs:
-    SUDT Cell:
-        Capacity: 199.99 CKBytes
-        Lock: <receiver_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+outputs:
+    sudt_cell:
+        capacity: 199.99 CKBytes
+        lock: <receiver_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 300 UDT
-    Empty Cell:
-        Capacity: 165 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
+    basic_cell:
+        capacity: 165 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
 
-Witnesses:
-    < 0x >
-    < valid signature for receiver public key hash >
+witnesses:
+    <0x>
+    <valid_signature_for_receiver_secp256k1_blake2b_lock_script>
 
 ```
 
-In this example, the transaction inputs include a receiver secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `receiver_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the receiver public key hash, and the sum of sender output cells capacity is equal to the sum of the cheque input cells capacity, the cheque cell can be unlocked.
+This transaction claims the 100 UDT tokens in the Cheque cell (`inputs[0]`) in a very similar way to the previous example, except that the receiver's lock script is used to unlock the Cheque cell instead of a separate signature.
+
+When using the receiver's lock script to claim, no signature needs to be provided for the Cheque cell. Notice that `witnesses[0]` is empty because the Cheque cell (`inputs[0]`) does not require it. The input SUDT cell (`inputs[1]`) has a lock script `receiver_secp256k1_blake2b_lock_script` that matches the Cheque cell receiver lock hash `20-byte_receiver_lock_hash`. The signature in `witnesses[1]` is valid and unlocks the SUDT cell (`inputs[1]`). The Cheque cell receiver `20-byte_receiver_lock_hash` matches the lock on the SUDT cell `receiver_secp256k1_blake2b_lock_script`. The Cheque cell (`inputs[0]`) will unlock without a signature because the receiver's lock script is present in another input cell (`inputs[1]`), and it is unlocked with a signature provided in `witnesses[1]`.
 
 ### Withdraw
 
-#### 1. Withdraw via sender signature
+#### 1. Withdraw via Sender Signature
 
 ```
-Inputs:
-    Cheque Cell:
-        Capacity: 165 CKBytes
-        Lock:
-            code_hash: <cheque_cell_script_code_hash>
-            args: <receiver_secp256k1_blake2b_lock_hash[0..20]> <sender_secp256k1_blake2b_lock_hash[0..20]>
-        Type: <sudt_type_script>
-        Data:
+inputs:
+    cheque_cell:
+        capacity: 165 CKBytes
+        lock:
+            code_hash: <cheque_lock_script>
+            args: <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-        Since: 0xA000000000000006
+        since: 0xA000000000000006
 
-Outputs:
-    SUDT Cell:
-        Capacity: 164.99 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+outputs:
+    sudt_cell:
+        capacity: 164.99 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
 
-Witnesses:
-    < valid signature for sender public key hash >
+witnesses:
+    <valid_signature_for_sender_secp256k1_blake2b_lock_script>
 ```
 
-When a signature is provided and can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender empty cell with SUDT.
+This transaction withdrawals 100 UDT tokens from the Cheque cell (`inputs[0]`) using the sender's signature, and returns the tokens and CKBytes to the sender.
 
-#### 2. Withdraw via sender lock script
+The signature in `witnesses[0]` is a valid match for the lock script indicated by `20-byte_sender_lock_hash` in the Cheque cell (`inputs[0]`). This authorizes a withdrawal by the sender if 6 epochs have passed and the receiver has not claimed the asset. Notice that a since value of `0xA000000000000006` is present on the Cheque cell. This prevents the transaction from being committed until 6 epochs after the Cheque cell was created.
+
+The Cheque cell (`inputs[0]`) has 165 CKBytes of capacity, which is enough for the output cell plus some extra capacity that is used to pay the 0.01 CKByte transaction fee. For that reason, no extra capacity needs to be provided by the sender to complete this transaction. The 100 UDT tokens and remaining CKBytes are returned to the sender in `outputs[0]`.
+
+#### 2. Withdraw via Sender Lock Script
 
 ```
-Inputs:
-    Cheque Cell:
-        Capacity: 165 CKBytes
-        Lock:
-            code_hash: <cheque_cell_script_code_hash>
-            args: <receiver_secp256k1_blake2b_lock_hash[0..20]> <sender_secp256k1_blake2b_lock_hash[0..20]>
-        Type: <sudt_type_script>
-        Data:
+inputs:
+    cheque_cell:
+        capacity: 165 CKBytes
+        lock:
+            code_hash: <cheque_lock_script>
+            args: <20-byte_receiver_lock_hash> <20-byte_sender_lock_hash>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-        Since: 0xA000000000000006
-    Empty Cell:
-        Capacity: 200 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
+        since: 0xA000000000000006
+    basic_cell:
+        capacity: 200 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
 
-Outputs:
-    SUDT Cell:
-        Capacity: 165 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
-        Type: <sudt_type_script>
-        Data:
+outputs:
+    sudt_cell:
+        capacity: 165 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
+        type: <sudt_type_script>
+        data:
             sudt_amount: 100 UDT
-    Empty Cell:
-        Capacity: 199.99 CKBytes
-        Lock: <sender_secp256k1_blake2b_lock_script>
+    basic_cell:
+        capacity: 199.99 CKBytes
+        lock: <sender_secp256k1_blake2b_lock_script>
 
-Witnesses:
-    < 0x >
-    < valid signature for sender public key hash >
+witnesses:
+    <0x>
+    <valid_signature_for_sender_secp256k1_blake2b_lock_script>
 ```
 
-In this example, the transaction inputs include a sender secp256k1_blake160 cell whose first 20 bytes of lock script hash is equal to the `sender_secp256k1_blake2b_lock_hash[0..20]` of the cheque cell lock args, and the signature can be validated by the sender public key hash, and the since of the cheque input cell is same as `0xA000000000000006` which means the tx failed verification unless it is 6 epochs later since the input cells get confirmed on-chain, the cheque cell can be unlocked. In this example a cheque cell is converted back to a sender empty cell with SUDT.
+This transaction withdraws the 100 UDT tokens in the Cheque cell (`inputs[0]`) in a very similar way to the previous example, except that the sender's lock script is used to unlock the Cheque cell instead of a separate signature.
 
-## Deployment
+When using the sender's lock script to claim, no signature needs to be provided for the Cheque cell. Notice that `witnesses[0]` is empty because the Cheque cell (`inputs[0]`) does not require it. The input basic cell (`inputs[1]`) has a lock script `sender_secp256k1_blake2b_lock_script` that matches the Cheque cell sender lock hash `20-byte_sender_lock_hash`. The signature in `witnesses[1]` is valid and unlocks the basic cell (`inputs[1]`). The Cheque cell sender `20-byte_sender_lock_hash` matches the lock on the SUDT cell `sender_secp256k1_blake2b_lock_script`. The Cheque cell (`inputs[0]`) will unlock without a signature because the sender's lock script is present in another input cell (`inputs[1]`), and it is unlocked with a signature provided in `witnesses[1]`.
 
-Cheque Script allows a sender to temporarily provide cell capacity in asset transfer.
+Notice that a since value of `0xA000000000000006` is present on the Cheque cell. This prevents the transaction from being committed until 6 epochs after the Cheque cell was created.
 
-- Lina
+## Deployments
+
+The Cheque Lock script executable has been deployed to the Nervos CKB L1 Mainnet and Testnet and can be accessed using the parameters provided below.
+
+### Lina / Mirana (Mainnet)
 
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
@@ -254,11 +296,9 @@ Cheque Script allows a sender to temporarily provide cell capacity in asset tran
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
-**Note:**
+> Note: A `dep_type` of `dep_group` means that the contents of this dep cell contains references to multiple cell deps. These are `secp256k1_data` and `cheque_lock`, both of which have a `dep_type` of `code`.
 
-The `dep_type` of `cheque` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `cheque` whose `dep_type` are `code`.
-
-The `out_point` of `secp256k1_data` is
+The `out_point` of `secp256k1_data` is:
 
 ```
 {
@@ -267,7 +307,7 @@ The `out_point` of `secp256k1_data` is
 }
 ```
 
-and the `out_point` of `cheque` whose `dep_type` is `code` is
+The `out_point` of `cheque_lock` is:
 
 ```
 {
@@ -276,7 +316,7 @@ and the `out_point` of `cheque` whose `dep_type` is `code` is
 }
 ```
 
-- Aggron
+### Aggron / Pudge (Testnet)
 
 | parameter   | value                                                                |
 | ----------- | -------------------------------------------------------------------- |
@@ -286,9 +326,7 @@ and the `out_point` of `cheque` whose `dep_type` is `code` is
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `dep_group`                                                          |
 
-**Note:**
-
-The `dep_type` of `cheque` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `cheque` whose `dep_type` are `code`.
+> Note: A `dep_type` of `dep_group` means that the contents of this dep cell contains references to multiple cell deps. These are `secp256k1_data` and `cheque_lock`, both of which have a `dep_type` of `code`.
 
 The `out_point` of `secp256k1_data` is
 
@@ -299,7 +337,7 @@ The `out_point` of `secp256k1_data` is
 }
 ```
 
-and the `out_point` of `cheque` is
+The `out_point` of `cheque_lock` is:
 
 ```
 {
@@ -310,22 +348,30 @@ and the `out_point` of `cheque` is
 
 ## Reproducible Build
 
-Anyone can use the reproducible build to verify that the deployed script is consistent with the source code and anyone can refer to the [CI configure file](https://github.com/nervosnetwork/ckb-cheque-script/blob/main/.github/workflows/build_and_test.yml) to build the latest binaries. To build the deployed cheque lock script, one can use the following steps:
+A reproducible build can be used to verify that the deployed scripts are consistent with the source code. Please refer to the [CI configure file](https://github.com/nervosnetwork/ckb-Cheque-script/blob/main/.github/workflows/build_and_test.yml) for the exact software versions and steps needed to build the binaries used for verification purposes.
+
+<!--
+
+To build the deployed Cheque Lock script, one can use the following steps:
 
 ```bash
-$ git clone https://github.com/nervosnetwork/ckb-cheque-script
-$ cd ckb-cheque-script
+$ git clone https://github.com/nervosnetwork/ckb-Cheque-script
+$ cd ckb-Cheque-script
 $ git checkout 4ca3e62ae39c32cfcc061905515a2856cad03fd8
 $ git submodule update --init
-$ cd contracts/ckb-cheque-script/ckb-lib-secp256k1/ckb-production-scripts
+$ cd contracts/ckb-Cheque-script/ckb-lib-secp256k1/ckb-production-scripts
 $ git submodule update --init
 $ cd .. && make all-via-docker
 $ cd ../../.. && capsule build --release
 ```
 
-A draft of this specification has already been released, reviewed, and discussed in the community at [here](https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209) for quite some time.
+-->
+
+## Discussion
+
+A draft of this specification was previously released, reviewed, and discussed in the community on the [Nervos Talk forums](https://talk.nervos.org/t/sudt-Cheque-deposit-design-and-implementation/5209).
 
 ## References
 
-[1] SUDT Cheque Deposit Design and Implementation, https://talk.nervos.org/t/sudt-cheque-deposit-design-and-implementation/5209
-[2] Cheque Script Source Code, https://github.com/nervosnetwork/ckb-cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8
+[1] SUDT Cheque Deposit Design and Implementation, https://talk.nervos.org/t/sudt-Cheque-deposit-design-and-implementation/5209
+[2] Cheque Script Source Code, https://github.com/nervosnetwork/ckb-Cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8
