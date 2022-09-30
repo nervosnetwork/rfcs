@@ -2,8 +2,7 @@
 Number: "0022"
 Category: Informational
 Status: Draft
-Author: Ian Yang
-Organization: Nervos Foundation
+Author: Ian Yang <@doitian>
 Created: 2019-08-26
 ---
 
@@ -93,8 +92,6 @@ The `capacity` in the cell is not only just the amount of the stored tokens, but
 
 The capacity is not only used to store data but it also has to cover all the fields in the cell, including `data`,  `lock`, `type`, and `capacity` itself.
 
-The specification to compute occupied capacity will have its RFC in the future, which is still a [draft](https://github.com/nervosnetwork/rfcs/issues/118) now.
-
 The transaction must create an output cell which occupied capacity is less than the cell capacity.
 
 ```json
@@ -128,9 +125,13 @@ If you want to use a script in CKB, follow the code locating rules:
 
 - Compile your code into RISC-V binary. You can find some examples in the [repository](https://github.com/nervosnetwork/ckb-system-scripts) which builds the code for system cells.
 - Create a cell which stores the binary as data in a transaction, and send the transaction to the chain.
-- Construct a script structure, which `hash_type` is "Data", and `code_hash` is just the hash of the built binary.
+- Construct a script structure, which `hash_type` is "Data"[^1], and `code_hash` is just the hash of the built binary.
 - Use the script as the type or the lock script in a cell.
 - If the script has to run in a transaction, include the code cell's out point in the `cell_deps`.
+
+[^1]: Or "Data1" after [rfc32] is activated.
+
+[rfc32]: ../0032-ckb-vm-version-selection/0032-ckb-vm-version-selection.md
 
 The cells in `cell_deps` must be live, just like `inputs`. Unlike `inputs`, a cell only used in `cell_deps` is not considered dead.
 

@@ -2,8 +2,7 @@
 Number: "0020"
 Category: Informational
 Status: Draft
-Author: Ren Zhang
-Organization: Nervos Foundation
+Author: Ren Zhang <@nirenzhang>
 Created: 2019-6-19
 ---
 # CKB Consensus Protocol
@@ -117,8 +116,10 @@ Similar to NC, in our protocol, a compact block replaces a block’s commitment 
 
 Additional block structure rules:
 
-- The total size of the first four fields should be no larger than the hard-coded **block size limit**. The main purpose of implementing a block size limit is to avoid overloading public nodes' bandwidth. The uncle blocks’ proposal zones do not count in the limit as they are usually already synchronized when the block is mined. 
+- The total size of the first four fields should be no larger than the hard-coded **block size limit**. The main purpose of implementing a block size limit is to avoid overloading public nodes' bandwidth. The uncle blocks’ proposal zones do not count in the limit as they are usually already synchronized when the block is mined. Since [RFC31], the new field `extension` is also counted in the total size.
 - The number of `txpid`s in a proposal zone also has a hard-coded upper bound.
+
+[RFC31]: ../0031-variable-length-header-field/0031-variable-length-header-field.md
 
 Two heuristic requirements may help practitioners choose the parameters. First, the upper bound number of `txpid`s in a proposal zone should be no smaller than the maximum number of committed transactions in a block, so that even if *w<sub>close</sub>=w<sub>far</sub>*, this bound is not the protocol's throughput bottleneck. Second, ideally the compact block should be no bigger than 80KB. According to [a 2016 study by Croman et al.](https://fc16.ifca.ai/bitcoin/papers/CDE+16.pdf), messages no larger than 80KB have similar propagation latency in the Bitcoin network; larger messages propagate slower as the network throughput becomes the bottleneck. This number may change as the network condition improves.
 

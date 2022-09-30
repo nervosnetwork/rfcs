@@ -2,8 +2,7 @@
 Number: "0023"
 Category: Standards Track
 Status: Active
-Author: Jan Xie, Xuejie Xiao, Ian Yang
-Organization: Nervos Foundation
+Author: Jan Xie <jan@cryptape.com>, Xuejie Xiao <xxuejie@gmail.com>, Ian Yang <@doitian>
 Created: 2019-10-30
 ---
 
@@ -56,7 +55,6 @@ A phase 1 transaction MUST satisfy the following conditions:
 - One or more `deposit cell`s MUST be included in the transaction as inputs.
 - For each `deposit cell`, the transaction MUST also include reference to its associated including block in `header_deps`, which will be used by Nervos DAO type script as the starting point of deposit.
 - For a `deposit cell` at input index `i`, a `withdrawing cell` MUST be created at output index `i` with the following requirements:
-    - The `withdrawing cell` MUST use the same lock script as the `deposit cell`.
     - The `withdrawing cell` MUST use the same Nervos DAO type script as the `deposit cell`.
     - The `withdrawing cell` MUST have the same capacity as the `deposit cell`.
     - The `withdrawing cell` MUST also have 8 bytes length cell data, but instead of 8 zero, it MUST store the block number of the `deposit cell`'s including block. The number MUST be packed in 64-bit unsigned little-endian integer format.
@@ -411,6 +409,3 @@ Now the maximum withdrawable capacity can be calculated:
 ## Gotchas
 
 * Nervos DAO only supports *absolute epoch number* as since value in the withdrawal process. If you are using a lock that supports lock period, such as the system included [multi-sign script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c), please make sure to ONLY use *absolute epoch number* as lock period. Otherwise, the locked Nervos DAO cell cannot be spent.
-* CKB has a maturity constraint on referencing header: a block header can only be referenced in a cell that is committed at least 4 epochs after the referenced block header. This constraint limits Nervos DAO withdrawal in the following ways:
-   - Phase 1 withdrawal transaction can only be committed 4 epochs after the fund is originally deposited.
-   - Phase 2 withdrawal transaction can only be committed 4 epochs after phase 1 withdrawal transaction is committed.
