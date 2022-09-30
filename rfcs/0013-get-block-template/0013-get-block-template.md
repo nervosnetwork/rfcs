@@ -2,8 +2,7 @@
 Number: "0013"
 Category: Standards Track
 Status: Active
-Author: Dingwei Zhang
-Organization: Nervos Foundation
+Author: Dingwei Zhang <zhangsoledad@gmail.com>
 Created: 2019-01-02
 ---
 

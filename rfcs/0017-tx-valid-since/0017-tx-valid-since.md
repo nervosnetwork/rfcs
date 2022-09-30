@@ -1,336 +1,168 @@
 ---
 Number: "0017"
 Category: Standards Track
-Status: Proposal
-Author: Jinyang Jiang
-Organization: Nervos Foundation
+Status: Active
+Author: Jinyang Jiang <@jjyr>, Ian Yang <@doitian>, Jordan Mack <@jordanmack>
 Created: 2019-03-11
 ---
 
-# Transaction valid since
+# Transaction Since Precondition
+
+<!-- Diagrams are created in Lucid: https://lucid.app/documents/view/d756089a-2388-4ea4-b61a-3943cbe2620a -->
 
 ## Abstract
 
-This RFC suggests adding a new consensus rule to prevent a cell to be spent before a certain block timestamp or a block number.
+This RFC describes a consensus rule used to prevent a transaction input from being committed before a specified time in the future. 
 
 ## Summary
 
-Transaction input adds a new `u64` (unsigned 64-bit integer) type field `since`, which prevents the transaction to be mined before an absolute or relative time.
+An optional `since` value can be added to any input within a transaction that specifies a time in the future when it can be committed. The current time must be equal to or greater than the time specified in the `since` value before a CKB node will consider this precondition fulfilled and allow the transaction to be committed.
 
-The highest 8 bits of `since` is `flags`, the remain `56` bits represent `value`, `flags` allow us to determine behaviours:
-* `flags & (1 << 7)` represent `relative_flag`.
-* `flags & (1 << 6)` and `flags & (1 << 5)` together represent `metric_flag`.
-    * `since` use a block based lock-time if `metric_flag` is `00`, `value` can be explained as a block number or a relative block number.
-    * `since` use an epoch based lock-time if `metric_flag` is `01`, `value` can be explained as an absolute epoch or relative epoch.
-    * `since` use a time based lock-time if `metric_flag` is `10`, `value` can be explained as a block timestamp(unix time) or a relative seconds.
-    * `metric_flag` `11` is invalid.
-* other 5 `flags` bits remain for other use.
+A transaction may be composed of multiple inputs from different parties that are batched together. Therefore a `since` field is located on each input within the transaction to allow every party to set their `since` value individually. If the `since` precondition is not met on any input within the transaction, the entire transaction will be immediately rejected by the CKB node on submission.
 
-The consensus to validate this field described as follow:
-* iterate inputs, and validate each input by following rules.
-* ignore this validate rule if all 64 bits of `since` are 0.
-* check `metric_flag` flag:
-    * the lower 56 bits of `since` represent block number if `metric_flag` is `00`.
-    * the lower 56 bits of `since` represent epoch if `metric_flag` is `01`.
-    * the lower 56 bits of `since` represent block timestamp if `metric_flag` is `10`.
-* check `relative_flag`:
-    * consider field as absolute lock time if `relative_flag` is `0`:
-        * fail the validation if tip's block number or epoch or block timestamp is less than `since` field.
-    * consider field as relative lock time if `relative_flag` is `1`:
-        * find the block which produced the input cell, get the block timestamp or block number or epoch based on `metric_flag` flag.
-        * fail the validation if tip's number or epoch or timestamp minus block's number or epoch or timestamp is less than `since` field.
-* Otherwise, the validation SHOULD continue.
+Three metrics can be used to specify how the `since` time is expressed:
 
-A cell lock script can check the `since` field of an input and return invalid when `since` not satisfied condition, to indirectly prevent cell to be spent.
+1. Block Number
+2. Epoch Number (with fraction)
+3. Timestamp (median of previous 37 blocks)
 
-This provides the ability to implement time-based fund lock scripts:
+A developer can choose exactly one of these three metrics to use, and this will be used to indicate the format of `since` value. The metric used also used to determine how the threshold value, and the target value will be calculated. The threshold value is the block number, epoch number, or timestamp that must be reached to fulfill the precondition and allow the commit to occur. The target value can be thought of as the current block number, epoch number, or timestamp.
 
-``` ruby
-# absolute time lock
-# The cell can't be spent unless block number is greater than 10000.
-def unlock?
-  input = CKB.load_current_input
-  # fail if it is relative lock
-  return false if input.since[63] == 1
-  # fail if metric_flag is not block_number
-  return false (input.since & 0x6000_0000_0000_0000) != (0b0000_0000 << 56)
-  input.since > 10000
-end
-```
+Note: Each one of these metrics will always increase in value over time with each new block added to the chain, meaning it is safe to assume these values will never decrease over time.
 
-``` ruby
-# relative time lock
-# The cell can't be spent unless 3 days(blockchain time) later since the cell gets confirmed on-chain.
-def unlock?
-  input = CKB.load_current_input
-  # fail if it is absolute lock
-  return false if input.since[63].zero?
-  # fail if metric_flag is not timestamp
-  return false (input.since & 0x6000_0000_0000_0000) != (0b0100_0000 << 56)
-  # extract lower 56 bits and convert to seconds
-  time = since & 0x00ffffffffffffff
-  # check time must greater than 3 days
-  time > 3 * 24 * 3600
-end
-```
+The relative flag must be set to either `absolute` or `relative` with the specified metric. This indicates how the threshold value should be calculated. 
 
-``` ruby
-# relative time lock with epoch
-# The cell can't be spent in the next epoch
-def unlock?
-  input = CKB.load_current_input
-  # fail if it is absolute lock
-  return false if input.since[63].zero?
-  # fail if metric_flag is not epoch information
-  return false (input.since & 0x6000_0000_0000_0000) != (0b0010_0000 << 56)
-  # extract lower 56 bits
-  epoch = since & 0x00ffffffffffffff
-  # extract epoch information
-  epoch_number = epoch & 0xffffff
-  # enforce only can unlock in next or further epochs
-  epoch_number >= 1
-end
-```
+When `absolute` is specified, the threshold value is set to the specified `since` value, which is interpreted by the metric selected.
 
-## Examples
+When `relative` is specified, the threshold value is calculated by retrieving the base value from the commitment block and and adding the `since` value. The base value is the block number, epoch number, or timestamp depending on the metric selected. The commitment block is the block in which the input was committed.
 
-``` txt
-# Absolute time lock
+After the threshold value and target value have been calculated they can be compared. The precondition is fulfilled only if the target value is equal to or greater than the threshold value.
 
-0x0000_0000_0000_3039 # The tx failed verification unless the block number is greater than #12345
+## Specification
 
-0x4000_0000_5e83_d980 # The tx failed verification unless current blockchain date is later than 2020-04-01
+### How to Specify the Since Precondition
 
-0x2000_0000_0000_0400 # The tx failed verification unless the epoch number is greater than 1024
+Each transaction input has a `since` field. The field itself is an unsigned 64-bit integer (u64) with special encoding for different values.[^1] A u64 value of `0` is used to indicate that the `since` precondition is disabled and will be ignored. If the field value is not `0`, then the highest 8 bits of the `since` field represent configuration `flags` and the remaining `56` bits represent the `value`.
 
-# Relative time lock
+[^1]: See [RFC22](../0022-transaction-structure/0022-transaction-structure.md) for the full transaction structure.
 
-0x8000_0000_0000_0064 # The tx failed verification unless it is 100 blocks later since the input cell get confirmed on-chain
+![Since Encoding](since-encoding.jpg)
 
-0xc000_0000_0012_7500 # The tx failed verification unless it is 14 days(blockchain time) later since the input cell get confirmed on-chain
+* The highest bit is used to specify if the `value` is `absolute` or `relative`.
 
-0xa000_0000_0000_0018 # The tx failed verification unless it is 24 epochs later since the input cell get confirmed on-chain
-```
+    * `0`: The `value` is `absolute`.
+    * `1`: The `value` is `relative`.
 
-## Detailed Specification
+* The next two bits specify the metric which will be used to interpret `value` and to calculate the treshold value and target value.
 
-`since` SHOULD be validated with the median timestamp of the past 11 blocks to instead the block timestamp when `metric flag` is `10`, this prevents miner lie on the timestamp for earning more fees by including more transactions that immature.
+    * `00`: Use the block number.
+    * `01`: Use the epoch number with fraction.
+    * `10`: Use the median timestamp of the previous 37 block headers.
+    * `11`: Invalid. The metric flag should never be set to `11`.
 
-The median block time calculated from the past 37 blocks timestamp (from block's parent), we pick the older timestamp as median if blocks number is not enough and is odd, the details behavior defined as the following code:
+* The next 5 bits are reserved for future extension. They must all be set to zero for now.
 
-``` rust
-pub trait BlockMedianTimeContext {
-    fn median_block_count(&self) -> u64;
+Interpretation of `value` is dependent on the metric which was specified.
 
-    /// Return timestamp and block_number of the corresponding bloch_hash, and hash of parent block
-    fn timestamp_and_parent(&self, block_hash: &H256) -> (u64, BlockNumber, H256);
+When the metric flag is set to block number (`00`) or timestamp median (`10`), then `value` is a 56-bit unsigned integer stored in little-endian.
 
-    /// Return past block median time, **including the timestamp of the given one**
-    fn block_median_time(&self, block_hash: &H256) -> u64 {
-        let median_time_span = self.median_block_count();
-        let mut timestamps: Vec<u64> = Vec::with_capacity(median_time_span as usize);
-        let mut block_hash = block_hash.to_owned();
-        for _ in 0..median_time_span {
-            let (timestamp, block_number, parent_hash) = self.timestamp_and_parent(&block_hash);
-            timestamps.push(timestamp);
-            block_hash = parent_hash;
+When the metric flag is set to epoch number with fraction (`01`), `value` represents an epoch (E), epoch index (I), and epoch length (L). These three values are encoded into `value` as follows:
 
-            if block_number == 0 {
-                break;
-            }
-        }
+* `E` has 3 bytes, from the lowest bit 0 to 23.
+* `I` has 2 bytes, from bit 24 to 39.
+* `L` has 2 bytes, from bit 40 to 55.
 
-        // return greater one if count is even.
-        timestamps.sort();
-        timestamps[timestamps.len() >> 1]
-    }
-}
-```
+Note: The bit ranges for `E`, `I`, and `L` are using [LSB 0 Bit Numbering](https://en.wikipedia.org/wiki/Bit_numbering#LSB_0_bit_numbering) which counts from right to left. All three values are stored in little-endian.
 
-Validation of transaction `since` defined as follow code:
+The following diagram illustrates how the `E`, `I`, and `L` bit ranges are positioned within the 56-bit `value` portion of the `since` field.
 
-``` rust
-const LOCK_TYPE_FLAG: u64 = 1 << 63;
-const METRIC_TYPE_FLAG_MASK: u64 = 0x6000_0000_0000_0000;
-const VALUE_MASK: u64 = 0x00ff_ffff_ffff_ffff;
-const REMAIN_FLAGS_BITS: u64 = 0x1f00_0000_0000_0000;
+![EIL Encoding](e-i-l-encoding.png)
 
-enum SinceMetric {
-    BlockNumber(u64),
-    EpochNumberWithFraction(EpochNumberWithFraction),
-    Timestamp(u64),
-}
+The following table shows how to decode different values contained within `since` using bit operations right shift (`>>`), left shift (`<<`), and bit and (`&`).
 
-/// RFC 0017
-#[derive(Copy, Clone, Debug)]
-pub(crate) struct Since(pub(crate) u64);
+| Name | Bit Operation |
+| ---- | ------------- |
+| relative flag | `since >> 63` |
+| metric flag   | `(since >> 61) & 3` |
+| value         | `since & ((1 << 56) - 1)` |
+| `E` in value  | `since & ((1 << 24) - 1)` |
+| `I` in value  | `(since >> 24) & ((1 << 16) - 1)` |
+| `L` in value  | `(since >> 40) & ((1 << 16) - 1)` |
 
-impl Since {
-    pub fn is_absolute(self) -> bool {
-        self.0 & LOCK_TYPE_FLAG == 0
-    }
+### How to Verify the Since Precondition
 
-    #[inline]
-    pub fn is_relative(self) -> bool {
-        !self.is_absolute()
-    }
+There are three major steps to verify the since precondition:
 
-    pub fn flags_is_valid(self) -> bool {
-        (self.0 & REMAIN_FLAGS_BITS == 0)
-            && ((self.0 & METRIC_TYPE_FLAG_MASK) != METRIC_TYPE_FLAG_MASK)
-    }
+1. Decode Values: Extract the necessary values which are encoded within the `since` field and verify the format is valid.
+2. Compute Threshold Value: Determine the threshold value that will be used for comparison.
+3. Derive Target Value and Compare: Derive the target value from the block that is going to commit the transaction. Compare it with the threshold value to check whether the precondition is fulfilled.
 
-    fn extract_metric(self) -> Option<SinceMetric> {
-        let value = self.0 & VALUE_MASK;
-        match self.0 & METRIC_TYPE_FLAG_MASK {
-            //0b0000_0000
-            0x0000_0000_0000_0000 => Some(SinceMetric::BlockNumber(value)),
-            //0b0010_0000
-            0x2000_0000_0000_0000 => Some(SinceMetric::EpochNumberWithFraction(EpochNumberWithFraction::from_full_value(value))),
-            //0b0100_0000
-            0x4000_0000_0000_0000 => Some(SinceMetric::Timestamp(value * 1000)),
-            _ => None,
-        }
-    }
-}
+The following flowchart illustrates the verification process.
 
-/// https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0017-tx-valid-since/0017-tx-valid-since.md#detailed-specification
-pub struct SinceVerifier<'a, M> {
-    rtx: &'a ResolvedTransaction,
-    block_median_time_context: &'a M,
-    block_number: BlockNumber,
-    epoch_number_with_fraction: EpochNumberWithFraction,
-    parent_hash: Byte32,
-    median_timestamps_cache: RefCell<LruCache<Byte32, u64>>,
-}
+![Since Verification](since-verification.jpg)
 
-impl<'a, M> SinceVerifier<'a, M>
-where
-    M: BlockMedianTimeContext,
-    {
-        pub fn new(
-            rtx: &'a ResolvedTransaction,
-            block_median_time_context: &'a M,
-            block_number: BlockNumber,
-            epoch_number_with_fraction: EpochNumberWithFraction,
-            parent_hash: Byte32,
-        ) -> Self {
-            let median_timestamps_cache = RefCell::new(LruCache::new(rtx.resolved_inputs.len()));
-            SinceVerifier {
-                rtx,
-                block_median_time_context,
-                block_number,
-                epoch_number_with_fraction,
-                parent_hash,
-                median_timestamps_cache,
-            }
-        }
-        fn parent_median_time(&self, block_hash: &Byte32) -> u64 {
-            let (_, _, parent_hash) = self
-                .block_median_time_context
-                .timestamp_and_parent(block_hash);
-            self.block_median_time(&parent_hash)
-        }
-        
-        fn block_median_time(&self, block_hash: &Byte32) -> u64 {
-            if let Some(median_time) = self.median_timestamps_cache.borrow().get(block_hash) {
-                return *median_time;
-            }
-            let median_time = self.block_median_time_context.block_median_time(block_hash);
-            self.median_timestamps_cache
-                .borrow_mut()
-                .insert(block_hash.clone(), median_time);
-            median_time
-        }
-        
-        fn verify_absolute_lock(&self, since: Since) -> Result<(), Error> {
-            if since.is_absolute() {
-                match since.extract_metric() {
-                    Some(SinceMetric::BlockNumber(block_number)) => {
-                        if self.block_number < block_number {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    Some(SinceMetric::EpochNumberWithFraction(epoch_number_with_fraction)) => {
-                        if self.epoch_number_with_fraction < epoch_number_with_fraction {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    Some(SinceMetric::Timestamp(timestamp)) => {
-                        let tip_timestamp = self.block_median_time(&self.parent_hash);
-                        if tip_timestamp < timestamp {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    None => {
-                        return Err(TransactionError::InvalidSince).into());
-                    }
-                }
-            }
-            Ok(())
-        }
-        
-        fn verify_relative_lock(&self, since: Since, cell_meta: &CellMeta) -> Result<(), Error> {
-            if since.is_relative() {
-                let info = match cell_meta.transaction_info {
-                    Some(ref transaction_info) => Ok(transaction_info),
-                    None => Err(TransactionError::Immature),
-                }?;
-                match since.extract_metric() {
-                    Some(SinceMetric::BlockNumber(block_number)) => {
-                        if self.block_number < info.block_number + block_number {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    Some(SinceMetric::EpochNumberWithFraction(epoch_number_with_fraction)) => {
-                        let a = self.epoch_number_with_fraction.to_rational();
-                        let b =
-                            info.block_epoch.to_rational() + epoch_number_with_fraction.to_rational();
-                        if a < b {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    Some(SinceMetric::Timestamp(timestamp)) => {
-                        // pass_median_time(current_block) starts with tip block, which is the
-                        // parent of current block.
-                        // pass_median_time(input_cell's block) starts with cell_block_number - 1,
-                        // which is the parent of input_cell's block
-                        let cell_median_timestamp = self.parent_median_time(&info.block_hash);
-                        let current_median_time = self.block_median_time(&self.parent_hash);
-                        if current_median_time < cell_median_timestamp + timestamp {
-                            return Err(TransactionError::Immature).into());
-                        }
-                    }
-                    None => {
-                        return Err(TransactionError::InvalidSince).into());
-                    }
-                }
-            }
-            Ok(())
-        }
-        
-        pub fn verify(&self) -> Result<(), Error> {
-            for (cell_meta, input) in self
-                .rtx
-                .resolved_inputs
-                .iter()
-                .zip(self.rtx.transaction.inputs()) {
-                // ignore empty since
-                let since: u64 = input.since().unpack();
-                if since == 0 {
-                    continue;
-                }
-                let since = Since(since);
-                // check remain flags
-                if !since.flags_is_valid() {
-                    return Err(TransactionError::InvalidSince).into());
-                }
-                
-                // verify time lock
-                self.verify_absolute_lock(since)?;
-                self.verify_relative_lock(since, cell_meta)?;
-            }
-            Ok(())
-        }
-    }
-```
+#### Step 1. Decode Values
+
+> Extract the necessary values which are encoded within the `since` field and verify the format is valid.
+
+If the `since` field value is zero, then this indicates that since precondition is not used and verification can be skipped.
+
+If the `since` field value is not zero, verify that the format is valid:
+
+1. The metric flag should not be `11`.
+2. The reserved flags must be all zeros.
+3. When the metric flag is epoch number with fraction (`01`), `I` must be less than `L`, or they must both be zeros. In the latter case, the `I` and `L` values will be set to `0` and `1` respectively.
+
+If the format is valid, the process moves on to the next step.
+
+#### Step 2. Compute Threshold Value
+
+> Determine the threshold value that will be used for comparison.
+
+The relative flag specifies if `absolute` or `relative` should be used to determine the threshold value.
+
+When `absolute` is specified, the threshold value is set to the 56-bit `value` portion of the `since` field. This is a simple process that copies the value directly without any conversion, and no further steps need to be taken.
+
+When `relative` is specified, the threshold value is set to the base value derived from the commitment block plus the (56-bit) `value` portion of the `since` field.
+
+##### Commitment Block
+
+A two-step transaction confirmation protocol is used by CKB, and it is defined in [RFC20][]. A transaction is only considered committed when it is included in the commitment zone of a block. The commitment block of a transaction is the block that committed the transaction.
+
+[RFC20]: ../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#two-step-transaction-confirmation
+
+A transaction input is a reference to an output of another transaction. The commitment block of a transaction input is the same as the commitment block of the transaction producing the referenced output.
+
+In the diagram below, `Block B` is the commitment block of `Input 0` of `Transaction X`.
+
+![Commitment Block](commitment-block.jpg)
+
+##### Base Value
+
+The base value is derived from the input commitment block according to the metric that is specified.
+
+1. If the metric flag is `00` (block number), the base value is the block number of the commitment block.
+2. If the metric flag is `01` (epoch number with fraction), the base value is the epoch field in the commitment block header. This shares the same encoding as the aforementioned epoch field which contains the individual values for epoch (E), epoch index (I), and epoch length (L).
+3. If the metric flag is `10` (timestamp), the base value is the timestamp field in the commitment block header.
+
+The threshold value of an `absolute` precondition equals the 56-bit `value` portion of the `since` field. The threshold value of a `relative` precondition equals the base value plus the `value` portion of the `since` field.
+
+The diagram below visualizes the threshold value computation process.
+
+![Threshold Value](threshold-value.jpg)
+
+#### Step 3. Derive Target Value and Compare
+
+> Derive the target value from the block that is going to commit the transaction. Compare it with the threshold to check whether the precondition is fulfilled.
+
+We will use the term "target block" to refer to the block that commits a transaction. The target block of a committed transaction is the mined block which included the transaction. This is the same as the commitment block. The target block of a pending transaction in the mempool or in transit is the next block that will be mined, but has not been mined yet.
+
+The target value is determined by the target block depending on which metric was selected. These are calculated as follows:
+
+1. If the metric flag is `00` (block number), the target value is the block number of the last mined block, plus 1.
+2. If the metric flag is `01` (epoch number with fraction), the target value is the next index of the last mined block. If the last mined block is `500 10/20` (E = 500, I = 10, L = 20), then the target value is `500 11/20` (E = 500, I = 11, L = 20).
+3. If the metric flag is `10` (timestamp), the target value is the median of the timestamp field of the 37 blocks preceding the target block.
+
+![Target Value](target-value.jpg)
+
+The final step is to compare the target value to the threshold value. The precondition is fulfilled if the target value is equal to or greater than the threshold value.

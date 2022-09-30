@@ -2,8 +2,7 @@
 Number: "0006"
 Category: Standards Track
 Status: Active
-Author: Ke Wang
-Organization: Nervos Foundation
+Author: Ke Wang <k@bll.io>
 Created: 2018-12-01
 ---
 

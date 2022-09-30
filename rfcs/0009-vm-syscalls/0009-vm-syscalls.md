@@ -2,8 +2,7 @@
 Number: "0009"
 Category: Standards Track
 Status: Active
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2018-12-14
 ---
 
@@ -11,7 +10,7 @@ Created: 2018-12-14
 
 ## Abstract
 
-This document describes all the RISC-V VM syscalls implemented in CKB so far.
+This document describes all the RISC-V VM syscalls implemented in CKB Lina. Note that 3 new syscalls have been added to ckb2021 [2].
 
 ## Introduction
 
@@ -445,7 +444,11 @@ In case of errors, `addr` and `index` will not contain meaningful data to use.
 #### Loading Header Immature Rule
 [loading header immature Rule]: #loading-header-immature-error
 
-**Attention** that the script can only load the header of a block which is 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction loading its header can only be included in the first block of epoch 8 and later blocks.
+Attention that all the blocks referenced in header deps must be 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction with its header as a header dep can only be included in the first block of epoch 8 and later blocks.
+
+This rule will be removed since ckb2021 as proposed in [RFC36].
+
+[RFC36]: ../0036-remove-header-deps-immature-rule/0036-remove-header-deps-immature-rule.md
 
 ### Load Header By Field
 [load header by field]: #load-header-by-field
@@ -538,5 +541,7 @@ This syscall accepts a null terminated string and prints it out as debug log in 
 # Reference
 
 * [1]: [Molecule Encoding][1]
+* [2]: [VM Syscalls 2][2]
 
 [1]: ../0008-serialization/0008-serialization.md
+[2]: ../0034-vm-syscalls-2/0034-vm-syscalls-2.md

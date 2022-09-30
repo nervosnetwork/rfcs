@@ -2,8 +2,7 @@
 Number: "0026"
 Category: Standards Track
 Status: Proposal
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2020-09-03
 ---
 
@@ -253,18 +252,82 @@ Here CKByte minimum is set to 9, which means in each transaction, one must at le
 
 ## Notes
 
-An implementation of the anyone-can-pay lock spec above has been deployed to Lina CKB mainnet at [here](https://explorer.nervos.org/transaction/0x58eb58e2e3dd9852099a19424cf6e63b5238afe92e3085561b8feafced6d6876). A cell in the dep group format containing both the anyone-can-pay lock, and the required secp256k1 data cell, is also deployed at [here](https://explorer.nervos.org/transaction/0x4153a2014952d7cac45f285ce9a7c5c0c0e1b21f2d378b82ac1433cb11c25c4d).
+An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/e570c11aff3eca12a47237c21598429088c610d5/c/anyone_can_pay.c) of the anyone-can-pay lock spec above has been deployed to Lina CKB mainnet and Aggron testnet:
+
+- Lina
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0xd369597ff47f29fbc0d47d2e3775370d1250b85140c670e4718af712983a2354` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0x4153a2014952d7cac45f285ce9a7c5c0c0e1b21f2d378b82ac1433cb11c25c4d` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `anyone_can_pay` in Lina is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `anyone_can_pay` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0xe2fb199810d49a4d8beec56718ba2593b665db9d52299a0f9e6e75416d73ff5c,
+  index: 0x3
+}
+```
+
+and the `out_point` of `anyone_can_pay` whose `dep_type` is `code` is
+
+```
+{
+  tx_hash: 0x58eb58e2e3dd9852099a19424cf6e63b5238afe92e3085561b8feafced6d6876,
+  index: 0x0
+}
+```
+
+- Aggron
+
+| parameter   | value                                                                |
+| ----------- | -------------------------------------------------------------------- |
+| `code_hash` | `0x3419a1c09eb2567f6552ee7a8ecffd64155cffe0f1796e6e61ec088d740c1356` |
+| `hash_type` | `type`                                                               |
+| `tx_hash`   | `0xec26b0f85ed839ece5f11c4c4e837ec359f5adc4420410f6453b1f6b60fb96a6` |
+| `index`     | `0x0`                                                                |
+| `dep_type`  | `dep_group`                                                          |
+
+**Note:**
+
+The `dep_type` of `anyone_can_pay` in Aggron is `dep_group` means that the content of this dep cell contains two cell deps which are `secp256k1_data` and `anyone_can_pay` whose `dep_type` are `code`.
+
+The `out_point` of `secp256k1_data` is
+
+```
+{
+  tx_hash: 0x8f8c79eb6671709633fe6a46de93c0fedc9c1b8a6527a18d3983879542635c9f,
+  index: 0x3
+}
+```
+
+and the `out_point` of `anyone_can_pay` is
+
+```
+{
+  tx_hash: 0xce29e27734b3eb6f8b6a814cef217753ac2ccb4e4762ecc8b07d05634d8ba374,
+  index: 0x0
+}
+```
 
 Reproducible build is supported to verify the deploy script. To bulid the deployed anyone-can-pay lock script above, one can use the following steps:
 
 ```bash
-$ git clone https://github.com/nervosnetwork/ckb-anyone-can-pay
-$ cd ckb-anyone-can-pay
-$ git checkout deac6801a95596d74e2da8f2f1a6727309d36100
+$ git clone https://github.com/nervosnetwork/ckb-production-scripts
+$ cd ckb-production-scripts
+$ git checkout e570c11aff3eca12a47237c21598429088c610d5
 $ git submodule update --init
 $ make all-via-docker
 ```
 
-Now you can compare the anyone-can-pay lock script generated at `spec/cells/anyone_can_pay` with the one deployed to CKB, they should be identical.
+Now you can compare the anyone-can-pay lock script generated at `build/anyone_can_pay` with the one deployed to CKB, they should be identical.
 
 A draft of this specification has already been released, reviewed, and discussed in the community at [here](https://talk.nervos.org/t/rfc-anyone-can-pay-lock/4438) for quite some time.

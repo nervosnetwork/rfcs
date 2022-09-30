@@ -2,8 +2,7 @@
 Number: "0003"
 Category: Informational
 Status: Final
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2018-08-01
 ---
 
@@ -368,3 +367,13 @@ int main(int argc, char* argv[])
 ```
 
 Here all UDT functions are linked dynamically from external cells, current contract can be minimized in terms of size.
+
+### Update
+
+Any new version of CKB-VM will not affect the execution results of the old transactions. We released CKB-VM version 1 in the CKB hardfork [1].
+
+# Reference
+
+* [1]: [CKB-VM version 1][1]
+
+[1]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md

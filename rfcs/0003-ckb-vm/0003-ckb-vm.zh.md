@@ -2,8 +2,7 @@
 Number: "0003"
 Category: Informational
 Status: Final
-Author: Xuejie Xiao
-Organization: Nervos Foundation
+Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2018-08-01
 ---
 
@@ -339,3 +338,13 @@ int main(int argc, char* argv[])
 ```
 
 这里所有的 UDT 函数均通过动态链接的方式引用其他 Cell 里的内容，不占用当前 Cell 的空间。
+
+### 更新
+
+任何 CKB-VM 的新版本均不会影响旧有交易的执行结果. 我们在 CKB 硬分叉版本中发布了 CKB-VM version 1 [1].
+
+# 参考
+
+* [1]: [CKB-VM version 1][1]
+
+[1]: ../0033-ckb-vm-version-1/0033-ckb-vm-version-1.md
