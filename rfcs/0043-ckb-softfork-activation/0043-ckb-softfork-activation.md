@@ -34,7 +34,7 @@ The following guidelines are suggested for selecting these parameters for a soft
 1. `name` should be selected such that no two softforks, concurrent or otherwise, ever use the same name.
 2. `bit` should be selected such that no two concurrent softforks use the same bit.
 3. `start_epoch` can be set soon after software with parameters is expected to be released.
-4. `timeout_epoch` should be set to an epoch when it is considered reasonable to expect the entire economy to have upgraded by, ensure sufficient time for the signaling `period`, should at least one and a half month, 260 epochs after `start_epoch`.
+4. `timeout_epoch` should be set to an epoch when it is considered reasonable to expect the entire economy to have upgraded by, ensure sufficient time for the signaling `period`, should at least one and a half month, 270 epochs after `start_epoch`.
 5. `period` should at least 42 epochs，approximately one week.
 6. `threshold` should be 90% or 75% for testnet.
 7. `minimum_activation_epoch` should be set to several epochs after `timeout_epoch` if the `start_epoch` is to be very soon after software with parameters is expected to be released.
@@ -42,21 +42,27 @@ Where the locked_in threshold is reached, softforks are guaranteed to activate e
 
 ### States
 
-With each epoch and softfork, we associate a deployment state. The possible states are:
+With each block and softfork, we associate a deployment state. The possible states are:
 
-1. DEFINED is the first state that each softfork starts. The 0 epoch is by definition in this state for each deployment.
-2. STARTED for epochs past the `start_epoch`.
-3. LOCKED_IN for one epoch after the first epoch period with STARTED epochs of which at least `threshold` has the associated bit set in `version`.
-4. ACTIVE for all epochs after the LOCKED_IN epoch.
-5. FAILED for one epoch period past the `timeout_epoch`, if LOCKED_IN was not reached.
+1. DEFINED is the first state that each softfork starts. The blocks of 0 epoch is by definition in this state for each deployment.
+2. STARTED for all blocks reach or past the `start_epoch`.
+3. LOCKED_IN for one `period` after the first `period` with STARTED blocks of which at least `threshold` has the associated bit set in `version`.
+4. ACTIVE for all blocks after the LOCKED_IN `period`.
+5. FAILED for all blocks after the `timeout_epoch`, if LOCKED_IN was not reached.
 
 ### Bit flags
 
-The `version` block header field is to be interpreted as a 32-bit little-endian integer (as present), and bits are selected within this integer as values (1 << N) where N is the bit number.
+The `version` block header field is to be interpreted as a 32-bit little-endian integer, and bits are selected within this integer as values (1 << N) where N is the `bit` number.
 
-Blocks in the STARTED state get a `version` whose bit position bit is set to 1. The top 3 bits of such blocks must be 001, so the range of possible `version` values is [0x20000000...0x3FFFFFFF], inclusive.
+```rust
+    pub fn mask(&self) -> u32 {
+        1u32 << bit as u32
+    }
+```
 
-By restricting the top 3 bits to 001, we get 29 out of those for this proposal and support future upgrades for different mechanisms. When a block `version` does not have top bits 001, it is treated as if all bits are 0 for deployments.
+Blocks in the STARTED state get a `version` whose bit position bit is set to 1. The top 3 bits of such blocks must be 000, so the range of possible `version` values is [0x00000000...0x1FFFFFFF], inclusive.
+
+By restricting the top 3 bits to 000, we get 29 out of those for this proposal and support future upgrades for different mechanisms.
 
 Miners should continue setting the bit in the LOCKED_IN phase, so uptake is visible, though this does not affect consensus rules.
 
@@ -67,7 +73,7 @@ The new consensus rules for each softfork are enforced for each block with an AC
 
 ![State transitions](images/state-transitions.png)
 
-The 0 epoch has a state DEFINED for each deployment, by definition.
+The blocks of 0 epoch has a state DEFINED for each deployment, by definition.
 
 ```rust
 if epoch.number().is_zero() {
@@ -86,7 +92,7 @@ match state {
     }
 ```
 
-After an epoch in the STARTED state, we tally the bits set and transition to LOCKED_IN if a sufficient number of blocks in the past `period` set the deployment bit in their version numbers. If the threshold has not been met and we reach the `timeout_epoch`, we transition directly to FAILED.
+After a `period` in the STARTED state, we tally the bits set and transition to LOCKED_IN if a sufficient number of blocks in the past `period` set the deployment bit in their version numbers. If the threshold has not been met and we reach the `timeout_epoch`, we transition directly to FAILED.
 
 Note that a block's state never depends on its version, only on that of its ancestors.
 
@@ -95,11 +101,11 @@ match state {
     ThresholdState::STARTED => {
         let mut count = 0;
         for block in (0..period_blocks) {
-            if (block.version() & 0xE0000000 == 0x20000000 && (block.version() >> bit) & 1 == 1) {
+            if (block.version() & 0xE0000000 == 0x00000000 && (block.version() >> bit) & 1 == 1) {
                 ++count;
             }
         }
-        let threshold_number = threshold_number(epoch_length, threshold);
+        let threshold_number = threshold_number(period_blocks, threshold);
         if count >= threshold_number {
             next_state = ThresholdState::LOCKED_IN;
         } else if epoch_ext.number() >= timeout {
@@ -107,8 +113,7 @@ match state {
         }
     }
 ```
-
-After at least one epoch of LOCKED_IN, we automatically transition to ACTIVE if the `minimum_activation_epoch` is reached. Otherwise, LOCKED_IN continues.
+After a `period` of LOCKED_IN, we automatically transition to ACTIVE if the `minimum_activation_epoch` is reached. Otherwise, LOCKED_IN continues.
 
 ```rust
 ThresholdState::LOCKED_IN => {
