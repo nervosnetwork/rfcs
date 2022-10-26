@@ -10,13 +10,13 @@ Created: 2022-08-23
 
 ## Abstract
 
-This RFC describes a light client protocol allowing clients to obtain compact probabilistic filters of block content from full nodes and download full blocks if the filter matches relevant data.
+This RFC describes a block filter protocol that could be used together with [RFC 0044](https://github.com/yangby-cryptape/rfcs/blob/pr/light-client/rfcs/0044-ckb-light-client/0044-ckb-light-client.md). It allows clients to obtain compact probabilistic filters of CKB blocks from full nodes and download full blocks if the filter matches relevant data.
 
 ## Motivation
 
 Light clients allow applications to read relevant transactions from the blockchain without incurring the full cost of downloading and validating all data. Such applications seek to simultaneously minimize the trust in peers and the amount of bandwidth, storage space, and computation required. They achieve this by sampling headers through the fly-client protocol, verifying the proofs of work, and following the longest proof-of-work chain. Light clients then download only the blockchain data relevant to them directly from peers and validate inclusion in the header chain. Though clients do not check the validity of all blocks in the longest proof-of-work chain, they rely on miner incentives for security.
 
-Full nodes generate deterministic filters on block data that are served to the client. A light client can then download an entire block if the filter matches the data it is watching for. Since filters are deterministic, they only need to be constructed once and stored on disk, whenever a new block is connected to the chain, this keeps the computation required to serve filters minimal.
+Full nodes generate deterministic filters on block data that are served to the client. A light client can then download an entire block if the filter matches the data it is watching for. Since filters are deterministic, they only need to be constructed once and stored on disk, whenever a new block is appended to the chain. This keeps the computation required to serve filters minimal.
 
 ## Specification
 
@@ -68,7 +68,7 @@ table BlockFilterHashes {
 ```
 
 1. The `start_number` SHOULD match the field in the GetBlockFilterHashes request.
-2. The `block_filter_hashes` field size SHOULD not be larger than 2000.
+2. The `block_filter_hashes` field size SHOULD not exceed 2000
 
 
 #### GetBlockFilterCheckPoints
@@ -109,7 +109,7 @@ if let Some(type_script) = cell.type_().to_opt() {
 
 Full nodes MAY opt to support this RFC, such nodes SHOULD treat the filters as an additional index of the blockchain. For each new block that is connected to the main chain, nodes SHOULD generate filters and persist them. Nodes that are missing filters and are already synced with the blockchain SHOULD reindex the chain upon start-up, constructing filters for each block from genesis to the current tip.
 
-Nodes SHOULD NOT generate filters dynamically on request, as malicious peers may be able to perform DoS attacks by requesting small filters derived from large blocks. This would require an asymmetical amount of I/O on the node to compute and serve.
+Nodes SHOULD NOT generate filters dynamically on request, as malicious peers may be able to perform DoS attacks by requesting small filters derived from large blocks. This would require an asymmetrical amount of I/O on the node to compute and serve.
 
 Nodes MAY prune block data after generating and storing all filters for a block.
 
@@ -117,7 +117,8 @@ Nodes MAY prune block data after generating and storing all filters for a block.
 
 This section provides recommendations for light clients to download filters with maximal security.
 
-Clients SHOULD first sync with the full nodes by verifiying the best chain tip through the fly-client protocol before downloading any filters or filter hashes. Clients SHOULD disconnect any outbound peers whose best chain has significantly less work than the known longest chain.
+Clients SHOULD first sync with the full nodes by verifying the best chain tip through the fly-client protocol before downloading any filters or filter hashes. Clients SHOULD disconnect any outbound peers whose best chain has significantly less work than the known longest chain.
+
 
 Once a client's tip is in sync, it SHOULD download and verify filter hashes for all blocks. The client SHOULD send `GetBlockFilterHashes` messages to full nodes and store the filter hashes for each block. The client MAY first fetch hashes by sending `GetBlockFilterCheckPoints`. The checkpoints allow the client to download filter hashes for different intervals from multiple peers in parallel, verifying each range of 2000 headers against the checkpoints.
 
