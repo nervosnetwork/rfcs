@@ -1,7 +1,7 @@
 ---
 Number: "0043"
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Dingwei Zhang <zhangsoledad@gmail.com>
 Created: 2022-06-16
 ---
