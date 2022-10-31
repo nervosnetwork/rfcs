@@ -374,4 +374,5 @@ A draft of this specification was previously released, reviewed, and discussed i
 ## References
 
 [1] SUDT Cheque Deposit Design and Implementation, https://talk.nervos.org/t/sudt-Cheque-deposit-design-and-implementation/5209
+
 [2] Cheque Script Source Code, https://github.com/nervosnetwork/ckb-Cheque-script/tree/4ca3e62ae39c32cfcc061905515a2856cad03fd8
