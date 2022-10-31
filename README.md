@@ -85,6 +85,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [37](rfcs/0037-ckb2021) | [CKB Consensus Change (Edition CKB2021)](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
 | [39](rfcs/0039-cheque) | [Cheque Lock](rfcs/0039-cheque/0039-cheque.md) | Dylan Duan | Standards Track | Proposal |
 | [42](rfcs/0042-omnilock) | [Omnilock](rfcs/0042-omnilock/0042-omnilock.md) | Xu Jiandong | Standards Track | Proposal
+| [43](rfcs/0043-ckb-softfork-activation) | [CKB Softfork Activation](rfcs/0043-ckb-softfork-activation/0043-ckb-softfork-activation) | Dingwei Zhang | Standards Track | Draft
 
 ## License
 
