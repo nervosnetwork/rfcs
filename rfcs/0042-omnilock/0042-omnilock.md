@@ -76,7 +76,7 @@ Depending on the value of the flag, the auth content has the following interpret
   lock](https://github.com/nervosnetwork/rfcs/blob/780b2f98068ed2337f3a97b02ec6b5336b6fb143/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#secp256k1blake160).
 
 * 0x01~0x05: It follows the same unlocking methods used by
-  [PW-lock](https://github.com/lay2dev/pw-lock/blob/c2b1456bcca06c892e1bb8ec8ac0a64d4fb2b83d/c/pw_lock.h#L190-L223)
+  [PW-lock](https://github.com/lay2dev/pw-lock/blob/c2b1456bcca06c892e1bb8ec8ac0a64d4fb2b83d/c/pw_lock.h#L190-L223) with different [hash calculation](https://github.com/lay2dev/pw-lock#hash-calculation) on message. 
 
 
 * 0x06: It follows the same unlocking method used by [CKB
