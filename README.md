@@ -86,6 +86,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [39](rfcs/0039-cheque) | [Cheque Lock](rfcs/0039-cheque/0039-cheque.md) | Dylan Duan | Standards Track | Proposal |
 | [42](rfcs/0042-omnilock) | [Omnilock](rfcs/0042-omnilock/0042-omnilock.md) | Xu Jiandong | Standards Track | Proposal
 | [43](rfcs/0043-ckb-softfork-activation) | [CKB Softfork Activation](rfcs/0043-ckb-softfork-activation/0043-ckb-softfork-activation.md) | Dingwei Zhang | Standards Track | Proposal
+| [44](rfcs/0044-ckb-light-client) | [CKB Light Client Protocol](rfcs/0044-ckb-light-client/0044-ckb-light-client.md) | Boyu Yang | Standards Track | Proposal
 
 ## License
 
