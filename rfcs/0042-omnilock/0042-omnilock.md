@@ -80,7 +80,8 @@ Depending on the value of the flag, the auth content has the following interpret
 
 
 * 0x06: It follows the same unlocking method used by [CKB
-  MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c)
+  MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c) with a little modification.
+  When a message is calculated for signing, there is a step to clear witness. In omnilock, it clears the whole field `lock` in `witness`. But in CKB MultiSig script, it only clears part of `lock` in `witness`. This part is used as `signatures` followed by `multisig_script`.
 
 * 0xFC: The auth content that represents the blake160 hash of a lock script. The lock script will check if the current
   transaction contains an input cell with a matching lock script. Otherwise, it would return with an error. It's similar
