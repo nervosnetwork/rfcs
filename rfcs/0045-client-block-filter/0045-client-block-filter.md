@@ -131,7 +131,7 @@ Each time a new valid block header is received, the client SHOULD request the co
 If a client is fetching full blocks from the P2P network, they SHOULD be downloaded from outbound peers at random to mitigate privacy loss due to transaction intersection analysis. Note that blocks may be downloaded from peers that do not support this RFC.
 ## Deployment
 
-This RFC is deploy identically to CKB Light Client Protocol ([RFC0044](rfcs/0044-ckb-light-client/0044-ckb-light-client.md)).
+This RFC is deploy identically to CKB Light Client Protocol ([RFC0044](../0044-ckb-light-client/0044-ckb-light-client.md)).
 
 ## Reference
 
