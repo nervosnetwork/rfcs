@@ -10,7 +10,7 @@ Created: 2022-08-23
 
 ## Abstract
 
-This RFC describes a block filter protocol that could be used together with [RFC 0044](https://github.com/yangby-cryptape/rfcs/blob/pr/light-client/rfcs/0044-ckb-light-client/0044-ckb-light-client.md). It allows clients to obtain compact probabilistic filters of CKB blocks from full nodes and download full blocks if the filter matches relevant data.
+This RFC describes a block filter protocol that could be used together with [RFC 0044](../0044-ckb-light-client/0044-ckb-light-client.md). It allows clients to obtain compact probabilistic filters of CKB blocks from full nodes and download full blocks if the filter matches relevant data.
 
 ## Motivation
 
