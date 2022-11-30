@@ -30,7 +30,7 @@ The following rules should be met in a SUDT Cell:
 
 * **Simple UDT Rule 1**: a SUDT cell must store SUDT amount in the first 16 bytes of cell data segment, the amount should be stored as little endian, 128-bit unsigned integer format. In the case of composable scripts, the SUDT amount must still be located at the initial 16 bytes in the data segment which corresponds to the composed SUDT script
 * **Simple UDT Rule 2**: the first 32 bytes of the SUDT cells type script args must store the lock script hash of *owner lock*. Owner lock will be explained below
-* **Simple UDT Rule 3**: each SUDT must have unique type script, in other words, 2 SUDT cells using the same type script are considered to be the same SUDT.
+* **Simple UDT Rule 3**: each SUDT must have an unique pair of type script and owner lock, in other words, 2 SUDT cells using the same type script but different owner locks are considered to be the different SUDT.
 
 User shall use any lock script as they wish in the SUDT Cell.
 
