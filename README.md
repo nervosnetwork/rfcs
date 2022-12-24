@@ -1,7 +1,5 @@
 # Nervos Network RFCs
 
-[![Discord](https://img.shields.io/badge/chat-on%20Discord-7289DA.svg)](https://discord.com/invite/nervos)
-
 This repository contains proposals, standards and documentations related to Nervos Network.
 
 The RFC (Request for Comments) process is intended to provide an open and community driven path for new protocols, improvements and best practices, so that all stakeholders can be confident about the direction of Nervos network is evolving in.
@@ -21,7 +19,7 @@ The RFC process attempts to be as simple as possible at beginning and evolves wi
 
 ### 1. Discuss Your Idea with Community
 
-Before submitting a RFC pull request, you should send the draft to community to solicit initial feedbacks. The [#rfc-chat discord channel](https://discord.gg/SWE7AtDKc4) or [Nervos Talk](https://talk.nervos.org/) are both good places to go.
+Before submitting a RFC pull request, you should send the draft to community to solicit initial feedbacks. The [#rfc-chat discord channel](https://discord.gg/8cWtA9uJR5) or [Nervos Talk](https://talk.nervos.org/) are both good places to go.
 
 ### 2. Create A Pull Request
 
