@@ -409,3 +409,4 @@ Now the maximum withdrawable capacity can be calculated:
 ## Gotchas
 
 * Nervos DAO only supports *absolute epoch number* as since value in the withdrawal process. If you are using a lock that supports lock period, such as the system included [multi-sign script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c), please make sure to ONLY use *absolute epoch number* as lock period. Otherwise, the locked Nervos DAO cell cannot be spent.
+* For simplicity a transaction containing Nervos DAO script is currently limited to 64 output cells so that processing is simplified, this limitation may be relaxed later on in a future Nervos DAO script update.
