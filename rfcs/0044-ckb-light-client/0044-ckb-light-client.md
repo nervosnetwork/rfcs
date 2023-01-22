@@ -137,7 +137,7 @@ index of leaves in that MMR.
 Each MMR node is defined as follows:
 
 - `children_hash`
-  - For a leaf node, it's an empty hash (`0x0000...0000`).
+  - For a leaf node, it's its header hash.
   - For a non-leaf node, it's the hash of the serialized data that
     concatenate its two children nodes' hashes.
     A node's hash is the hash of its serialized data.
