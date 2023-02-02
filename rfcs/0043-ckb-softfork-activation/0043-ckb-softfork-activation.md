@@ -131,6 +131,8 @@ ThresholdState::FAILED | ThresholdState::ACTIVE => {
 }
 ```
 
+## Deployments
+A living list of deployment proposals can be found [here](./deployments.md).
 
 ## Reference
 
