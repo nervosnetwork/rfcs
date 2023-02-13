@@ -32,7 +32,7 @@ The following rules should be met in a SUDT Cell:
 * **Simple UDT Rule 2**: the first 32 bytes of the SUDT cells type script args must store the lock script hash of *owner lock*. Owner lock will be explained below
 * **Simple UDT Rule 3**: each SUDT must have unique type script[^1], in other words, 2 SUDT cells using the same type script are considered to be the same SUDT.
 
-[^1]: As per definition a type script is comprised of three fields: `code_hash`, `hash_type` and`args`, see [script definition](https://docs.nervos.org/docs/reference/script/).
+[^1]: As per definition a type script is comprised of three fields: `code_hash`, `hash_type` and `args`, see [script definition](https://docs.nervos.org/docs/reference/script/).
 
 User shall use any lock script as they wish in the SUDT Cell.
 
