@@ -66,7 +66,7 @@ The Cheque Lock follows the rules below when validating a transaction.
 
         - 1.b.ii. Loop through all the output cells with the sender's lock hash. If the sum of the capacity in these cells is not equal to the sum of the capacity in the input Cheque cells, return with an error. This ensures that the CKBytes provided by the sender for the Cheque cell are always returned to the sender when the asset is claimed.
 
-    - 1.c. If the provided signature is valid and matches the `20-byte_receiver_lock_hash`:
+    - 1.c. If the provided signature is valid and matches the `20-byte_sender_lock_hash`:
 
         - 1.c.i. Loop through all the input cells using the current Cheque Lock script. If any of these inputs has a [since](../0017-tx-valid-since/0017-tx-valid-since.md) value that is not set to `0xA000000000000006`, return with an error. A `since` value of `0xA000000000000006` indicates that the cell cannot be committed in a transaction until a minimum of 6 epochs have passed since the Cheque cell was created. This ensures a window of approximately 24 hours where only the receiver can claim the asset.
 
