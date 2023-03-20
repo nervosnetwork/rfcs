@@ -103,9 +103,9 @@ The cell has two fields which type is `Script`. The CKB VM will run the `lock`  
 
 We differentiate the terms script and code.
 
-- A script is the script structure.
-- The code is the RISC-V binary.
-- A code cell is cell which data is code.
+- A **script** is a data structure represents a reference to a piece of on-chain runnable code.
+- A **code** is the RISC-V binary, it's runnable in CKB-VM and can be referred to by `script` structure.
+- A **code cell** is a cell whose data is RISC-V binary code.
 
 The script does not include the code directly. See the script structure below. Let's ignore the hash type `Type` and the field `args` now.
 
@@ -113,7 +113,7 @@ The script does not include the code directly. See the script structure below. L
 
 When a CKB VM needs to run a script, it must find its code first. The fields `code_hash` and `hash_type` are used to locate the code.
 
-In CKB, the script code is compiled into RISC-V binary. The binary is stored as the data in a cell. When `hash_type` is "Data",  the script locates a cell which data hash equals the script's `code_hash`. The cell data hash, as the name suggests, is computed from the cell data (see Appendix A). The scope is limited in the transaction, script can only find a matched cell from `cell_deps`.
+In CKB, the script code is compiled into RISC-V binary. The binary is stored as the data in a cell. When `hash_type` is "Data",  the script locates a cell whose data's hash equals the script's `code_hash`. The **cell data hash**, as the name suggests, is computed from the cell data (see Appendix A). The scope is limited in the transaction, script can only find a matched cell from `cell_deps`.
 
 ![](cell-deps.png)
 
@@ -121,13 +121,15 @@ The following diagram shows how CKB finds a matched script code.
 
 ![](code-locating.png)
 
-If you want to use a script in CKB, follow the code locating rules:
+The general workflow of using a script looks like below:
 
-- Compile your code into RISC-V binary. You can find some examples in the [repository](https://github.com/nervosnetwork/ckb-system-scripts) which builds the code for system cells.
-- Create a cell which stores the binary as data in a transaction, and send the transaction to the chain.
-- Construct a script structure, which `hash_type` is "Data"[^1], and `code_hash` is just the hash of the built binary.
-- Use the script as the type or the lock script in a cell.
-- If the script has to run in a transaction, include the code cell's out point in the `cell_deps`.
+- Deploy code cell
+    - Compile your code into RISC-V binary. You can find some examples in the [repository](https://github.com/nervosnetwork/ckb-system-scripts) which builds the code for system cells.
+    - Create a cell which stores the binary as data in a transaction, and send the transaction to the chain.
+- Use code cell
+    - Construct a script structure, which `hash_type` is "Data"[^1], and `code_hash` is just the hash of the built binary.
+    - Use the script as the type or the lock script in a cell.
+    - Include the code cell's out point in the `cell_deps` if the script will be executed (i.e. an input's lock script, or a type script).
 
 [^1]: Or "Data1" after [rfc32] is activated.
 
@@ -139,7 +141,7 @@ The following two chapters will talk about how the script is used in a transacti
 
 ### Lock Script
 
-Every cell has a lock script. The lock script must run when the cell is used as an input in a transaction. When the script only appears in the outputs, it is not required to reveal the corresponding code in `cell_deps`. A transaction is valid only when all the lock scripts in the inputs exit normally. Since the script runs on inputs, it acts as the lock to control who can unlock and destroy the cell, as well as spend the capacity stored in the cell.
+Every cell has a lock script. The lock script must run when the cell is used as an input in a transaction. When the script only appears in the outputs, it is not required to reveal the corresponding code in `cell_deps`. A transaction is valid only when all the lock scripts in the inputs exit normally. Since the script runs on inputs, it acts as a lock to control who can unlock and destroy the cell, as well as spend the capacity stored in the cell.
 
 ![](lock-script.png)
 
@@ -153,33 +155,39 @@ int main(int argc, char *argv[]) {
 
 The most popular way to lock a digital asset is the digital signature created by asymmetric cryptography.
 
-The signature algorithm has two requirements:
+A lock based on asymmetric signatures:
 
-- The cell must contain the information of the public key, so only the real private key can create a valid signature.
-- The transaction must contain the signatures, which usually signs the whole transaction as the message.
+- must contain the information of the public key, so that only a corresponding private key can create a valid signature.
+- must verify the signature, which usually takes the whole transaction as the signing message, provided in a spending transaction is valid.
 
-In CKB, the public key fingerprint can be stored in the `args` field in the script structure, and the signature can be stored in the `witnesses` fields in transaction. I use "can" because it is just a convention and the recommended way, and is used in the default [secp256k1 lock script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c). The script code is able to read any part of a transaction, so the lock script can choose a different convention, for example, storing the public key information in the cell data. However, if all the lock scripts  follow the recommended convention, it can simplify the apps which create transactions, such as a wallet.
+In CKB, the public key information can be stored in the `args` field in the script structure, and the signature can be stored in the `witnesses` fields in transaction. It is a recommended convention as used in the default [secp256k1 lock script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c). The script code is able to read any part of a transaction, so the lock script can choose a different convention, for example, storing the public key information in the cell data.
 
 ![](lock-script-cont.png)
 
-Now let's see how the script code is located and loaded, and how the code accesses inputs, script args, and witnesses.
+CKB does not run the lock script input by input. It first groups the inputs by lock script and runs the same script only once. CKB runs a script in 3 steps:
 
-First, pay attention that, CKB does not run the lock script input by input. It first groups the inputs by lock script and runs the same script only once. CKB runs a script in 3 steps: script grouping, code locating and running.
+1. script grouping
+2. code locating
+3. execution
+
+The diagram below shows the first two steps.
+
+1. First, CKB groups inputs by lock script. In the example transaction, there are two different lock scripts used in inputs. Although they locate to the same code, they have different args. Let's focus on g1. It has two inputs with index 0 and 2. The script and the input indices will be used in step 3 later.
+2. Then CKB locates the code from cell deps. It resolves to the cell with data hash `Hs` and uses its data as the code.
 
 ![](lock-script-grouping.png)
 
-The diagram above shows the first two steps.
+Then CKB will load the script's code and execute the code, starting from the entry function.
 
-1. First, CKB groups inputs by lock script. In the example transaction, there are two different lock scripts used in inputs. Although they locate to the same code, they have different args. Let's focus on g1. It has two inputs with index 0 and 2. The script and the input indices will be used in step 3 later.
-2. Then CKB locates the code from cell deps. It resolves to the cell with data hash `Hs` and will use its data as the code.
+Various CKB syscalls are provided to help scripts read transaction data. These syscalls usually have an argument to specify where to read the data.
 
-Now CKB can load the script code binary and run the code starting from the entry function. The script can read itself via syscall `ckb_load_script`.
+For example, to read the script itself:
 
 ```c
 ckb_load_script(addr, len, offset)
 ```
 
-Various CKB syscalls are designed to read data from the transaction. These syscalls have an argument to specify where to read the data. For example, to load the first witness:
+To load the first witness:
 
 ```c
 ckb_load_witness(addr, len, offset, 0, CKB_SOURCE_INPUT);
@@ -193,27 +201,27 @@ Remember that we have saved the indices of the input when grouping inputs by the
 
 ![](group-input.png)
 
-All the syscalls that read data related to the input, can use `CKB_SOURCE_GROUP_INPUT` and the index in the virtual inputs array, such as `ckb_load_cell_*` syscalls family.
+All the syscalls that read inputs data can use `CKB_SOURCE_GROUP_INPUT` and the index in the virtual inputs array, such as `ckb_load_cell_*` syscalls family.
 
 ### Type Script
 
-Type script is very similar to lock script, with two differences:
+Type script is similar to lock script, with two differences:
 
 - Type script is optional.
-- In a transaction, CKB must run the type scripts in both inputs and outputs.
+- CKB run the type scripts in both inputs and outputs in a transaction.
 
-Although we can only keep only one type of script in the cell, we don't want to mess the different responsibilities in a single script.
+Lock and type script bear different responsibilities. Lock scripts are for asset ownership, while type scripts are for application logic.
 
-The lock script is only executed for inputs, so its primary responsibility is protecting the cells. Only the owner is allowed to use the cell as input and spend the token stored along with it.
+A lock script is only executed for inputs, so its primary responsibility is to authenticate the spending of cells. Only the owner is allowed to use the cell as input and spend the token stored along with it.
 
-The type script is intended to establish some contracts on the cells. When you get a cell with a specified type, you can ensure that the cell has passed the verification in the specific code. And the code is also executed when the cell is destroyed. A typical scenario of type script is user-defined token. The type script must run on outputs, so the token issuance must be authorized.
+A type script is a state transition contract of the cells in the same type. When you see a cell output with a specified type, you are guaranteed that the cell has passed the validation rules coded in its tpye script. And the code is also executed when the cell is destroyed (when the cell is used as an input).
 
-Running type script on inputs is very important for contracts, for example, a contract to let user mortgage some amount of CKB tokens to rent an asset offline. If the type script does not run on inputs, the user can get back the CKB tokens without authority from the contract by merely destroying the cells and transfer the capacity to a new cell without type script.
+A typical use case of type script is in user-defined tokens - in token issuance, new tokens will be created as new cell outputs, so a type script is required to validate that new tokens are created according to rules.
 
-The steps to run type script is also similar to lock script. Except that
+The steps to run type script is also similar to lock script except
 
 1. Cells without a type script are ignored.
-2. The script group contains both inputs and outputs.
+2. Type scripts in both inputs and outputs will be used to form script groups.
 
 ![](type-script-grouping.png)
 
