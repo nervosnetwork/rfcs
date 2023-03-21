@@ -282,7 +282,7 @@ Because the code referenced by type script hash can change, you must trust the s
 
 Type ID describes a way of using a special type script which can create a singleton type - there's only one live cell of this type. With Type ID nobody could create another code cell with the same type script hash as a code cell, which makes it a useful companion to `Type` hash type. 
 
-The most commone Type ID pattern involves several type scripts:
+The most common Type ID pattern involves several type scripts:
 
 - The **Type ID code cell** is the cell which stores the code to verify that a type id is unique.
 - The Type ID code cell has a type script as well. We don't care the actual content for now, let's assume the type script hash is TI.
@@ -311,7 +311,7 @@ In the Type ID Creation Group, the only argument in `args` is the hash of this t
 There are two ways to create a new cell with a specific type id.
 
 1. Create a transaction which uses any out point as `tx.inputs[0]` and has a output cell whose type script is Type ID. The output cell's type script `args` is the hash of `tx.inputs[0]` and its output index. Because any out point can only be used once as an input, `tx.inputs[0]` and thus the new type id must be different in each creation transaction.
-2. Destroy a old cell with a specific type id and create a new cell with the same type id in the same transaction.
+2. Destroy an old cell with a specific type id and create a new cell with the same type id in the same transaction.
 
 We assume that method 2 is the only way to create a cell which equals to an existing type id. Because it must consume the original type id cell, it requires the authorization of the type id's owner.
 
