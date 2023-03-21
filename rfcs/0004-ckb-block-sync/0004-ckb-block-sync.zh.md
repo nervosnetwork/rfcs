@@ -84,7 +84,7 @@ Bob 根据 Locator 和自己的 Best Chain 可以找出两条链的最后一个�
 
 在下面的情况下**必须**做新一轮的连接块头同步。
 
-- 收到对方的新块通知，但是新块的父块状态时 Unknown
+- 收到对方的新块通知，但是新块的父块状态是 Unknown
 
 连接块头时可能会出现以下一些异常情况：
 
@@ -221,5 +221,5 @@ Compact Block [^1] 需要使用到的消息 `cmpctblock` 和 `getblocktxn` 会�
 - `transactions` 交易列表
 
 
-[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 Compact Block RFC (TODO: link to rfc) 和 Bitcoin 相关 [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki)。
+[^1]:	Compact Block 是种压缩传输完整块的技术。它基于在传播新块时，其中的交易应该都已经在对方节点的交易池中。这时只需要包含 交易 txid 列表，和预测对方可能没有的交易的完整信息，接收方就能基于交易池恢复出完整的交易。详细请查阅 [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) 和 Bitcoin 相关 [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki)。
 

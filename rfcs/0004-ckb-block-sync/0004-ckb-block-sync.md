@@ -18,7 +18,7 @@ Glossary of Terms
 
 ## Abstract
 
-Block synchronization **must** be performed in stages with [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) style. Block is downloaded in parts in each stage and is validated using the obtained parts.
+Block synchronization **must** be performed in stages with [Bitcoin Headers First](https://bitcoin.org/en/glossary/headers-first-sync) style. Blocks are downloaded in parts in each stage and are validated using the obtained parts.
 
 1. Connecting Header: Get block header, and validate format and PoW.
 2. Downloading Block: Get and validate the complete block. Transactions in ancestor blocks are not required.
@@ -26,13 +26,13 @@ Block synchronization **must** be performed in stages with [Bitcoin Headers Firs
 
 The purpose of stage execution is trying to preclude most of the attacks with the least cost. For example, in the first step, header connecting only accounts for 5% workload while there would be 95% possibility to say the block is valid. 
 
-According to the execution stages, there is 5 status of blocks:
+According to the execution stages, there are 5 statuses of blocks:
 
 1. Unknown: the status of a block is unknown before header connecting.
 2. Invalid: A block and all of its descendant blocks are marked as 'Invalid' if any above steps failed.
-3. Connected: A block succeeds in stage Connecting Header, and all its ancestor blocks are in a status of connected, downloaded or accepted.
-4. Downloaded: A block succeeds in stage Downloading Block, and all its ancestor blocks are in a status of downloaded or accepted.
-5. Accept: A block succeeds in stage Accepting Block, and all its ancestor blocks are in the status of accepted.
+3. Connected: A block succeeds in stage Connecting Header, and all its ancestor blocks are in a status of Connected, Downloaded or Accepted.
+4. Downloaded: A block succeeds in stage Downloading Block, and all its ancestor blocks are in a status of Downloaded or Accepted.
+5. Accepted: A block succeeds in stage Accepting Block, and all its ancestor blocks are in the status of Accepted.
 
 Block status is propagated from the previous block to the later ones. Using the list index number above, the status number of a block is always less than or equal to its parent block. Here are conditions, if a block is invalid, all of its descendant blocks must be invalid. The cost of every step for synchronization is higher than the previous one and every step may fail. In this scenario, work will be wasted if a child block enters a later status before its parent block, and parent block is approved to be Invalid later.
 
@@ -52,7 +52,7 @@ The graph below is an example of Status Tree formed by Alice and blocks signed w
  
 ## Connecting Header
 
-Synchronizing headers first helps to validate PoW with the least cost. Since it costs the same work to construct PoW whether the included transactions are valid or not, attackers may use other more efficient ways. It means it's highly possible to regard the whole block as valid when the PoW is valid. This is why headers synchronization first would avoid resource-wasting on invalid blocks.
+Headers first synchronization helps to validate PoW with the least cost. Since it costs the same work to construct PoW whether the included transactions are valid or not, attackers may use other more efficient ways. It means it's highly possible to regard the whole block as valid when the PoW is valid. This is why headers first synchronization would avoid resource-wasting on invalid blocks.
 
 Because of the low cost, Headers synchronization can be processed in parallel with all peers and construct a highly reliable global graph. In this way, block downloading can be scheduled in the most efficient way to avoid wasting resource on lower PoW branch.
 
@@ -78,7 +78,7 @@ In the figure above, blocks with undimmed color should be sent from Bob to Alice
 2. If Alice's Best Header Chain Tip is in Bob's Best Chain but is not the Tip, the latest common block will be Alice's Best Header Chain Tip.
 3. If Alice's Best Header Chain and Bob's Best Chain fork, the latest common block will be the one before the fork occurs.
 
-If there are too many blocks to send, pagination is required. Bob sends the first page, Alice will ask Bob for the next page if she finds out that there are more block headers. A simple pagination solution is to limit the maximum number of block headers returned each time, 2000 for example. If the number of block headers returned is equal to 2000, it means there may be other blocks could be returned. If the last block of a certain page is the ancestor of Best Chain Tip or Best Header Chain Tip, it can be optimized to get next page starting with the corresponding tip.
+If there are too many blocks to send, pagination is required. Bob sends the first page, Alice will ask Bob for the next page if she finds out that there are more block headers. A simple pagination solution is to limit the maximum number of block headers returned each time, 2000 for example. If the number of block headers returned is equal to 2000, it means there may be more block headers could be returned. If the last block of a certain page is the ancestor of Best Chain Tip or Best Header Chain Tip, it can be optimized to get next page starting with the corresponding tip.
 
 Alice could observe Bob's present Best Chain Tip, which is the last block received during each round of synchronization. If Alice's Best Header Chain Tip is exactly Bob's Best Chain Tip, Alice couldn't observe Bob's present Best Chain because Bob has no block headers to send. Therefore, it should start building from the parent block of Best Header Chain Tip when sending the first request in each round.
 
@@ -88,7 +88,7 @@ In the following cases, a new round of connection block header synchronization m
 
 The following exceptions may occur when connecting a block header: 
 
-- Alice observed that Bob's Best Chain Tip has not been updated for a long time, or its timestamp is old. In this case, Bob does not provide valuable data. When the number of connections reaches a limit, this peer could be disconnected first.
+- Alice observed that Bob's Best Chain Tip has not been updated for a long time, or its timestamp is old. In this case, Bob does not provide valuable data. When the number of connections reaches a limit, Bob could be disconnected first.
 - Alice observed that the status of Bob's Best Chain Tip is Invalid. This can be found in any page without waiting for the end of a round of Connect Head. There, Bob is on an invalid branch, Alice can stop synchronizing with Bob and add Bob to the blacklist.
 - There are two possibilities if the block headers Alice received are all on her own Best Header Chain. One is that Bob sends them deliberately. The other is that Best Chain changes when Alice wants to Connect Head. In this case, those block headers can only be ignored because they are difficult to distinguish. However, the proportion of received blocks already in Best Header Chain would be recorded. If the proportion is above a certain threshold value, Bob may be added to the blacklist.
 
@@ -110,15 +110,15 @@ If the Unknown status block is considered not on the Status Tree, new blocks in 
 
 After Connecting Header is completed, the branch of some observed Best Chain Tip ends with one or more Connected block, a.k.a., Connected Chain. Downloading Block stage should start to request complete blocks from peers and perform verification.
 
-With the status tree, synchronization can be scheduled to avoid useless work. An effective optimization is to download the block only if the Best Chain of the observed peer is better than the local Best Chain's. And priority can be ordered that the connected chain with more accumulated PoW should be processed first. Only when a branch is approved to be invalid, or the download times out, the branch with lower PoW can be tried.
+With the status tree, synchronization can be scheduled to avoid useless work. An effective optimization is to download the block only if the Best Chain of the observed peer is better than the local Best Chain's. And priority can be ordered that the connected chain with more accumulated PoW should be processed first. The branch with lower PoW can only be attempted if a branch is confirmed to be invalid or if the download times out.
 
-When downloading a branch, earlier blocks should be downloaded firstly due to the dependency of blocks; and should be downloaded concurrently from different peers to utilize full bandwidth. A sliding window can be applied to solve the problem.
+When downloading a branch, earlier blocks should be downloaded firstly due to the dependency of blocks, and should be downloaded concurrently from different peers to utilize full bandwidth. A sliding window can be applied to solve the problem.
 
 Assume that the number of the first Connected status block to be downloaded is M and the length of the sliding window is N, then only the blocks numbered M to M+N-1 can be downloaded. After the block M is downloaded and verified, the sliding window moves to the next Connected block. If verification of block M fails, then the remaining blocks of this branch are all Invalid, and there is no need to continue downloading. If the window does not move towards the right for a long time, it is considered as time out. The node should try again later, or waits until the branch has new connected blocks.
 
 ![](images/sliding-window.jpg)
 
-The figure above is an example of an 8 length sliding window. In the beginning, the downloadable block range from 3 to 10. After block 3 is downloaded,  the window will move to block 5 because block 4 has already been downloaded in advance (as the figure above illustrated).
+The figure above is an example of an 8 length sliding window. In the beginning, the downloadable block range from 3 to 10. After block 3 is downloaded, the window will move to block 5 because block 4 has already been downloaded in advance (as the figure above illustrated).
 
 The Best Chains of peers are already known in stage Connecting Header, it is assumed that the peer has a block if it is in the peer's Best Chain and that peer is a full node. During the downloading, blocks in the sliding window can be split into several small stripes and those stripes could be scheduled among peers who have the blocks.
 
@@ -217,4 +217,4 @@ It is used to reply block downloading request of `getdata`
 - `header` block header
 - `transactions` transaction list
 
-[^1]: Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to Compact Block RFC (TODO: link to RFC) and related Bitcoin [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki) for details.
+[^1]: Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) and related Bitcoin [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki) for details.
