@@ -99,7 +99,7 @@ occupied(cell) ≤ cell's capacity
 ```
 ### Code Locating
 
-The cell has two fields which type is `Script`. The CKB VM will run the `lock`  scripts of all the cells in inputs, and run the `type` scripts of all the cells in both inputs and outputs.
+The cell has two fields which type is `Script`. The CKB VM will run the `lock` scripts of all the cells in inputs, and run the `type` scripts of all the cells in both inputs and outputs.
 
 We differentiate the terms script and code.
 
@@ -233,7 +233,7 @@ Like `CKB_SOURCE_GROUP_INPUT`, there's a special data source `CKB_SOURCE_GROUP_O
 
 ## Part II: Extensions
 
-In part I, I have introduced the core features which the transaction provides. The features introduced in this part are some extensions that CKB can work without them, but these extensions will make the cell model better.
+In part I, I have introduced the core features which the transaction provides. The features introduced in this part are extensions that are introduced to make the Cell model more powerful and also easier to use.
 
 The diagram below is the overview of the new fields covered in this part.
 
@@ -249,52 +249,50 @@ The structure `CellDep` has a field `dep_type` to differentiate the normal cells
 
 ![](cell-dep-structure.png)
 
-The dep group is expanded before locating and running code, in which only the expanded `cell_deps` are visible.
+The dep group is expanded before code locate and execution phase, in which only the expanded `cell_deps` are visible.
 
 ![Example of Dep Group Expansion](dep-group-expansion.png)
 
-In v0.19.0, the lock script secp256k1 is split into code cell and data cell. The code cell loads the data cell via `cell_deps`. So if a transaction needs to unlock a cell locked by secp256k1, it must add both cells in `cell_deps`. With dep group, the transaction only needs the dep group.
+Example: The lock script secp256k1 is split into code cell and data cell. The code cell depends on the data cell to work. If a transaction needs to consume a cell locked by secp256k1, it must have both cells in `cell_deps`. With dep group, the transaction only needs one dep group.
 
-There are two reasons why we split the secp256k1 cell.
+There are two reasons why secp256k1 is split into two cells:
 
 - The code cell is small, which allows us to update it when the block size limit is low.
 - The data cell can be shared. For example, we have implemented another lock script which uses ripemd160 to verify the public key hash. This script reuses the data cell.
 
 ### Upgradable Script
 
-In the chapter Lock Script in Part I, I have described how a script locates its code via cell data hash. Once a cell is created, its associated script code cannot change, since it is known infeasible to find a different piece of code that has the same hash.
+Because a script locates its code via cell data hash, once a cell is created its associated script code cannot change, since it is known infeasible to find a different piece of code that has the same hash. However, sometimes we do want to change the code without modifiying the script refers to it.
 
-Script has another option for `hash_type`, *Type*.
+That's why script has another option for `hash_type`, named `Type`.
 
 ![](script-p2.png)
 
-When the script uses the hash type Type, it matches the cell which type script hash equals the `code_hash`. The type script hash is computed from the cell `type` field (see Appendix A).
+When the script uses the hash type `Type`, it matches the cell whose **type script hash** equals the `code_hash`. The type script hash is the hash computed from the cell's `type` field (see Appendix A).
 
 ![](code-locating-via-type.png)
 
-Now it is possible to upgrade code if the cell uses a script which locates code via type script hash by creating a new cell with the same type script. The new cell has the updated code. The transaction which adds the new cell in `dep_cells` will use the new version.
+Codes located by type script hash can be upgraded by replacing the code cell with a new code cell having the same type script. The new cell has the updated code. The transaction which include the new code cell in `dep_cells` will use the new version. Because the code upgrade requires the old code cell being spent, the upgrade rules (e.g. conditions under which the code cell can be upgraded) can be coded in the lock script of the code cell. 
 
-However, this only solves one problem that the script can refer to different versions of code. It is not safe if an adversary can create a cell with the same type script but using the forged code as the data. The adversary can bypass the script verification by using the fake cell as a dep. The following chapter will describe a script to solve the second problem.
+`Type` hash type provides a mechanism for scripts to locate code in cells with certain type. As long as a cell's type script meets the criterias and is included in the `cell_deps`, its code will be executed. There could be multiple code cells with the same type script, providing different versions of code for the script. An adversary could create a flawed version and use it as an exploit, you should always keep this possibility in mind and be extremely cautious on using `Type` hash type. It's possible to implement logic in the code cell's type script to limit who can create cells with this certain type. The `Type ID` described below is another solution to this problem.
 
-Because the code referenced by type script hash can change, you must trust the script author to use such kind of type scripts. Although which version is used depends on which cell is added in the transaction in `dep_cells`, user can always inspect the code before signing the transaction. But if the script is used to unlock a cell, even the signature checking can be skipped.
+Because the code referenced by type script hash can change, you must trust the script author to use such kind of scripts - it's possible that bugs are introduced intentionally or unintentionally in an upgrade. The lock script of the code cell defines the upgradation policies, e.g. if it can be upgrade arbitrarily or only under certain conditions. It's recommended to check its upgradation policies before using a code cell via `Type` hash type.
 
 ### Type ID
 
-There's a reason we choose cell type script hash to support upgradable script. If the adversary wants to create a cell with a specific type script, the transaction must be verified by the type script code.
+Type ID describes a way of using a special type script which can create a singleton type - there's only one live cell of this type. With Type ID nobody could create another code cell with the same type script hash as a code cell, which makes it a useful companion to `Type` hash type. 
 
-Type ID is such a kind of type script. As the name suggests, it ensures the uniqueness of the type script.
+The most common Type ID pattern involves several type scripts:
 
-This feature involves several type scripts, so I have to use different terms to differentiate them:
-
-- The Type ID code cell is the cell which stores the code to verify that a type id is unique.
+- The **Type ID code cell** is the cell which stores the code to verify that a type id is unique.
 - The Type ID code cell has a type script as well. We don't care the actual content for now, let's assume the type script hash is TI.
-- A Type ID is a type script which `hash_type` is "Type", and `code_hash` is TI.
+- A **Type ID** is a type script which `hash_type` is "Type", and `code_hash` is TI.
 
 ![](type-id.png)
 
-In the chapter Type Script in Part I, we know that type script groups inputs and outputs first. In other words, if the type script is a type ID, the inputs and outputs in the group all have the same type ID.
+As a type script, Type ID type scripts in inputs and outputs will be grouped (we call it **type id groups**) then executed. All the inputs and outputs in a Type ID group have the same type id.
 
-The Type ID code verifies that, in any type id group, there is at most one input and at most one output. But a transaction is allowed to have multiple type id groups. Depends on the numbers of inputs and outputs, the type id groups are categorized into three different types:
+The Type ID code verifies that, in any type id group, there is at most one input and at most one output. A transaction could have multiple type id groups. Depending on the number of inputs and outputs, the type id groups are categorized into three different types:
 
 - Type ID Creation Group has only one output.
 - Type ID Deletion Group has only one input.
@@ -312,21 +310,20 @@ In the Type ID Creation Group, the only argument in `args` is the hash of this t
 
 There are two ways to create a new cell with a specific type id.
 
-1. Create a transaction where the hash of `tx.inputs[0]` and any index equal to a specific value. Since a cell can only be used as an input once in the chain, `tx.inputs[0]` must different in each transaction, so this problem is equivalent to find out a hash collision, which probability is negligible.
-2. Destroy the old cell in the same transaction.
+1. Create a transaction which uses any out point as `tx.inputs[0]` and has a output cell whose type script is Type ID. The output cell's type script `args` is the hash of `tx.inputs[0]` and its output index. Because any out point can only be used once as an input, `tx.inputs[0]` and thus the new type id must be different in each creation transaction.
+2. Destroy an old cell with a specific type id and create a new cell with the same type id in the same transaction.
 
-We assume that method 2 is the only way to create a cell which equals to an existing type id. And this way requires the authorization of the original owner.
+We assume that method 2 is the only way to create a cell which equals to an existing type id. Because it must consume the original type id cell, it requires the authorization of the type id's owner.
 
-The Type ID code can be implemented via only CKB VM code, but we choose to implement it in the CKB node as a special system script. Because if we want to be able to upgrade Type ID code itself later, it has to use itself as the type script via type script hash, which is a recursive dependency.
+The Type ID type script can be implemented as an ordinaly script, but we choose to implement it in the CKB node as a special genesis script. Because if we want to make it upgradable, it has to use itself as the type script via type script hash, which is a recursive dependency.
 
 ![TI is a hash of the content which contains TI itself.](type-id-recursive-dependency.png)
 
-The Type ID code cell uses a special type script hash, which is just the ascii codes in hex of the text `TYPE_ID`.
+As a genesis script, the Type ID code cell uses a special type script hash, which is just the ascii codes in hex of the text `TYPE_ID`.
 
 ```
 0x00000000000000000000000000000000000000000000000000545950455f4944
 ```
-
 
 ### Header Deps
 
