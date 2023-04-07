@@ -79,11 +79,11 @@ In our protocol, we use a two-step transaction confirmation to eliminate the afo
 
 #### Definitions
 
-> **Definition 1:** A transaction’s proposal id `txpid` is defined as the first *l* bits of the transaction hash `txid`.
+> **Definition 1:** A transaction’s proposal id `txpid` is defined as the first *p_len* bits of the transaction hash `txid`.
 
 In our protocol, `txpid` does not need to be as globally unique as `txid`, as a `txpid` is used to identify a transaction among several neighboring blocks. Since we embed `txpid`s in both blocks and compact blocks, sending only the truncated `txid`s could reduce the bandwidth consumption. 
 
-When multiple transactions share the same `txpid`s, all of them are considered proposed. In practice, we can set *l* to be large enough so that the computational effort of finding a collision is non-trivial.
+When multiple transactions share the same `txpid`s, all of them are considered proposed. In practice, we can set *p_len* to be large enough so that the computational effort of finding a collision is non-trivial.
 
 > **Definition 2:** A block *B*<sub>1</sub> is considered to be the *uncle* of another block *B*<sub>2</sub> if all of the following conditions are met:
 >​	(1) *B*<sub>1</sub> and *B*<sub>2</sub> are in the same epoch, sharing the same difficulty;
