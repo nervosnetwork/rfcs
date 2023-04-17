@@ -24,9 +24,14 @@ query($query: String!) {
         reviewRequests(last: 100) {
           nodes {
             requestedReviewer {
-              __typename,
               ... on User {
                 login
+              }
+              ... on Team {
+                slug
+                organization {
+                  login
+                }
               }
             }
           }
@@ -100,6 +105,15 @@ def reviewer_link(login, repos)
   "https://github.com/pulls?q=" + URI.encode_www_form_component(query)
 end
 
+def at_handle_of(user_or_team)
+  return if user_or_team.nil?
+  if user_or_team.__typename == 'User'
+    user_or_team.login
+  else
+    "#{user_or_team.organization.login}/#{user_or_team.slug}"
+  end
+end
+
 pr_repos = "repo:#{repo_owner}/#{repo_name}"
 open_prs = GitHubGraphQL::Client.query(ReviewRequestsQuery, variables: {
   query: "#{pr_repos} is:pr is:open sort:created-asc"
@@ -142,7 +156,7 @@ if open_prs.size > 0
           body << "    - #{review_state}"
         end
         pending_reviewers = pr.review_requests.nodes.map do |node|
-          node.requested_reviewer.login
+          at_handle_of(node.requested_reviewer)
         end.compact
         if pending_reviewers.size > 0
           pending_reviewers.each do |login|
@@ -164,7 +178,7 @@ if open_prs.size > 0
         body << "    - #{review_state}"
       end
       pending_reviewers = pr.review_requests.nodes.map do |node|
-        node.requested_reviewer&.login
+        at_handle_of(node.requested_reviewer)
       end.compact
       if pending_reviewers.size > 0
         pending_reviewers.each do |login|
