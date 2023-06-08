@@ -280,7 +280,7 @@ Because the code referenced by type script hash can change, you must trust the s
 
 ### Type ID
 
-Type ID describes a way of using a special type script which can create a singleton type - there's only one live cell of this type. With Type ID nobody could create another code cell with the same type script hash as a code cell, which makes it a useful companion to `Type` hash type. 
+Type ID describes a way of using a special type script which can create a singleton type - there's only one live cell of this type. With Type ID nobody could create another code cell with the same type script hash, which makes it a useful companion to `Type` hash type. 
 
 The most common Type ID pattern involves several type scripts:
 
