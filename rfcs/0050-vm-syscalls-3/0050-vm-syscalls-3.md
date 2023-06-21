@@ -87,7 +87,7 @@ Get the maximum available memory for the current script.
 int ckb_get_memory_limit();
 ```
 
-For the prime script, it will always return 8(4M). For the child script, it depends on the parameters set by *Spawn*.
+For the script(prime script) directly invoked by CKB, it will always return 8(4M). For the child script invoked by prime script or other child script, it depends on the parameters set by *Spawn*.
 
 ### Set Content
 [Set Content]: #set-content
@@ -104,7 +104,7 @@ int ckb_set_content(uint8_t* content, uint64_t* length);
 
 ### Spawn example
 
-Suppose we write a dependency library, the function of this library is very simple: receive parameters, then concatenates the parameters together and return to the caller.
+Consider the creation of a dependency library with a straightforward function that receives parameters, concatenates them, and subsequently returns the resulting string to the caller.
 
 **lib_strcat.c**
 
