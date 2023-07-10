@@ -402,3 +402,78 @@ Cell data hash is just `ckbhash(data)`.
 
 Script hash is `ckbhash(molecule_encode(script))` where `molecule_encode` turns the script structure into a block of binary via molecule. See the definition `Script` in the [schema file](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L28-L32).
 
+## Appendix B: Syscalls
+
+| VM Ver. | Syscall ID | C Function Name | Description | Return Value | Partial Loading[^2] | 1st Arg | 2nd Arg | 3rd Arg | 4th Arg | 5th Arg | 6th Arg | C Example |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 93 | ckb_exit | terminate execution with the specified return code | void | N/A | int8_t code |  |  |  |  |  | ckb_exit(code) |
+| 1 | 2061 | ckb_load_tx_hash | load transaction hash | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset |  |  |  | ckb_load_tx_hash(addr, len, offset) |
+| 1 | 2051 | ckb_load_transaction | load transaction | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset |  |  |  | ckb_load_transaction(addr, len, offset) |
+| 1 | 2062 | ckb_load_script_hash | load script hash | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset |  |  |  | ckb_load_script_hash(addr, len, offset) |
+| 1 | 2052 | ckb_load_script | load script | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset |  |  |  | ckb_load_script(addr, len, offset) |
+| 1 | 2071 | ckb_load_cell | load cell | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source |  | ckb_load_cell(addr, len, offset, index, source) |
+| 1 | 2081 | ckb_load_cell_by_field | load field in cell data | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source | size_t field | ckb_load_cell_by_field(addr, len, offset, index, source, field) |
+| 1 | 2092 | ckb_load_cell_data | load cell data | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source |  | ckb_load_cell_data(addr, len, offset, index, source) |
+| 1 | 2091 | ckb_load_cell_data_as_code | load and execute cell data as executable code[^3] | zero if no error, else non-zero | N/A | void* addr | size_t memory_size |  size_t content_offset | size_t content_size | size_t index | size_t source | ckb_load_cell_data_as_code(addr, memory_size, content_offset, content_size, size_t index, size_t source) |
+| 1 | 2073 | ckb_load_input | load cell input | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source |  | ckb_load_input(addr, len, offset, index, source) |
+| 1 | 2083 | ckb_load_input_by_field | load field in cell input | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source | size_t field | ckb_load_input_by_field(addr, len, offset, index, source, field) |
+| 1 | 2072 | ckb_load_header | load header | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source |  | ckb_load_header(addr, len, offset, index, source) |
+| 1 | 2082 | ckb_load_header_by_field | load field in cell header | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source | size_t field | ckb_load_header_by_field(addr, len, offset, index, source, field) |
+| 1 | 2074 | ckb_load_witness | load witness | zero if no error, else non-zero | Yes | void* addr | uint64_t* len | size_t offset | size_t index | size_t source |  | ckb_load_witness(addr, len, offset, index, source) |
+| 1 | 2177 | ckb_debug | print debug message | void | N/A | const char* s |  |  |  |  |  |  |
+| 2 | 2041 | ckb_vm_version | get VM version | 1 if running on VM 2 | N/A |  |  |  |  |  |  | ckb_vm_version() |
+| 2 | 2042 | ckb_current_cycles | get current cycle consumption | the current cycle consumption before executing this syscall | N/A |  |  |  |  |  |  | ckb_current_cycles() |
+| 2 | 2043 | ckb_exec | run an executable file from specified cell data in the context of an already existing machine, replacing the previous executable | same return value as the executed script | N/A | size_t index | size_t source |  size_t place | size_t bounds | int argc | char* argv[] | ckb_exec(index, source, place, bounds, argc, argv); |
+
+[^2]: Refer to [this documentation](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0009-vm-syscalls/0009-vm-syscalls.md#partial-loading) for a deeper understanding of partial loading mechanism.
+[^3]: Additional details about this syscal can be found [here](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0009-vm-syscalls/0009-vm-syscalls.md#load-cell-data-as-code).
+
+## Appendix C: Constants
+
+### Return code
+
+| Const Nr. | C Example | Description |
+| --- | --- | --- |
+| 0 | CKB_SUCCESS | no errors |
+| 1 | CKB_INDEX_OUT_OF_BOUND | index out of bound (e.g. no such input cell) |
+| 2 | CKB_ITEM_MISSING | output cells |
+| 3 | CKB_LENGTH_NOT_ENOUGH | supplied memory buffer too small |
+| 4 | CKB_INVALID_DATA | data in an invalid format |
+
+### Source
+
+| Const Nr. | C Example |  Description |
+| --- | --- | --- |
+| 0x1 | CKB_SOURCE_INPUT | input cells |
+| 0x0100000000000001 | CKB_SOURCE_GROUP_INPUT | input cells with the same running script as current script |
+| 2 | CKB_SOURCE_OUTPUT | output cells |
+| 0x0100000000000002 | CKB_SOURCE_GROUP_OUTPUT | output cells with the same running script as current script |
+| 3 | CKB_SOURCE_CELL_DEP | dep cells |
+| 4 | CKB_SOURCE_HEADER_DEP | header deps |
+
+### Cell Fields
+
+| Const Nr | C Example | Description |
+| --- | --- | --- |
+| 0 | CKB_CELL_FIELD_CAPACITY | cell capacity |
+| 1 | CKB_CELL_FIELD_DATA_HASH | cell data hash |
+| 2 | CKB_CELL_FIELD_LOCK | cell lock script |
+| 3 | CKB_CELL_FIELD_LOCK_HASH | cell lock script hash |
+| 4 | CKB_CELL_FIELD_TYPE | cell type script |
+| 5 | CKB_CELL_FIELD_TYPE_HASH | cell type script hash |
+| 6 | CKB_CELL_FIELD_OCCUPIED_CAPACITY | occupied cell capacity |
+
+### Header Fields
+
+| Const Nr. | C Example | Description |
+| --- | --- | --- |
+| 0 | CKB_HEADER_FIELD_EPOCH_NUMBER | epoch number |
+| 1 | CKB_HEADER_FIELD_EPOCH_START_BLOCK_NUMBER | epoch’s 1st block number  |
+| 2 | CKB_HEADER_FIELD_EPOCH_LENGTH | epoch length |
+
+### Header Fields
+
+| Const Nr. | C Example | Description |
+| --- | --- | --- |
+| 0 | CKB_INPUT_FIELD_OUT_POINT | input cell out point |
+| 1 | CKB_INPUT_FIELD_SINCE | input cell since |
