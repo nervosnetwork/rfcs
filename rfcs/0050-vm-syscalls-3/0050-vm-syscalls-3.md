@@ -16,6 +16,7 @@ The following four syscalls are added:
 
 - [Spawn]
 - [Get Memory Limit]
+- [Current Memory]
 - [Set Content]
 - [Load Extension]
 
@@ -88,6 +89,17 @@ int ckb_get_memory_limit();
 ```
 
 For the script(prime script) directly invoked by CKB, it will always return 8(4M). For the child script invoked by prime script or other child script, it depends on the parameters set by *Spawn*.
+
+### Current Memory
+[Current Memory]: #current-memory
+
+Get the Current Memory Usage. The result is the sum of the memory usage of the parent script and the child script.
+
+```c
+int ckb_current_memory();
+```
+
+The system call returns an integer. Multiply it by 0.5 to get the actual memory usage (unit: megabytes)
 
 ### Set Content
 [Set Content]: #set-content
