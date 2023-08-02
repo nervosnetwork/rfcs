@@ -86,6 +86,7 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [43](rfcs/0043-ckb-softfork-activation) | [CKB Softfork Activation](rfcs/0043-ckb-softfork-activation/0043-ckb-softfork-activation.md) | Dingwei Zhang | Standards Track | Proposal
 | [44](rfcs/0044-ckb-light-client) | [CKB Light Client Protocol](rfcs/0044-ckb-light-client/0044-ckb-light-client.md) | Boyu Yang | Standards Track | Proposal
 | [45](rfcs/0045-client-block-filter) | [CKB Client Side Block Filter Protocol](rfcs/0045-client-block-filter/0045-client-block-filter.md) | Quake Wang | Standards Track | Proposal
+| [46](rfcs/0046-syscalls-summary) | [CKB VM Syscalls Summary](rfcs/0046-syscalls-summary/0046-syscalls-summary.md) | Shan | Informational | Draft
 ## License
 
 This repository is being licensed under terms of [MIT license](LICENSE).
