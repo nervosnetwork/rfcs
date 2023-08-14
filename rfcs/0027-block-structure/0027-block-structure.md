@@ -246,7 +246,7 @@ The genesis epoch number is 0 and the genesis block relative index in the epoch 
 
 The header hash of the parent block. The genesis block `parent_hash` is hardcoded in the consensus specification.
 
-### `transaction_root (Byte32)`
+### `transactions_root (Byte32)`
 
 This is the commitment to all the transactions in the block.
 
