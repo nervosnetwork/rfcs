@@ -526,11 +526,11 @@ The parameters[\[2\]] to activate this feature are:
 |-------|---------------|---------------|
 | `name` | LightClient | LightClient |
 | `bit` | 1 | 1 |
-| `start_epoch` | 5346 (approx. 2022-10-31 15:00:00 UTC) | TBD |
-| `timeout_epoch` | 5616 (approx. 2022-12-14 15:00:00 UTC) | TBD |
-| `period` | 42 | TBD |
-| `threshold` | 75% | TBD |
-| `min_activation_epoch` | 5676 (approx. 2022-12-24 15:00:00 UTC) | TBD |
+| `start_epoch` | 5346 (approx. 2022-10-31 15:00:00 UTC) | 8282 (approx. 2023-09-01 00:00:00 UTC) |
+| `timeout_epoch` | 5616 (approx. 2022-12-14 15:00:00 UTC) | 8552 (approx. 2023-10-15 00:00:00 UTC) |
+| `period` | 42 | 42 |
+| `threshold` | 75% | 80% |
+| `min_activation_epoch` | 5676 (approx. 2022-12-24 15:00:00 UTC) | 8648 (approx. 2023-11-01 00:00:00 UTC) |
 
 > Some parameters for CKB mainnet are to be determined.
 
