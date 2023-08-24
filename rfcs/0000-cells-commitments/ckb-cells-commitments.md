@@ -24,26 +24,30 @@ This RFC proposes a cell commitment format to solve this issue in a decentralize
 
 We use an updatable Merkle Mountain Range ([MMR]) to store the cell status. The cell status is defined as a tuple of `(out_point, created_by, consumed_by)`, where `out_point` is the cell out point, `created_by` is the block number when the cell was created, and `consumed_by` is the block number when the cell was consumed. The `created_by` and `consumed_by` are both `u64` numbers and the `consumed_by` is set to `u64::MAX` if a cell is live.
 
-Each MMR leaf node is the hash digest of a cell status, the hash digest is calculated as `H(out_point || created_by || consumed_by)`, where `H` is the blake2b hash function, `||` is the concatenation operator, `out_point` is serialized as molecule binary format, and `created_by` and `consumed_by` are serialized as little-endian `u64` numbers.
+Each MMR leaf node is the hash digest of a cell status, the hash digest is calculated as `H(out_point || created_by || consumed_by)`, where `H` is the blake2b[\[2\]] hash function, `||` is the concatenation operator, `out_point` is serialized as molecule binary format, and `created_by` and `consumed_by` are serialized as little-endian `u64` numbers.
 
 The MMR is updatable, which means we can update the leaf node of a cell status when the cell is consumed.
 
-Let’s look at how the updatable MMR works in detail. Consider the following MMR with two cells in genesis block, which we’ll call state #0:
+Let’s look at how the updatable MMR works in detail. Consider the following MMR with three cells in genesis block, which we’ll call state #0:
 
 ```
-  0
- / \
-a   b
+   root
+   / \
+  0   \
+ / \   \
+a   b   c
 ```
 
 If we generate another cell in block#1 we get state #1:
 
 ```
-    1
-   / \
-  0   \
- / \   \
-a   b   c
+     root
+     / \
+    /   \
+   /     \
+  0       1
+ / \     / \
+a   b   c   d
 ```
 
 Note that the inner node `0` is not updated because the cell `a` and `b` are not consumed yet.
@@ -51,18 +55,19 @@ Note that the inner node `0` is not updated because the cell `a` and `b` are not
 If we generate two cells and consume cell `b` in block#2 we get state #2:
 
 ```
-        2
-       / \
-      2   \
-     / \   \
-    /   \   \
-   /     \   \
-  2       2   \
- / \     / \   \
-a  b'   c   d   e
+         root
+        /   \
+       /     \
+      3       \
+     / \       \
+    /   \       \
+   /     \       \
+  0'      1       2
+ / \     / \     / \
+a  b'   c   d   e   f
 ```
 
-Not that the inner node `0` is updated because the cell `b` is consumed and the hash digest of cell `b` is changed to `b'`.
+Note that the inner node `0` is updated because the cell `b` is consumed and the hash digest of cell `b` is changed to `b'`.
 
 
 ### Commitment
@@ -104,7 +109,7 @@ The returing proof includes the following fields:
 
 ### Versioned Storage
 
-We need to store the MMR in a versioned manner, so that we can rollback the MMR when a chain reorg happens or provide a snapshot of the MMR at any specified block (e.g. for RPC). We can use the block number as the version number of the MMR, and store the `position || version` as key of MMR node in a key-value storage that supports prefix seek. `version` is serialized as big-endian `u64` number, then we can use the following algorithm to find the node of specified position and build the MMR at any specified block:
+We need to store the MMR in a versioned manner, so that we can rollback the MMR when a chain reorg happens or provide a snapshot of the MMR at any specified block (e.g. for RPC). We can use the block number as the version number of the MMR, and store the `position || version` as key of MMR node in a key-value storage that supports prefix seek, then we can use the following algorithm to find the node of specified position and build the MMR at any specified block:
 
 ```rust
         let start_key = [&position.to_le_bytes(), &block_number.to_be_bytes()].concat();
@@ -115,6 +120,8 @@ We need to store the MMR in a versioned manner, so that we can rollback the MMR 
             .map(|(_key, value)| value);
 
 ```
+
+Note that the `version` (block_number) is stored as big-endian bytes instead of little-endian, so that we can use the `Reverse` prefix seek direction to find the latest version of the MMR node.
 
 ### Delayed Commitments
 
@@ -140,7 +147,10 @@ The parameters[\[1\]] to activate this feature are:
 After the feature is activated, the cell commitment will be stored in the extension field of each block as a 32-bytes hash digest, the position of the commitment in the extension field is 32 ~ 64.
 
 ## References
+- [Merkle Mountain Ranges][MMR]
+- [RFC-0043 CKB softfork activation]
 
 [MMR]: https://github.com/opentimestamps/opentimestamps-server/blob/master/doc/merkle-mountain-range.md
 [RFC-0043 CKB softfork activation]: ../0043-ckb-softfork-activation/0043-ckb-softfork-activation.md
 [\[1\]]: ../0043-ckb-softfork-activation/0043-ckb-softfork-activation.md#parameters
+[\[2\]]: ../0022-transaction-structure/0022-transaction-structure.md#crypto-primitives
