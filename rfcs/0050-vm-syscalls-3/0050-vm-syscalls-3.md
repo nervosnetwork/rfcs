@@ -18,7 +18,7 @@ The following four syscalls are added:
 - [Get Memory Limit]
 - [Current Memory]
 - [Set Content]
-- [Load Extension]
+- [Load Block Extension]
 
 ### Spawn
 [Spawn]: #spawn
@@ -177,13 +177,13 @@ int main() {
 }
 ```
 
-### Load Extension
-[Load Extension]: #load-extension
+### Load Block Extension
+[Load Block Extension]: #load-block-extension
 
-*Load Extension* syscall has a signature like the following:
+*Load Block Extension* syscall has a signature like the following:
 
 ```c
-int ckb_load_extension(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
+int ckb_load_block_extension(void* addr, uint64_t* len, size_t offset, size_t index, size_t source)
 {
   return syscall(2104, addr, len, offset, index, source, 0);
 }
