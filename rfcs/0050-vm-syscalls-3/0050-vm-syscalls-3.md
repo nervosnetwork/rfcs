@@ -65,6 +65,8 @@ The arguments used here are:
 
 The arguments used here `index`, `source`, `bounds`, `argc` and `argv` follow the usage described in [EXEC].
 
+If the sub-script does not write data, then `NULL` can be passed in for `content` and `content_length`.
+
 This syscall might return the following results:
 
 - 0: Success.
@@ -112,7 +114,8 @@ int ckb_set_content(uint8_t* content, uint64_t* length);
 
 - Length up to 256K.
 - If the written length is greater than the limit given by *Spawn*, the final written length is the minimum of the two.
-- This function is optional. Not every child script needs to call this.
+- Returns 0 for success, otherwise for failure.
+- This function is optional. Not every child script needs to call this, and nothing will happen if you call it from the prime script.
 
 ### Spawn example
 
