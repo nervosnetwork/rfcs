@@ -23,7 +23,7 @@ The following four syscalls are added:
 ### Spawn
 [Spawn]: #spawn
 
-The syscall Spawn is the core part of this update. The *Spawn* and the latter two syscalls: *Get Memory Limit* and *Set Content* together, implement a way to call another CKB Script in a CKB Script. Unlike the *Exec*[1](../0034-vm-syscalls-2/0034-vm-syscalls-2.md) syscall, *Spawn* saves the execution context of the current script, like [posix_spawn](https://man7.org/linux/man-pages/man3/posix_spawn.3.html), the parent script blocks until the child script ends.
+The syscall Spawn is the core part of this update. The *Spawn* and the latter two syscalls: *Get Memory Limit* and *Set Content* together, implement a way to call another CKB Script in a CKB Script. Unlike the *Exec*[1](../0034-vm-syscalls-2/0034-vm-syscalls-2.md) syscall, *Spawn* saves the execution context of the current script, like [posix_spawn](https://man7.org/linux/man-pages/man3/posix_spawn.3.html), the parent script continues when the child script ends.
 
 
 ```c
