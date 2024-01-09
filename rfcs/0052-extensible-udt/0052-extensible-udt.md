@@ -338,6 +338,16 @@ the spec above has been deployed to Mirana CKB mainnet and Pudge testnet:
 | index | 0x0 |
 | dep_type | code |
 
+This script is not upgradeable due to zero lock (lock args with all zeros).
+We have previously deployed scripts with the ability to be upgraded. However, we
+consider this upgrading mechanism to be harmful as it compromises the
+decentralization of the blockchain. With the ability to upgrade, it means that
+the owners (whether it's several people or even just one person) of this cell
+can upgrade it at any time. This gives one or several individuals complete
+control over the assets associated with the deploy scripts. That's why we have
+chosen to use a zero lock when deploying this script.
+
+
 - Pudge(testnet)
 
 | parameter | value |
