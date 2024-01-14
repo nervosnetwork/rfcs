@@ -532,6 +532,8 @@ The parameters[\[2\]] to activate this feature are:
 | `threshold` | 75% | 80% |
 | `min_activation_epoch` | 5676 (approx. 2022-12-24 15:00:00 UTC) | 8648 (approx. 2023-11-01 00:00:00 UTC) |
 
+For CKB Testnet, the deployment did activate at epoch 5711.
+
 > Some parameters for CKB mainnet are to be determined.
 
 And we also have to create all MMR nodes for blocks before that epoch to
