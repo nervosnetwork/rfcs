@@ -211,15 +211,15 @@ Outputs:
     <...>
 Witnesses:
     WitnessArgs structure:
-    Lock: <user defined>
-    Input Type: <XudtWitnessInput>
-        owner_script: <None>
-        owner_signature: <None>				
-        raw_extension_data: <None>
-        extension_data: 
-            <vec> BytesVec
-                <data> 
-            <...>
+        Lock: <user defined>
+        Input Type: <XudtWitnessInput>
+            owner_script: <None>
+            owner_signature: <None>				
+            raw_extension_data: <None>
+            extension_data: 
+                <vec> BytesVec
+                    <data> 
+                <...>
 ```
 
 The witness of the same index as the first input xUDT cell is located by xUDT script. It is parsed first as WitnessArgs structure, the `input_type` or `output_type` field of `WitnessArgs`, is thus treated as `XudtWitnessInput` structure. The `extension_data`structure inside must also be of the same length as `xUDT args`. An extension script might also require transaction-specific data so as to validate. Witness here provides a place for this data needs.
