@@ -64,8 +64,8 @@ table Script {
 vector ScriptVec <Script>
 ```
 
-Each entry included in `ScriptVec` structure is interpreted as a CKB script hash
-for an extension script with additional behaviors. When an xUDT script is
+Each entry included in `ScriptVec` structure is interpreted as
+an extension script with additional behaviors. When an xUDT script is
 executed, it will run through each included extension script. Only when all
 extension scripts pass validation, will xUDT also consider the validation to be
 successful.
