@@ -46,7 +46,7 @@ xUDT args has the following structure:
 
 Depending on the content of `flags`, different extension data might be attached:
 
-• If `flags & 0x1FFFFFFF` is 0, we won’t need any extension data. Note a
+• If `flags & 0x1FFFFFFF` is 0, no extension data is required. Note a
 backward-compatible way of viewing things, which is that a plain sUDT cell also
 has a hidden `flags` field with all zeros.
 
