@@ -34,7 +34,7 @@ lock:
 ```
 
 The added `xUDT args` and `xUDT data` parts provide all the new functions needed
-by xUDT, we will explain the detailed structure below.
+by xUDT, the detailed structure is explained below.
 
 ### **xUDT Args**
 
