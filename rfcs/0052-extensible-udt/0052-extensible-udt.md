@@ -172,7 +172,7 @@ data.
 The `lock` field included in `XudtData` will not be used by the xUDT script. It
 is reserved for lock script specific data for current cells.
 
-An extension script will first need to first locate the index it resides in xUDT
+An extension script should first locate the index it resides in xUDT
 args, then look for the data for the current extension script at the same index
 in `data` field of `XudtData` structure.
 
