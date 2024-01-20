@@ -563,7 +563,7 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | 0xf329effd1c475a2978453c8600e1eaf0bc2087ee093c3ee64cc96ec6847752cb   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | 0xb50ef6f2e9138f4dbca7d5280e10d29c1a65e60e8a574c009a2fa4e4107e0750   |
+| `tx_hash`   | 0x3d4296df1bd2cc2bd3f483f61ab7ebeac462a2f336f2b944168fe6ba5d81c014   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
