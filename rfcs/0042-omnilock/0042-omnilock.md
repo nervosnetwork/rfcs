@@ -553,7 +553,7 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | 0x9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | 0xdfdb40f5d229536915f2d5403c66047e162e25dedd70a79ef5164356e1facdc8   |
+| `tx_hash`   | 0xc76edf469816aa22f416503c38d0b533d2a018e253e379f134c3985b3472c842   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
@@ -571,9 +571,9 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 Reproducible build is supported to verify the deploy script. To build the deployed the script above, one can use the following steps:
 
 ```bash
-$ git clone https://github.com/nervosnetwork/ckb-production-scripts
-$ cd ckb-production-scripts
-$ git checkout 716433e2eb6fb862acbe8d858ab7f294d894faf5
+$ git clone https://github.com/cryptape/omnilock.git
+$ cd omnilock
+$ git checkout cd764d
 $ git submodule update --init --recursive
 $ make all-via-docker
 ```
