@@ -278,7 +278,7 @@ workflow.
 
 As described above, If an input cell uses an input lock script with same script
 hash as the owner lock script hash, the `is_owner_mode` will be set to true. It
-isn’t convenience: this requires extra cell to be consumed. With `owner_script`
+isn’t convenient: this requires extra cell to be consumed. With `owner_script`
 and `owner_signature` set to proper values, we can use owner mode without extra
 cell.
 
