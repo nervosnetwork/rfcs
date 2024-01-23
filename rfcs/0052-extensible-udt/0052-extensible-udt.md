@@ -126,7 +126,7 @@ field `raw_extension_data` and `extension_data` are used when `flags &
 
 ### Owner Mode Update
 
-As described in RFC sUDT, If an input cell in the current transaction uses an
+As described in RFC sUDT, if an input cell in the current transaction uses an
 input lock script with the same script hash as the owner lock script hash, the
 `is_owner_mode` will be set to true. In xUDT, this rule is updated by the
 following rule:
