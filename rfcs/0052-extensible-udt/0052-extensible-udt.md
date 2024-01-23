@@ -224,7 +224,7 @@ Witnesses:
 
 The witness of the same index as the first input xUDT cell is located by xUDT script. It is parsed first as WitnessArgs structure, the `input_type` or `output_type` field of `WitnessArgs`, is thus treated as `XudtWitnessInput` structure. The length of `extension_data` structure inside must also be the same as `ScriptVec` in `xUDT args`. An extension script might also require transaction-specific data for validation. The witness here provides a place for these data needs.
 
-Notice each extension script is only executed once in the transaction. The extension script is responsible for checking all xUDT cells of the current type, ensuring each cell data and witness for the current extension script, can be validated per the extension script’s rules.
+Note that each extension script is only executed once in the transaction. The extension script is responsible for checking all xUDT cells of the current type, ensuring each cell data and witness for the current extension script, can be validated against the extension script’s rules.
 
 ### **P2SH Style Extension Script**
 
