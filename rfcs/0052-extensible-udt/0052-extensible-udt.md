@@ -274,7 +274,7 @@ that the hash of raw extension data provide here, is the same as blake160 hash
 included in xUDT args. After this, it uses the same logic as the previous
 workflow.
 
-### Owner Mode Without Consuming Cell
+### Owner Mode without Consuming Cell
 
 As described above, If an input cell uses an input lock script with same script
 hash as the owner lock script hash, the `is_owner_mode` will be set to true. It
