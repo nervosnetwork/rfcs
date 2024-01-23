@@ -103,7 +103,7 @@ actual `raw_extension_data` (`ScriptVec`) structure data will be included in a
 witness field `input_type` or `output_type` contained in the current
 transaction. We will explain this part below. Choosing `input_type` or
 `output_type` depends on whether the type script is running on input or output
-cells. Under a lot of scenarios, it is `input_type`. But in the example “Owner
+cells. Under a lot of scenarios, it is `input_type`. But in the following example “Owner
 Mode Without Consuming Cell”, we can see it’s possible on `output_type`.
 
 ### xUDT Witness
