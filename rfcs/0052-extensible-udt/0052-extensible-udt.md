@@ -314,8 +314,7 @@ Witnesses:
                 <...>
 ```
 
-The example above shows a scenario of owner mode without consuming cell. This
-transaction can be valid even without any input cell. The `<owner lock script
+The example above shows a scenario of owner mode without consuming the owner's cell. The `<owner lock script
 hash 1>` is the same as blake160 hash of `<owner script 1>`. We can implement an
 extension script as `<owner script 1>` which has same functionality to
 [secp256k1/blake160 lock
