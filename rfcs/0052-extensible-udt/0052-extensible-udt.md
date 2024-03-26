@@ -112,7 +112,7 @@ The `input_type` or `output_type` field in witness has the following data
 structure in molecule format:
 
 ```js
-table XudtWitnessInput {
+table XudtWitness {
     owner_script: ScriptOpt,		
     owner_signature: BytesOpt,
     raw_extension_data: ScriptVecOpt,
@@ -121,8 +121,12 @@ table XudtWitnessInput {
 ```
 
 The field `owner_script` and `owner_signature` will be used in owner mode. The
-field `raw_extension_data` and `extension_data` are used when `flags &
-0x1FFFFFFF` is 0x2 in args.
+field `raw_extension_data` is used when `flags & 0x1FFFFFFF` is 0x2 in args.
+
+The length of `extension_data` structure inside must also be the same as
+`ScriptVec` in `xUDT args` or `raw_extension_data`. An extension script might also
+require transaction-specific data for validation. The witness here provides a
+place for these data needs.
 
 ### Owner Mode Update
 
@@ -145,10 +149,9 @@ won’t be run in a transaction.
 If the `owner_script` in witness isn’t none and its blake2b hash is the same as
 the owner lock script hash in `args`, this script will be run as an extension
 script. If the script returns success, `is_owner_mode` is set to true. Note, the
-`owner_signature` field can be used by this owner script. Usually, a valid
-signature can be placed here. When tokens are minted, the `owner_script` and
-`owner_signature` can be set to some proper values. When tokens are transferred,
-they can be set to none.
+`owner_signature` field can be used by this owner script. When tokens are
+minted, the `owner_script` and `owner_signature` can be set to some proper
+values. When tokens are transferred, they can be set to none.
 
 ### **xUDT Data**
 
@@ -212,7 +215,7 @@ Outputs:
 Witnesses:
     WitnessArgs structure:
         Lock: <user defined>
-        Input Type: <XudtWitnessInput>
+        Input Type: <XudtWitness>
             owner_script: <None>
             owner_signature: <None>				
             raw_extension_data: <None>
@@ -222,9 +225,9 @@ Witnesses:
                 <...>
 ```
 
-The witness of the same index as the first input xUDT cell is located by xUDT script. It is parsed first as WitnessArgs structure, the `input_type` or `output_type` field of `WitnessArgs`, is thus treated as `XudtWitnessInput` structure. The length of `extension_data` structure inside must also be the same as `ScriptVec` in `xUDT args`. An extension script might also require transaction-specific data for validation. The witness here provides a place for these data needs.
+The witness of the same index as the first input xUDT cell is located by xUDT script. It is parsed first as WitnessArgs structure, the `input_type` or `output_type` field of `WitnessArgs`, is thus treated as `XudtWitness` structure.
 
-Note that each extension script is only executed once in the transaction. The extension script is responsible for checking all xUDT cells of the current type, ensuring each cell data and witness for the current extension script, can be validated against the extension script’s rules.
+Note that each extension script is only executed once in the transaction. When multiple instances of the same extension script are included, each instance will execute independently for each inclusion. The extension script is responsible for checking all xUDT cells of the current type, ensuring each cell data and witness for the current extension script, can be validated against the extension script’s rules.
 
 ### **P2SH Style Extension Script**
 
@@ -237,7 +240,7 @@ Inputs:
             <amount: uint128> <xUDT data>
         Type:
             code_hash: xUDT type script
-            args: <owner lock script hash> <xUDT args>
+            args: <owner lock script hash> <xUDT args, hash of raw extension data>
         Lock:
             <user defined>
     <...>
@@ -247,14 +250,14 @@ Outputs:
             <amount: uint128> <xUDT data>
         Type:
             code_hash: xUDT type script
-            args: <owner lock script hash> <xUDT args>
+            args: <owner lock script hash> <xUDT args, hash of raw extension data>
         Lock:
             <user defined>
     <...>
 Witnesses:
     WitnessArgs structure:
         Lock: <user defined>
-        Input Type: XudtWitnessInput
+        Input Type: XudtWitness
             owner_script: <None>
             owner_signature: <None>				
             raw_extension_data: 
@@ -267,7 +270,7 @@ Witnesses:
                 <...>
 ```
 
-The only difference here is that `XudtWitnessInput` in `input_type` or
+The only difference here is that `XudtWitness` in `input_type` or
 `output_type` field in the corresponding WitnessArgs structure, contains raw
 extension data in `ScriptVec` data structure, xUDT script must first validate
 that the hash of raw extension data provide here, is the same as blake160 hash
@@ -301,7 +304,7 @@ Witnesses:
     WitnessArgs structure:
         Lock: <user defined>
         Input Type: <None>
-        Output Type: XudtWitnessInput
+        Output Type: XudtWitness
             owner_script: <owner script 1>
             owner_signature: <signature 1>				
             raw_extension_data: 
@@ -314,13 +317,10 @@ Witnesses:
                 <...>
 ```
 
-The example above shows a scenario of owner mode without consuming the owner's cell. The `<owner lock script
-hash 1>` is the same as blake160 hash of `<owner script 1>`. We can implement an
-extension script as `<owner script 1>` which has same functionality to
-[secp256k1/blake160 lock
-script](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#secp256k1blake160).
-The `<signature 1>` can be used by `<owner script 1>` to place signature
-information.
+The example above shows a scenario of owner mode without consuming the owner's
+cell.  We can implement an extension script as `<owner script 1>` with signature
+validation. The `<signature 1>` can be used by `<owner script 1>` to place
+signature information.
 
 ## Deployment
 
