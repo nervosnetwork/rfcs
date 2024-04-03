@@ -1,8 +1,9 @@
 ---
 Number: "0004"
-Category: Standards Track
-Status: Proposal
+Category: Information
+Status: Final
 Author: Ian Yang <@doitian>
+Organization: Nervos Foundation
 Created: 2018-07-25
 ---
 
@@ -15,6 +16,7 @@ Glossary of Terms
 - Best Header Chain: a chain with the most PoW and consisted only of blocks in the status of Connected, Downloaded or Accepted. Please refer to block status part for more details.
 - Tip: the latest block of a chain and Tip can be used to determine a specific chain.
 - Best Chain Tip: the tip of Best Chain.
+- Chain: a list of blocks starting with genesis block and consisted of successive blocks.
 
 ## Abstract
 
