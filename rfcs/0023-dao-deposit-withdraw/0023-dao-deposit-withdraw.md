@@ -70,7 +70,7 @@ A phase 2 transaction MUST satisfy the following conditions:
 
 - One or more `withdrawing cell`s MUST be included in the transaction as inputs.
 - For each `withdrawing cell`, the transaction MUST also include the reference to its associated including block in `header_deps`, which will be used by Nervos DAO type script as the endpoint of deposit.
-- For a `withdrawing cell` at input index `i`, the transaction builder should locate the deposit block header, meaning the the header of the original `deposit cell`'s inclusion block. With the deposit block header:
+- For a `withdrawing cell` at input index `i`, the transaction builder should locate the deposit block header, meaning the header of the original `deposit cell`'s inclusion block. With the deposit block header:
     - The deposit block header hash MUST be included in `header_deps`.
     - The index of the deposit block header hash in `header_deps` MUST be put in the type-script-part of the corresponding witness at index `i`, using 64-bit unsigned little-endian integer format. The example below explains data placement in transaction witnesses.
 - For a `withdrawing cell`, the `since` field in the cell input MUST conform to the Nervos DAO's locking period requirement, which is 180 epochs. For example, if one deposits into Nervos DAO at epoch 5, he/she can only expect to withdraw Nervos DAO at epoch 185, 365, 545, etc.

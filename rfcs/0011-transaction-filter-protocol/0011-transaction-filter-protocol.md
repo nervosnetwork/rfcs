@@ -44,7 +44,7 @@ table SetFilter {
 
 ### AddFilter
 
-Upon receiving a `AddFilter` message, the given bit data will be added to the exsiting filter via bitwise OR operator. A filter must have been previously provided using `SetFilter`. This messsage is useful if a new filter is added to a peer whilst it has connections to the network open, alsp avoids the need to re-calculate and send an entirely new filter to every peer.
+Upon receiving a `AddFilter` message, the given bit data will be added to the existing filter via bitwise OR operator. A filter must have been previously provided using `SetFilter`. This messsage is useful if a new filter is added to a peer whilst it has connections to the network open, alsp avoids the need to re-calculate and send an entirely new filter to every peer.
 
 ```
 table AddFilter {
