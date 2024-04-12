@@ -99,7 +99,7 @@ considered successful.
 
 • If `flags & 0x1FFFFFFF` is 0x2, extension data will contain the blake160 hash
 of the `ScriptVec` structure as explained in the previous section. The
-actual `raw_extension_data` (`ScriptVec`) structure data will be included in a
+actual `extension_scripts` (`ScriptVec`) structure data will be included in a
 witness field `input_type` or `output_type` contained in the current
 transaction. We will explain this part below. Choosing `input_type` or
 `output_type` depends on whether the type script is running on input or output
@@ -115,16 +115,16 @@ structure in molecule format:
 table XudtWitness {
     owner_script: ScriptOpt,		
     owner_signature: BytesOpt,
-    raw_extension_data: ScriptVecOpt,
+    extension_scripts: ScriptVecOpt,
     extension_data: BytesVec,
 }
 ```
 
 The field `owner_script` and `owner_signature` will be used in owner mode. The
-field `raw_extension_data` is used when `flags & 0x1FFFFFFF` is 0x2 in args.
+field `extension_scripts` is used when `flags & 0x1FFFFFFF` is 0x2 in args.
 
 The length of `extension_data` structure inside must also be the same as
-`ScriptVec` in `xUDT args` or `raw_extension_data`. An extension script might also
+`ScriptVec` in `xUDT args` or `extension_scripts`. An extension script might also
 require transaction-specific data for validation. The witness here provides a
 place for these data needs.
 
@@ -218,7 +218,7 @@ Witnesses:
         Input Type: <XudtWitness>
             owner_script: <None>
             owner_signature: <None>				
-            raw_extension_data: <None>
+            extension_scripts: <None>
             extension_data: 
                 <vec> BytesVec
                     <data> 
@@ -260,7 +260,7 @@ Witnesses:
         Input Type: XudtWitness
             owner_script: <None>
             owner_signature: <None>				
-            raw_extension_data: 
+            extension_scripts: 
                 <vec> ScriptVec
                     <script>
                 <...>
@@ -307,7 +307,7 @@ Witnesses:
         Output Type: XudtWitness
             owner_script: <owner script 1>
             owner_signature: <signature 1>				
-            raw_extension_data: 
+            extension_scripts: 
                 <vec> ScriptVec
                     <script>
                 <...>
