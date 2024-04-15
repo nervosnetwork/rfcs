@@ -351,8 +351,8 @@ chosen to use a zero lock when deploying this script.
 
 | parameter | value |
 | --- | --- |
-| code_hash | 0x25c29dc317811a6f6f3985a7a9ebc4838bd388d19d0feeecf0bcd60f6c0975bb |
-| hash_type | type |
+| code_hash | 0x50bd8d6680b8b9cf98b73f3c08faf8b2a21914311954118ad6609be6e78a1b95 |
+| hash_type | data1 |
 | tx_hash | 0xbf6fb538763efec2a70a6a3dcb7242787087e1030c4e7d86585bc63a9d337f5f |
 | index | 0x0 |
 | dep_type | code |
