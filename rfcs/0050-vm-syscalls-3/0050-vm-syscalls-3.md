@@ -2,7 +2,7 @@
 Number: "0050"
 Category: Standards Track
 Status: Draft
-Author: Xuejie Xiao <xxuejie@gmail.com>, Xu Jiandong <lynndon@gmail.com>, Wanbiao Ye <mohanson@outlook.com>, Dingwei Zhang <zhangsoledad@gmail.com>
+Author: Xuejie Xiao <xxuejie@gmail.com>, Jiandong Xu<lynndon@gmail.com>, Wanbiao Ye <mohanson@outlook.com>, Dingwei Zhang <zhangsoledad@gmail.com>
 Created: 2023-04-17
 ---
 
@@ -22,7 +22,7 @@ We added 8 spawn-related syscalls and one block-related syscall, respectively:
 
 - [Spawn]
 - [Pipe]
-- [Inherited FD]
+- [Inherited File Descriptors]
 - [Read]
 - [Write]
 - [Close]
@@ -81,10 +81,10 @@ int ckb_pipe(uint64_t fds[2]);
 
 File descriptors can be passed to a child process via the `inherited_fds` parameter of the Spawn syscall.
 
-### Inherited FD
-[Inherited FD]: #inherited-fd
+### Inherited File Descriptors
+[Inherited File Descriptors]: #inherited-file-descriptors
 
-This sycall retrieves the file descriptors available to the current process, which are passed in from the parent process. These results are copied from the `inherited_fds` parameter of the Spawn syscall.
+This syscall retrieves the file descriptors available to the current process, which are passed in from the parent process. These results are copied from the `inherited_fds` parameter of the Spawn syscall.
 
 ```c
 int ckb_inherited_file_descriptors(uint64_t* fd, size_t* count);
@@ -178,7 +178,7 @@ This syscall might return the following errors:
 
 In case of errors, `addr` and `index` will not contain meaningful data to use.
 
-## Errors Code
+## Error Code
 
 Five new error types added:
 
@@ -187,6 +187,10 @@ Five new error types added:
 - Error code 7: The other end of the pipe is closed.
 - Error code 8: The maximum count of spawned processes has been reached.
 - Error code 9: The maximum count of created pipes has been reached.
+
+It's possible for read/write/wait operations to wait for each other, leading to
+a deadlock state. In such cases, CKB-VM would throw an internal error and
+terminate immediately.
 
 ## Cycles
 
@@ -197,19 +201,19 @@ pub const SPAWN_EXTRA_CYCLES_BASE: u64 = 100_000;
 pub const SPAWN_YIELD_CYCLES_BASE: u64 = 800;
 ```
 
-The Cycles consumption of each Syscall is as follows. Among them, the constant 500 and BYTES_TRANSFERD_CYCLES can be referred to [RFC-0014](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.md).
+The Cycles consumption of each Syscall is as follows. Among them, the constant 500 and BYTES_TRANSFERRED_CYCLES can be referred to [RFC-0014](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.md).
 
 |     Syscall Name     |                                  Cycles Charge                                   |
 | -------------------- | -------------------------------------------------------------------------------- |
-| spawn                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERD_CYCLES + SPAWN_EXTRA_CYCLES_BASE |
+| spawn                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES + SPAWN_EXTRA_CYCLES_BASE |
 | pipe                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
 | inherited_fd         | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
-| read                 | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERD_CYCLES                           |
-| write                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERD_CYCLES                           |
+| read                 | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES                           |
+| write                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES                           |
 | close                | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
 | wait                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
 | process_id           | 500                                                                              |
-| load block extension | 500 + BYTES_TRANSFERD_CYCLES                                                     |
+| load block extension | 500 + BYTES_TRANSFERRED_CYCLES                                                     |
 
 ## Spawn Example
 
