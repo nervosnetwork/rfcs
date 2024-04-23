@@ -170,7 +170,9 @@ table XudtData {
 The `data` field included in `XudtData`, must be of the same length
 as `ScriptVec` structure included in xUDT args. Some extensions might require
 user-specific data stored in each xUDT cell. xUDT data provides a place for such
-data. This XUDT data part can be optional.
+data. The `XudtData` can be optional regardless of whether there is any extension
+script or not. However, if an extension script requires such data, it must be
+present.
 
 The `lock` field included in `XudtData` will not be used by the xUDT script. It
 is reserved for lock script specific data for current cells.
