@@ -110,6 +110,11 @@ This syscall writes data to a pipe via a file descriptor. The syscall Write writ
 int ckb_write(uint64_t fd, const void* buffer, size_t* length);
 ```
 
+Read and Write must appear in pairs; otherwise, the process will be blocked indefinitely. When using `ckb_read` and `ckb_write`, there may be the following scenarios:
+
+- If the Writer writes W bytes and the Reader reads R bytes where W > R, the Writer will block, and the Reader will return immediately with R bytes in `*length`. The Reader can then call `ckb_read` again to read the remaining W - R bytes.
+- If the Writer writes W bytes and the Reader reads R bytes where W <= R, both the Writer and the Reader will return immediately with W bytes in `*length`.
+
 ### Close
 [Close]: #close
 
@@ -185,7 +190,7 @@ In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 Five new error types added:
 
-- Error code 5: The file descriptor is invalid during syscall `Wait`.
+- Error code 5: The file descriptor is invalid during syscall [Wait].
 - Error code 6: The file descriptor is not owned by this process.
 - Error code 7: The other end of the pipe is closed.
 - Error code 8: The maximum count of spawned processes has been reached.
