@@ -113,7 +113,12 @@ int ckb_write(uint64_t fd, const void* buffer, size_t* length);
 ### Close
 [Close]: #close
 
-This syscall manually closes a file descriptor. After calling this, any attempt to read/write the file descriptor pointed to the other end would fail.
+This syscall manually closes a file descriptor. After calling this, any attempt to read/write the file descriptor pointed to the other end would fail. After using close, there are four typical situations:
+
+- close writer, and then try to write data to writer through `ckb_write`. In this case `ckb_write` will fail and return error(6).
+- close writer, and then try to read data from reader through `ckb_read`. In this case if there is unread data in Pipe, ckb_read will execute normally; otherwise, it will return error(7).
+- close reader, and then try to write data to writer through `ckb_write`. In this case `ckb_write` will fail and return error(7).
+- close reader, and then try to read data from reader through `ckb_read`. In this case `ckb_read` will fail and return error(6).
 
 ```c
 int ckb_close(uint64_t fd);
@@ -186,9 +191,7 @@ Five new error types added:
 - Error code 8: The maximum count of spawned processes has been reached.
 - Error code 9: The maximum count of created pipes has been reached.
 
-It's possible for read/write/wait operations to wait for each other, leading to
-a deadlock state. In such cases, CKB-VM would throw an internal error and
-terminate immediately.
+It's possible for read/write/wait operations to wait for each other, leading to a deadlock state. In such cases, CKB-VM would throw an internal error and terminate immediately.
 
 ## Cycles
 
