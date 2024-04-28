@@ -92,8 +92,6 @@ int ckb_inherited_file_descriptors(uint64_t* fd, size_t* count);
 
 When returning from the syscall, the syscall fills `fd` with the file descriptors in unit of `uint64_t` and fills in `count` with the count of corresponding file descriptors. The actual count of file descriptor written to `fd` is the minimum value between the count of `inherited_fds` in the Spawn syscall and the input value pointed to by `count` before syscall.
 
-By providing `NULL` as `fd` and a `size_t` pointer with a value of 0 as `count`, this syscall can be used to fetch the count of `inherited_fds` in the Spawn syscall. However, by providing `NULL` as `fd` and a non-zero value as `count`, this syscall fails.
-
 ### Read
 [Read]: #read
 
