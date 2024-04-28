@@ -14,9 +14,9 @@ This document describes the addition of the syscalls during the CKB2023. This up
 
 ## Introduction
 
-The design of the syscall `spawn` function draws inspiration from Unix and Linux, hence they share the same terminologies: process, pipe, and file descriptor. The `spawn` is a mechanism used in `ckb-vm` to create new processes, which can then execute a different program or command independently of the parent process.
+The design of the syscall spawn function draws inspiration from Unix and Linux, hence they share the same terminologies: process, pipe, and file descriptor. The spawn mechanism is used in ckb-vm to create new processes, which can then execute a different program or command independently of the parent process.
 
-In the context of `ckb-vm`, a process represents the active execution of a RISC-V binary. This binary can be located within a cell. Additionally, a RISC-V binary can also be found within the witness during a syscall `spawn` . A pipe is established by associating two file descriptors, each linked to one of its ends. These file descriptors cannot be duplicated and are exclusively owned by the process. Furthermore, the file descriptors can only be either read from or written to; they cannot be both read from and written to simultaneously.
+In the context of ckb-vm, a process represents the active execution of a RISC-V binary. This binary can be located within a cell. Additionally, a RISC-V binary can also be found within the witness during a syscall spawn. A pipe is established by associating two file descriptors, each linked to one of its ends. These file descriptors can't be duplicated and are exclusively owned by the process. Furthermore, the file descriptors can only be either read from or written to; they can't be both read from and written to simultaneously.
 
 We added 8 spawn-related syscalls and one block-related syscall, respectively:
 
@@ -68,7 +68,7 @@ The arguments used here are:
     - process_id: a pointer used to save the process_id of the child process
     - inherited_fds: an array representing the file descriptors passed to the child process. It must end with zero.
 
-The arguments used here index, source, bounds, place, argc and argv follow the usage described in [EXEC].
+The arguments used here - index, source, bounds, place, argc, and argv - follow the usage described in [EXEC].
 
 ### Pipe
 [Pipe]: #pipe
@@ -126,7 +126,7 @@ It's not always necessary to manually close file descriptors. When a process is 
 ### Wait
 [Wait]: #wait
 
-The syscall pauses until the execution of a process specified by `pid` has ended.
+The syscall pauses until the execution of a process specified by `pid` has ended. If the process has already terminated when Wait is called, the method returns immediately.
 
 ```c
 int ckb_wait(uint64_t pid, int8_t* exit_code);
