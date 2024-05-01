@@ -171,10 +171,10 @@ For more information regarding how `Script` structure is implemented please refe
 #### OutPoint
 
 
-| Name    | Type               | Description                                                  |
-| ------- | ------------------ | ------------------------------------------------------------ |
-| `hash`  | H256(hash)         | **The hash of the transaction that this cell belongs to.**   |
-| `index` | uint32             | **The index of the cell in its transaction's output list.**  |
+| Name      | Type               | Description                                                  |
+| ----------| ------------------ | ------------------------------------------------------------ |
+| `tx_hash` | H256(hash)         | **The hash of the transaction that this cell belongs to.**   |
+| `index`   | uint32             | **The index of the cell in its transaction's output list.**  |
 
 
 
