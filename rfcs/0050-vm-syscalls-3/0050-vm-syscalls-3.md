@@ -70,10 +70,15 @@ The arguments used here are:
 
 The arguments used here - index, source, bounds, place, argc, and argv - follow the usage described in [EXEC].
 
+There are some hard limits to the system to avoid the overuse of resources.
+
+- CKB-VM allows 16 processes to exist at the same time (excluding the root process). Processes that are created but exit normally will not be counted.
+- A maximum of 4 instantiated VMs is allowed. Each process needs to occupy a VM instance to run. When the number of processes is greater than 4, some processes will enter a state called "uninstantiated". CKB-VM implements a scheduler to decide which processes should be "instantiated" and which processes should be "uninstantiated". However, switching the instantiation state of a VM is very expensive, developers should try to keep the number of processes below 4 so that all processes are instantiated.
+
 ### Pipe
 [Pipe]: #pipe
 
-This syscall create a pipe with read-write pair of file descriptions. The file descriptor with read permission is located at `fds[0]`, and the corresponding file descriptor with write permission is located at `fds[1]`.
+This syscall create a pipe with read-write pair of file descriptions. The file descriptor with read permission is located at `fds[0]`, and the corresponding file descriptor with write permission is located at `fds[1]`. A maximum of 64 file descriptors can exist at the same time.
 
 ```c
 int ckb_pipe(uint64_t fds[2]);
