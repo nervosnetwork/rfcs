@@ -221,17 +221,19 @@ pub const SPAWN_YIELD_CYCLES_BASE: u64 = 800;
 
 The Cycles consumption of each Syscall is as follows. Among them, the constant 500 and BYTES_TRANSFERRED_CYCLES can be referred to [RFC-0014](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0014-vm-cycle-limits/0014-vm-cycle-limits.md).
 
-|     Syscall Name     |                                  Cycles Charge                                   |
-| -------------------- | -------------------------------------------------------------------------------- |
+|     Syscall Name     |                                   Cycles Charge                                    |
+| -------------------- | ---------------------------------------------------------------------------------- |
 | spawn                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES + SPAWN_EXTRA_CYCLES_BASE |
-| pipe                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
-| inherited_fd         | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
+| pipe                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                      |
+| inherited_fd         | 500 + SPAWN_YIELD_CYCLES_BASE                                                      |
 | read                 | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES                           |
 | write                | 500 + SPAWN_YIELD_CYCLES_BASE + BYTES_TRANSFERRED_CYCLES                           |
-| close                | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
-| wait                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                    |
-| process_id           | 500                                                                              |
+| close                | 500 + SPAWN_YIELD_CYCLES_BASE                                                      |
+| wait                 | 500 + SPAWN_YIELD_CYCLES_BASE                                                      |
+| process_id           | 500                                                                                |
 | load block extension | 500 + BYTES_TRANSFERRED_CYCLES                                                     |
+
+In addition, when a VM switches from instantiated to uninstantiated, or from uninstantiated to instantiated, each VM needs `SPAWN_EXTRA_CYCLES_BASE` cycles.
 
 ## Spawn Example
 
