@@ -101,6 +101,8 @@ This syscall reads data from a pipe via a file descriptor. The syscall Read atte
 int ckb_read(uint64_t fd, void* buffer, size_t* length);
 ```
 
+For the specific behavior description of Read, you can refer to the following [Write] syscall.
+
 ### Write
 [Write]: #write
 
@@ -110,10 +112,17 @@ This syscall writes data to a pipe via a file descriptor. The syscall Write writ
 int ckb_write(uint64_t fd, const void* buffer, size_t* length);
 ```
 
-Read and Write must appear in pairs; otherwise, the process will be blocked indefinitely. When using `ckb_read` and `ckb_write`, there may be the following scenarios:
+When using `ckb_read` and `ckb_write`, there may be the following scenarios:
 
-- If the Writer writes W bytes and the Reader reads R bytes where W > R, the Writer will block, and the Reader will return immediately with R bytes in `*length`. The Reader can then call `ckb_read` again to read the remaining W - R bytes.
-- If the Writer writes W bytes and the Reader reads R bytes where W <= R, both the Writer and the Reader will return immediately with W bytes in `*length`.
+**Success**
+
+- If the writer writes W bytes and the reader reads R bytes where W > R, the writer will block, and the reader will return immediately with R bytes in `*length`. The reader can then call `ckb_read` again to read the remaining W - R bytes.
+- If the writer writes W bytes and the reader reads R bytes where W <= R, both the writer and the reader will return immediately with W bytes in `*length`.
+
+**Failure**
+
+- If the writer writes data to pipe, but no other reader reads data from pipe, the writer will block permanently. If ckb-vm detects that all processes are blocked, ckb-vm will return a deadlock error.
+- If the reader reads data from pipe, but no other writer writes data to pipe, the reader will block permanently. If ckb-vm detects that all processes are blocked, ckb-vm will return a deadlock error.
 
 ### Close
 [Close]: #close
