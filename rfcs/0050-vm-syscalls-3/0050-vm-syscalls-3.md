@@ -127,7 +127,7 @@ When using `ckb_read` and `ckb_write`, there may be the following scenarios:
 ### Close
 [Close]: #close
 
-This syscall manually closes a file descriptor. After calling this, any attempt to read/write the file descriptor pointed to the other end would fail. After using close, there are four typical situations:
+This syscall manually closes a file descriptor. After calling this, any attempt to read/write the file descriptor pointed to the other end would fail, so closing a single file descriptor, essentially closes the entire pair of pipes. After using close, there are four typical situations:
 
 - close writer, and then try to write data to writer through `ckb_write`. In this case `ckb_write` will fail and return error(6).
 - close writer, and then try to read data from reader through `ckb_read`. In this case if there is unread data in Pipe, ckb_read will execute normally; otherwise, it will return error(7).
