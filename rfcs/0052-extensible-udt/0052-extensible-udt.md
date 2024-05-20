@@ -32,9 +32,9 @@ type:
 lock:
     <user_defined>
 ```
-
-The added `xUDT args` and `xUDT data` parts provide all the new functions needed
-by xUDT, the detailed structure is explained below.
+The `amount` is a 128-bit unsigned integer in little endian format. The added `xUDT
+args` and `xUDT data` parts provide all the new functions needed by xUDT, the
+detailed structure is explained below.
 
 ### **xUDT Args**
 
@@ -44,7 +44,8 @@ xUDT args has the following structure:
 <4-byte xUDT flags> <Variable length bytes, extension data>
 ```
 
-Depending on the content of `flags`, different extension data might be attached:
+Depending on the content of `flags`, which is represented as a 32-bit unsigned
+integer in little-endian format, different extension data might be attached:
 
 • If `flags & 0x1FFFFFFF` is 0, no extension data is required. Note a
 backward-compatible way of viewing things, which is that a plain sUDT cell also
