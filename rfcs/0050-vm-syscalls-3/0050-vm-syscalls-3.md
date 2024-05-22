@@ -148,7 +148,7 @@ It's not always necessary to manually close file descriptors. When a process is 
 ### Wait
 [Wait]: #wait
 
-The syscall pauses until the execution of a process specified by `pid` has ended. Retrieve the exit code of the process through the `exit_code` parameter. If the process has already terminated when Wait is called, or you pass in the wrong Process ID, the method returns immediately with error(5), and the value saved in the `exit_code` will not be updated.
+The syscall pauses until the execution of a process specified by `pid` has ended. Retrieve the exit code of the process through the `exit_code` parameter. If a process is waited repeatedly, or you pass in the wrong Process ID, the method returns immediately with error(5), and the value saved in the `exit_code` will not be updated.
 
 ```c
 int ckb_wait(uint64_t pid, int8_t* exit_code);
