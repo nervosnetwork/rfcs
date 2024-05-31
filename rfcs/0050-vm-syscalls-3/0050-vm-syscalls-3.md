@@ -66,7 +66,7 @@ The arguments used here are:
     - argc: argc contains the number of arguments passed to the program
     - argv: argv is a one-dimensional array of strings
     - process_id: a pointer used to save the process_id of the child process
-    - inherited_fds: an array representing the file descriptors passed to the child process. It must end with zero.
+    - inherited_fds: an array representing the file descriptors passed to the child process. It must end with zero, for example, when you want to pass `fd1` and `fd2`, you need to construct an array `[fd1, fd2, 0]`.
 
 The arguments used here - index, source, bounds, place, argc, and argv - follow the usage described in [EXEC].
 
