@@ -16,6 +16,7 @@ Created: 2019-6-19
 * [Specification](#Specification)
   * [Two-Step Transaction Confirmation](#Two-Step-Transaction-Confirmation)
   * [Dynamic Difficulty Adjustment Mechanism](#Dynamic-Difficulty-Adjustment-Mechanism)
+  * [Protocol Parameters](#Protocol-Parameters)
 
 <a name="Abstract"></a>
 ## Abstract
@@ -348,3 +349,28 @@ $$
 
 The two cases differ only in the edge cases. The first case guarantees that the total reward issued in epoch *i* + 1 will not exceed R(*i* + 1).
 
+<a name="Protocol-Parameters"></a>
+### Protocol Parameters
+
+We now list the actual parameters used when implementing this protocol in Nervos CKB.
+
+| Name/Explanation            | Related Name in our Client | Value |
+| :-------------- | :----------------------------------- | :-------------- |
+| maximum number of uncles per block          | MAX_UNCLE_NUM | 2 |
+| $o_{\rm ideal}$ | DEFAULT_ORPHAN_RATE_TARGET | 2.5% |
+| $L_{\rm ideal}$ | DEFAULT_EPOCH_DURATION_TARGET | 4 hour |
+| *w<sub>close</sub>* | TX_PROPOSAL_WINDOW | 2 |
+| *w<sub>far</sub>* | TX_PROPOSAL_WINDOW | 10 |
+| $C_{\rm m}^{\rm max}$ | MAX_EPOCH_LENGTH | 1800 |
+| $C_{\rm m}^{\rm min}$ | MIN_EPOCH_LENGTH | 300 |
+| block size limit   | MAX_BLOCK_BYTES     | 597000 |
+| block cycle limit   | MAX_BLOCK_CYCLES     | 3500000000 |
+| The upper bound number of `txpid`s in a proposal zone | MAX_BLOCK_PROPOSALS_LIMIT | 1500 |
+| Proposer fee share |PROPOSER_REWARD_RATIO | 40% |
+| Before which a block reward cannot be spent | CELLBASE_MATURITY | 4 epoch |
+
+Several other parameters are implemented in the consensus component of our client. While a detailed description of these parameters falls outside the scope of this document, you can find them in [RFC15](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0015-ckb-cryptoeconomics/0015-ckb-cryptoeconomics.md).
+
+* DEFAULT_SECONDARY_EPOCH_REWARD: 1.344 billion per year
+* INITIAL_PRIMARY_EPOCH_REWARD: 4.2 billion per year
+* DEFAULT_PRIMARY_EPOCH_REWARD_HALVING_INTERVAL: 4 years
