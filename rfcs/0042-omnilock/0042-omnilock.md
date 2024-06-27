@@ -575,7 +575,7 @@ They can be in different cells.
 
 ## Notes
 
-An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/master/c/omni_lock.c) of the Omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
+An [implementation](https://github.com/cryptape/omnilock) of the Omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
 
 
 - Mirana
