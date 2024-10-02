@@ -27,20 +27,18 @@ To address the aforementioned issues, we have implemented the following optimiza
 
 In comparison to version 1, version 2 of CKB-VM incorporates the following enhancements:
 
-1. One notable addition is the inclusion of a new system call called "Spawn," which can be further explored in the RFC titled "VM Syscalls 3." In essence, Spawn serves as an alternative to dynamic library calls and Exec. With Spawn, it becomes possible to specify the memory size for spawned scripts during initialization. This capability ensures that each workload can access the necessary resources without squandering them on unused memory.
-2. In response to the growing prevalence of the aarch64 architecture, which is the 64-bit version of the ARM architecture utilized in various devices such as smartphones, tablets, and servers, we have incorporated assembly mode implementation into ckb-vm specifically for aarch64. By running ckb-vm on assembly mode, users can potentially experience improved performance with faster execution times, ultimately enhancing the overall efficiency of the system.
-3. Refactor ckb-vm to make it thread-safe. Thread-safe ckb-vm can take advantage of modern multi-core CPUs and execute multiple threads in parallel, potentially improving performance and throughput. At the same time, many modern applications and frameworks rely on multi-threading, and a thread-unsafe virtual machine may not be compatible with these technologies.
-4. [Macro-Operation Fusion](https://en.wikichip.org/wiki/macro-operation_fusion). There are 5 MOPs added in VM version 2, there are:
+1. One notable addition is the inclusion of a new system call called "Spawn," which can be further explored in the RFC titled "VM Syscalls 3." In essence, Spawn serves as an alternative to dynamic library calls and Exec. With Spawn, a script can create a child script with an independent memory area, and data can be passed between the parent and child scripts without restriction.
+2. [Macro-Operation Fusion](https://en.wikichip.org/wiki/macro-operation_fusion). There are 5 MOPs added in VM version 2, there are:
 
-| Opcode | Origin | Cycles | Description |
-| --- | --- | --- | --- |
-| ADCS | add + sltu | 1 + 0 | Overflowing addition |
-| SBBS | sub + sltu | 1 + 0 | Borrowing subtraction |
-| ADD3A | add + sltu + add | 1 + 0 + 0 | Overflowing addition and add the overflow flag to the third number |
-| ADD3B | add + sltu + add | 1 + 0 + 0 | Similar to ADD3A but the registers order is different |
-| ADD3C | add + sltu + add | 1 + 0 + 0 | Similar to ADD3A but the registers order is different |
+| Opcode |      Origin      |  Cycles   |                            Description                             |
+| ------ | ---------------- | --------- | ------------------------------------------------------------------ |
+| ADCS   | add + sltu       | 1 + 0     | Overflowing addition                                               |
+| SBBS   | sub + sltu       | 1 + 0     | Borrowing subtraction                                              |
+| ADD3A  | add + sltu + add | 1 + 0 + 0 | Overflowing addition and add the overflow flag to the third number |
+| ADD3B  | add + sltu + add | 1 + 0 + 0 | Similar to ADD3A but the registers order is different              |
+| ADD3C  | add + sltu + add | 1 + 0 + 0 | Similar to ADD3A but the registers order is different              |
 
-Detailed matching patterns for the above MOPs(Please note that the registers here are only used for placeholders, and it does not mean that the MOP is only established when r0, r1, r2, r3**)**:
+Detailed matching patterns for the above MOPs(Please note that the registers here are only used for placeholders, and it does not mean that the MOP is only established when r0, r1, r2, r3):
 
 **ADCS rd, rs1, rs2, rs3**
 
