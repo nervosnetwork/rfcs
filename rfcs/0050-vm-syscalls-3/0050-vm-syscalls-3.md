@@ -233,7 +233,7 @@ The Cycles consumption of each Syscall is as follows. Among them, the constant 5
 | process_id           | 500                                                                                |
 | load block extension | 500 + BYTES_TRANSFERRED_CYCLES                                                     |
 
-In addition, when a VM switches from instantiated to uninstantiated, or from uninstantiated to instantiated, each VM needs `SPAWN_EXTRA_CYCLES_BASE` cycles.
+In addition, when a VM switches between instantiated and uninstantiated states, it requires SPAWN_EXTRA_CYCLES_BASE cycles for each transition.
 
 ## Spawn Example
 
