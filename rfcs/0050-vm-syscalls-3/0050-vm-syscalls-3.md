@@ -10,7 +10,7 @@ Created: 2023-04-17
 
 ## Abstract
 
-This document describes the addition of the syscalls during the CKB2023. This update significantly enhances the flexibility of CKB Script.
+This document describes the addition of the syscalls during the CKB Meepo hardfork. This update significantly enhances the flexibility of CKB Script.
 
 ## Introduction
 
