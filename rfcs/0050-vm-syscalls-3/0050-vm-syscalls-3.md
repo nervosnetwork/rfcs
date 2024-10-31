@@ -14,9 +14,14 @@ This document describes the addition of the syscalls during the CKB Meepo hardfo
 
 ## Introduction
 
-The design of the syscall spawn function draws inspiration from Unix and Linux, hence they share the same terminologies: process, pipe, and file descriptor. The spawn mechanism is used in ckb-vm to create new processes, which can then execute a different program or command independently of the parent process. It is worth noting that process scheduling in ckb-vm is deterministic.
+The design of the syscall spawn function draws inspiration from Unix and Linux, hence they share the same terminologies: process, pipe, and file descriptor. The spawn mechanism is used in ckb-vm to create new processes, which can then execute a different program or command independently of the parent process.
 
 In the context of ckb-vm, a process represents the active execution of a RISC-V binary. This binary can be located within a cell. Additionally, a RISC-V binary can also be found within the witness during a syscall spawn. A pipe is established by associating two file descriptors, each linked to one of its ends. These file descriptors can't be duplicated and are exclusively owned by the process. Furthermore, the file descriptors can only be either read from or written to; they can't be both read from and written to simultaneously.
+
+It is worth noting that process scheduling in ckb-vm is deterministic, specifically:
+
+- For each hardfork version, the process scheduling will be deterministic, any indeterminism will be treated as critical / security bugs that requires immediate intervention
+- However, based on real usage on chain, it is expected that future hardfork versions would improve the process scheduling workflow, hence making the behavior different across versions
 
 We added 8 spawn-related syscalls and one block-related syscall, respectively:
 
