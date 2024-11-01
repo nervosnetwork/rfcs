@@ -213,7 +213,25 @@ Five new error types added:
 - Error code 8: The maximum count of spawned processes has been reached.
 - Error code 9: The maximum count of created pipes has been reached.
 
-It's possible for read/write/wait operations to wait for each other, leading to a deadlock state. In such cases, CKB-VM would throw an internal error and terminate immediately.
+## Deadlock
+
+Deadlock is a situation where two or more processes are unable to proceed because they are each waiting for resources or conditions that can only be provided by another waiting process. In the context of this scheduler, where processes communicate via pipes and can enter various states, such as `Runnable`, `Wait`, `WaitForWrite`, `WaitForRead`, `Terminated`. In our scheduler, deadlock will occur if all unterminated processes are waiting and no process is in a runnable state.
+
+- The process enters the `Wait` state by calling the `wait()`
+- The process enters the `WaitForWrite` state by calling the `write()`
+- The process enters the `WaitForRead` state by calling the `read()`
+- The process enters the `Runnable` when a process is created, or it get returned from `wait()`, `write()` and `read()`.
+- The process enters the `Terminated` when a process is terminated.
+
+Here are the main scenarios that may lead to deadlock:
+
+0. **Circular Waiting**: If multiple processes are in the `Wait`, `WaitForWrite`, or `WaitForRead` states and are waiting on each other in a circular dependency, a deadlock can occur. For example, if:
+    - Process A is in `WaitForRead` for data from Process B
+    - Process B is in `WaitForRead` for Process A. Both processes will wait indefinitely, as each is waiting for the other to proceed.
+0. **Buffer Limits**: If processes rely on pipes with limited buffer sizes and one process blocks on a `WaitForWrite` state because the pipe buffer is full, and the reader process is also blocked in a `WaitForRead` state (but on a different file descriptor), this can create a deadlock if neither can proceed:
+    - Process A want's read 10 bytes from fd0, and then read 10 bytes from fd1, and finally read 10 bytes from fd0.
+    - Process B write 20 bytes into fd0, and then write 10 bytes into fd1.
+
 
 ## Cycles
 
