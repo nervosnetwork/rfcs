@@ -228,7 +228,7 @@ Here are the main scenarios that may lead to deadlock:
 0. **Circular Waiting**: If multiple processes are in the `Wait`, `WaitForWrite`, or `WaitForRead` states and are waiting on each other in a circular dependency, a deadlock can occur. For example, if:
     - Process A is in `WaitForRead` for data from Process B
     - Process B is in `WaitForRead` for Process A. Both processes will wait indefinitely, as each is waiting for the other to proceed.
-0. **Buffer Limits**: If processes rely on pipes with limited buffer sizes and one process blocks on a `WaitForWrite` state because the pipe buffer is full, and the reader process is also blocked in a `WaitForRead` state (but on a different file descriptor), this can create a deadlock if neither can proceed:
+0. **Buffer Limits**: The pipe in ckb-vm is unbuffered. If one process blocks on a `WaitForWrite` state because the data is not fully read, and the reader process is also blocked in a `WaitForRead` state (but on a different file descriptor), this can create a deadlock if neither can proceed:
     - Process A wants to read 10 bytes from fd0, and then read 10 bytes from fd1, and finally read 10 bytes from fd0.
     - Process B writes 20 bytes into fd0, and then write 10 bytes into fd1.
 
