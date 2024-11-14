@@ -217,19 +217,20 @@ Five new error types added:
 
 Deadlock is a situation where two or more processes are unable to proceed because they are each waiting for resources or conditions that can only be provided by another waiting process. In the context of this scheduler, where processes communicate via pipes and can enter various states, such as `Runnable`, `Running`, `Terminated`, `WaitForExit`, `WaitForRead`, `WaitForWrite`. In our scheduler, deadlock will occur if all unterminated processes are waiting and no process is in a runnable state.
 
-- The process enters the `Runnable` when a process is created, or it get returned from `wait()`, `write()` and `read()`.
-- The process enters the `Running` when a process is running.
+- The process enters the `Runnable` when a process is created, or it's blocking condition is resolved.
+- The process enters the `Running` when a process starts running.
 - The process enters the `Terminated` when a process is terminated.
-- The process enters the `WaitForExit` state by calling the `wait()`
-- The process enters the `WaitForRead` state by calling the `read()`
-- The process enters the `WaitForWrite` state by calling the `write()`
+- The process enters the `WaitForExit` state by calling the `wait()` on another process still running.
+- The process enters the `WaitForRead` state by calling the `read()`. A process might not actually enter `WaitForRead` state by calling `read()`, if data are already available at the other end. It only enters this state when it wants data but data are not ready, in other words, it has a blocking condition.
+- The process enters the `WaitForWrite` state by calling the `write()`. A process might not actually enter `WaitForRead` state by calling `write()`, if the other end is in `WaitForRead` state and is able to read all the data.
 
-Here are the main scenarios that may lead to deadlock:
+If multiple processes are in the `WaitForExit`, `WaitForWrite`, or `WaitForRead` states and are waiting on each other in a circular dependency, a deadlock can occur. Here are two examples:
 
-0. **Circular Waiting**: If multiple processes are in the `Wait`, `WaitForWrite`, or `WaitForRead` states and are waiting on each other in a circular dependency, a deadlock can occur. For example, if:
-    - Process A is in `WaitForRead` for data from Process B
-    - Process B is in `WaitForRead` for data from Process A. Both processes will wait indefinitely, as each is waiting for the other to proceed.
-0. **Buffer Limits**: Essentially, it's another circular waiting. The pipe in ckb-vm is unbuffered. If one process blocks on a `WaitForWrite` state because the data is not fully read, and the reader process is also blocked in a `WaitForRead` state (but on a different file descriptor), this can create a deadlock if neither can proceed:
+1. A simple deadlock scenario, both processes are waiting for the other process to send data:
+    - Process A is in `WaitForRead` for data from process B
+    - Process B is in `WaitForRead` for data from process A. Both processes will wait indefinitely, as each is waiting for the other to proceed.
+
+2. Deadlock caused by unbuffered pipes. Note that the pipe in ckb-vm is unbuffered. If one process blocks on a `WaitForWrite` state because the data is not fully read, and the reader process is also blocked in a `WaitForRead` state (but on a different file descriptor), this can create a deadlock if neither can proceed:
     - Process A wants to read 10 bytes from fd0, and then read 10 bytes from fd1, and finally read 10 bytes from fd0.
     - Process B writes 20 bytes into fd0, and then write 10 bytes into fd1.
 
