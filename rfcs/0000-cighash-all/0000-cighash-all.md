@@ -55,7 +55,7 @@ There are several notable points worth mentioning regarding the above specificat
 
 * The first witness of current running script group must be a valid [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/81a1b9a1491edca0bc42c12d8bf0f715a055a93f/util/gen-types/schemas/blockchain.mol#L114-L118) structure serialized in the molecule serialization format. This has now become an enforce rule, it is not an assumption that can be exploited or ignored.
 * The content of all input cells are covered by the message calculation workflow, making it much easier to design an offline signing scheme.
-* Witness length is packed in 32-bit unsigned integers, while 64-bit unsigned integers were used in older workflow.
+* Witness length is packed in 32-bit unsigned integers, while 64-bit unsigned integers were used in older workflow. Notice that all CKB data structures, including `CellOutput`, cell data, witness, etc., will first be serialized in molecule serialization format. Note molecule uses 32-bit integer to denote the length of a structure, this means that we will never have a `CellOutput` / cell data / witness structure that is bigger than 4GB, and there is no point in representing the length in 64-bit integers.
 * A different concatenation/hashing design is introduced for the first witness of the current script group, discarding the original zero-filled design. We believe this new solution can contribute to a more optimized implementation, both in terms of runtime cycles and binary size.
 
 ## Examples
