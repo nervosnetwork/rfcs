@@ -6,7 +6,7 @@ Author: Xuejie Xiao <xxuejie@gmail.com>
 Created: 2025-02-05
 ---
 
-# CIGHASH_ALL
+# CKB_TX_MESSAGE_ALL
 
 This document defines a new message calculation scheme used by CKB lock scripts to guard against malleable attacks.
 
@@ -23,13 +23,17 @@ Historically, a particular `message` calculation algorithm has been [introduced]
 * While the current workflow assumes the first witness of current executed input cells [script group](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md) is a [WitnessArgs](https://github.com/nervosnetwork/ckb/blob/a6733e6af5bb0da7e34fb99ddf98b03054fa9d4a/util/types/schemas/blockchain.mol#L104-L108) structure serialized in the [molecule](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0008-serialization/0008-serialization.md) serialization format, this particular assumption is not enforced, and there is code that [exploits](https://github.com/cryptape/quantum-resistant-lock-script/blob/22de5369b60b1e59bb698927c143d9efbe8527a9/c/ckb-sphincsplus-lock.c#L67-L80) this oversight for certain gains. We do believe this can be a problem as future standards arise.
 * The current workflow covers the whole [Transaction](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0022-transaction-structure/0022-transaction-structure.md) structure, as well as all witnesses from the current script group. However, the `Transaction` structure only contains pointer to all the consumed input cells, it does not cover any contents of the input cells, e.g., the CKBytes stored in each input cell, or any input cell's data. This makes it harder to design a proper offline signing protocol. If we dig through the literature, the Bitcoin community actually made the same choice early, but later [came up](https://en.bitcoin.it/wiki/BIP_0143) with an updated design, that signs actual contents of each input UTXOs as well. We do believe a message that covers all input cells' contents can definitely bring merits to future CKB wallets & applications.
 
-As a result, this document aims to propose `CIGHASH_ALL`, a properly defined message calculation scheme used by CKB lock scripts to ensure transactions are not malleable.
+As a result, this document aims to propose `CKB_TX_MESSAGE_ALL`, a properly defined message calculation scheme used by CKB lock scripts to ensure transactions are not malleable.
 
-The name `CIGHASH_ALL` comes from `CKB's Signature Hash All`. In many places, including [filename](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_sighash_all.c) from CKB's system script code, `SIGHASH_ALL` has been used to represent the old workflow to calculate a signing message. Here we explicitly pick a different name, so as to distinguish between the two.
+The name is intentionally chosen to be different from `SIGHASH_ALL`, so as to avoid any confusions. The latter has been used in many CKB code to represent the old workflow to calculate a signing message. The new name consists of 3 parts:
+
+* `CKB_TX` denotes a prefix, serving a namespace since we are defining specification for CKB's transaction structure.
+* `MESSAGE` denotes that we are generating a message for signing purpose. As we shall see below, current specification really defines a way of concatenating data, while the most likely outcome for the concatenated bytes, will be a hashing function generating fixed length bytes, it is not always the case that a hash will be generated. Some use cases are perfectly fine with the concatenated bytes. Given those thoughts, `MESSAGE` will be a more suitable term, since it does not always refer to a hash.
+* `ALL` as a suffix, denotes that we try to hash all components related to current transaction and script group. `WHOLE` is a different term we considered while coming up the specification, but in the end we picked `ALL`, since we are not necessarily hashing the `whole` transaction, but only `all` the parts that make sense to a script group.
 
 ## Specification
 
-For a CKB transaction, `CIGHASH_ALL` utilities the following workflow:
+For a CKB transaction, `CKB_TX_MESSAGE_ALL` utilities the following workflow:
 
 * The first witness field of the current running script group, must be a valid `WitnessArgs` structure serialized in the molecule serialization format, with compatible mode turned off. The message calculation workflow fails if molecule validation fails.
 * The byte concatenation of all the following fields is then calculated, following the exact same order defined here:
@@ -60,12 +64,12 @@ There are several notable points worth mentioning regarding the above specificat
 
 ## Examples
 
-Following the defined spec above, a [series of libraries, CKB scripts and utilities](https://github.com/xxuejie/cighash-all-test-vector-utils) have been developed as a demonstration and inspiration. For example:
+Following the defined spec above, a [series of libraries, CKB scripts and utilities](https://github.com/xxuejie/ckb-tx-message-all-test-vector-utils) have been developed as a demonstration and inspiration. For example:
 
-* A [Rust module](https://github.com/xxuejie/cighash-all-test-vector-utils/blob/c500a3dd8dd2b8e245527133709bc48d6e67d694/crates/cighash-all-utils/src/cighash_all_in_ckb_vm.rs) calculates `CIGHASH_ALL` message with the help of [ckb-std](https://docs.rs/ckb-std/latest/ckb_std/) to provide CKB-related APIs in CKB-VM environment. It is also designed in a generic way, which makes it compatible with different kinds of hashers;
-* Another [Rust module](https://github.com/xxuejie/cighash-all-test-vector-utils/blob/c500a3dd8dd2b8e245527133709bc48d6e67d694/crates/cighash-all-utils/src/cighash_all_from_mock_tx.rs) also calculates `CIGHASH_ALL` message in a generic way. But it was designed to take the whole CKB [Transaction](https://docs.rs/ckb-gen-types/0.119.0/ckb_gen_types/packed/struct.Transaction.html) as input. Certainly, the CKB Transaction structure is missing the actual contents for all input cells, a user can either provide [MockTransaction](https://docs.rs/ckb-mock-tx-types/latest/ckb_mock_tx_types/struct.MockTransaction.html) instead, or simply provide the contents for input cells.
-* A [C header-only implementation](https://github.com/xxuejie/cighash-all-test-vector-utils/blob/c500a3dd8dd2b8e245527133709bc48d6e67d694/contracts/c-assert-cighash/cighash_all.h) is also provided to calculate `CIGHASH_ALL` message, also in a generic way to support different kinds of hashers, in CKB-VM compatible environments.
+* A [Rust module](https://github.com/xxuejie/ckb-tx-message-all-test-vector-utils/blob/82e4c815ff070b10d2af61ecd5f976ec6a7444ad/crates/ckb-tx-message-all-utils/src/ckb_tx_message_all_in_ckb_vm.rs) calculates `CKB_TX_MESSAGE_ALL` message with the help of [ckb-std](https://docs.rs/ckb-std/latest/ckb_std/) to provide CKB-related APIs in CKB-VM environment. It is also designed in a generic way, which makes it compatible with different kinds of hashers;
+* Another [Rust module](https://github.com/xxuejie/ckb-tx-message-all-test-vector-utils/blob/82e4c815ff070b10d2af61ecd5f976ec6a7444ad/crates/ckb-tx-message-all-utils/src/ckb_tx_message_all_from_mock_tx.rs) also calculates `CKB_TX_MESSAGE_ALL` message in a generic way. But it was designed to take the whole CKB [Transaction](https://docs.rs/ckb-gen-types/0.119.0/ckb_gen_types/packed/struct.Transaction.html) as input. Certainly, the CKB Transaction structure is missing the actual contents for all input cells, a user can either provide [MockTransaction](https://docs.rs/ckb-mock-tx-types/latest/ckb_mock_tx_types/struct.MockTransaction.html) instead, or simply provide the contents for input cells.
+* A [C header-only implementation](https://github.com/xxuejie/ckb-tx-message-all-test-vector-utils/blob/82e4c815ff070b10d2af61ecd5f976ec6a7444ad/contracts/c-assert-ckb-tx-message-all/ckb_tx_message_all.h) is also provided to calculate `CKB_TX_MESSAGE_ALL` message, also in a generic way to support different kinds of hashers, in CKB-VM compatible environments.
 
 All of the above Rust & C implementations have been carefully written, well optimized, and extensively tested. They are considered to be usable in production environments.
 
-A [utility](https://github.com/xxuejie/cighash-all-test-vector-utils/tree/main/crates/native-test-vector-generator) is also provided so one can manually generate as many test vectors as one wish. Each test vector includes a tx file that can be accepted and executed in [ckb-debugger](https://github.com/nervosnetwork/ckb-standalone-debugger), as well as the generated `CIGHASH_ALL` message, together with enough information to generate such message.
+A [utility](https://github.com/xxuejie/ckb-tx-message-all-test-vector-utils/tree/main/crates/native-test-vector-generator) is also provided so one can manually generate as many test vectors as one wish. Each test vector includes a tx file that can be accepted and executed in [ckb-debugger](https://github.com/nervosnetwork/ckb-standalone-debugger), as well as the generated `CKB_TX_MESSAGE_ALL` message, together with enough information to generate such message.
