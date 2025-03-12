@@ -10,7 +10,7 @@ Created: 2018-12-14
 
 ## Abstract
 
-This document describes all the RISC-V VM syscalls implemented in CKB Lina. Note that 3 new syscalls have been added to ckb2021 [2].
+This document describes all the RISC-V VM syscalls implemented in CKB Lina. Note that 3 new syscalls have been added to CKB Edition Mirana [2].
 
 ## Introduction
 
@@ -446,7 +446,7 @@ In case of errors, `addr` and `index` will not contain meaningful data to use.
 
 Attention that all the blocks referenced in header deps must be 4 epochs ago, otherwise the header is immature and the transaction must wait. For example, if the block is the first block in epoch 4, a transaction with its header as a header dep can only be included in the first block of epoch 8 and later blocks.
 
-This rule will be removed since ckb2021 as proposed in [RFC36].
+This rule will be removed since CKB Edition Mirana as proposed in [RFC36].
 
 [RFC36]: ../0036-remove-header-deps-immature-rule/0036-remove-header-deps-immature-rule.md
 

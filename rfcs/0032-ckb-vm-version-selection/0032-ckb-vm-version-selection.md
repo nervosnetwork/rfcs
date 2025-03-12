@@ -1,7 +1,7 @@
 ---
 Number: "0032"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Ian Yang <@doitian>
 Created: 2021-04-26
 ---
@@ -76,7 +76,7 @@ In [nervosnetwork/ckb](https://github.com/nervosnetwork/ckb), the `hash_type` is
 
 This RFC depends on [rfc33], [rfc34], and [rfc35]. The 4 RFCs must be activated together at the same epoch.
 
-[rfc35]: ../0035-ckb2021-p2p-protocol-upgrade/0035-ckb2021-p2p-protocol-upgrade.md
+[rfc35]: ../0035-ckb-p2p-protocol-upgrade/0035-ckb-p2p-protocol-upgrade.md
 
 The first two RFCs, [rfc33] and [rfc34] are the specification of VM version 1. The [rfc35] proposes to run two versions of transaction relay protocols during the fork, because the VM selection algorithm depends on which epoch the transaction belongs to, thus it is not deterministic for transactions still in the memory pool.
 
