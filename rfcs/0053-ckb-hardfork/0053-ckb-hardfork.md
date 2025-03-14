@@ -40,6 +40,16 @@ At the launch of Nervos CKB, the mainnet and testnet were assigned distinct name
 - **CKB Edition Lina (2019)**
 - **CKB Edition Mirana (2021)**
 
+| Old Name | New Name |
+|--------|-------|
+| CKB2019 | CKB Edition Lina (2019) |
+| Lina  | Lina mainnet |
+| Aggron | Lina testnet |
+| CKB2021 | CKB Edition Mirana (2021) |
+| Mirana | Mirana mainnet |
+| Pudge | Mirana testnet |
+| CKB2023 | CKB Edition Meepo (2024) |
+
 ## Hardfork Process
 
 The hardfork deployment unfolds in three distinct phases:
