@@ -96,9 +96,8 @@ For `ALGO_ID` from `48` to `59`, SPHINCS+ public key for each parameter set will
 
 We shall come back to define the `IDENTITY` for `ALGO_ID` from `60` to `62` at a later stage.
 
-The `ALGO_ID` of `63` uses an `IDENTITY` of the following concatenated structure:
+For the `ALGO_ID` of `63`, the public key part of an `IDENTITY`, contains more data than just the public key, the following concatenated structure is used:
 
-* 1-byte `ALGO_ID` of `63`
 * 32-byte value denoting `code hash`
 * 1-byte value denoting `hash type`
 * 8-byte value denoting `bounds`
@@ -112,10 +111,10 @@ For the `ALGO_ID` of `63`, the arbitrary multisig is expected to make a `spawn` 
 An `UNLOCKING_SLOT` resembles `IDENTITY`, but provides an optional signature as well:
 
 ```
-(ALGO_FLAG in VLQ encoding) ++ (Same data as IDENTITY without the ALGO_FLAG at front) ++ (An optional signature)
+(ALGO_FLAG in VLQ encoding) ++ (Public key, public key hash or more composite data) ++ (An optional signature)
 ```
 
-In other words,  typical `UNLOCKING_SLOT` contains `ALGO_FLAG`, a public key or public key hash, and an optional signature. Unlike `IDENTITY`, the `SIGNATURE_FLAG` in `UNLOCKING_SLOT` can be set or cleared, denoting the presence or absense of a signature at the end. `ALGO_ID` tells the correct lengths of public key, public key hash, and the optional signature.
+In other words,  typical `UNLOCKING_SLOT` contains `ALGO_FLAG`, a public key or public key hash, and an optional signature. Unlike `IDENTITY`, the `SIGNATURE_FLAG` in `UNLOCKING_SLOT` can be set or cleared, denoting the presence or absense of a signature at the end. `ALGO_ID` tells the correct lengths of public key, public key hash, and the optional signature. `ALGO_FLAG` in a whole determines the total length of the `UNLOCKING_SLOT`.
 
 For `ALGO_ID` of `63`, there might be more data than the public key, the same encoding scheme defined for `IDENTITY` is also used for `UNLOCKING_SLOT`.
 
