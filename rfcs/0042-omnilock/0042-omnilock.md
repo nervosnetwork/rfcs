@@ -94,7 +94,16 @@ Depending on the value of the flag, the auth content has the following interpret
     ```
     "CKB (Bitcoin Layer) transaction: 0x" + hex(signing message hash)
     ```
-    In this way, it can show message on wallets(e.g. UniSat, OKX) nicely.
+  In this way, it can show message on wallets(e.g. UniSat, OKX) nicely. 
+  
+  It supports three types of BTC addresses: Native segwit (P2WPKH), Nested
+  segwit (P2SH-P2WPKH), and Legacy (P2PKH). A 20-byte hash can be decoded from a
+  BTC address using bech32m/bech32 or base58. This hash exactly corresponds to
+  the auth content. Note that the Taproot (P2TR) address is not supported.
+  Generic P2SH is not supported; only P2SH-P2WPKH is acceptable. It's not
+  allowed to use an address (e.g. P2SH-multisig) described as P2SH but does not
+  include P2WPKH.
+
 
 * 0x05: It follows the unlocking method used by dogecoin. The signing message
   hash is converted as following:
