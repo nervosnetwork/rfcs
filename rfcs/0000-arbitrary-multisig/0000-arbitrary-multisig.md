@@ -29,7 +29,7 @@ It is worth pointing out that the arbitrary multisig design discussed here is me
 
 # Terminology
 
-In this document we will have certain psuedocode included, the following operators might be used by psuedocode:
+In this document we will have certain pseudocode included, the following operators might be used by pseudocode:
 
 * `==`: equal operation
 * `<<`: bitwise left shift operation
@@ -37,9 +37,9 @@ In this document we will have certain psuedocode included, the following operato
 * `++`: byte concatenations
 * `(X ...)`: multiple items of the same structure `X` concatenated together
 
-All variables used in psuedocode will be in snake form in full upper case, such as `ALGO_FLAG`. Certain variables might be paired with human explanations, such as `(decoded ALGO_FLAG)`.
+All variables used in pseudocode will be in snake form in full upper case, such as `ALGO_FLAG`. Certain variables might be paired with human explanations, such as `(decoded ALGO_FLAG)`.
 
-For bigger structure, psuedocode might be far too long, we will use bullet list instead, such as:
+For bigger structure, pseudocode might be far too long, we will use bullet list instead, such as:
 
 * 2-byte `0x01 0xFF`
 * 1-byte `0xAB`
@@ -114,7 +114,7 @@ An `UNLOCKING_SLOT` resembles `IDENTITY`, but provides an optional signature as 
 (ALGO_FLAG in VLQ encoding) ++ (Public key, public key hash or more composite data) ++ (An optional signature)
 ```
 
-In other words,  typical `UNLOCKING_SLOT` contains `ALGO_FLAG`, a public key or public key hash, and an optional signature. Unlike `IDENTITY`, the `SIGNATURE_FLAG` in `UNLOCKING_SLOT` can be set or cleared, denoting the presence or absense of a signature at the end. `ALGO_ID` tells the correct lengths of public key, public key hash, and the optional signature. `ALGO_FLAG` in a whole determines the total length of the `UNLOCKING_SLOT`.
+In other words,  typical `UNLOCKING_SLOT` contains `ALGO_FLAG`, a public key or public key hash, and an optional signature. Unlike `IDENTITY`, the `SIGNATURE_FLAG` in `UNLOCKING_SLOT` can be set or cleared, denoting the presence or absence of a signature at the end. `ALGO_ID` tells the correct lengths of public key, public key hash, and the optional signature. `ALGO_FLAG` in a whole determines the total length of the `UNLOCKING_SLOT`.
 
 For `ALGO_ID` of `63`, there might be more data than the public key, the same encoding scheme defined for `IDENTITY` is also used for `UNLOCKING_SLOT`.
 
@@ -153,7 +153,7 @@ An unlocking configuration is defined as follows:
 S ++ R ++ M ++ N ++ (UNLOCKING_SLOT ...)
 ```
 
-An unlocking configuration uses the same `S`, `R`, `M`, `N` value as the corresponding multisig configuration. The unlocking configration uses `UNLOCKING_SLOT`s to provide exactly `M` valid signatures for the multisig validation flow to verify. In addition, the first `R` `UNLOCKING_SLOT`s must each have a signature attached.
+An unlocking configuration uses the same `S`, `R`, `M`, `N` value as the corresponding multisig configuration. The unlocking configuration uses `UNLOCKING_SLOT`s to provide exactly `M` valid signatures for the multisig validation flow to verify. In addition, the first `R` `UNLOCKING_SLOT`s must each have a signature attached.
 
 Note it is possible to derive the matching `multisig configuration` from an `unlocking configuration`. As we shall see later in the multisig validation workflow, this is also leveraged by arbitrary multisig validation flow.
 
@@ -231,7 +231,7 @@ When expected, a root script invokes spawn syscall to create a new VM instance r
 
 One can deduce that one spawned leaf script will always run signature verifications using the same signing message.
 
-Before executing spawn syscall, the root script must create 2 pipes via [pipe](https://github.com/nervosnetwork/rfcs/blob/bd5d3ff73969bdd2571f804260a538781b45e996/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#pipe) syscalls. There will be a totally of 4 file descriptors created from 2 pipes. We will name them differently:
+Before executing spawn syscall, the root script must create 2 pipes via [pipe](https://github.com/nervosnetwork/rfcs/blob/bd5d3ff73969bdd2571f804260a538781b45e996/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#pipe) syscalls. There will be a total of 4 file descriptors created from 2 pipes. We will name them differently:
 
 * `root_to_leaf_pipe` is created so root script can pass signature data to leaf script for verification. `root_to_leaf_pipe[0]` is read by the leaf script, while `root_to_leaf_pipe[1]` is written by the root script.
 * `leaf_to_root_pipe` is created so leaf script passes verification results back to root script. `leaf_to_root_pipe[0]` is read by the root script, while `leaf_to_root_pipe[1]` is written by the leaf script.
@@ -254,7 +254,7 @@ Signature Packet Format 1 contains the following data concatenated together:
 
 Note that pipe is capable of accepting binary data with zeros, the data above do not need zero escape encoding.
 
-The 4 variables (witness source / index / offset / length) included in the above signature data packet, jointly locates a slice of data in a particular witness field from the current CKB transction. The leaf script then treats the located slice of data as a series of `UNLOCKING_SLOT` structure, then performs the following verification:
+The 4 variables (witness source / index / offset / length) included in the above signature data packet, jointly locates a slice of data in a particular witness field from the current CKB transaction. The leaf script then treats the located slice of data as a series of `UNLOCKING_SLOT` structure, then performs the following verification:
 
 * If any `UNLOCKING_SLOT` uses a value of `ALOG_ID` which is not supported by the current leaf script, the leaf script halts.
 * If any `UNLOCKING_SLOT` contains a signature, the leaf script verifies the signature against public key included in this particular `UNLOCKING_SLOT`, and signing message passed via `argv[0]`. If the signature verification process fails, the leaf script halts.
@@ -278,7 +278,7 @@ The leaf script then waits to read more packets for verification from `root_to_l
 
 ### Signature Packet Format 2
 
-Signature Packat Format 1 contains the following data concatenated together:
+Signature Packet Format 1 contains the following data concatenated together:
 
 * 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
 * 2 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
@@ -337,9 +337,9 @@ To invoke a leaf script using exec syscall, The root script passes the following
 * witness offset in 32-bit little-endian unsigned integer
 * witness length in 32-bit little-endian unsigned integer
 
-Due to exec syscall's design, upon execution, the leaf script will replace the root script. The leaf script then locates a slice of data in a witness using 4 witness locating variables, similar to `Signature Packat Format 1` in spawn syscall's case. The leaf script also treats the slice of data as a series of `UNLOCKING_SLOT`, performs verification work:
+Due to exec syscall's design, upon execution, the leaf script will replace the root script. The leaf script then locates a slice of data in a witness using 4 witness locating variables, similar to `Signature Packet Format 1` in spawn syscall's case. The leaf script also treats the slice of data as a series of `UNLOCKING_SLOT`, performs verification work:
 
-* If any `UNLOCKING_SLOT` uses a value of `ALOG_ID` which is not supported by the current leaf script, the leaf script halts.
+* If any `UNLOCKING_SLOT` uses a value of `ALGO_ID` which is not supported by the current leaf script, the leaf script halts.
 * If any `UNLOCKING_SLOT` contains a signature, the leaf script verifies the signature against public key included in this particular `UNLOCKING_SLOT`, and signing message passed via `argv[0]`. If the signature verification process fails, the leaf script halts.
 * If garbage data exist in the slice of data after the last `UNLOCKING_SLOT`, in other words, if there are still some data left in the slice, but they do not form a valid `UNLOCKING_SLOT` structure, the leaf script halts.
 
@@ -349,6 +349,6 @@ When the leaf script halts, it terminates with a non-zero return code. When all 
 
 This [Rust function](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/crates/ckb-fips205-utils/src/lib.rs#L184) iterates over all `UNLOCKING_SLOT`s in an unlocking configuration, perform validations as needed. It exposes a callback function where a contract can plug-in the actual signature verification work, however, this particular function only supports a subset of all `ALGO_ID` defined in this specification. This [Rust script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/hybrid-sphincs-all-in-one-lock/src/main.rs#L60) provides a complete example using the above function. The script first validates the unlocking configuration, it then proceeds with either of the 2 code paths: if all the public keys are generated using the same digital signature scheme, it invokes exec syscall on a leaf script for verification; otherwise it iterates over the `unlocking configuration` again, for each `UNLOCKING_SLOT`, it uses spawn syscall to create a child VM instance for a leaf script if needed, and communicates with the leaf script for signature verification work.
 
-This [C script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/c-sphincs-all-in-one-lock/ckb-sphincsplus-root-lock.c) implements a root script following the arbitrary multisig specification(though only a subset of `ALGO_ID`s is supported). This [C script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/c-sphincs-all-in-one-lock/ckb-sphincsplus-leaf-lock.c) implements a leaf script that accepts both exec and spawn syscalls, though it lacks support for `Signature Packat Format 2`.
+This [C script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/c-sphincs-all-in-one-lock/ckb-sphincsplus-root-lock.c) implements a root script following the arbitrary multisig specification(though only a subset of `ALGO_ID`s is supported). This [C script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/c-sphincs-all-in-one-lock/ckb-sphincsplus-leaf-lock.c) implements a leaf script that accepts both exec and spawn syscalls, though it lacks support for `Signature Packet Format 2`.
 
 A full flexible implementation of the arbitrary multisig will be added later to this specification.
