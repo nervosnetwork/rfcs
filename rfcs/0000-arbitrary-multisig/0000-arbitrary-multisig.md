@@ -345,6 +345,16 @@ Due to exec syscall's design, upon execution, the leaf script will replace the r
 
 When the leaf script halts, it terminates with a non-zero return code. When all the verifications succeed, the leaf script terminates with zero as the return code. In either case, the return code of the leaf script also becomes the final return code of the root script.
 
+## Security Concerns
+
+It really depends on individual perspective, some would consider the exec syscall path too risky to implement, others would be happy using it for cycle reductions. The arbitrary multisig spec is designed in a way so one can only rely on spawn syscalls to invoke leaf scripts. Exec syscalls, on the other hand, are left to the more adventurous mind for resource optimizations in the extreme case. Depending on different security assumptions, there is a spectrum of implementation plans regarding exec syscalls:
+
+1. One do not use exec syscalls. The root script should only rely on spawn syscalls to invoke leaf scripts.
+2. Exec syscall is used only when the multisig configuration to validate is in fact a single-sign case, in other words, there is only one signature to verify.
+3. Exec syscalls are used whenever possible.
+
+It is up to each root script implementing the arbitrary multisig specification to decide where in the above spectrum it leans towards.
+
 # Examples
 
 This [Rust function](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/crates/ckb-fips205-utils/src/lib.rs#L184) iterates over all `UNLOCKING_SLOT`s in an unlocking configuration, perform validations as needed. It exposes a callback function where a contract can plug-in the actual signature verification work, however, this particular function only supports a subset of all `ALGO_ID` defined in this specification. This [Rust script](https://github.com/xxuejie/quantum-resistant-lock-script/blob/bf2ab2a7a01a21c48d1151e0c488c66e0e4199c9/contracts/hybrid-sphincs-all-in-one-lock/src/main.rs#L60) provides a complete example using the above function. The script first validates the unlocking configuration, it then proceeds with either of the 2 code paths: if all the public keys are generated using the same digital signature scheme, it invokes exec syscall on a leaf script for verification; otherwise it iterates over the `unlocking configuration` again, for each `UNLOCKING_SLOT`, it uses spawn syscall to create a child VM instance for a leaf script if needed, and communicates with the leaf script for signature verification work.
