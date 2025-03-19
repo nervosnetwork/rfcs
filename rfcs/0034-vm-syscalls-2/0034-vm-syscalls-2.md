@@ -1,7 +1,7 @@
 ---
 Number: "0034"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Wanbiao Ye <mohanson@outlook.com>
 Created: 2021-05-25
 ---
@@ -10,7 +10,7 @@ Created: 2021-05-25
 
 ## Abstract
 
-This document describes the addition of the syscalls during the ckb2021. These syscalls are only available since ckb-vm version 1 and ckb2021 [2].
+This document describes the addition of the syscalls during the CKB Edition Mirana. These syscalls are only available since ckb-vm version 1 and CKB Edition Mirana [2].
 
 - [VM Version]
 - [Current Cycles]

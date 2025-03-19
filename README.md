@@ -79,14 +79,28 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [24](rfcs/0024-ckb-genesis-script-list) | [CKB Genesis Script List](rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md) | Dylan Duan | Informational | Final
 | [25](rfcs/0025-simple-udt) | [Simple UDT](rfcs/0025-simple-udt/0025-simple-udt.md) | Xuejie Xiao | Standards Track | Proposal
 | [26](rfcs/0026-anyone-can-pay) | [Anyone-Can-Pay Lock](rfcs/0026-anyone-can-pay/0026-anyone-can-pay.md) | Xuejie Xiao | Standards Track | Proposal
-| [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Draft
-| [37](rfcs/0037-ckb2021) | [CKB Consensus Change (Edition CKB2021)](rfcs/0037-ckb2021/0037-ckb2021.md) | Ian Yang | Informational | Draft
+| [27](rfcs/0027-block-structure) | [CKB Block Structure](rfcs/0027-block-structure/0027-block-structure.md) | Ian Yang | Informational | Final
+| [28](rfcs/0028-change-since-relative-timestamp) | [Change Since Relative Timestamp](rfcs/0028-change-since-relative-timestamp/0028-change-since-relative-timestamp.md) | Ian Yang | Standards Track  | Active
+| [29](rfcs/0029-allow-script-multiple-matches-on-identical-code) | [Allow Multiple Cell Dep Matches](rfcs/0029-allow-script-multiple-matches-on-identical-code/0029-allow-script-multiple-matches-on-identical-code.md) | Ian Yang | Standards Track  | Active
+| [30](rfcs/0030-ensure-index-less-than-length-in-since) | [Ensure That Index Is Less Than Length In the Input Since Field](rfcs/0030-ensure-index-less-than-length-in-since/0030-ensure-index-less-than-length-in-since.md) | Ian Yang | Standards Track  | Active
+| [31](rfcs/0031-variable-length-header-field) | [Add a variable length field in the block](rfcs/0031-variable-length-header-field/0031-variable-length-header-field.md) | Ian Yang | Standards Track  | Active
+| [32](rfcs/0032-ckb-vm-version-selection) | [CKB VM Version Selection](rfcs/0032-ckb-vm-version-selection/0032-ckb-vm-version-selection.md) | Ian Yang | Standards Track  | Active
+| [33](rfcs/0033-ckb-vm-version-1) | [CKB VM version1](rfcs/0033-ckb-vm-version-1/0033-ckb-vm-version-1.md) | Wanbiao Ye| Standards Track  | Active
+| [34](rfcs/0034-vm-syscalls-2) | [CKB Block Structure](rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md) | Wanbiao Ye | Standards Track  | Active
+| [35](rfcs/0035-ckb-p2p-protocol-upgrade) | [CKB P2P protocol upgrade](rfcs/0035-ckb-p2p-protocol-upgrade/0035-ckb-p2p-protocol-upgrade.md) | Chao Luo, Ian Yang | Standards Track  | Active
+| [36](rfcs/0036-remove-header-deps-immature-rule) | [Remove Header Deps Immature Rule](rfcs/0036-remove-header-deps-immature-rule/0036-remove-header-deps-immature-rule.md) | Ian Yang | Standards Track  | Active
+| [37](rfcs/ckb-mirana-2021) | [CKB Consensus Change (CKB Edition Mirana)](rfcs/0037-ckb-mirana-2021/0037-ckb-mirana-2021.md) | Ian Yang | Informational | Draft
 | [39](rfcs/0039-cheque) | [Cheque Lock](rfcs/0039-cheque/0039-cheque.md) | Dylan Duan | Standards Track | Proposal |
 | [42](rfcs/0042-omnilock) | [Omnilock](rfcs/0042-omnilock/0042-omnilock.md) | Xu Jiandong | Standards Track | Proposal
 | [43](rfcs/0043-ckb-softfork-activation) | [CKB Softfork Activation](rfcs/0043-ckb-softfork-activation/0043-ckb-softfork-activation.md) | Dingwei Zhang | Standards Track | Proposal
 | [44](rfcs/0044-ckb-light-client) | [CKB Light Client Protocol](rfcs/0044-ckb-light-client/0044-ckb-light-client.md) | Boyu Yang | Standards Track | Proposal
 | [45](rfcs/0045-client-block-filter) | [CKB Client Side Block Filter Protocol](rfcs/0045-client-block-filter/0045-client-block-filter.md) | Quake Wang | Standards Track | Proposal
 | [46](rfcs/0046-syscalls-summary) | [CKB VM Syscalls Summary](rfcs/0046-syscalls-summary/0046-syscalls-summary.md) | Shan | Informational | Draft
+| [48](rfcs/0048-remove-block-header-version-reservation-rule) | [Remove Block Header Version Reservation Rule](rfcs/0048-remove-block-header-version-reservation-rule/0048-remove-block-header-version-reservation-rule.md) | Dingwei Zhang | Standards Track | Proposal
+| [49](rfcs/0049-ckb-vm-version-2) | [CKB VM version2](rfcs/0049-ckb-vm-version-2/0049-ckb-vm-version-2.md) | Wanbiao Ye | Standards Track | Proposal
+| [50](rfcs/0050-vm-syscalls-3) | [VM Syscalls 3](rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md) | Xuejie Xiao , Jiandong Xu, Wanbiao Ye, Dingwei Zhang | Standards Track | Proposal
+| [51](rfcs/0051-ckb-meepo-2024) | [CKB Edition Meepo (2024)](rfcs/0051-ckb-meepo-2024/0051-ckb-meepo-2024.md) | Dingwei Zhang | Standards Track | Proposal
+| [52](rfcs/0052-extensible-udt) | [Extensible UDT](rfcs/0052-extensible-udt/0052-extensible-udt.md) | Xuejie Xiao, Xu Jiandong | Standards Track | Proposal
 ## License
 
 This repository is being licensed under terms of [MIT license](LICENSE).

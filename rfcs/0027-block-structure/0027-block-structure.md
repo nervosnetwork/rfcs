@@ -1,7 +1,7 @@
 ---
 Number: "0027"
 Category: Informational
-Status: Draft
+Status: Final
 Author: Ian Yang <@doitian>
 Created: 2020-04-30
 ---
@@ -72,7 +72,7 @@ The header contains commitments on the body fields to ensure data integrity. CKB
 
 ## Header
 
-To ease PoW computation, the header is split into `raw` and `nonce`. 
+To ease PoW computation, the header is split into `raw` and `nonce`.
 
 ```
 struct Header {
@@ -130,11 +130,11 @@ The header `compact_target` is the encoded form of the target threshold as it ap
 
 It is similar to `nBits` in bitcoin, the original `nBits` implementation inherits properties from a signed data class, allowing the target threshold to be negative if the high bit of the significant is set. This is useless—the header hash is treated as an unsigned number, so it can never be equal to or lower than a negative target threshold.
 
-In CKB, the "compact" format is a representation of a whole number N using an unsigned 32bit number similar to a floating-point format. 
+In CKB, the "compact" format is a representation of a whole number N using an unsigned 32bit number similar to a floating-point format.
 
 * The most significant 8 bits are the unsigned exponent of base 256.
-* This exponent can be thought of as "number of bytes of N" in which the first 3 bytes are the mantissa. 
-* The lower 24 bits are the mantissa. 
+* This exponent can be thought of as "number of bytes of N" in which the first 3 bytes are the mantissa.
+* The lower 24 bits are the mantissa.
 
 ```
 N = mantissa * 256^(exponent-3)
@@ -388,7 +388,7 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-## CKB Merkle Tree 
+## CKB Merkle Tree
 
 CKB Merkle Tree is a [CBMT](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0006-merkle-tree/0006-merkle-tree.md) using following merge function:
 
