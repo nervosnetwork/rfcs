@@ -238,7 +238,7 @@ Before executing spawn syscall, the root script must create 2 pipes via [pipe](h
 
 In spawn syscall, the root script must pass `root_to_leaf_pipe[0]` and `leaf_to_root_pipe[1]` in this exact order to the invoked leaf script. The leaf script uses [Inherited File Descriptors](https://github.com/nervosnetwork/rfcs/blob/bd5d3ff73969bdd2571f804260a538781b45e996/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#inherited-file-descriptors) syscall to gather 2 file descriptors for the leaf script to use.
 
-When the spawn syscall succeeds, the root script would continuously send signature data packet via `root_to_leaf_pipe[1]` to the leaf script. The leaf script loops to read such packets from `root_to_leaf_pipe[0]`. Right now, 2 formats exist for verification:
+When the spawn syscall succeeds, the root script would continuously send certain packets described below via `root_to_leaf_pipe[1]` to the leaf script. The leaf script loops to read such packets from `root_to_leaf_pipe[0]`. Right now, 2 formats exist for verification:
 
 ### Signature Packet Format 1
 
@@ -274,7 +274,7 @@ If all verification work succeeds, the leaf script sends the following response 
 * 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
 * 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
 
-The leaf script then waits to read more packets for verification from `root_to_leaf_pipe[0]`. There is no situation when a leaf script terminates with a success exit code. We rely on CKB's behavior that when the root VM terminates, all the child VMs also terminate.
+The leaf script then waits to read more packets for verification from `root_to_leaf_pipe[0]`.
 
 ### Signature Packet Format 2
 
@@ -313,9 +313,21 @@ If all verification work succeeds, the leaf script sends the following response 
 * 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
 * 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
 
-The leaf script then waits to read more packets for verification from `root_to_leaf_pipe[0]`. There is no situation when a leaf script terminates with a success exit code. We rely on CKB's behavior that when the root VM terminates, all the child VMs also terminate.
+The leaf script then waits to read more packets for verification from `root_to_leaf_pipe[0]`.
 
 This signature packet format is in fact designed for `ALGO_ID` of `63`, when an arbitrary script is loaded for signature verification. Signature packet format 2 can be used to exchange signatures to valid between root script and the arbitrary leaf script.
+
+### Terminating Packet Format
+
+A terminating packet might be sent by the root script to terminate a leaf script. The format is as follows:
+
+* 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
+* 3 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
+* 0 encoded in [VLQ](https://en.wikipedia.org/wiki/Variable-length_quantity) format.
+
+Upon receiving this packet, the leaf script terminates with zero as return code immediately, it does not send any response packet.
+
+Normally, a root script does not need to terminate a leaf script. When the VM instance with VM ID 0 terminates, all child VMs terminate automatically. This packet is only suitable when too many child VM isntances have been created by the current running script group. In this case, the root script might choose to terminate some leaf scripts first, then spawn new ones.
 
 ## Exec
 
