@@ -53,6 +53,13 @@ uint64_t ckb_current_cycles()
 ### Exec
 [exec]: #exec
 
+> **⚠️ Know Issues**
+> 
+> *Exec is deprecated and not recommended to use in the VM 1.*
+> 
+> *Under VM 1, the exec syscall can cause unexpected behavior theoretically. However, this issue does not exist in VM 2.*
+
+
 Exec runs an executable file from specified cell data in the context of an already existing machine, replacing the previous executable. The used cycles does not change, but the code, registers and memory of the vm are replaced by those of the new program. It's cycles consumption consists of two parts:
 
 - Fixed 500 cycles
