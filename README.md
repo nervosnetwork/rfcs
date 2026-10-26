@@ -102,6 +102,9 @@ The maintainers of RFCs and the community will review the PR, and you should upd
 | [51](rfcs/0051-ckb-meepo-2024) | [CKB Consensus Change (CKB Edition Meepo)](rfcs/0051-ckb-meepo-2024/0051-ckb-meepo-2024.md) | Dingwei Zhang | Standards Track | Proposal |
 | [52](rfcs/0052-extensible-udt) | [Extensible UDT](rfcs/0052-extensible-udt/0052-extensible-udt.md) | Xuejie Xiao, Xu Jiandong | Standards Track | Proposal |
 | [53](rfcs/0053-ckb-hardfork) | [Nervos CKB Hardfork](rfcs/0053-ckb-hardfork/0053-ckb-hardfork.md) | Dingwei Zhang | Standards Track | Draft |
+| [54](https://github.com/nervosnetwork/rfcs/pull/451) | [VM version3](https://github.com/nervosnetwork/rfcs/pull/451) | Wanbiao Ye | Standards Track | Draft |
+| [55](https://github.com/nervosnetwork/rfcs/pull/446) | [CKB_TX_MESSAGE_ALL](https://github.com/nervosnetwork/rfcs/pull/446) | Xuejie Xiao | Standards Track | Proposal |
+| [56](https://github.com/nervosnetwork/rfcs/pull/448) | [Arbitrary multisig](https://github.com/nervosnetwork/rfcs/pull/448) | Xuejie Xiao | Standards Track | Proposal |
 
 ## License
 
