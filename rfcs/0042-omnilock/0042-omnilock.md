@@ -94,7 +94,16 @@ Depending on the value of the flag, the auth content has the following interpret
     ```
     "CKB (Bitcoin Layer) transaction: 0x" + hex(signing message hash)
     ```
-    In this way, it can show message on wallets(e.g. UniSat, OKX) nicely.
+  In this way, it can show message on wallets(e.g. UniSat, OKX) nicely. 
+  
+  It supports three types of BTC addresses: Native segwit (P2WPKH), Nested
+  segwit (P2SH-P2WPKH), and Legacy (P2PKH). A 20-byte hash can be decoded from a
+  BTC address using bech32m/bech32 or base58. This hash exactly corresponds to
+  the auth content. Note that the Taproot (P2TR) address is not supported.
+  Generic P2SH is not supported; only P2SH-P2WPKH is acceptable. It's not
+  allowed to use an address (e.g. P2SH-multisig) described as P2SH but does not
+  include P2WPKH.
+
 
 * 0x05: It follows the unlocking method used by dogecoin. The signing message
   hash is converted as following:
@@ -114,9 +123,14 @@ Depending on the value of the flag, the auth content has the following interpret
   MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c) with a little modification.
   When a message is calculated for signing, there is a step to clear witness. In omnilock, it clears the whole field `lock` in `witness`. But in CKB MultiSig script, it only clears part of `lock` in `witness`. This part is used as `signatures` followed by `multisig_script`.
 
-* 0xFC: The auth content that represents the blake160 hash of a lock script. The lock script will check if the current
-  transaction contains an input cell with a matching lock script. Otherwise, it would return with an error. It's similar
-  to [P2SH in BTC](https://en.bitcoin.it/wiki/Pay_to_script_hash).
+* 0xFC: The auth content represents the blake160 hash of a lock script. The
+  omnilock checks if the current transaction contains an input cell with a lock
+  script hash matching the auth content. If it is present, the validation
+  succeeds. In such a transaction, there should be at least 2 cells on input:
+  one locked by omnilock and another locked by the owner script. The owner
+  script's blake160 hash is the same as the auth content. In other words, the
+  Omnilock delegates its validation to the owner script. It's similar to [P2SH
+  in BTC](https://en.bitcoin.it/wiki/Pay_to_script_hash).
 
 * 0xFD: The auth content that represents the blake160 hash of a preimage. The preimage contains
   [exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec) information that is used to delegate signature verification to
