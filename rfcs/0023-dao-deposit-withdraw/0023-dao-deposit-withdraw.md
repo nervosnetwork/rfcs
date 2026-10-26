@@ -58,7 +58,7 @@ A phase 1 transaction MUST satisfy the following conditions:
     - The `withdrawing cell` MUST use the same Nervos DAO type script as the `deposit cell`.
     - The `withdrawing cell` MUST have the same capacity as the `deposit cell`.
     - The `withdrawing cell` MUST also have 8 bytes length cell data, but instead of 8 zero, it MUST store the block number of the `deposit cell`'s including block. The number MUST be packed in 64-bit unsigned little-endian integer format.
-    - The `withdrawing cell` MUST use a lock script of the same serialized size as the `deposit cell` lock script. This rule is currently enforced by the node. See `Gotchas` below.
+    - The `withdrawing cell` MUST use a lock script of the same serialized size as the `deposit cell` lock script.
 - The Nervos DAO type script MUST be included in the `cell_deps`.
 
 Once this transaction is included in CKB, the user can start preparing the phase 2 transaction.
@@ -410,5 +410,4 @@ Now the maximum withdrawable capacity can be calculated:
 ## Gotchas
 
 * Nervos DAO only supports *absolute epoch number* as since value in the withdrawal process. If you are using a lock that supports lock period, such as the system included [multi-sign script](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c), please make sure to ONLY use *absolute epoch number* as lock period. Otherwise, the locked Nervos DAO cell cannot be spent.
-* Current CKB nodes enforce the same-size lock rule for `deposit cell` and `withdrawing cell` lock scripts in [`DaoScriptSizeVerifier`](https://github.com/nervosnetwork/ckb/blob/6730f8023810d0888aa80c6a0d54cc2af918097d/verification/src/transaction_verifier.rs#L811-L885) as a temporary mitigation for the Nervos DAO occupied-capacity vulnerability described in [CKB-VM Changes Under the Meepo Hardfork](https://blog.cryptape.com/ckb-vm-changes-under-the-meepo-hardfork#heading-fix-nervos-dao-occupied-capacity-vulnerability).
 * For simplicity a transaction containing Nervos DAO script is currently limited to 64 output cells so that processing is simplified, this limitation may be relaxed later on in a future Nervos DAO script update.
