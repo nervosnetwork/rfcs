@@ -1,7 +1,7 @@
 ---
 Number: "0050"
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Xuejie Xiao <xxuejie@gmail.com>, Jiandong Xu<lynndon@gmail.com>, Wanbiao Ye <mohanson@outlook.com>, Dingwei Zhang <zhangsoledad@gmail.com>
 Created: 2023-04-17
 ---

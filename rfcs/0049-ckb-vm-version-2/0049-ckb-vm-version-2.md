@@ -1,7 +1,7 @@
 ---
 Number: "0049"
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Wanbiao Ye <mohanson@outlook.com>
 Created: 2023-04-17
 ---

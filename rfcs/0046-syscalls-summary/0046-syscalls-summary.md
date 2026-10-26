@@ -32,7 +32,7 @@ This RFC aims to provide a comprehensive summary of all CKB VM syscalls as speci
 | 1       | 2041       | [ckb_vm_version](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#vm-version)                                                                    | Return the version of CKB-VM being used to execute the current Script.                                                                                                                                                                                                                                          |
 | 1       | 2042       | [ckb_current_cycles](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#current-cycles)                                                            | Return the number of cycles consumed by the currently running Script _immediately before_ executing this syscall. This syscall will consume an additional 500 cycles.                                                                                                                                           |
 | 1       | 2043       | [ckb_exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec) (deprecated, see[known-issue](/docs/script/history-vm-version#known-issues-1)) | Run a Script executable from the specified Cell using the current VM context. This replaces the original calling running Script executable with the new specified Script executable. This is similar to the [exec call](<https://en.wikipedia.org/wiki/Exec_(system_call)>) found in several operating systems. |
-| 2       | 2104       | [ckb_load_extension](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#load-block-extension)                                                      | Load the extension field data and copy it using partial loading.                                                                                                                                                                                        
+| 2       | 2104       | [ckb_load_extension](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#load-block-extension)                                                      | Load the extension field data and copy it using partial loading.
 | 2       | 2601       | [ckb_spawn](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#spawn)                                                                              | Run a Script executable from the specified Cell using the current VM context, but return to the original calling Script executable upon termination. This is similar to the [spawn function](<https://en.wikipedia.org/wiki/Spawn_(computing)>) found in several operating systems and programming languages.   |                                                        |
 | 2       | 2602       | [ckb_wait](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#wait)                                                                                | Pause until the execution of a process specified by `pid` has ended.                                                                                                                                                                                                                                            |
 | 2       | 2603       | [ckb_process_id](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0050-vm-syscalls-3/0050-vm-syscalls-3.md#process-id)                                                                    | Get the current process id.                                                                                                                                                                                                                                                                                     |
@@ -46,7 +46,7 @@ This RFC aims to provide a comprehensive summary of all CKB VM syscalls as speci
 
 ### Return Codes
 
-These are the return codes used by the CKB VM syscalls. 
+These are the return codes used by the CKB VM syscalls.
 
 | Const No. | C Example              | Description                                       |
 | --------- | ---------------------- | ------------------------------------------------- |
@@ -58,7 +58,7 @@ These are the return codes used by the CKB VM syscalls.
 
 ### Source
 
-These are the sources for syscalls that query the transaction for input cells, output cells, dep cells, and header deps. 
+These are the sources for syscalls that query the transaction for input cells, output cells, dep cells, and header deps.
 
 | Const No.          | C Example               | Description                                                                                 |
 | ------------------ | ----------------------- | ------------------------------------------------------------------------------------------- |
