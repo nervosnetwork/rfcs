@@ -87,7 +87,7 @@ If we define `struct ByteAndUint32 { f1: byte, f2: Uint32 }`, and we want to sto
 
 #### vectors
 
-There two kinds of vectors: fixed vector `fixvec` and dynamic vector `dynvec`.
+There are two kinds of vectors: fixed vector `fixvec` and dynamic vector `dynvec`.
 
 Whether a vector is fixed or dynamic depends on the type of its inner item: if the inner item is fixed-size, then it's a `fixvec`; otherwise, it's a `dynvec`.
 
@@ -102,7 +102,7 @@ There are two steps of serializing a `fixvec`:
 ###### Examples
 
 If we define `vector Bytes <byte>;`:
-- the serialized bytes of an empty bytes is `00 00 00 00`(the length of any empty fixed vector is `0`).
+- the serialized bytes of an empty `Bytes` is `00 00 00 00`(the length of any empty fixed vector is `0`).
 - the serialized bytes of `0x12` is `01 00 00 00, 12`.
 - the serialized bytes of `0x1234567890abcdef` is `08 00 00 00, 12 34 56 78 90 ab cd ef`.
 

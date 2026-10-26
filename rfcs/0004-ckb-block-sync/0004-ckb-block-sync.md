@@ -1,8 +1,9 @@
 ---
 Number: "0004"
-Category: Standards Track
-Status: Proposal
+Category: Information
+Status: Final
 Author: Ian Yang <@doitian>
+Organization: Nervos Foundation
 Created: 2018-07-25
 ---
 
@@ -13,8 +14,9 @@ Glossary of Terms
 - Chain: a list of blocks starting with genesis block and consisted of successive blocks.
 - Best Chain: a chain with the most accumulated PoW, and starting with a common genesis block which nodes agree with the consensus.
 - Best Header Chain: a chain with the most PoW and consisted only of blocks in the status of Connected, Downloaded or Accepted. Please refer to block status part for more details.
-- Tip: the latest block of a chain and Tip can be used to determine a specific chain. 
+- Tip: the latest block of a chain and Tip can be used to determine a specific chain.
 - Best Chain Tip: the tip of Best Chain.
+- Chain: a list of blocks starting with genesis block and consisted of successive blocks.
 
 ## Abstract
 
@@ -22,9 +24,9 @@ Block synchronization **must** be performed in stages with [Bitcoin Headers Firs
 
 1. Connecting Header: Get block header, and validate format and PoW.
 2. Downloading Block: Get and validate the complete block. Transactions in ancestor blocks are not required.
-3. Accepting Block: Validate the block in the context of the chain. 
+3. Accepting Block: Validate the block in the context of the chain.
 
-The purpose of stage execution is trying to preclude most of the attacks with the least cost. For example, in the first step, header connecting only accounts for 5% workload while there would be 95% possibility to say the block is valid. 
+The purpose of stage execution is trying to preclude most of the attacks with the least cost. For example, in the first step, header connecting only accounts for 5% workload while there would be 95% possibility to say the block is valid.
 
 According to the execution stages, there are 5 statuses of blocks:
 
@@ -38,25 +40,25 @@ Block status is propagated from the previous block to the later ones. Using the 
 
 Initially, Genesis block is in status Accepted and the rest is in status Unknown.
 
-Below figures are used to indicate blocks in different status later on. 
+Below figures are used to indicate blocks in different status later on.
 
 ![](images/block-status.jpg "Block Status")
 
-Genesis block of the nodes synchronizing **must be** the same, and all blocks can be constructed as a tree with the genesis block being the root. Blocks will be removed if they cannot connect to the root eventually. 
+Genesis block of the nodes synchronizing **must be** the same, and all blocks can be constructed as a tree with the genesis block being the root. Blocks will be removed if they cannot connect to the root eventually.
 
-Every participating node forms its local status tree where the chain consisting of Accepted blocks with the most PoW is considered as Best Chain. The chain that consists of blocks in the status of connected, downloaded or accepted with the most PoW is Best Header Chain. 
+Every participating node forms its local status tree where the chain consisting of Accepted blocks with the most PoW is considered as Best Chain. The chain that consists of blocks in the status of connected, downloaded or accepted with the most PoW is Best Header Chain.
 
-The graph below is an example of Status Tree formed by Alice and blocks signed with name Alice is this node's current Best Chain Tip. 
+The graph below is an example of Status Tree formed by Alice and blocks signed with name Alice is this node's current Best Chain Tip.
 
 ![](images/status-tree.jpg "Status Tree by Alice")
- 
+
 ## Connecting Header
 
 Headers first synchronization helps to validate PoW with the least cost. Since it costs the same work to construct PoW whether the included transactions are valid or not, attackers may use other more efficient ways. It means it's highly possible to regard the whole block as valid when the PoW is valid. This is why headers first synchronization would avoid resource-wasting on invalid blocks.
 
 Because of the low cost, Headers synchronization can be processed in parallel with all peers and construct a highly reliable global graph. In this way, block downloading can be scheduled in the most efficient way to avoid wasting resource on lower PoW branch.
 
-The goal of connecting header is demonstrated using the following example. When Alice connects to Bob, Alice asks Bob to send all block headers in Bob's Best Chain but not in Alice's **Best Header Chain** and then validate them to decide the blocks status are either Connected or Invalid. 
+The goal of connecting header is demonstrated using the following example. When Alice connects to Bob, Alice asks Bob to send all block headers in Bob's Best Chain but not in Alice's **Best Header Chain** and then validate them to decide the blocks status are either Connected or Invalid.
 
 When Alice connects header, keeping Best Header Chain Tip updated could help to decrease numbers of receiving headers already existed.
 
@@ -64,11 +66,11 @@ When Alice connects header, keeping Best Header Chain Tip updated could help to 
 
 The graph above instructs the process of connecting headers. After a round of connecting headers, nodes are supposed to keep up-to-date using new block notification.
 
-Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backward with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The list of hashes of the sampled blocks is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator. 
+Take Alice and Bob above as an example, firstly Alice samples blocks from her Best Header Chain and sent the hashes to Bob. The basic principle of sampling is that later blocks are more possible to be selected than early blocks. For example, choose latest 10 blocks from the chain, then sample other blocks backward with 2's exponential increased intervals, a.k.a, 2, 4, 8, and etc. The list of hashes of the sampled blocks is called a Locator. In the following figure, the undimmed blocks are sampled. The genesis block should be always in the Locator.
 
 ![](images/locator.jpg)
 
-Bob can get the latest common block between these two chains according to Locator and his own Best Chain. Because the genesis block is identical, there must be such kind of block. Bob will send all block headers from the common block to his Best Chain Tip to Alice. 
+Bob can get the latest common block between these two chains according to Locator and his own Best Chain. Because the genesis block is identical, there must be such kind of block. Bob will send all block headers from the common block to his Best Chain Tip to Alice.
 
 ![](images/connect-header-conditions.jpg)
 
@@ -82,11 +84,11 @@ If there are too many blocks to send, pagination is required. Bob sends the firs
 
 Alice could observe Bob's present Best Chain Tip, which is the last block received during each round of synchronization. If Alice's Best Header Chain Tip is exactly Bob's Best Chain Tip, Alice couldn't observe Bob's present Best Chain because Bob has no block headers to send. Therefore, it should start building from the parent block of Best Header Chain Tip when sending the first request in each round.
 
-In the following cases, a new round of connection block header synchronization must be performed. 
+In the following cases, a new round of connection block header synchronization must be performed.
 
 - Received a new block notification from the others, but the parent block status of the new block is Unknown.
 
-The following exceptions may occur when connecting a block header: 
+The following exceptions may occur when connecting a block header:
 
 - Alice observed that Bob's Best Chain Tip has not been updated for a long time, or its timestamp is old. In this case, Bob does not provide valuable data. When the number of connections reaches a limit, Bob could be disconnected first.
 - Alice observed that the status of Bob's Best Chain Tip is Invalid. This can be found in any page without waiting for the end of a round of Connect Head. There, Bob is on an invalid branch, Alice can stop synchronizing with Bob and add Bob to the blacklist.
@@ -95,10 +97,10 @@ The following exceptions may occur when connecting a block header:
 Upon receiving the block header message, the format should be verified first.
 
 - The blocks in the message are continuous.
-- The status of all blocks and the parent block of the first block are not Invalid in the local Status Tree. 
+- The status of all blocks and the parent block of the first block are not Invalid in the local Status Tree.
 - The status of the parent block of the first block is not Unknown in the local Status Tree, which means Orphan Block will not be processed in synchronizing.
 
-In this stage, verification includes checking if block header satisfies the consensus rules and if Pow is valid or not. Since Orphan Blocks are not processed, difficulty adjustment can be verified as well. 
+In this stage, verification includes checking if block header satisfies the consensus rules and if Pow is valid or not. Since Orphan Blocks are not processed, difficulty adjustment can be verified as well.
 
 ![](images/connect-header-status.jpg)
 
@@ -165,7 +167,7 @@ How to send the announcement is determined by connection negotiated parameters a
 
 When receiving a new block announcement, there may be a situation the parent block's status is Unknown, also called Orphan Block. If so, a new round of Connecting Header is required immediately. When a Compact Block is received, and its parent block is the local Best Chain Tip, then the full block may be recovered from the transaction pool. If the recovery succeeds, the work of these three stages can be compacted into one. Otherwise, it falls back to a header-only announcement.
 
-## Synchronization Status 
+## Synchronization Status
 
 ### Configuration
 - `GENESIS_HASH`: hash of genesis block
@@ -186,35 +188,33 @@ Each connection peer should store:
 
 Only related message and fields are listed here. See completed definition and documentation in the reference implementation.
 
-The message passing is completely asynchronous. For example, sending `getheaders` does not block other requests. Also, there is no need to guarantee the order relationship between the requests and the responses. For example, node A sends `getheaders` and `getdata` to B, and B can replies `block` firstly, and then `headers` to A.
+The message passing is completely asynchronous. For example, sending `GetHeaders` does not block other requests. Also, there is no need to guarantee the order relationship between the requests and the responses. For example, node A sends `GetHeaders` and `GetBlocks` to B, and B can replies `SendBlock` firstly, and then `SendHeaders` to A.
 
-Compact Block [^1] messages `cmpctblock` and `getblocktxn` will be described in related Compact Block documentation.
+Compact Block [^1] messages will be described in related Compact Block documentation.
 
-### getheaders
+### GetHeaders
 
-It is used to request a block header from a peer in stage Connecting Header. The first-page request, and subsequent pages request can share the same getheaders message format. The difference between them is that the first page requests generate a Locator from the parent block of the local Best Header Chain Tip, and the subsequent page request generates the Locator using the last block in the last received page.
+It is used to request a block header from a peer in stage Connecting Header. The first-page request, and subsequent pages request can share the same GetHeaders message format. The difference between them is that the first page requests generate a Locator from the parent block of the local Best Header Chain Tip, and the subsequent page request generates the Locator using the last block in the last received page.
 
-- `locator`: Sampled hashes of the already known blocks
+- `hash_stop`: tells peer to early return when building `SendHeaders` response.
+- `block_locator_hashes`: Sampled hashes of the already known blocks
 
-### headers
+### SendHeaders
 
-It is used to reply `getheaders` and announce new blocks. There is no difference in processing logic, but if an Orphan Block is founded when the number of block headers is less than `MAX_BLOCKS_TO_ANNOUNCE`, a new round of Connecting Header is required. If the number of block `headers` received equals is equal to `MAX_HEADERS_RESULTS`, it indicates that there are more blocks to request.
+It is used to reply `GetHeaders`. It returns a headers list containing the headers of blocks starting right after the last common hash via the Locator, up to `hash_stop` or `MAX_BLOCKS_TO_ANNOUNCE` blocks, whichever comes first.
 
 - `headers`：block headers list
 
-### getdata
+### GetBlocks
 
 It is used in Downloading Block stage.
 
-- `inventory`:  object lists for download, with following fields in each list element:
-    - `type`: type of the object, only "block" here
-    - `hash`: hash of the object as identity
+- `block_hashes`:  list of block hashes to download.
 
-### block
+### SendBlock
 
-It is used to reply block downloading request of `getdata` 
+It is used to reply block downloading request of `GetBlocks`
 
-- `header` block header
-- `transactions` transaction list
+- `block`: the requested block content
 
 [^1]: Compact Block is a technique for compressing and transferring complete blocks. It is based on the fact that when a new block is propagated, the transactions should already be in the pool of other nodes. Under this circumstances, Compact Block only contains the list of transaction txid list and complete transactions which are predicated unknown to the peers. The receiver can recover the complete block using the transaction pool. Please refer to [Block and Compact Block Structure](../0020-ckb-consensus-protocol/0020-ckb-consensus-protocol.md#block-and-compact-block-structure) and related Bitcoin [BIP](https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki) for details.

@@ -214,7 +214,7 @@ It ensures generated data is legit by validating that contents in output cell ma
 
 In the above example, function implementation for validating cell is directly compiled into input contract script. It's also possible to reference and call code from external cell for validation.
 
-First, the following implementation can be provided for transfering UDT tokens:
+First, the following implementation can be provided for transferring UDT tokens:
 
 ```c
 int udt_transfer(data_t *data, const char from[ADDRESS_LENGTH], const char to[ADDRESS_LENGTH], int64_t tokens)

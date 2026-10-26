@@ -75,17 +75,62 @@ Depending on the value of the flag, the auth content has the following interpret
   signature verification, the same as the [SECP256K1/blake160
   lock](https://github.com/nervosnetwork/rfcs/blob/780b2f98068ed2337f3a97b02ec6b5336b6fb143/rfcs/0024-ckb-genesis-script-list/0024-ckb-genesis-script-list.md#secp256k1blake160).
 
-* 0x01~0x05: It follows the same unlocking methods used by
-  [PW-lock](https://github.com/lay2dev/pw-lock/blob/c2b1456bcca06c892e1bb8ec8ac0a64d4fb2b83d/c/pw_lock.h#L190-L223) with different [hash calculation](https://github.com/lay2dev/pw-lock#hash-calculation) on message. PW-lock uses keccak256 instead of blake2b which is used in omnilock.
+* 0x01: It follows the unlocking method used by Ethereum. The signing message
+  hash(sighash_all, see [reference implementation](https://github.com/nervosnetwork/ckb-system-scripts/blob/a7b7c75662ed950c9bd024e15f83ce702a54996e/c/secp256k1_blake160_sighash_all.c#L219)) 
+  is converted as following:
+  ```
+  "0x" + hex(signing message hash)
+  ```
+  The hex operator is to convert binary into hex string. 
+
+* 0x03: It follows the unlocking method used by Tron. The signing message hash
+  is converted as following:
+  ```
+  "0x" + hex(signing message hash)
+  ```
+
+* 0x04: It follows the unlocking method used by Bitcoin. The signing message
+  hash is required to be converted as following:
+    ```
+    "CKB (Bitcoin Layer) transaction: 0x" + hex(signing message hash)
+    ```
+  In this way, it can show message on wallets(e.g. UniSat, OKX) nicely. 
+  
+  It supports three types of BTC addresses: Native segwit (P2WPKH), Nested
+  segwit (P2SH-P2WPKH), and Legacy (P2PKH). A 20-byte hash can be decoded from a
+  BTC address using bech32m/bech32 or base58. This hash exactly corresponds to
+  the auth content. Note that the Taproot (P2TR) address is not supported.
+  Generic P2SH is not supported; only P2SH-P2WPKH is acceptable. It's not
+  allowed to use an address (e.g. P2SH-multisig) described as P2SH but does not
+  include P2WPKH.
+
+
+* 0x05: It follows the unlocking method used by dogecoin. The signing message
+  hash is converted as following:
+  ```
+  "0x" + hex(signing message hash)
+  ```
+
+* 0x12: It follows the unlocking method same to 0x02 with the signing message hash
+  to be converted as following:
+    ```
+    "CKB transaction: 0x" + hex(signing message hash)
+    ```
+  In this way, it can show message on wallets(e.g. MetaMask) nicely.
 
 
 * 0x06: It follows the same unlocking method used by [CKB
   MultiSig](https://github.com/nervosnetwork/ckb-system-scripts/blob/master/c/secp256k1_blake160_multisig_all.c) with a little modification.
   When a message is calculated for signing, there is a step to clear witness. In omnilock, it clears the whole field `lock` in `witness`. But in CKB MultiSig script, it only clears part of `lock` in `witness`. This part is used as `signatures` followed by `multisig_script`.
 
-* 0xFC: The auth content that represents the blake160 hash of a lock script. The lock script will check if the current
-  transaction contains an input cell with a matching lock script. Otherwise, it would return with an error. It's similar
-  to [P2SH in BTC](https://en.bitcoin.it/wiki/Pay_to_script_hash).
+* 0xFC: The auth content represents the blake160 hash of a lock script. The
+  omnilock checks if the current transaction contains an input cell with a lock
+  script hash matching the auth content. If it is present, the validation
+  succeeds. In such a transaction, there should be at least 2 cells on input:
+  one locked by omnilock and another locked by the owner script. The owner
+  script's blake160 hash is the same as the auth content. In other words, the
+  Omnilock delegates its validation to the owner script. It's similar to [P2SH
+  in BTC](https://en.bitcoin.it/wiki/Pay_to_script_hash).
 
 * 0xFD: The auth content that represents the blake160 hash of a preimage. The preimage contains
   [exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec) information that is used to delegate signature verification to
@@ -544,7 +589,7 @@ They can be in different cells.
 
 ## Notes
 
-An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob/master/c/omni_lock.c) of the Omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
+An [implementation](https://github.com/cryptape/omnilock) of the Omnilock spec above has been deployed to Mirana CKB mainnet and  Pudge testnet:
 
 
 - Mirana
@@ -553,7 +598,7 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | 0x9b819793a64463aed77c615d6cb226eea5487ccfc0783043a587254cda2b6f26   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | 0xdfdb40f5d229536915f2d5403c66047e162e25dedd70a79ef5164356e1facdc8   |
+| `tx_hash`   | 0xc76edf469816aa22f416503c38d0b533d2a018e253e379f134c3985b3472c842   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
@@ -563,7 +608,7 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | 0xf329effd1c475a2978453c8600e1eaf0bc2087ee093c3ee64cc96ec6847752cb   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | 0x27b62d8be8ed80b9f56ee0fe41355becdb6f6a40aeba82d3900434f43b1c8b60   |
+| `tx_hash`   | 0x3d4296df1bd2cc2bd3f483f61ab7ebeac462a2f336f2b944168fe6ba5d81c014   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
@@ -571,9 +616,9 @@ An [implementation](https://github.com/nervosnetwork/ckb-production-scripts/blob
 Reproducible build is supported to verify the deploy script. To build the deployed the script above, one can use the following steps:
 
 ```bash
-$ git clone https://github.com/nervosnetwork/ckb-production-scripts
-$ cd ckb-production-scripts
-$ git checkout 716433e2eb6fb862acbe8d858ab7f294d894faf5
+$ git clone https://github.com/cryptape/omnilock.git
+$ cd omnilock
+$ git checkout cd764d
 $ git submodule update --init --recursive
 $ make all-via-docker
 ```

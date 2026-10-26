@@ -74,8 +74,8 @@ These are the field specifiers for syscalls that request a specific field of a c
 | 1         | CKB_CELL_FIELD_DATA_HASH         | The hash of the data within the data field of the cell.                |
 | 2         | CKB_CELL_FIELD_LOCK              | The lock script of the cell.                                           |
 | 3         | CKB_CELL_FIELD_LOCK_HASH         | The hash of the lock script of the cell.                               |
-| 4         | CKB_CELL_FIELD_TYPE              | The lock script of the cell.                                           |
-| 5         | CKB_CELL_FIELD_TYPE_HASH         | The hash of the lock script of the cell.                               |
+| 4         | CKB_CELL_FIELD_TYPE              | The type script of the cell.                                           |
+| 5         | CKB_CELL_FIELD_TYPE_HASH         | The hash of the type script of the cell.                               |
 | 6         | CKB_CELL_FIELD_OCCUPIED_CAPACITY | The amount of capacity (CKB) that is currently being used by the cell. |
 
 ### Header Fields
