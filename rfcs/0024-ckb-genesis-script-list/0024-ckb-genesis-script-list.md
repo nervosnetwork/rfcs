@@ -172,6 +172,8 @@ and the `out_point` of `secp256k1_blake160_multisig_all` is
 }
 ```
 
+This script supports `since` to unlock after a specific time. Due to historical reasons, it does not support [relative epoch number with fraction](../0017-tx-valid-since/0017-tx-valid-since.md).
+
 ## Types
 
 ### Nervos DAO
