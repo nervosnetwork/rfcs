@@ -1,7 +1,7 @@
 ---
 Number: "0048"
 Category: Standards Track
-Status: Draft
+Status: Proposal
 Author: Dingwei Zhang <zhangsoledad@gmail.com>
 Created: 2023-04-17
 ---
@@ -15,7 +15,7 @@ This rfc proposes to remove this reservation and allow for the use of CKB softfo
 
 ## Motivation
 
-The version field in the CKB block header currently has no real meaning, as the consensus rule forces it to be 0 in CKB2021 and earlier. This means that it cannot be used to signal CKB softfork activation [RFC43]. To address this issue, This rfc proposes to remove this reservation and allow for the use of version bits in the block header.
+The version field in the CKB block header currently has no real meaning, as the consensus rule forces it to be 0 in CKB Edition Mirana and earlier. This means that it cannot be used to signal CKB softfork activation [RFC43]. To address this issue, This rfc proposes to remove this reservation and allow for the use of version bits in the block header.
 
 ## Specification
 

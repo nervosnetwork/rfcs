@@ -1,7 +1,7 @@
 ---
 Number: "0031"
 Category: Standards Track
-Status: Proposal
+Status: Active
 Author: Ian Yang <@doitian>
 Created: 2021-02-07
 ---
@@ -47,7 +47,7 @@ The `extra_hash` is defined as:
 * When `extension` is empty, `extra_hash` is the same as the `uncles_hash`.
 * Otherwise `extra_hash = ckbhash(uncles_hash || ckbhash(extension))`
 
-Since epoch B, consensus will define the schema of `extension` and verify the content. This is a soft fork if the `extension` is at most 96 bytes, because nodes deployed since epoch A do not verify the content of `extension`.  
+Since epoch B, consensus will define the schema of `extension` and verify the content. This is a soft fork if the `extension` is at most 96 bytes, because nodes deployed since epoch A do not verify the content of `extension`.
 
 ### P2P Protocols Changes
 

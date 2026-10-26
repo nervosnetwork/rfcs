@@ -88,7 +88,7 @@ payload = 0x02/0x04 | code_hash | args
 
 The first byte identifies the lock script's hash_type, 0x02 for "Data", 0x04 for "Type".
 
-Two reasons have caused this address format to be deprecated. First, a [flaw](https://github.com/sipa/bech32/issues/51) of Bech32 enables attackers to generate valid but unexpected addresses by deleting or inserting characters into certain full addresses. Last, the hard fork of [ckb2021](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0037-ckb2021/0037-ckb2021.md) requires a new field to indicate the CKB VM version for each script group.
+Two reasons have caused this address format to be deprecated. First, a [flaw](https://github.com/sipa/bech32/issues/51) of Bech32 enables attackers to generate valid but unexpected addresses by deleting or inserting characters into certain full addresses. Last, the hard fork of [CKB Edition Mirana](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0037-ckb-mirana-2021/0037-ckb-mirana-2021.md) requires a new field to indicate the CKB VM version for each script group.
 
 ## Wrap to Address
 

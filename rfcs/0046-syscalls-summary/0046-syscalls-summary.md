@@ -32,16 +32,16 @@ This RFC aims to provide a comprehensive summary of all CKB VM syscalls as speci
 | 2       | 2041       | [ckb_vm_version](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#vm-version) | Return the version of CKB VM being used to execute the current script. |
 | 2       | 2042       | [ckb_current_cycles](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#current-cycles) | Return the number of cycles consumed by the currently running script *immediately before* executing this syscall. This syscall will consume an additional 500 cycles. |
 | 2       | 2043       | [ckb_exec](https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0034-vm-syscalls-2/0034-vm-syscalls-2.md#exec) | Run a script executable from the specified cell using the current VM context. This replaces the original calling running script executable with the new specified script executable. This is similar to the [exec call](https://en.wikipedia.org/wiki/Exec_(system_call)) found in several operating systems. |
-| | | ckb_spawn | (To be added in CKB2023.) Run a script executable from the specified cell using the current VM context, but return to the original calling script executable upon termination. This is similar to the [spawn function](https://en.wikipedia.org/wiki/Spawn_(computing)) found in several operating systems and programming languages. |
-| | | ckb_get_memory_limit | (To be added in CKB2023.) Return the maximum amount of memory available to the current script being executed. |
-| | | ckb_set_content | (To be added in CKB2023.) Set the content of the designated memory region that can be read by the parent (calling) script which executed the current script via the spawn function. |
-| | | ckb_load_extension | (To be added in CKB2023.) Load the extention field data and copy it using partial loading. |
+| | | ckb_spawn | (To be added in CKB Edition Meepo.) Run a script executable from the specified cell using the current VM context, but return to the original calling script executable upon termination. This is similar to the [spawn function](https://en.wikipedia.org/wiki/Spawn_(computing)) found in several operating systems and programming languages. |
+| | | ckb_get_memory_limit | (To be added in CKB Edition Meepo.) Return the maximum amount of memory available to the current script being executed. |
+| | | ckb_set_content | (To be added in CKB Edition Meepo.) Set the content of the designated memory region that can be read by the parent (calling) script which executed the current script via the spawn function. |
+| | | ckb_load_extension | (To be added in CKB Edition Meepo.) Load the extention field data and copy it using partial loading. |
 
 ## Constants
 
 ### Return Codes
 
-These are the return codes used by the CKB VM syscalls. 
+These are the return codes used by the CKB VM syscalls.
 
 | Const No. | C Example              | Description                                       |
 | --------- | ---------------------- | ------------------------------------------------- |
@@ -53,7 +53,7 @@ These are the return codes used by the CKB VM syscalls.
 
 ### Source
 
-These are the sources for syscalls that query the transaction for input cells, output cells, dep cells, and header deps. 
+These are the sources for syscalls that query the transaction for input cells, output cells, dep cells, and header deps.
 
 | Const No.          | C Example               | Description                                                                                 |
 | ------------------ | ----------------------- | ------------------------------------------------------------------------------------------- |
