@@ -58,6 +58,7 @@ A phase 1 transaction MUST satisfy the following conditions:
     - The `withdrawing cell` MUST use the same Nervos DAO type script as the `deposit cell`.
     - The `withdrawing cell` MUST have the same capacity as the `deposit cell`.
     - The `withdrawing cell` MUST also have 8 bytes length cell data, but instead of 8 zero, it MUST store the block number of the `deposit cell`'s including block. The number MUST be packed in 64-bit unsigned little-endian integer format.
+    - The `withdrawing cell` MUST use a lock script of the same serialized size as the `deposit cell` lock script.
 - The Nervos DAO type script MUST be included in the `cell_deps`.
 
 Once this transaction is included in CKB, the user can start preparing the phase 2 transaction.
