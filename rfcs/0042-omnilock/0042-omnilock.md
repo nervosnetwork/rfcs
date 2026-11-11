@@ -608,7 +608,7 @@ An [implementation](https://github.com/cryptape/omnilock) of the Omnilock spec a
 | ----------- | -------------------------------------------------------------------- |
 | `code_hash` | 0xf329effd1c475a2978453c8600e1eaf0bc2087ee093c3ee64cc96ec6847752cb   |
 | `hash_type` | `type`                                                               |
-| `tx_hash`   | 0x3d4296df1bd2cc2bd3f483f61ab7ebeac462a2f336f2b944168fe6ba5d81c014   |
+| `tx_hash`   | 0xec18bf0d857c981c3d1f4e17999b9b90c484b303378e94de1a57b0872f5d4602   |
 | `index`     | `0x0`                                                                |
 | `dep_type`  | `code`                                                               |
 
